@@ -1,0 +1,7 @@
+name: ServerSaturday
+main: com.campmongoose.serversaturday.ServerSaturday
+version: 1.0
+commands:
+    serversaturday:
+      aliases: [ss]
+      description: Base command.
