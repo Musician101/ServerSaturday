@@ -38,16 +38,10 @@ public class SSSubmit extends AbstractCommand
             return false;
         }
 
-        //TODO submit not updating
-        //TODO singular build list
         Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
         Build build = submitter.getBuild(name);
         build.setSubmitted(!build.submitted());
-        if (build.submitted())
-            player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "Your build has been added to the ready list.");
-        else
-            player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "Your build has been removed from the ready list.");
-
+        build.openMenu(plugin, submitter, player);
         return true;
     }
 }

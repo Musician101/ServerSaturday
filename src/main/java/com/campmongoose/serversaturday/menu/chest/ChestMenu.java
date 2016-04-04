@@ -2,6 +2,7 @@ package com.campmongoose.serversaturday.menu.chest;
 
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.menu.AbstractMenu;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -31,7 +32,7 @@ public class ChestMenu extends AbstractMenu<ChestMenu>
         event.setCancelled(true);
         Player player = (Player) event.getWhoClicked();
         ItemStack itemStack = event.getCurrentItem();
-        if (itemStack == null)
+        if (itemStack == null || itemStack.getType() == Material.AIR)
             return;
 
         int slot = event.getRawSlot();

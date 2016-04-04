@@ -1,6 +1,7 @@
 package com.campmongoose.serversaturday;
 
 import com.campmongoose.serversaturday.submission.Build;
+import com.campmongoose.serversaturday.submission.Submitter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -113,6 +114,9 @@ public class DescriptionChangeHandler implements Listener
         Player player = (Player) event.getWhoClicked();
         UUID uuid = player.getUniqueId();
         ItemStack itemStack = event.getCurrentItem();
+        if (itemStack == null)
+            return;
+
         if (itemStack.getType() != Material.BOOK_AND_QUILL)
             return;
 
@@ -149,7 +153,9 @@ public class DescriptionChangeHandler implements Listener
         if (!isSameBook(event.getPreviousBookMeta(), player, build))
             return;
 
-        plugin.getSubmissions().getSubmitter(uuid).updateBuildDescription(build, event.getNewBookMeta().getPages());
+        Submitter submitter = plugin.getSubmissions().getSubmitter(uuid);
+        submitter.updateBuildDescription(build, event.getNewBookMeta().getPages());
+        build.openMenu(plugin, submitter, player);
         remove(player);
     }
 }

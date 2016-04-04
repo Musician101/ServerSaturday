@@ -13,11 +13,11 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
-public class SSEdit extends AbstractCommand
+public class SSRemove extends AbstractCommand
 {
-    public SSEdit(ServerSaturday plugin)
+    public SSRemove(ServerSaturday plugin)
     {
-        super(plugin, "edit", "Edit a submitted build for Server Saturday.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("edit"), new CommandArgument("build", Syntax.REPLACE, Syntax.OPTIONAL)), 0, "ss.submit", true);
+        super(plugin, "remove", "Remove a build.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("remove"), new CommandArgument("name", Syntax.REPLACE, Syntax.REQUIRED)), 1, "ss.submit", true);
     }
 
     @Override
@@ -26,21 +26,19 @@ public class SSEdit extends AbstractCommand
         if (!canSenderUseCommand(sender))
             return false;
 
-        Player player = (Player) sender;
-        Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
-        if (args.length > 0)
-        {
-            String name = args[0];
-            if (!submitter.containsBuild(name))
-            {
-                player.sendMessage(ChatColor.RED + Reference.PREFIX + "That build does not exist.");
-                return false;
-            }
+        if (!minArgsMet(sender, args.length))
+            return false;
 
-            submitter.getBuild(name).openMenu(plugin, submitter, player);
-            return true;
+        Player player = (Player) sender;
+        String name = args[0];
+        Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
+        if (!submitter.containsBuild(name))
+        {
+            player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name doesn't exist.");
+            return false;
         }
 
+        submitter.removeBuild(name);
         submitter.openMenu(plugin, 1, player);
         return true;
     }

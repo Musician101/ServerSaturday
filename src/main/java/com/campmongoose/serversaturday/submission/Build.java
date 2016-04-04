@@ -2,13 +2,13 @@ package com.campmongoose.serversaturday.submission;
 
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.menu.chest.BuildMenu;
-import com.campmongoose.serversaturday.menu.chest.ChestMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class Build implements ConfigurationSerializable
 {
@@ -64,18 +63,19 @@ public class Build implements ConfigurationSerializable
         this.submitted = submitted;
     }
 
-    public ItemStack getMenuRepresentation()
+    public ItemStack getMenuRepresentation(Submitter submitter)
     {
         ItemStack itemStack = new ItemStack(Material.WRITTEN_BOOK);
-        BookMeta skullMeta = (BookMeta) itemStack.getItemMeta();
-        skullMeta.setTitle(name);
+        BookMeta bookMeta = (BookMeta) itemStack.getItemMeta();
+        bookMeta.setAuthor(submitter.getName());
+        bookMeta.setTitle(name);
         if (featured)
         {
-            skullMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
-            skullMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            bookMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+            bookMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
 
-        itemStack.setItemMeta(skullMeta);
+        itemStack.setItemMeta(bookMeta);
         return itemStack;
     }
 
@@ -112,9 +112,9 @@ public class Build implements ConfigurationSerializable
         return map;
     }
 
-    public ChestMenu getMenu(ServerSaturday plugin, Submitter submitter, UUID viewer)
+    public void openMenu(ServerSaturday plugin, Submitter submitter, Player player)
     {
-        return new BuildMenu(plugin, this, submitter, Bukkit.createInventory(null, 9, name), viewer);
+        new BuildMenu(plugin, this, submitter, Bukkit.createInventory(null, 9, name), player.getUniqueId()).open(player);
     }
 
     public String getName()

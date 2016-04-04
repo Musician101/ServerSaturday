@@ -51,6 +51,7 @@ public abstract class AbstractCommand
         return usage;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public abstract boolean onCommand(CommandSender sender, String... args);
 
     protected boolean canSenderUseCommand(CommandSender sender)
@@ -100,6 +101,7 @@ public abstract class AbstractCommand
         return description;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public String getName()
     {
         return name;

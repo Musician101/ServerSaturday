@@ -38,7 +38,7 @@ public class SSNew extends AbstractCommand
         }
 
         Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
-        submitter.newBuild(name, player.getLocation()).getMenu(plugin, submitter, player.getUniqueId()).open(player);
+        submitter.newBuild(name, player.getLocation()).openMenu(plugin, submitter, player);
         return true;
     }
 }

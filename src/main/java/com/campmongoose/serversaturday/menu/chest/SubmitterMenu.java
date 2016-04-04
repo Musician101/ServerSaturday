@@ -9,38 +9,36 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class SubmitterMenu extends ChestMenu
 {
-    public SubmitterMenu(ServerSaturday plugin, Submitter submitter, int page, Inventory inv, UUID viewer)
+    public SubmitterMenu(ServerSaturday plugin, Submitter submitter, int page, Inventory inv)
     {
         super(plugin, inv, event ->
                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
                 {
                     ItemStack itemStack = event.getItem();
-                    if (itemStack == null)
-                        return;
-
                     int slot = event.getSlot();
                     Player player = event.getPlayer();
                     if (slot == 53)
-                        submitter.getMenu(plugin, page + 1, viewer).open(player);
-                    else if (slot == 46 && page > 1)
-                        submitter.getMenu(plugin, page - 1, viewer).open(player);
+                        submitter.openMenu(plugin, page + 1, player);
+                    else if (slot == 45 && page > 1)
+                        submitter.openMenu(plugin, page - 1, player);
                     else if (slot == 49)
-                        plugin.getSubmissions().getMenu(plugin, 1, viewer).open(player);
-                    else if (slot < 46)
+                        plugin.getSubmissions().openMenu(plugin, 1, player);
+                    else if (slot < 45)
                     {
+                        ItemMeta itemMeta = itemStack.getItemMeta();
                         String name = ((BookMeta) itemStack.getItemMeta()).getTitle();
                         for (Build build : submitter.getBuilds())
                         {
                             if (build.getName().equals(name))
                             {
-                                build.getMenu(plugin, submitter, viewer).open(player);
+                                build.openMenu(plugin, submitter, player);
                                 return;
                             }
                         }
@@ -51,7 +49,7 @@ public class SubmitterMenu extends ChestMenu
                 }));
 
         ItemStack[] itemStacks = new ItemStack[54];
-        List<ItemStack> list = submitter.getBuilds().stream().map(Build::getMenuRepresentation).collect(Collectors.toList());
+        List<ItemStack> list = submitter.getBuilds().stream().map(build -> build.getMenuRepresentation(submitter)).collect(Collectors.toList());
         for (int x = 0; x < 54; x++)
         {
             int subListPosition = x + (page - 1) * 45;

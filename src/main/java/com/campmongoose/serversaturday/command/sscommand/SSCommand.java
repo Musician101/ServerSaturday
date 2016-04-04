@@ -9,6 +9,7 @@ import com.campmongoose.serversaturday.command.sscommand.submit.SSDescription;
 import com.campmongoose.serversaturday.command.sscommand.submit.SSEdit;
 import com.campmongoose.serversaturday.command.sscommand.submit.SSLocation;
 import com.campmongoose.serversaturday.command.sscommand.submit.SSNew;
+import com.campmongoose.serversaturday.command.sscommand.submit.SSRemove;
 import com.campmongoose.serversaturday.command.sscommand.submit.SSRename;
 import com.campmongoose.serversaturday.command.sscommand.submit.SSResourcePack;
 import com.campmongoose.serversaturday.command.sscommand.submit.SSSubmit;
@@ -24,7 +25,7 @@ public class SSCommand extends AbstractCommand
 {
     public SSCommand(ServerSaturday plugin)
     {
-        super(plugin, "ss", "Plugin based submission form for Potato's Server Saturday.", Collections.singletonList(new CommandArgument(Commands.SS_CMD)), 0, "", false, Arrays.asList(new SSDescription(plugin), new SSEdit(plugin), new SSFeature(plugin), new SSGoto(plugin), new SSLocation(plugin), new SSNew(plugin), new SSReload(plugin), new SSRename(plugin), new SSResourcePack(plugin), new SSSubmit(plugin), new SSView(plugin), new SSViewDescription(plugin)));
+        super(plugin, "ss", "Plugin based submission form for Potato's Server Saturday.", Collections.singletonList(new CommandArgument(Commands.SS_CMD)), 0, "", false, Arrays.asList(new SSDescription(plugin), new SSEdit(plugin), new SSFeature(plugin), new SSGoto(plugin), new SSLocation(plugin), new SSNew(plugin), new SSReload(plugin), new SSRemove(plugin), new SSRename(plugin), new SSResourcePack(plugin), new SSSubmit(plugin), new SSView(plugin), new SSViewDescription(plugin)));
     }
 
     @Override

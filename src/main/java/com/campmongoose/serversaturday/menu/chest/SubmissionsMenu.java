@@ -21,24 +21,21 @@ public class SubmissionsMenu extends ChestMenu
                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
                 {
                     ItemStack itemStack = event.getItem();
-                    if (itemStack == null)
-                        return;
-
                     int slot = event.getSlot();
                     Player player = event.getPlayer();
                     String name = itemStack.getItemMeta().getDisplayName();
                     Submissions submissions = plugin.getSubmissions();
                     if (slot == 53)
-                        submissions.getMenu(plugin, page + 1, viewer).open(player);
-                    else if (slot == 50 && page > 1)
-                        submissions.getMenu(plugin, page - 1, viewer).open(player);
-                    else if (slot < 46)
+                        submissions.openMenu(plugin, page + 1, player);
+                    else if (slot == 45 && page > 1)
+                        submissions.openMenu(plugin, page - 1, player);
+                    else if (slot < 45)
                     {
                         for (Submitter submitter : submissions.getSubmitters())
                         {
                             if (submitter.getName().equals(name))
                             {
-                                submitter.getMenu(plugin, 1, viewer).open(player);
+                                submitter.openMenu(plugin, 1, Bukkit.getPlayer(viewer));
                                 return;
                             }
                         }

@@ -2,7 +2,6 @@ package com.campmongoose.serversaturday.command.sscommand.submit;
 
 import com.campmongoose.serversaturday.Reference;
 import com.campmongoose.serversaturday.Reference.Commands;
-import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
@@ -42,7 +41,7 @@ public class SSLocation extends AbstractCommand
         Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
         Build build = submitter.getBuild(name);
         build.setLocation(player.getLocation());
-        player.sendMessage(Messages.locationChanged(build));
+        build.openMenu(plugin, submitter, player);
         return true;
     }
 }

@@ -1,7 +1,6 @@
 package com.campmongoose.serversaturday.submission;
 
 import com.campmongoose.serversaturday.ServerSaturday;
-import com.campmongoose.serversaturday.menu.chest.ChestMenu;
 import com.campmongoose.serversaturday.menu.chest.SubmitterMenu;
 import com.campmongoose.serversaturday.util.UUIDUtils;
 import org.bukkit.Bukkit;
@@ -95,9 +94,9 @@ public class Submitter
         return itemStack;
     }
 
-    public ChestMenu getMenu(ServerSaturday plugin, int page, UUID viewer)
+    public void openMenu(ServerSaturday plugin, int page, Player player)
     {
-        return new SubmitterMenu(plugin, this, page, Bukkit.createInventory(null, 54, name + "'s Builds"), viewer);
+        new SubmitterMenu(plugin, this, page, Bukkit.createInventory(null, 54, name + "'s Builds")).open(player);
     }
 
     public String getName()
@@ -108,6 +107,11 @@ public class Submitter
     public UUID getUUID()
     {
         return uuid;
+    }
+
+    public void removeBuild(String name)
+    {
+        builds.remove(name);
     }
 
     public void save(ServerSaturday plugin, File file)
@@ -153,18 +157,21 @@ public class Submitter
 
     public void updateBuildName(Build build, String newName)
     {
+        builds.remove(build.getName());
         build.setName(newName);
         builds.put(build.getName(), build);
     }
 
     public void updateBuildDescription(Build build, List<String> description)
     {
+        builds.remove(build.getName());
         build.setDescription(description);
         builds.put(build.getName(), build);
     }
 
     public void updateBuildResourcePack(Build build, String resourcePack)
     {
+        builds.remove(build.getName());
         build.setResourcePack(resourcePack);
         builds.put(build.getName(), build);
     }

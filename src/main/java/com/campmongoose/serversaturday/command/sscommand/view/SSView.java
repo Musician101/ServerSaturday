@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.UUID;
 
 public class SSView extends AbstractCommand
 {
@@ -33,7 +32,6 @@ public class SSView extends AbstractCommand
 
         Player player = (Player) sender;
         Submissions submissions = plugin.getSubmissions();
-        UUID uuid = player.getUniqueId();
         if (args.length > 0)
         {
             Submitter submitter = null;
@@ -63,14 +61,14 @@ public class SSView extends AbstractCommand
                     return false;
                 }
 
-                build.getMenu(plugin, submitter, player.getUniqueId()).open(player);
+                build.openMenu(plugin, submitter, player);
                 return true;
             }
 
-            submitter.getMenu(plugin, 1, uuid).open(player);
+            submitter.openMenu(plugin, 1, player);
         }
         else
-            plugin.getSubmissions().getMenu(plugin, 1, player.getUniqueId()).open(player);
+            plugin.getSubmissions().openMenu(plugin, 1, player);
 
         return true;
     }

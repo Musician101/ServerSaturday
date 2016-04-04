@@ -6,6 +6,7 @@ import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
+import com.campmongoose.serversaturday.menu.chest.AllSubmissionsMenu;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.campmongoose.serversaturday.util.UUIDUtils;
@@ -20,7 +21,7 @@ public class SSFeature extends AbstractCommand
 {
     public SSFeature(ServerSaturday plugin)
     {
-        super(plugin, "feature", "Toggle if a build has been featured on Server Saturday.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("feature"), new CommandArgument("player", Syntax.REQUIRED, Syntax.REPLACE), new CommandArgument("build", Syntax.REQUIRED, Syntax.REPLACE)), 2, "ss.feature", true);
+        super(plugin, "feature", "Toggle if a build has been featured on Server Saturday.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("feature"), new CommandArgument("player", Syntax.OPTIONAL, Syntax.REPLACE), new CommandArgument("build", Syntax.OPTIONAL, Syntax.REPLACE)), 0, "ss.feature", true);
     }
 
     @Override
@@ -29,41 +30,51 @@ public class SSFeature extends AbstractCommand
         if (!canSenderUseCommand(sender))
             return false;
 
-        if (!minArgsMet(sender, args.length))
-            return false;
-
         Player player = (Player) sender;
-        Submitter submitter = null;
-        try
+        if (args.length > 0)
         {
-            submitter = plugin.getSubmissions().getSubmitter(UUIDUtils.getUUIDOf(args[0]));
-        }
-        catch (IOException e)
-        {
-            for (Submitter s : plugin.getSubmissions().getSubmitters())
-                if (s.getName().equalsIgnoreCase(args[0]))
-                    submitter = s;
+            Submitter submitter = null;
+            try
+            {
+                submitter = plugin.getSubmissions().getSubmitter(UUIDUtils.getUUIDOf(args[0]));
+            }
+            catch (IOException e)
+            {
+                for (Submitter s : plugin.getSubmissions().getSubmitters())
+                    if (s.getName().equalsIgnoreCase(args[0]))
+                        submitter = s;
+            }
+
+            if (submitter == null)
+            {
+                player.sendMessage(ChatColor.RED + Reference.PREFIX + "Could not find a player with that name.");
+                return false;
+            }
+
+            if (args.length > 1)
+            {
+                Build build = submitter.getBuild(args[1]);
+                if (build == null)
+                {
+                    player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
+                    return false;
+                }
+
+                build.setFeatured(!build.featured());
+                if (build.featured())
+                    player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "This build has been added to the featured list.");
+                else
+                    player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "This build has been removed from the featured list.");
+
+                build.openMenu(plugin, submitter, player);
+                return true;
+            }
+
+            submitter.openMenu(plugin, 1, player);
+            return true;
         }
 
-        if (submitter == null)
-        {
-            player.sendMessage(ChatColor.RED + Reference.PREFIX + "Could not find a player with that name.");
-            return false;
-        }
-
-        Build build = submitter.getBuild(args[1]);
-        if (build == null)
-        {
-            player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
-            return false;
-        }
-
-        build.setFeatured(!build.featured());
-        if (build.featured())
-            player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "This build has been added to the featured list.");
-        else
-            player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "This build has been removed from the featured list.");
-
+        new AllSubmissionsMenu(plugin, 1).open(player);
         return true;
     }
 }

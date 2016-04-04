@@ -1,7 +1,6 @@
 package com.campmongoose.serversaturday.submission;
 
 import com.campmongoose.serversaturday.ServerSaturday;
-import com.campmongoose.serversaturday.menu.chest.ChestMenu;
 import com.campmongoose.serversaturday.menu.chest.SubmissionsMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -46,9 +45,9 @@ public class Submissions
         return list;
     }
 
-    public ChestMenu getMenu(ServerSaturday plugin, int page, UUID viewer)
+    public void openMenu(ServerSaturday plugin, int page, Player player)
     {
-        return new SubmissionsMenu(plugin, page, Bukkit.createInventory(null, 54, "S.S. Submissions"), viewer);
+        new SubmissionsMenu(plugin, page, Bukkit.createInventory(null, 54, "S.S. Submissions"), player.getUniqueId()).open(player);
     }
 
     public void newSubmitter(Player player)

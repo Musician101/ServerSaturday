@@ -1,12 +1,12 @@
 package com.campmongoose.serversaturday.menu.anvil;
 
-import com.campmongoose.serversaturday.Reference;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
+import com.campmongoose.serversaturday.submission.Submitter;
 import net.minecraft.server.v1_8_R3.ChatComponentText;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutOpenWindow;
-import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -42,8 +42,16 @@ public class NameChangeMenu extends AnvilMenu
                     return;
 
                 String name = itemMeta.getDisplayName();
-                plugin.getSubmissions().getSubmitter(player.getUniqueId()).updateBuildName(build, name);
-                player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "Rename complete.");
+                Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
+                if (submitter.containsBuild(name))
+                {
+                    event.setWillClose(false);
+                    event.setWillDestroy(false);
+                    return;
+                }
+
+                submitter.updateBuildName(build, name);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> build.openMenu(plugin, submitter, Bukkit.getPlayer(viewer)));
             }
             else
             {
@@ -61,7 +69,7 @@ public class NameChangeMenu extends AnvilMenu
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
         AnvilContainer container = new AnvilContainer(ep);
         inv = container.getBukkitView().getTopInventory();
-        setOption(0, new ItemStack(Material.PAPER), build.getName(), "Rename me!", "Click the result to confirm.", "/ss rename <name>");
+        setOption(0, new ItemStack(Material.PAPER), build.getName(), "Rename me!", "Click the result to confirm.");
         int c = ep.nextContainerCounter();
         ep.playerConnection.sendPacket(new PacketPlayOutOpenWindow(c, "minecraft:anvil", new ChatComponentText("Repairing")));
         ep.activeContainer = container;
