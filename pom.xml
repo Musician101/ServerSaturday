@@ -5,9 +5,15 @@
     <groupId>com.campmongoose</groupId>
     <artifactId>serversaturday</artifactId>
     <name>Server Saturday</name>
-    <version>1.0</version>
+    <version>1.2</version>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src\main\resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -23,7 +29,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <finalName>${project.name}</finalName>
+                    <finalName>${project.name}-${project.version}</finalName>
                 </configuration>
             </plugin>
         </plugins>

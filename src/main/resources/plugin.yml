@@ -1,6 +1,6 @@
 name: ServerSaturday
 main: com.campmongoose.serversaturday.ServerSaturday
-version: 1.2
+version: ${project.version}
 commands:
     serversaturday:
       aliases: [ss]
