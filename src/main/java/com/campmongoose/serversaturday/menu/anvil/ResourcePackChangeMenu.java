@@ -1,12 +1,12 @@
 package com.campmongoose.serversaturday.menu.anvil;
 
-import com.campmongoose.serversaturday.Reference;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
+import com.campmongoose.serversaturday.submission.Submitter;
 import net.minecraft.server.v1_8_R3.ChatComponentText;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutOpenWindow;
-import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -22,35 +22,37 @@ public class ResourcePackChangeMenu extends AnvilMenu
     public ResourcePackChangeMenu(ServerSaturday plugin, Build build, UUID viewer)
     {
         super(plugin, event ->
-        {
-            Player player = event.getPlayer();
-            if (!viewer.equals(player.getUniqueId()))
-                return;
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
+                {
+                    Player player = event.getPlayer();
+                    if (!viewer.equals(player.getUniqueId()))
+                        return;
 
-            int slot = event.getSlot();
-            if (slot == 2)
-            {
-                ItemStack itemStack = event.getItem();
-                if (itemStack.getType() != Material.PAINTING)
-                    return;
+                    int slot = event.getSlot();
+                    if (slot == 2)
+                    {
+                        ItemStack itemStack = event.getItem();
+                        if (itemStack.getType() != Material.PAINTING)
+                            return;
 
-                if (!itemStack.hasItemMeta())
-                    return;
+                        if (!itemStack.hasItemMeta())
+                            return;
 
-                ItemMeta itemMeta = itemStack.getItemMeta();
-                if (!itemMeta.hasDisplayName())
-                    return;
+                        ItemMeta itemMeta = itemStack.getItemMeta();
+                        if (!itemMeta.hasDisplayName())
+                            return;
 
-                String name = itemMeta.getDisplayName();
-                plugin.getSubmissions().getSubmitter(player.getUniqueId()).updateBuildResourcePack(build, name);
-                player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "Rename complete.");
-            }
-            else
-            {
-                event.setWillClose(false);
-                event.setWillDestroy(false);
-            }
-        });
+                        String name = itemMeta.getDisplayName();
+                        Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
+                        submitter.updateBuildResourcePack(build, name);
+                        submitter.getBuild(build.getName()).openMenu(plugin, submitter, player);
+                    }
+                    else
+                    {
+                        event.setWillClose(false);
+                        event.setWillDestroy(false);
+                    }
+                }));
 
         this.build = build;
     }

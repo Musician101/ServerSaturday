@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
@@ -33,7 +32,7 @@ public class SubmitterMenu extends ChestMenu
                     else if (slot < 45)
                     {
                         ItemMeta itemMeta = itemStack.getItemMeta();
-                        String name = ((BookMeta) itemStack.getItemMeta()).getTitle();
+                        String name = itemStack.getItemMeta().getDisplayName();
                         for (Build build : submitter.getBuilds())
                         {
                             if (build.getName().equals(name))

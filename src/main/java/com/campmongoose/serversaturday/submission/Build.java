@@ -11,7 +11,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -65,17 +65,17 @@ public class Build implements ConfigurationSerializable
 
     public ItemStack getMenuRepresentation(Submitter submitter)
     {
-        ItemStack itemStack = new ItemStack(Material.WRITTEN_BOOK);
-        BookMeta bookMeta = (BookMeta) itemStack.getItemMeta();
-        bookMeta.setAuthor(submitter.getName());
-        bookMeta.setTitle(name);
+        ItemStack itemStack = new ItemStack(Material.BOOK);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setLore(Collections.singletonList(submitter.getName()));
+        itemMeta.setDisplayName(name);
         if (featured)
         {
-            bookMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
-            bookMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
 
-        itemStack.setItemMeta(bookMeta);
+        itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
 

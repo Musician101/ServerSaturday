@@ -1,20 +1,22 @@
 package com.campmongoose.serversaturday.menu.chest;
 
 import com.campmongoose.serversaturday.ServerSaturday;
+import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.campmongoose.serversaturday.util.UUIDUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class AllSubmissionsMenu extends ChestMenu
 {
@@ -27,14 +29,12 @@ public class AllSubmissionsMenu extends ChestMenu
                     ItemMeta itemMeta = itemStack.getItemMeta();
                     int slot = event.getSlot();
                     Player player = event.getPlayer();
-                    String itemName = itemStack.getType() == Material.WRITTEN_BOOK ? ((BookMeta) itemMeta).getTitle() : itemMeta.getDisplayName();
+                    String itemName = itemMeta.getDisplayName();
                     String submitterName;
                     UUID uuid = player.getUniqueId();
-                    if (itemStack.getType() == Material.WRITTEN_BOOK)
+                    if (itemStack.getType() == Material.BOOK)
                     {
-                        BookMeta bookMeta = (BookMeta) itemMeta;
-                        itemName = bookMeta.getTitle();
-                        submitterName = bookMeta.getAuthor();
+                        submitterName = itemMeta.getLore().get(0);
                         Submitter submitter = null;
                         try
                         {
@@ -68,7 +68,25 @@ public class AllSubmissionsMenu extends ChestMenu
 
         ItemStack[] itemStacks = new ItemStack[54];
         List<ItemStack> list = new ArrayList<>();
-        plugin.getSubmissions().getSubmitters().forEach(submitter -> list.addAll(submitter.getBuilds().stream().map(build -> build.getMenuRepresentation(submitter)).collect(Collectors.toList())));
+        for (Submitter submitter : plugin.getSubmissions().getSubmitters())
+        {
+            for (Build build : submitter.getBuilds())
+            {
+                ItemStack itemStack = new ItemStack(Material.BOOK);
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(build.getName());
+                itemMeta.setLore(Collections.singletonList(submitter.getName()));
+                if (build.submitted() && !build.featured())
+                {
+                    itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                }
+
+                itemStack.setItemMeta(itemMeta);
+                list.add(itemStack);
+            }
+        }
+
         for (int x = 0; x < 54; x++)
         {
             int subListPosition = x + (page - 1) * 45;

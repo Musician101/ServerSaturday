@@ -101,9 +101,9 @@ public class BuildMenu extends ChestMenu
             if (Bukkit.getPlayer(viewer).hasPermission("ss.feature"))
             {
                 if (build.featured())
-                    setOption(7, new ItemStack(Material.GOLDEN_APPLE, 1, (short) 1), "Feature", build.featured(), "Set whether this build has been covered in", "an episode of Server Saturday.");
+                    setOption(7, new ItemStack(Material.GOLDEN_APPLE, 1, (short) 1), "Feature", "Set whether this build has been covered in", "an episode of Server Saturday.");
                 else
-                    setOption(7, new ItemStack(Material.GOLDEN_APPLE), "Feature", build.featured(), "Set whether this build has been covered in", "an episode of Server Saturday.");
+                    setOption(7, new ItemStack(Material.GOLDEN_APPLE), "Feature", "Set whether this build has been covered in", "an episode of Server Saturday.");
             }
             else
                 setOption(7, new ItemStack(Material.STAINED_GLASS_PANE));

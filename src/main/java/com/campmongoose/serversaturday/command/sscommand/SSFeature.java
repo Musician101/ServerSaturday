@@ -61,11 +61,6 @@ public class SSFeature extends AbstractCommand
                 }
 
                 build.setFeatured(!build.featured());
-                if (build.featured())
-                    player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "This build has been added to the featured list.");
-                else
-                    player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "This build has been removed from the featured list.");
-
                 build.openMenu(plugin, submitter, player);
                 return true;
             }

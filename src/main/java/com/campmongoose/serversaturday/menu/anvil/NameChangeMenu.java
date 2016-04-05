@@ -43,7 +43,7 @@ public class NameChangeMenu extends AnvilMenu
 
                 String name = itemMeta.getDisplayName();
                 Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
-                if (submitter.getBuild(name) == null)
+                if (submitter.getBuild(name) != null)
                 {
                     event.setWillClose(false);
                     event.setWillDestroy(false);
