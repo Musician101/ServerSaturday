@@ -30,8 +30,8 @@ public class SSEdit extends AbstractCommand
         Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
         if (args.length > 0)
         {
-            String name = args[0];
-            if (!submitter.containsBuild(name))
+            String name = combineStringArray(args);
+            if (submitter.getBuild(name) == null)
             {
                 player.sendMessage(ChatColor.RED + Reference.PREFIX + "That build does not exist.");
                 return false;

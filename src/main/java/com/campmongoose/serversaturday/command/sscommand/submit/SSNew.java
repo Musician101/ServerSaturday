@@ -30,14 +30,14 @@ public class SSNew extends AbstractCommand
             return false;
 
         Player player = (Player) sender;
-        String name = args[0];
-        if (plugin.getSubmissions().getSubmitter(player.getUniqueId()).containsBuild(name))
+        String name = combineStringArray(args);
+        Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
+        if (submitter.getBuild(name) != null)
         {
             player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name already exists.");
             return false;
         }
 
-        Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
         submitter.newBuild(name, player.getLocation()).openMenu(plugin, submitter, player);
         return true;
     }

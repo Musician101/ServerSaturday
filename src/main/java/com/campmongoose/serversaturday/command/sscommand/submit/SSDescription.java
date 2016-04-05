@@ -37,14 +37,14 @@ public class SSDescription extends AbstractCommand
             return false;
         }
 
-        String name = args[0];
-        if (!plugin.getSubmissions().getSubmitter(player.getUniqueId()).containsBuild(name))
+        String name = combineStringArray(args);
+        Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
+        if (submitter.getBuild(name) == null)
         {
             player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
             return false;
         }
 
-        Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
         Build build = submitter.getBuild(name);
         plugin.getDescriptionChangeHandler().add(player, build);
         return true;

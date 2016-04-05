@@ -2,6 +2,8 @@ package com.campmongoose.serversaturday.command;
 
 import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.ServerSaturday;
+import com.campmongoose.serversaturday.submission.Build;
+import com.campmongoose.serversaturday.submission.Submitter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -130,5 +132,19 @@ public abstract class AbstractCommand
             list.remove(0);
 
         return list.toArray(new String[list.size()]);
+    }
+
+    protected String combineStringArray(String[] stringArray)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (String part : stringArray)
+        {
+            if (sb.length() > 0)
+                sb.append(" ");
+
+            sb.append(part);
+        }
+
+        return sb.toString();
     }
 }

@@ -31,14 +31,14 @@ public class SSLocation extends AbstractCommand
             return false;
 
         Player player = (Player) sender;
-        String name = args[0];
-        if (!plugin.getSubmissions().getSubmitter(player.getUniqueId()).containsBuild(name))
+        String name = combineStringArray(args);
+        Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
+        if (submitter.getBuild(name) == null)
         {
             player.sendMessage(ChatColor.RED + Reference.PREFIX + "That build does not exist.");
             return false;
         }
 
-        Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
         Build build = submitter.getBuild(name);
         build.setLocation(player.getLocation());
         build.openMenu(plugin, submitter, player);

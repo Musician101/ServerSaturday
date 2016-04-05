@@ -50,11 +50,6 @@ public class Submitter
         buildsCS.getKeys(false).stream().filter(name -> !name.contains(".")).forEach(name -> builds.put(name, Build.of(name, buildsCS.getConfigurationSection(name))));
     }
 
-    public boolean containsBuild(String name)
-    {
-        return builds.containsKey(name);
-    }
-
     public Build getBuild(String name)
     {
         return builds.get(name);

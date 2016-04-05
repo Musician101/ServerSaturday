@@ -57,7 +57,7 @@ public class SSViewDescription extends AbstractCommand
             return false;
         }
 
-        Build build = submitter.getBuild(args[1]);
+        Build build = submitter.getBuild(combineStringArray(moveArguments(args)));
         if (build == null)
         {
             player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");

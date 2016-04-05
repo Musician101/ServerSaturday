@@ -17,7 +17,7 @@ public class SSRemove extends AbstractCommand
 {
     public SSRemove(ServerSaturday plugin)
     {
-        super(plugin, "remove", "Remove a build.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("remove"), new CommandArgument("name", Syntax.REPLACE, Syntax.REQUIRED)), 1, "ss.submit", true);
+        super(plugin, "remove", "Remove a build.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("remove"), new CommandArgument("build", Syntax.REPLACE, Syntax.REQUIRED)), 1, "ss.submit", true);
     }
 
     @Override
@@ -30,9 +30,9 @@ public class SSRemove extends AbstractCommand
             return false;
 
         Player player = (Player) sender;
-        String name = args[0];
+        String name = combineStringArray(args);
         Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
-        if (!submitter.containsBuild(name))
+        if (submitter.getBuild(name) == null)
         {
             player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name doesn't exist.");
             return false;
