@@ -6,6 +6,7 @@ import com.campmongoose.serversaturday.util.UUIDUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -28,7 +29,7 @@ public class Submitter
     private String name;
     private final UUID uuid;
 
-    private Submitter(Player player)
+    private Submitter(OfflinePlayer player)
     {
         this.uuid = player.getUniqueId();
         this.name = player.getName();
@@ -171,7 +172,7 @@ public class Submitter
         builds.put(build.getName(), build);
     }
 
-    public static Submitter of(Player player)
+    public static Submitter of(OfflinePlayer player)
     {
         return new Submitter(player);
     }

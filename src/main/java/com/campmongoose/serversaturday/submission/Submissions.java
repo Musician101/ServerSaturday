@@ -3,6 +3,7 @@ package com.campmongoose.serversaturday.submission;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.menu.chest.SubmissionsMenu;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -26,10 +27,10 @@ public class Submissions
 
     public Submitter getSubmitter(UUID uuid)
     {
-        return getSubmitter((Player) Bukkit.getOfflinePlayer(uuid));
+        return getSubmitter(Bukkit.getOfflinePlayer(uuid));
     }
 
-    private Submitter getSubmitter(Player player)
+    private Submitter getSubmitter(OfflinePlayer player)
     {
         UUID uuid = player.getUniqueId();
         if (!submitters.containsKey(uuid))
