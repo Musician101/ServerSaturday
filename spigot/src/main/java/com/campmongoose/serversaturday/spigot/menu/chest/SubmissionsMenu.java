@@ -1,9 +1,9 @@
 package com.campmongoose.serversaturday.spigot.menu.chest;
 
-import com.campmongoose.serversaturday.spigot.ServerSaturday;
-import com.campmongoose.serversaturday.common.Reference.MenuText;
+import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmissions;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
+import com.campmongoose.serversaturday.common.Reference.MenuText;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -23,7 +23,7 @@ public class SubmissionsMenu extends ChestMenu
             int slot = event.getSlot();
             Player player = event.getPlayer();
             String name = itemStack.getItemMeta().getDisplayName();
-            SpigotSubmissions submissions = ServerSaturday.getInstance().getSubmissions();
+            SpigotSubmissions submissions = SpigotServerSaturday.getInstance().getSubmissions();
             UUID uuid = player.getUniqueId();
             if (!viewer.equals(uuid))
                 return;
@@ -46,7 +46,7 @@ public class SubmissionsMenu extends ChestMenu
         });
 
         ItemStack[] itemStacks = new ItemStack[54];
-        List<ItemStack> list = ServerSaturday.getInstance().getSubmissions().getSubmitters().stream().map(SpigotSubmitter::getMenuRepresentation).collect(Collectors.toList());
+        List<ItemStack> list = SpigotServerSaturday.getInstance().getSubmissions().getSubmitters().stream().map(SpigotSubmitter::getMenuRepresentation).collect(Collectors.toList());
         for (int x = 0; x < 54; x++)
         {
             int subListPosition = x + (page - 1) * 45;

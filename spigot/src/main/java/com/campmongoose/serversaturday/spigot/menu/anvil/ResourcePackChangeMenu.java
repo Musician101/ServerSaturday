@@ -1,9 +1,9 @@
 package com.campmongoose.serversaturday.spigot.menu.anvil;
 
-import com.campmongoose.serversaturday.spigot.ServerSaturday;
+import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
+import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
-import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import net.minecraft.server.v1_9_R1.ChatComponentText;
 import net.minecraft.server.v1_9_R1.EntityPlayer;
 import net.minecraft.server.v1_9_R1.PacketPlayOutOpenWindow;
@@ -44,7 +44,7 @@ public class ResourcePackChangeMenu extends AnvilMenu
                     return;
 
                 String name = itemMeta.getDisplayName();
-                SpigotSubmitter submitter = ServerSaturday.getInstance().getSubmissions().getSubmitter(uuid);
+                SpigotSubmitter submitter = SpigotServerSaturday.getInstance().getSubmissions().getSubmitter(uuid);
                 submitter.updateBuildResourcePack(build, name);
                 submitter.getBuild(build.getName()).openMenu(submitter, uuid);
             }

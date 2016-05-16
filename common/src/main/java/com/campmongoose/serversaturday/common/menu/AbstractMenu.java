@@ -5,7 +5,7 @@ import com.campmongoose.serversaturday.common.menu.AbstractMenu.ClickEventHandle
 import java.util.UUID;
 
 @SuppressWarnings("unused")
-public abstract class AbstractMenu<C, I, H extends ClickEventHandler, L, M extends AbstractMenu, Q, S>
+public abstract class AbstractMenu<C, I, H extends ClickEventHandler, L, Q, S>
 {
     protected final H handler;
     protected I inv;
@@ -16,7 +16,7 @@ public abstract class AbstractMenu<C, I, H extends ClickEventHandler, L, M exten
         this.handler = handler;
     }
 
-    protected abstract void destroy(M menu);
+    protected abstract void destroy();
 
     public abstract void onClick(L event);
 

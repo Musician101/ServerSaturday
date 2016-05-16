@@ -9,9 +9,9 @@ import java.util.UUID;
 @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
 public abstract class AbstractDescriptionChangeHandler<B extends AbstractBuild, C, D, E, I, M, T, V>
 {
-    private Map<UUID, B> builds = new HashMap<>();
-    private Map<UUID, I> itemStacks = new HashMap<>();
-    private Map<UUID, T> taskIds = new HashMap<>();
+    protected final Map<UUID, B> builds = new HashMap<>();
+    protected final Map<UUID, I> itemStacks = new HashMap<>();
+    protected final Map<UUID, T> taskIds = new HashMap<>();
 
     protected AbstractDescriptionChangeHandler()
     {

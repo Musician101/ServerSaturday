@@ -1,15 +1,15 @@
 package com.campmongoose.serversaturday.spigot.command.sscommand.submit;
 
-import com.campmongoose.serversaturday.spigot.ServerSaturday;
+import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
+import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.common.command.AbstractCommandArgument.Syntax;
-import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,7 +30,7 @@ public class SSEdit extends AbstractSpigotCommand
             return false;
 
         Player player = (Player) sender;
-        SpigotSubmitter submitter = ServerSaturday.getInstance().getSubmissions().getSubmitter(player.getUniqueId());
+        SpigotSubmitter submitter = SpigotServerSaturday.getInstance().getSubmissions().getSubmitter(player.getUniqueId());
         if (args.length > 0)
         {
             String name = combineStringArray(args);

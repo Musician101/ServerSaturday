@@ -1,18 +1,18 @@
 package com.campmongoose.serversaturday.spigot.command.sscommand;
 
-import com.campmongoose.serversaturday.spigot.ServerSaturday;
+import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
+import com.campmongoose.serversaturday.spigot.menu.chest.AllSubmissionsMenu;
+import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
+import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.common.command.AbstractCommandArgument.Syntax;
 import com.campmongoose.serversaturday.common.uuid.UUIDUtils;
-import com.campmongoose.serversaturday.spigot.menu.chest.AllSubmissionsMenu;
-import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
-import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -39,11 +39,11 @@ public class SSFeature extends AbstractSpigotCommand
             SpigotSubmitter submitter = null;
             try
             {
-                submitter = ServerSaturday.getInstance().getSubmissions().getSubmitter(UUIDUtils.getUUIDOf(args[0]));
+                submitter = SpigotServerSaturday.getInstance().getSubmissions().getSubmitter(UUIDUtils.getUUIDOf(args[0]));
             }
             catch (IOException e)//NOSONAR
             {
-                for (SpigotSubmitter s : ServerSaturday.getInstance().getSubmissions().getSubmitters())
+                for (SpigotSubmitter s : SpigotServerSaturday.getInstance().getSubmissions().getSubmitters())
                     if (s.getName().equalsIgnoreCase(args[0]))
                         submitter = s;
             }

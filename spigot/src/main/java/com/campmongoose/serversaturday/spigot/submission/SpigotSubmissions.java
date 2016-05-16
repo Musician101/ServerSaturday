@@ -3,7 +3,7 @@ package com.campmongoose.serversaturday.spigot.submission;
 import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.submission.AbstractSubmissions;
-import com.campmongoose.serversaturday.spigot.ServerSaturday;
+import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.menu.chest.SubmissionsMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,7 +15,7 @@ public class SpigotSubmissions extends AbstractSubmissions<SpigotSubmitter>
 {
     public SpigotSubmissions()
     {
-        super(ServerSaturday.getInstance().getDataFolder());
+        super(SpigotServerSaturday.getInstance().getDataFolder());
     }
 
     @Override

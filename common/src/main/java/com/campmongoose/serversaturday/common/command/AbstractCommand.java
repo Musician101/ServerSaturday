@@ -6,7 +6,7 @@ import java.util.List;
 public abstract class AbstractCommand<M, U extends AbstractCommandUsage, P extends AbstractCommandPermissions, C extends AbstractCommand, S>
 {
     protected final List<C> subCommands;
-    private final M description;
+    protected final M description;
     protected final P permissions;
     private final String name;
     protected final U usage;
@@ -45,5 +45,5 @@ public abstract class AbstractCommand<M, U extends AbstractCommandUsage, P exten
         return usage;
     }
 
-    protected abstract boolean minArgsMet(S source, int argsLength, M message);
+    protected abstract boolean minArgsMet(S source, int argsLength);
 }

@@ -1,18 +1,18 @@
 package com.campmongoose.serversaturday.spigot.menu.chest;
 
-import com.campmongoose.serversaturday.spigot.command.sscommand.SSFeature;
 import com.campmongoose.serversaturday.spigot.command.sscommand.submit.SSDescription;
 import com.campmongoose.serversaturday.spigot.command.sscommand.submit.SSLocation;
-import com.campmongoose.serversaturday.spigot.command.sscommand.submit.SSRemove;
 import com.campmongoose.serversaturday.spigot.command.sscommand.submit.SSRename;
-import com.campmongoose.serversaturday.spigot.command.sscommand.submit.SSResourcePack;
 import com.campmongoose.serversaturday.spigot.command.sscommand.submit.SSSubmit;
 import com.campmongoose.serversaturday.spigot.command.sscommand.view.SSGoto;
 import com.campmongoose.serversaturday.spigot.command.sscommand.view.SSViewDescription;
-import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
+import com.campmongoose.serversaturday.spigot.command.sscommand.SSFeature;
+import com.campmongoose.serversaturday.spigot.command.sscommand.submit.SSRemove;
+import com.campmongoose.serversaturday.spigot.command.sscommand.submit.SSResourcePack;
+import com.campmongoose.serversaturday.common.Reference.MenuText;
+import com.campmongoose.serversaturday.common.Reference.Permissions;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

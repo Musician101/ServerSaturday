@@ -26,16 +26,6 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<String, Spig
     @SuppressWarnings("WeakerAccess")
     public abstract boolean onCommand(CommandSender sender, String... args);
 
-    @Override
-    protected boolean minArgsMet(CommandSender sender, int args, String message)
-    {
-        if (args >= usage.getMinArgs())
-            return true;
-
-        sender.sendMessage(message);
-        return false;
-    }
-
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     protected boolean canSenderUseCommand(CommandSender sender)
     {
@@ -55,6 +45,7 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<String, Spig
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    @Override
     protected boolean minArgsMet(CommandSender sender, int args)
     {
         if (args >= usage.getMinArgs())

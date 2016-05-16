@@ -1,6 +1,6 @@
 package com.campmongoose.serversaturday.spigot.command;
 
-import com.campmongoose.serversaturday.spigot.ServerSaturday;
+import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.common.Reference;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import org.bukkit.ChatColor;
@@ -21,7 +21,7 @@ public class SpigotHelpCommand extends AbstractSpigotCommand
     @Override
     public boolean onCommand(CommandSender sender, String... args)
     {
-        sender.sendMessage(ChatColor.GREEN + "===== " + ChatColor.RESET + Reference.NAME + " v" + ServerSaturday.getInstance().getDescription().getVersion() + ChatColor.GREEN + " by " + ChatColor.RESET + "Bruce" + ChatColor.GREEN + " =====");
+        sender.sendMessage(ChatColor.GREEN + "===== " + ChatColor.RESET + Reference.NAME + " v" + SpigotServerSaturday.getInstance().getDescription().getVersion() + ChatColor.GREEN + " by " + ChatColor.RESET + "Bruce" + ChatColor.GREEN + " =====");
         sender.sendMessage(mainCommand.getCommandHelpInfo());
         mainCommand.getSubCommands().stream().filter(command -> sender.hasPermission(command.getPermissions().getPermissionNode())).forEach(command -> sender.sendMessage(command.getCommandHelpInfo()));
         return true;

@@ -1,10 +1,13 @@
 package com.campmongoose.serversaturday.spigot.menu;
 
 import com.campmongoose.serversaturday.common.menu.AbstractMenu;
+import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.menu.AbstractSpigotMenu.SpigotClickEventHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -18,11 +21,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 import java.util.UUID;
 
-public abstract class AbstractSpigotMenu<M extends AbstractSpigotMenu> extends AbstractMenu<InventoryCloseEvent, Inventory, SpigotClickEventHandler, InventoryClickEvent, M, PlayerQuitEvent, ItemStack> implements Listener
+public abstract class AbstractSpigotMenu extends AbstractMenu<InventoryCloseEvent, Inventory, SpigotClickEventHandler, InventoryClickEvent, PlayerQuitEvent, ItemStack> implements Listener
 {
     protected AbstractSpigotMenu(Inventory inv, SpigotClickEventHandler handler)
     {
         super(inv, handler);
+        SpigotServerSaturday.getInstance().getServer().getPluginManager().registerEvents(this, SpigotServerSaturday.getInstance());
     }
 
     protected void setOption(int slot, ItemStack itemStack)
@@ -55,10 +59,56 @@ public abstract class AbstractSpigotMenu<M extends AbstractSpigotMenu> extends A
         inv.setItem(slot, itemStack);
     }
 
+    @EventHandler
     @Override
-    protected void destroy(M menu)
+    public void onClick(InventoryClickEvent event)
     {
-        HandlerList.unregisterAll(menu);
+        if (!(event.getWhoClicked() instanceof Player))
+            return;
+
+        if (!inv.equals(event.getInventory()))
+            return;
+
+        event.setCancelled(true);
+        Player player = (Player) event.getWhoClicked();
+        ItemStack itemStack = event.getCurrentItem();
+        if (itemStack == null || itemStack.getType() == Material.AIR)
+            return;
+
+        int slot = event.getRawSlot();
+        SpigotSSClickEvent clickEvent = new SpigotSSClickEvent(player, itemStack, slot);
+        handler.handle(clickEvent);
+        if (clickEvent.willClose())
+            player.closeInventory();
+
+        if (clickEvent.willDestroy())
+            destroy();
+    }
+
+    @EventHandler
+    @Override
+    public void onClose(InventoryCloseEvent event)
+    {
+        if (!(event.getPlayer() instanceof Player))
+            return;
+
+        Inventory inv = event.getInventory();
+        if (inv.equals(this.inv))
+            destroy();
+    }
+
+    @EventHandler
+    @Override
+    public void onQuit(PlayerQuitEvent event)
+    {
+        if (inv.equals(event.getPlayer().getOpenInventory().getTopInventory()))
+            destroy();
+    }
+
+    @Override
+    protected void destroy()
+    {
+        HandlerList.unregisterAll(this);
     }
 
     @Override

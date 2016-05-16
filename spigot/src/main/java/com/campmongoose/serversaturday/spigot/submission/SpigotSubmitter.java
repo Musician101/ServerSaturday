@@ -5,7 +5,7 @@ import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.submission.AbstractSubmitter;
 import com.campmongoose.serversaturday.common.uuid.UUIDUtils;
-import com.campmongoose.serversaturday.spigot.ServerSaturday;
+import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.menu.chest.SubmitterMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -95,7 +95,7 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
             }
             catch (IOException e)//NOSONAR
             {
-                ServerSaturday.getInstance().getLogger().severe(Messages.ioException(file));
+                SpigotServerSaturday.getInstance().getLogger().severe(Messages.ioException(file));
                 return;
             }
         }
@@ -121,7 +121,7 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
         }
         catch (IOException e)//NOSONAR
         {
-            ServerSaturday.getInstance().getLogger().severe(Messages.ioException(file));
+            SpigotServerSaturday.getInstance().getLogger().severe(Messages.ioException(file));
         }
     }
 

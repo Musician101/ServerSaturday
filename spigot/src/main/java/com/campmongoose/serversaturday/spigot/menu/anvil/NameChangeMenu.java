@@ -1,7 +1,7 @@
 package com.campmongoose.serversaturday.spigot.menu.anvil;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.spigot.ServerSaturday;
+import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import net.minecraft.server.v1_9_R1.ChatComponentText;
@@ -44,12 +44,12 @@ public class NameChangeMenu extends AnvilMenu
                     return;
 
                 String name = itemMeta.getDisplayName();
-                SpigotSubmitter submitter = ServerSaturday.getInstance().getSubmissions().getSubmitter(uuid);
+                SpigotSubmitter submitter = SpigotServerSaturday.getInstance().getSubmissions().getSubmitter(uuid);
                 if (submitter.getBuild(name) != null)
                     return;
 
                 submitter.updateBuildName(build, name);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.getInstance(), () -> build.openMenu(submitter, uuid));
+                Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.getInstance(), () -> build.openMenu(submitter, uuid));
             }
         });
 

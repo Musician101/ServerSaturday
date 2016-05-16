@@ -1,7 +1,7 @@
 package com.campmongoose.serversaturday.spigot.menu.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.spigot.ServerSaturday;
+import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import org.bukkit.Material;
@@ -28,7 +28,7 @@ public class SubmitterMenu extends ChestMenu
             else if (slot == 45 && page > 1)
                 submitter.openMenu(page - 1, player.getUniqueId());
             else if (slot == 49)
-                ServerSaturday.getInstance().getSubmissions().openMenu(1, uuid);
+                SpigotServerSaturday.getInstance().getSubmissions().openMenu(1, uuid);
             else if (slot < 45)
             {
                 String name = itemStack.getItemMeta().getDisplayName();

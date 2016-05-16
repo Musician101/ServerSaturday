@@ -1,10 +1,10 @@
 package com.campmongoose.serversaturday.spigot.menu.chest;
 
-import com.campmongoose.serversaturday.spigot.ServerSaturday;
-import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.common.uuid.UUIDUtils;
+import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
+import com.campmongoose.serversaturday.common.Reference.MenuText;
+import com.campmongoose.serversaturday.common.uuid.UUIDUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -41,11 +41,11 @@ public class AllSubmissionsMenu extends ChestMenu
                 SpigotSubmitter submitter = null;
                 try
                 {
-                    submitter = ServerSaturday.getInstance().getSubmissions().getSubmitter(UUIDUtils.getUUIDOf(submitterName));
+                    submitter = SpigotServerSaturday.getInstance().getSubmissions().getSubmitter(UUIDUtils.getUUIDOf(submitterName));
                 }
                 catch (IOException e)//NOSONAR
                 {
-                    for (SpigotSubmitter s : ServerSaturday.getInstance().getSubmissions().getSubmitters())
+                    for (SpigotSubmitter s : SpigotServerSaturday.getInstance().getSubmissions().getSubmitters())
                         if (submitterName.equals(s.getName()))
                             submitter = s;
                 }
@@ -67,7 +67,7 @@ public class AllSubmissionsMenu extends ChestMenu
 
         ItemStack[] itemStacks = new ItemStack[54];
         List<ItemStack> list = new ArrayList<>();
-        for (SpigotSubmitter submitter : ServerSaturday.getInstance().getSubmissions().getSubmitters())
+        for (SpigotSubmitter submitter : SpigotServerSaturday.getInstance().getSubmissions().getSubmitters())
         {
             for (SpigotBuild build : submitter.getBuilds())
             {

@@ -1,8 +1,9 @@
 package com.campmongoose.serversaturday.spigot.command.sscommand.view;
 
-import com.campmongoose.serversaturday.spigot.ServerSaturday;
+import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
+import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
 import com.campmongoose.serversaturday.common.Reference.Commands;
@@ -12,7 +13,6 @@ import com.campmongoose.serversaturday.common.command.AbstractCommandArgument.Sy
 import com.campmongoose.serversaturday.common.uuid.UUIDUtils;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmissions;
-import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -34,13 +34,13 @@ public class SSView extends AbstractSpigotCommand
             return false;
 
         Player player = (Player) sender;
-        SpigotSubmissions submissions = ServerSaturday.getInstance().getSubmissions();
+        SpigotSubmissions submissions = SpigotServerSaturday.getInstance().getSubmissions();
         if (args.length > 0)
         {
             SpigotSubmitter submitter = null;
             try
             {
-                submitter = ServerSaturday.getInstance().getSubmissions().getSubmitter(UUIDUtils.getUUIDOf(args[0]));
+                submitter = SpigotServerSaturday.getInstance().getSubmissions().getSubmitter(UUIDUtils.getUUIDOf(args[0]));
             }
             catch (IOException e)//NOSONAR
             {
@@ -71,7 +71,7 @@ public class SSView extends AbstractSpigotCommand
             submitter.openMenu(1, player.getUniqueId());
         }
         else
-            ServerSaturday.getInstance().getSubmissions().openMenu(1, player.getUniqueId());
+            SpigotServerSaturday.getInstance().getSubmissions().openMenu(1, player.getUniqueId());
 
         return true;
     }

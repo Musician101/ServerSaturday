@@ -8,7 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ServerSaturday extends JavaPlugin
+public class SpigotServerSaturday extends JavaPlugin
 {
     private SpigotDescriptionChangeHandler dch;
     private SpigotSubmissions submissions;
@@ -29,7 +29,7 @@ public class ServerSaturday extends JavaPlugin
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
-        return (command.getName().equalsIgnoreCase(Reference.NAME) || command.getName().equalsIgnoreCase(Commands.SS_CMD.replace("/", ""))) && new SSCommand().onCommand(sender, args);
+        return (command.getName().equalsIgnoreCase(Reference.NAME.replace(" ", "")) || command.getName().equalsIgnoreCase(Commands.SS_CMD.replace("/", ""))) && new SSCommand().onCommand(sender, args);
     }
 
     public SpigotDescriptionChangeHandler getDescriptionChangeHandler()
@@ -42,8 +42,8 @@ public class ServerSaturday extends JavaPlugin
         return submissions;
     }
 
-    public static ServerSaturday getInstance()
+    public static SpigotServerSaturday getInstance()
     {
-        return JavaPlugin.getPlugin(ServerSaturday.class);
+        return JavaPlugin.getPlugin(SpigotServerSaturday.class);
     }
 }
