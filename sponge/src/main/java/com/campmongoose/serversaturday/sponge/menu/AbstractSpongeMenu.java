@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("WeakerAccess")
 public abstract class AbstractSpongeMenu extends AbstractMenu<InteractInventoryEvent.Close, OrderedInventory, SpongeClickEventHandler, ClickInventoryEvent, ClientConnectionEvent.Disconnect, ItemStack>
 {
     protected AbstractSpongeMenu(OrderedInventory inv, SpongeClickEventHandler handler)
@@ -89,7 +90,7 @@ public abstract class AbstractSpongeMenu extends AbstractMenu<InteractInventoryE
         if (itemStack.getItem() == BlockTypes.AIR)
             return;
 
-        SpigotSSClickEvent clickEvent = new SpigotSSClickEvent(player, itemStack);
+        SpongeSSClickEvent clickEvent = new SpongeSSClickEvent(player, itemStack);
         handler.handle(clickEvent);
         if (clickEvent.willClose())
             player.closeInventory(Cause.of(NamedCause.source(SpongeServerSaturday.instance())));
@@ -131,16 +132,15 @@ public abstract class AbstractSpongeMenu extends AbstractMenu<InteractInventoryE
         Sponge.getServer().getPlayer(uuid).get().openInventory(inv, Cause.of(NamedCause.source(SpongeServerSaturday.instance())));
     }
 
-    public static class SpigotSSClickEvent extends AbstractMenu.SSClickEvent<ItemStack, Player>
+    public static class SpongeSSClickEvent extends AbstractMenu.SSClickEvent<ItemStack, Player>
     {
-        public SpigotSSClickEvent(Player player, ItemStack itemStack)
+        public SpongeSSClickEvent(Player player, ItemStack itemStack)
         {
             super(player, itemStack, 0);
         }
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public interface SpongeClickEventHandler extends AbstractMenu.ClickEventHandler<SpigotSSClickEvent, ItemStack, Player>
+    public interface SpongeClickEventHandler extends AbstractMenu.ClickEventHandler<SpongeSSClickEvent, ItemStack, Player>
     {
 
     }
