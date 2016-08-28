@@ -13,6 +13,7 @@ import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
@@ -49,7 +50,14 @@ public class NameChangeMenu extends AnvilMenu
                     return;
 
                 submitter.updateBuildName(build, name);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.getInstance(), () -> build.openMenu(submitter, uuid));
+                new BukkitRunnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        build.openMenu(submitter, uuid);
+                    }
+                }.runTaskLater(SpigotServerSaturday.getInstance(), 1);
             }
         });
 

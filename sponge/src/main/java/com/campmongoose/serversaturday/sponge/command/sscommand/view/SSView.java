@@ -10,7 +10,7 @@ import com.campmongoose.serversaturday.sponge.command.AbstractSpongeCommand;
 import com.campmongoose.serversaturday.sponge.command.SpongeCommandArgument;
 import com.campmongoose.serversaturday.sponge.command.SpongeCommandPermissions;
 import com.campmongoose.serversaturday.sponge.command.SpongeCommandUsage;
-import com.campmongoose.serversaturday.sponge.submission.SpigotSubmissions;
+import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import org.spongepowered.api.command.CommandResult;
@@ -39,7 +39,7 @@ public class SSView extends AbstractSpongeCommand
             return CommandResult.empty();
 
         Player player = (Player) source;
-        SpigotSubmissions submissions = SpongeServerSaturday.instance().getSubmissions();
+        SpongeSubmissions submissions = SpongeServerSaturday.instance().getSubmissions();
         if (args.length > 0)
         {
             SpongeSubmitter submitter = null;

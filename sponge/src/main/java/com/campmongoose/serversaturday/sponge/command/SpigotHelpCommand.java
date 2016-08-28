@@ -26,7 +26,7 @@ public class SpigotHelpCommand extends AbstractSpongeCommand
     public CommandResult process(@Nonnull CommandSource source, @Nonnull String arguments)
     {
         source.sendMessage(Text.join(Text.builder("===== ").color(TextColors.GREEN).build(), Text.of(Reference.NAME + " v" + Reference.DESCRIPTION), Text.builder(" by ").color(TextColors.GREEN).build(), Text.of("Bruce"), Text.builder(" =====").color(TextColors.GREEN).build()));
-        source.sendMessage(mainCommand.getHelp(source).get());
+        source.sendMessage(mainCommand.getHelp(source).get());//NOSONAR
         mainCommand.getSubCommands().stream().filter(command -> source.hasPermission(command.getPermissions().getPermissionNode())).forEach(command -> source.sendMessage(command.getHelp(source).get()));
         return CommandResult.success();
     }

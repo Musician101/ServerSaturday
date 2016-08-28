@@ -18,9 +18,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-public class SpigotSubmissions extends AbstractSubmissions<SpongeSubmitter>
+public class SpongeSubmissions extends AbstractSubmissions<SpongeSubmitter>
 {
-    public SpigotSubmissions()
+    public SpongeSubmissions()
     {
         super(new File("config/" + Reference.NAME + "/submitters"));
     }
@@ -31,7 +31,7 @@ public class SpigotSubmissions extends AbstractSubmissions<SpongeSubmitter>
         Server server = Sponge.getServer();
         if (!submitters.containsKey(uuid))
             //noinspection OptionalGetWithoutIsPresent
-            submitters.put(uuid, SpongeSubmitter.of(server.getGameProfileManager().createProfile(uuid, server.getPlayer(uuid).get().getName())));
+            submitters.put(uuid, SpongeSubmitter.of(server.getGameProfileManager().createProfile(uuid, server.getPlayer(uuid).get().getName())));//NOSONAR
 
         return submitters.get(uuid);
     }
@@ -73,6 +73,6 @@ public class SpigotSubmissions extends AbstractSubmissions<SpongeSubmitter>
     public void save()
     {
         for (UUID uuid : submitters.keySet())
-            getSubmitter(uuid).save(new File(dir, Config.getYAMLFileName(uuid)));
+            getSubmitter(uuid).save(new File(dir, Config.getHOCONFileName(uuid)));
     }
 }

@@ -20,14 +20,15 @@ public class SpigotCommandUsage extends AbstractCommandUsage<String, SpigotComma
     @Override
     protected String parseUsage(List<SpigotCommandArgument> arguments)
     {
-        String usageString = ChatColor.GRAY + arguments.get(0).format();
+        StringBuilder sb = new StringBuilder();
+        sb.append(ChatColor.GRAY).append(arguments.get(0).format());
         if (arguments.size() > 1)
-            usageString += " " + ChatColor.RESET + arguments.get(1).format();
+            sb.append(" ").append(ChatColor.RESET).append(arguments.get(1).format());
 
         if (arguments.size() > 2)
             for (int x = 2; x < arguments.size() - 1; x++)
-                usageString += " " + ChatColor.GREEN + arguments.get(x).format();
+                sb.append(" ").append(ChatColor.GREEN).append(arguments.get(x).format());
 
-        return usageString;
+        return sb.toString();
     }
 }

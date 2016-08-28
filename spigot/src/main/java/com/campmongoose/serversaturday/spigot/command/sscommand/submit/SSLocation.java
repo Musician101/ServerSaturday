@@ -45,6 +45,7 @@ public class SSLocation extends AbstractSpigotCommand
         SpigotBuild build = submitter.getBuild(name);
         build.setLocation(player.getLocation());
         build.openMenu(submitter, player.getUniqueId());
+        player.sendMessage(ChatColor.GREEN + Messages.locationChanged(build));
         return true;
     }
 }

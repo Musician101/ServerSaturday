@@ -23,6 +23,7 @@ import org.spongepowered.api.item.inventory.type.OrderedInventory;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class BuildMenu extends ChestMenu
@@ -31,7 +32,6 @@ public class BuildMenu extends ChestMenu
     {
         super(inv, event ->//NOSONAR
         {
-            //TODO google doc export
             Player player = event.getPlayer();
             @SuppressWarnings("OptionalGetWithoutIsPresent")
             String name = event.getItem().get(Keys.DISPLAY_NAME).get().toPlain();
@@ -81,8 +81,12 @@ public class BuildMenu extends ChestMenu
             setOption(4, ItemStack.of(ItemTypes.FLINT_AND_STEEL, 1), MenuText.SUBMIT_UNREADY_NAME, build.submitted(), MenuText.SUBMIT_UNREADY_DESC.toArray(new String[2]));
             setOption(5, ItemStack.of(ItemTypes.COMPASS, 1), MenuText.TELEPORT_NAME, MenuText.teleportDesc(location.getExtent().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ()));
             setOption(6, ItemStack.of(ItemTypes.BARRIER, 1), MenuText.DELETE_NAME, MenuText.DELETE_DESC.toArray(new String[2]));
+            Optional<Player> player = Sponge.getServer().getPlayer(viewer);
+            if (!player.isPresent())
+                return;
+
             //noinspection OptionalGetWithoutIsPresent
-            if (Sponge.getServer().getPlayer(viewer).get().hasPermission(Permissions.FEATURE))
+            if (player.get().hasPermission(Permissions.FEATURE))
             {
                 if (build.featured())
                     setOption(7, ItemStack.builder().itemType(ItemTypes.GOLDEN_APPLE).add(Keys.GOLDEN_APPLE_TYPE, GoldenApples.ENCHANTED_GOLDEN_APPLE).build(), MenuText.FEATURE_NAME, MenuText.FEATURE_DESC.toArray(new String[2]));
@@ -99,8 +103,12 @@ public class BuildMenu extends ChestMenu
             setOption(0, ItemStack.of(ItemTypes.COMPASS, 1), MenuText.TELEPORT_NAME, MenuText.teleportDesc(location.getExtent().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ()));
             setOption(1, ItemStack.of(ItemTypes.BOOK, 1), MenuText.CHANGE_DESCRIPTION_NAME, MenuText.CHANGE_DESCRIPTION_DESC);
             setOption(2, ItemStack.of(ItemTypes.PAINTING, 1), MenuText.RESOURCE_PACK_NAME, build.getResourcePack());
+            Optional<Player> player = Sponge.getServer().getPlayer(viewer);
+            if (!player.isPresent())
+                return;
+
             //noinspection OptionalGetWithoutIsPresent
-            if (Sponge.getServer().getPlayer(viewer).get().hasPermission(Permissions.FEATURE))
+            if (player.get().hasPermission(Permissions.FEATURE))
             {
                 if (build.featured())
                     setOption(3, ItemStack.builder().itemType(ItemTypes.GOLDEN_APPLE).add(Keys.GOLDEN_APPLE_TYPE, GoldenApples.ENCHANTED_GOLDEN_APPLE).build(), MenuText.FEATURE_NAME, MenuText.FEATURE_DESC.toArray(new String[2]));

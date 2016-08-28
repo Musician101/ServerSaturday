@@ -54,7 +54,7 @@ public abstract class AbstractSpongeMenu extends AbstractMenu<InteractInventoryE
     protected void setOption(int slot, ItemStack itemStack, String name, boolean willGlow, String... description)
     {
         itemStack.offer(Keys.DISPLAY_NAME, Text.of(name));
-        itemStack.offer(Keys.ITEM_LORE, Arrays.asList(description).stream().map(Text::of).collect(Collectors.toList()));
+        itemStack.offer(Keys.ITEM_LORE, Arrays.stream(description).map(Text::of).collect(Collectors.toList()));
         if (willGlow)
         {
             itemStack.offer(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.AQUA_AFFINITY, 1)));
@@ -128,8 +128,9 @@ public abstract class AbstractSpongeMenu extends AbstractMenu<InteractInventoryE
     @Override
     public void open(UUID uuid)
     {
-        //noinspection OptionalGetWithoutIsPresent
-        Sponge.getServer().getPlayer(uuid).get().openInventory(inv, Cause.of(NamedCause.source(SpongeServerSaturday.instance())));
+        Optional<Player> player = Sponge.getServer().getPlayer(uuid);
+        if(player.isPresent())
+            player.get().openInventory(inv, Cause.of(NamedCause.source(SpongeServerSaturday.instance())));
     }
 
     public static class SpongeSSClickEvent extends AbstractMenu.SSClickEvent<ItemStack, Player>

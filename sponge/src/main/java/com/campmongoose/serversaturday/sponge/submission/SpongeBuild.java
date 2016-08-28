@@ -60,7 +60,7 @@ public class SpongeBuild extends AbstractBuild<ItemStack, Location<World>, Strin
         ConfigurateTranslator ct = ConfigurateTranslator.instance();
         DataView dv = ct.translateFrom(cn);
         @SuppressWarnings({"unchecked", "OptionalGetWithoutIsPresent"})
-        Optional<Location<World>> olw = Sponge.getDataManager().getBuilder(LocatableSnapshot.class).get().build(dv).get().getLocation();
+        Optional<Location<World>> olw = Sponge.getDataManager().getBuilder(LocatableSnapshot.class).get().build(dv).get().getLocation();//NOSONAR
         //noinspection OptionalGetWithoutIsPresent
         return olw.get();
     }

@@ -80,7 +80,7 @@ public class Reference
 
         }
 
-        public static String getCOCONFileName(UUID uuid)
+        public static String getHOCONFileName(UUID uuid)
         {
             return uuid.toString() + HOCON_EXT;
         }

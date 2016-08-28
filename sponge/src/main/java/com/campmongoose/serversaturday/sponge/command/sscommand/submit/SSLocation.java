@@ -50,6 +50,7 @@ public class SSLocation extends AbstractSpongeCommand
         SpongeBuild build = submitter.getBuild(name);
         build.setLocation(player.getLocation());
         build.openMenu(submitter, player.getUniqueId());
+        player.sendMessage(Text.builder(Messages.locationChanged(build)).color(TextColors.GREEN).build());
         return CommandResult.success();
     }
 }

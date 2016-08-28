@@ -2,7 +2,7 @@ package com.campmongoose.serversaturday.sponge.menu.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
-import com.campmongoose.serversaturday.sponge.submission.SpigotSubmissions;
+import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
@@ -24,7 +24,7 @@ public class SubmissionsMenu extends ChestMenu
             Player player = event.getPlayer();
             //noinspection OptionalGetWithoutIsPresent
             String name = itemStack.get(Keys.DISPLAY_NAME).get().toPlain();
-            SpigotSubmissions submissions = SpongeServerSaturday.instance().getSubmissions();
+            SpongeSubmissions submissions = SpongeServerSaturday.instance().getSubmissions();
             UUID uuid = player.getUniqueId();
             if (!viewer.equals(uuid))
                 return;

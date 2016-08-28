@@ -91,7 +91,7 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
             try
             {
                 //noinspection ResultOfMethodCallIgnored
-                file.createNewFile();
+                file.createNewFile();//NOSONAR
             }
             catch (IOException e)//NOSONAR
             {

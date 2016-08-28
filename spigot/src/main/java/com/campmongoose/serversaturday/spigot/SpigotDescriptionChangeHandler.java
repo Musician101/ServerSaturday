@@ -2,8 +2,8 @@ package com.campmongoose.serversaturday.spigot;
 
 import com.campmongoose.serversaturday.common.AbstractDescriptionChangeHandler;
 import com.campmongoose.serversaturday.common.Reference;
-import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
+import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -32,17 +33,14 @@ public class SpigotDescriptionChangeHandler extends AbstractDescriptionChangeHan
     @Override
     protected ItemStack getBook(UUID uuid, SpigotBuild build)
     {
-        return new ItemStack(Material.BOOK_AND_QUILL)
-        {
-            {//NOSONAR
-                BookMeta bookMeta = (BookMeta) getItemMeta();
-                bookMeta.setAuthor(Bukkit.getPlayer(uuid).getName());
-                bookMeta.setDisplayName(build.getName());
-                bookMeta.setLore(Collections.singletonList(Reference.DUCK));
-                bookMeta.setPages(build.getDescription());
-                setItemMeta(bookMeta);
-            }
-        };
+        ItemStack book = new ItemStack(Material.BOOK_AND_QUILL);
+        BookMeta bookMeta = (BookMeta) book.getItemMeta();
+        bookMeta.setAuthor(Bukkit.getPlayer(uuid).getName());
+        bookMeta.setDisplayName(build.getName());
+        bookMeta.setLore(Collections.singletonList(Reference.DUCK));
+        bookMeta.setPages(build.getDescription());
+        book.setItemMeta(bookMeta);
+        return book;
     }
 
     @Override
@@ -52,7 +50,14 @@ public class SpigotDescriptionChangeHandler extends AbstractDescriptionChangeHan
         builds.put(uuid, build);
         itemStacks.put(uuid, player.getInventory().getItemInMainHand());
         player.getInventory().setItemInMainHand(getBook(uuid, build));
-        taskIds.put(uuid, Bukkit.getScheduler().runTaskLater(SpigotServerSaturday.getInstance(), () -> player.getInventory().setItemInMainHand(itemStacks.get(uuid)), 100).getTaskId());
+        taskIds.put(uuid, new BukkitRunnable()
+        {
+            @Override
+            public void run()
+            {
+                player.getInventory().setItemInMainHand(itemStacks.get(uuid));
+            }
+        }.runTaskLater(SpigotServerSaturday.getInstance(), 100).getTaskId());
     }
 
     @Override

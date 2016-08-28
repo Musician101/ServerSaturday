@@ -48,7 +48,7 @@ public class SpigotDescriptionChangeHandler extends AbstractDescriptionChangeHan
     {
         //noinspection OptionalGetWithoutIsPresent
         return ItemStack.builder().itemType(ItemTypes.WRITABLE_BOOK)
-                .add(Keys.BOOK_AUTHOR, Text.of(Sponge.getServer().getPlayer(uuid).get().getName()))
+                .add(Keys.BOOK_AUTHOR, Text.of(Sponge.getServer().getPlayer(uuid).get().getName()))//NOSONAR
                 .add(Keys.DISPLAY_NAME, Text.of(build.getName()))
                 .add(Keys.ITEM_LORE, Collections.singletonList(Text.of(Reference.DUCK)))
                 .add(Keys.BOOK_PAGES, build.getDescription().stream().map(Text::of).collect(Collectors.toList())).build();
@@ -58,7 +58,7 @@ public class SpigotDescriptionChangeHandler extends AbstractDescriptionChangeHan
     @Override
     public void add(UUID uuid, SpongeBuild build)
     {
-        Player player = Sponge.getServer().getPlayer(uuid).get();
+        Player player = Sponge.getServer().getPlayer(uuid).get();//NOSONAR
         builds.put(uuid, build);
         itemStacks.put(uuid, player.getItemInHand().isPresent() ? player.getItemInHand().get() : null);
         player.setItemInHand(getBook(uuid, build));
@@ -69,7 +69,7 @@ public class SpigotDescriptionChangeHandler extends AbstractDescriptionChangeHan
     @Override
     protected void remove(UUID uuid)
     {
-        Player player = Sponge.getServer().getPlayer(uuid).get();
+        Player player = Sponge.getServer().getPlayer(uuid).get();//NOSONAR
         player.setItemInHand(null);
         if (itemStacks.containsKey(uuid))
         {
@@ -104,7 +104,7 @@ public class SpigotDescriptionChangeHandler extends AbstractDescriptionChangeHan
     private DataContainer getBookData(ItemStack itemStack)
     {
         DataContainer dc = new MemoryDataContainer();
-        dc.set(Keys.BOOK_AUTHOR, itemStack.get(Keys.BOOK_AUTHOR).get());
+        dc.set(Keys.BOOK_AUTHOR, itemStack.get(Keys.BOOK_AUTHOR).get());//NOSONAR
         dc.set(Keys.BOOK_PAGES, itemStack.get(Keys.BOOK_PAGES).get());
         dc.set(Keys.ITEM_LORE, itemStack.get(Keys.ITEM_LORE).get());
         dc.set(Keys.DISPLAY_NAME, itemStack.get(Keys.DISPLAY_NAME).get());
@@ -171,7 +171,7 @@ public class SpigotDescriptionChangeHandler extends AbstractDescriptionChangeHan
         Player player = playerOptional.get();
         UUID uuid = player.getUniqueId();
         //noinspection OptionalGetWithoutIsPresent
-        ItemStack itemStack = event.getEntities().get(0).get(Keys.REPRESENTED_ITEM).get().createStack();
+        ItemStack itemStack = event.getEntities().get(0).get(Keys.REPRESENTED_ITEM).get().createStack();//NOSONAR
         if (itemStack.getItem() != ItemTypes.WRITABLE_BOOK)
             return;
 
@@ -205,7 +205,7 @@ public class SpigotDescriptionChangeHandler extends AbstractDescriptionChangeHan
         SpongeSubmitter submitter = SpongeServerSaturday.instance().getSubmissions().getSubmitter(uuid);
         List<String> list = new ArrayList<>();
         //noinspection OptionalGetWithoutIsPresent
-        for (Object obj : dv.getList(Keys.BOOK_PAGES.getQuery()).get())
+        for (Object obj : dv.getList(Keys.BOOK_PAGES.getQuery()).get())//NOSONAR
         {
             Text line = (Text) obj;
             list.add(line.toPlain());

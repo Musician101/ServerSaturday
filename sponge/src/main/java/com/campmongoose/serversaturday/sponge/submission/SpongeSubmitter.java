@@ -37,7 +37,7 @@ public class SpongeSubmitter extends AbstractSubmitter<SpongeBuild, ItemStack, L
     private SpongeSubmitter(GameProfile profile)
     {
         //noinspection OptionalGetWithoutIsPresent
-        super(profile.getName().get(), profile.getUniqueId());
+        super(profile.getName().get(), profile.getUniqueId());//NOSONAR
     }
 
     private SpongeSubmitter(UUID uuid, ConfigurationNode cn)
@@ -97,7 +97,7 @@ public class SpongeSubmitter extends AbstractSubmitter<SpongeBuild, ItemStack, L
             try
             {
                 //noinspection ResultOfMethodCallIgnored
-                file.createNewFile();
+                file.createNewFile();//NOSONAR
             }
             catch (IOException e)//NOSONAR
             {

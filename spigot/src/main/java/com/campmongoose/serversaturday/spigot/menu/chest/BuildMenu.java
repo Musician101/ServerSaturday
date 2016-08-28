@@ -28,7 +28,6 @@ public class BuildMenu extends ChestMenu
     {
         super(inv, event ->//NOSONAR
         {
-            //TODO google doc export
             Player player = event.getPlayer();
             String name = event.getItem().getItemMeta().getDisplayName();
             switch (name)

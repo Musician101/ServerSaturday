@@ -2,7 +2,7 @@ package com.campmongoose.serversaturday.sponge;
 
 import com.campmongoose.serversaturday.common.Reference;
 import com.campmongoose.serversaturday.sponge.command.sscommand.SSCommand;
-import com.campmongoose.serversaturday.sponge.submission.SpigotSubmissions;
+import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
@@ -13,13 +13,13 @@ import org.spongepowered.api.plugin.Plugin;
 public class SpongeServerSaturday
 {
     private SpigotDescriptionChangeHandler dch;
-    private SpigotSubmissions submissions;
+    private SpongeSubmissions submissions;
 
     @Listener
     public void onEnable(@SuppressWarnings("UnusedParameters") GamePreInitializationEvent event)//NOSONAR
     {
         dch = new SpigotDescriptionChangeHandler();
-        submissions = new SpigotSubmissions();
+        submissions = new SpongeSubmissions();
         Sponge.getCommandManager().register(this, new SSCommand(), Reference.NAME.replace(" ", ""));
     }
 
@@ -34,7 +34,7 @@ public class SpongeServerSaturday
         return dch;
     }
 
-    public SpigotSubmissions getSubmissions()
+    public SpongeSubmissions getSubmissions()
     {
         return submissions;
     }
@@ -42,6 +42,6 @@ public class SpongeServerSaturday
     public static SpongeServerSaturday instance()
     {
         //noinspection OptionalGetWithoutIsPresent
-        return (SpongeServerSaturday) Sponge.getPluginManager().getPlugin(Reference.ID).get().getInstance().get();
+        return (SpongeServerSaturday) Sponge.getPluginManager().getPlugin(Reference.ID).get().getInstance().get();//NOSONAR
     }
 }
