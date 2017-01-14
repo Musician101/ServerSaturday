@@ -29,7 +29,11 @@ public class BuildMenu extends AbstractSpongeChestMenu {
     private final SpongeSubmitter submitter;
 
     public BuildMenu(SpongeBuild build, SpongeSubmitter submitter, Player player, AbstractSpongeChestMenu prevMenu) {
-        super(build.getName(), 9, player, prevMenu);
+        this(build, submitter, player, prevMenu, false);
+    }
+
+    public BuildMenu(SpongeBuild build, SpongeSubmitter submitter, Player player, AbstractSpongeChestMenu prevMenu, boolean manualOpen) {
+        super(build.getName(), 9, player, prevMenu, manualOpen);
         this.build = build;
         this.submitter = submitter;
     }

@@ -91,7 +91,7 @@ public class ReflectionUtils {
         return getUtilClass("permissions." + className);
     }
 
-    public static Class<?> getPotionclass(String className) throws ClassNotFoundException {
+    public static Class<?> getPotionClass(String className) throws ClassNotFoundException {
         return getCraftClass("potion." + className);
     }
 

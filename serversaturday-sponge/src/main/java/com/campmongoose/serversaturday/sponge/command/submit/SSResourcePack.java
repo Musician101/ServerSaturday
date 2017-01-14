@@ -3,6 +3,7 @@ package com.campmongoose.serversaturday.sponge.command.submit;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.sponge.command.SpongeCommandExecutor;
+import com.campmongoose.serversaturday.sponge.menu.chest.BuildMenu;
 import com.campmongoose.serversaturday.sponge.menu.textinput.ResourcePackChangeMenu;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
@@ -29,7 +30,7 @@ public class SSResourcePack extends SpongeCommandExecutor {
                     return CommandResult.empty();
                 }
 
-                new ResourcePackChangeMenu(build, player, null);
+                new ResourcePackChangeMenu(build, player, new BuildMenu(build, submitter, player, null));
                 return CommandResult.success();
             }
 

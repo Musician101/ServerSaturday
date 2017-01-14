@@ -33,22 +33,28 @@ public class SpongeSubmissions extends AbstractSubmissions<Player, SpongeSubmitt
             logger.info(Messages.newFile(dir));
         }
 
-        for (File file : dir.listFiles()) {
-            if (!file.getName().endsWith(Config.HOCON_EXT)) {
-                continue;
-            }
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (!file.getName().endsWith(Config.HOCON_EXT)) {
+                    continue;
+                }
 
-            ConfigurationNode cn;
-            try {
-                cn = HoconConfigurationLoader.builder().setFile(file).build().load();
-            }
-            catch (IOException e) {
-                SpongeServerSaturday.getLogger().error(Messages.ioException(file));
-                continue;
-            }
+                ConfigurationNode cn;
+                try {
+                    cn = HoconConfigurationLoader.builder().setFile(file).build().load();
+                }
+                catch (IOException e) {
+                    SpongeServerSaturday.getLogger().error(Messages.ioException(file));
+                    continue;
+                }
 
-            UUID uuid = UUID.fromString(file.getName().replace(Config.HOCON_EXT, ""));
-            submitters.put(uuid, new SpongeSubmitter(uuid, cn));
+                UUID uuid = UUID.fromString(file.getName().replace(Config.HOCON_EXT, ""));
+                submitters.put(uuid, new SpongeSubmitter(uuid, cn));
+            }
+        }
+        else {
+            logger.info("An error occurred whilst attempting to read the files in " + dir.getName());
         }
     }
 

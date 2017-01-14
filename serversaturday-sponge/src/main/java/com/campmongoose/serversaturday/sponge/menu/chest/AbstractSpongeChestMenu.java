@@ -34,7 +34,11 @@ public abstract class AbstractSpongeChestMenu extends AbstractChestMenu<Inventor
     private final Map<Integer, ItemStack> slots = new HashMap<>();
 
     public AbstractSpongeChestMenu(@Nonnull String name, int size, @Nonnull Player player, @Nullable AbstractSpongeChestMenu prevMenu) {
-        super(parseInventory(name, size), player, prevMenu);
+        this(name, size, player, prevMenu, false);
+    }
+
+    public AbstractSpongeChestMenu(@Nonnull String name, int size, @Nonnull Player player, @Nullable AbstractSpongeChestMenu prevMenu, boolean manualOpen) {
+        super(parseInventory(name, size), player, prevMenu, false);
         open();
     }
 

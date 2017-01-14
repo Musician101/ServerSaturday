@@ -35,14 +35,20 @@ public class SpigotSubmissions extends AbstractSubmissions<Player, SpigotSubmitt
             logger.info(Messages.newFile(dir));
         }
 
-        for (File file : dir.listFiles()) {
-            if (!file.getName().endsWith(Config.YAML_EXT)) {
-                continue;
-            }
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (!file.getName().endsWith(Config.YAML_EXT)) {
+                    continue;
+                }
 
-            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-            UUID uuid = UUID.fromString(file.getName().replace(Config.YAML_EXT, ""));
-            submitters.put(uuid, new SpigotSubmitter(uuid, yaml));
+                YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+                UUID uuid = UUID.fromString(file.getName().replace(Config.YAML_EXT, ""));
+                submitters.put(uuid, new SpigotSubmitter(uuid, yaml));
+            }
+        }
+        else {
+            logger.info("An error occurred whilst attempting to read the files in " + dir.getName());
         }
     }
 
