@@ -1,4 +1,4 @@
 ServerSaturday
 ==============
 
-Plugin based submission for for MightyPotato's YouTube series, Server Saturday.
+Plugin based submission for MightyPotato's YouTube series, Server Saturday.

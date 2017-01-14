@@ -1,0 +1,32 @@
+repositories {
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven {
+        name = 'wesjd-repo'
+        url = 'https://nexus.wesjd.net/repository/thirdparty/'
+    }
+}
+
+dependencies {
+    compile project(':serversaturday-common')
+    compile 'org.spigotmc:spigot:1.10.2-R0.1-SNAPSHOT'
+    compile 'net.wesjd:anvilgui:1.1.1-SNAPSHOT'
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        expand 'version': project.version
+    }
+}
+
+shadowJar {
+    dependencies {
+        include(dependency(':serversaturday-common'))
+    }
+}
