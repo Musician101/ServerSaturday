@@ -3,28 +3,26 @@ package com.campmongoose.serversaturday.common;
 import com.campmongoose.serversaturday.common.submission.AbstractBuild;
 import com.campmongoose.serversaturday.common.submission.AbstractSubmitter;
 import com.google.gson.Gson;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class Reference
-{
-    public static final String DESCRIPTION = "Plugin based submission form for Potato's Server Saturday.";
-    public static final String NAME = "Server Saturday";
-    public static final String ID = "server_saturday";
-    public static final String VERSION = "1.3";
-    public static final String DUCK = "\\_o<";
+public class Reference {
 
-    private Reference()
-    {
+    public static final String DESCRIPTION = "Plugin based submission form for Potato's Server Saturday.";
+    public static final String DUCK = "\\_o<";
+    public static final String ID = "server_saturday";
+    public static final String NAME = "Server Saturday";
+    public static final String VERSION = "1.3";
+
+    private Reference() {
 
     }
 
-    public static class Commands
-    {
+    public static class Commands {
+
         public static final String BUILD = "build";
         public static final String DESCRIPTION_DESC = "Change the description of a submission.";
         public static final String DESCRIPTION_NAME = "description";
@@ -54,18 +52,17 @@ public class Reference
         public static final String SUBMIT_DESC = "Toggle whether you build is ready to be featured or not.";
         public static final String SUBMIT_NAME = "submit";
         public static final String VIEW_DESC = "View Server Saturday submissions.";
-        public static final String VIEW_NAME = "view";
         public static final String VIEW_DESCRIPTION_DESC = "View the description of a build.";
         public static final String VIEW_DESCRIPTION_NAME = "viewdescription";
+        public static final String VIEW_NAME = "view";
 
-        private Commands()
-        {
+        private Commands() {
 
         }
     }
 
-    public static class Config
-    {
+    public static class Config {
+
         public static final String BUILDS = "builds";
         public static final String DATABASE = "database";
         public static final String DESCRIPTION = "description";
@@ -83,24 +80,21 @@ public class Reference
         public static final String VANILLA = "Vanilla";
         public static final String YAML_EXT = ".yml";
 
-        private Config()
-        {
+        private Config() {
 
         }
 
-        public static String getHOCONFileName(UUID uuid)
-        {
+        public static String getHOCONFileName(UUID uuid) {
             return uuid.toString() + HOCON_EXT;
         }
 
-        public static String getYAMLFileName(UUID uuid)
-        {
+        public static String getYAMLFileName(UUID uuid) {
             return uuid.toString() + YAML_EXT;
         }
     }
 
-    public static class MenuText
-    {
+    public static class MenuText {
+
         public static final String ALL_SUBMISSIONS = "All S.S. Submissions";
         public static final String BACK = "Back";
         public static final String CHANGE_DESCRIPTION_DESC = "Add or change the description to this build.";
@@ -115,42 +109,38 @@ public class Reference
         public static final String DESCRIPTION_NAME = "Description";
         public static final List<String> FEATURE_DESC = Collections.unmodifiableList(Arrays.asList("Set whether this build has been covered in", "an episode of Server Saturday."));
         public static final String FEATURE_NAME = "Feature";
-        public static final String RENAME_DESC = "Rename this build.";
-        public static final String RENAME_NAME = "Rename";
-        public static final String RENAME_ME = "Rename me!";
-        public static final String RESOURCE_PACK_NAME = "Resource Pack";
-        public static final List<String> SUBMIT_UNREADY_DESC = Collections.unmodifiableList(Arrays.asList("Add or remove your build from", "the list of ready builds."));
-        public static final String SUBMIT_UNREADY_NAME = "Submit/Unready";
-        public static final String SUBMISSIONS = "S. S. Submissions";
-        public static final String TELEPORT_NAME = "Teleport";
+        public static final String JUMP_PAGE = "Jump To Page";
         public static final String NEXT_PAGE = "Next Page";
         public static final String PREVIOUS_PAGE = "Previous Page";
-        public static final String JUMP_PAGE = "Jump To Page";
+        public static final String RENAME_DESC = "Rename this build.";
+        public static final String RENAME_ME = "Rename me!";
+        public static final String RENAME_NAME = "Rename";
+        public static final String RESOURCE_PACK_NAME = "Resource Pack";
+        public static final String SUBMISSIONS = "S. S. Submissions";
+        public static final List<String> SUBMIT_UNREADY_DESC = Collections.unmodifiableList(Arrays.asList("Add or remove your build from", "the list of ready builds."));
+        public static final String SUBMIT_UNREADY_NAME = "Submit/Unready";
+        public static final String TELEPORT_NAME = "Teleport";
 
-        private MenuText()
-        {
+        private MenuText() {
 
         }
 
         @Deprecated
-        public static String page(int page)
-        {
+        public static String page(int page) {
             return "Page " + page;
         }
 
-        public static <S extends AbstractSubmitter> String submitterMenu(S submitter)
-        {
+        public static <S extends AbstractSubmitter> String submitterMenu(S submitter) {
             return submitter.getName() + "'s Builds";
         }
 
-        public static String[] teleportDesc(String name, int x, int y, int z)
-        {
+        public static String[] teleportDesc(String name, int x, int y, int z) {
             return new String[]{"Click to teleport.", "- World: " + name, "- X: " + x, "- Y: " + y, "- Z: " + z};
         }
     }
 
-    public static class Messages
-    {
+    public static class Messages {
+
         public static final String PREFIX = "[SS] ";
         public static final String BUILD_ALREADY_EXISTS = PREFIX + "A build with that name already exists.";
         public static final String BUILD_NOT_FOUND = PREFIX + "A build with that name does not exist.";
@@ -161,45 +151,39 @@ public class Reference
         public static final String PLAYER_NOT_FOUND = PREFIX + "Could not find a player with that name.";
         public static final String PLAYER_ONLY = PREFIX + "This is a player only command.";
 
-        private Messages()
-        {
+        private Messages() {
 
         }
 
-        public static String ioException(File file)
-        {
+        public static String ioException(File file) {
             return "An error occurred while saving " + file.getName();
         }
 
-        public static <B extends AbstractBuild> String locationChanged(B build)
-        {
+        public static <B extends AbstractBuild> String locationChanged(B build) {
             return PREFIX + "Warp location for " + build.getName() + " updated.";
-        }
-
-        public static <B extends AbstractBuild> String teleportedToBuild(B build)
-        {
-            return PREFIX + "You have teleported to " + build.getName();
         }
 
         public static String newFile(File file) {
             return PREFIX + "Generating a new file: " + file.getName();
         }
+
+        public static <B extends AbstractBuild> String teleportedToBuild(B build) {
+            return PREFIX + "You have teleported to " + build.getName();
+        }
     }
 
-    public static class MySQL
-    {
+    public static class MySQL {
+
         private static final String TABLE_NAME = "server_saturday_builds";
         public static final String CREATE_TABLE = "create table if not exists " + TABLE_NAME + "(PlayerName text, " +
                 "PlayerID text, BuildName text, Featured boolean, Submitted boolean, LocationX float, LocationY float, " +
                 "LocationZ float, LocationYaw decimal, LocationPitch decimal, WorldName text, ResourcePack text, Description json);";
 
-        private MySQL()
-        {
+        private MySQL() {
 
         }
 
-        public static <B extends AbstractBuild<I, L, S>, I, L, M, S extends AbstractSubmitter<B, I, L>> String addBuild(String name, UUID uuid, B build, double x, double y, double z, double yaw, double pitch, String worldName)
-        {
+        public static <B extends AbstractBuild<I, L, S>, I, L, M, S extends AbstractSubmitter<B, I, L>> String addBuild(String name, UUID uuid, B build, double x, double y, double z, double yaw, double pitch, String worldName) {
             return "insert into " + TABLE_NAME + "(PlayerName, PlayerID, BuildName, Featured, Submitted, LocationX, " +
                     "LocationY, LocationZ, LocationYaw, LocationPitch, WorldName, ResourcePack, Description) values " +
                     "(\"" + name + "\", \"" + uuid.toString() + "\", \"" + build.getName() + "\", " + build.featured() +
@@ -207,23 +191,21 @@ public class Reference
                     worldName + "\", \"" + build.getResourcePack() + "\", '" + new Gson().toJson(build.getDescription()) + "');";
         }
 
-        public static String deletePlayer(UUID uuid)
-        {
+        public static String deletePlayer(UUID uuid) {
             return "delete from " + TABLE_NAME + " where PlayerID = " + uuid.toString();
         }
     }
 
-    public static class Permissions
-    {
+    public static class Permissions {
+
+        public static final String VIEW_GOTO = VIEW + ".goto";
         private static final String BASE = "ss.";
         public static final String FEATURE = BASE + "FEATURE";
         public static final String RELOAD = BASE + "reload";
         public static final String SUBMIT = BASE + "submit";
         public static final String VIEW = BASE + "view";
-        public static final String VIEW_GOTO = VIEW + ".goto";
 
-        private Permissions()
-        {
+        private Permissions() {
 
         }
     }

@@ -18,30 +18,28 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class SSFeature extends SpongeCommandExecutor
-{
+public class SSFeature extends SpongeCommandExecutor {
+
     @Nonnull
     @Override
-    public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments)
-    {
+    public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments) {
         if (source instanceof Player) {
             Player player = (Player) source;
             Optional<String> playerName = arguments.getOne(Commands.PLAYER);
             if (playerName.isPresent()) {
                 SpongeSubmitter submitter = null;
-                try
-                {
+                try {
                     submitter = getSubmitter(UUIDUtils.getUUIDOf(playerName.get()));
                 }
-                catch (IOException e)
-                {
-                    for (SpongeSubmitter s : getSubmissions().getSubmitters())
-                        if (s.getName().equalsIgnoreCase(playerName.get()))
+                catch (IOException e) {
+                    for (SpongeSubmitter s : getSubmissions().getSubmitters()) {
+                        if (s.getName().equalsIgnoreCase(playerName.get())) {
                             submitter = s;
+                        }
+                    }
                 }
 
-                if (submitter == null)
-                {
+                if (submitter == null) {
                     player.sendMessage(Text.builder(Messages.PLAYER_NOT_FOUND).color(TextColors.RED).build());
                     return CommandResult.empty();
                 }
@@ -49,8 +47,7 @@ public class SSFeature extends SpongeCommandExecutor
                 Optional<String> name = arguments.getOne(Commands.BUILD);
                 if (name.isPresent()) {
                     SpongeBuild build = submitter.getBuild(name.get());
-                    if (build == null)
-                    {
+                    if (build == null) {
                         player.sendMessage(Text.builder(Messages.BUILD_NOT_FOUND).color(TextColors.RED).build());
                         return CommandResult.empty();
                     }

@@ -20,21 +20,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild, SpigotServerSaturday, Location, Player, SpigotSubmitter, SpigotSubmissions, ItemStack>
-{
-    private final List<AbstractSpigotCommand> subCommands;
+public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild, SpigotServerSaturday, Location, Player, SpigotSubmitter, SpigotSubmissions, ItemStack> {
+
     private final String description;
-    private final SpigotCommandPermissions permissions;
     private final String name;
+    private final SpigotCommandPermissions permissions;
+    private final List<AbstractSpigotCommand> subCommands;
     private final SpigotCommandUsage usage;
 
-    public AbstractSpigotCommand(String name, String description, SpigotCommandUsage usage, SpigotCommandPermissions permissions)
-    {
+    public AbstractSpigotCommand(String name, String description, SpigotCommandUsage usage, SpigotCommandPermissions permissions) {
         this(name, description, usage, permissions, new ArrayList<>());
     }
 
-    public AbstractSpigotCommand(String name, String description, SpigotCommandUsage usage, SpigotCommandPermissions permissions, List<AbstractSpigotCommand> subCommands)
-    {
+    public AbstractSpigotCommand(String name, String description, SpigotCommandUsage usage, SpigotCommandPermissions permissions, List<AbstractSpigotCommand> subCommands) {
         this.name = name;
         this.description = description;
         this.usage = usage;
@@ -42,82 +40,12 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
         this.subCommands = subCommands;
     }
 
-    public abstract boolean onCommand(CommandSender sender, String... args);
-
-    protected boolean testPermission(CommandSender sender)
-    {
-        if (permissions.isPlayerOnly() && !(sender instanceof Player))
-        {
-            sender.sendMessage(permissions.getNoPermission());
-            return false;
-        }
-
-        if (!sender.hasPermission(permissions.getPermissionNode()))
-        {
-            sender.sendMessage(permissions.getPlayerOnly());
-            return false;
-        }
-
-        return true;
-    }
-
-    public List<AbstractSpigotCommand> getSubCommands()
-    {
-        return subCommands;
-    }
-
-    public String getDescription()
-    {
-        return description;
-    }
-
-    public SpigotCommandPermissions getPermissions()
-    {
-        return permissions;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public SpigotCommandUsage getUsage()
-    {
-        return usage;
-    }
-
-    protected boolean minArgsMet(CommandSender sender, int args)
-    {
-        if (args >= usage.getMinArgs())
-            return true;
-
-        sender.sendMessage(ChatColor.RED + Messages.NOT_ENOUGH_ARGS);
-        sender.sendMessage(usage.getUsage());
-        return false;
-    }
-
-    public String getCommandHelpInfo()
-    {
-        return getUsage() + " " + ChatColor.AQUA + getDescription();
-    }
-
-    protected String[] moveArguments(String[] args)
-    {
-        List<String> list = new ArrayList<>();
-        Collections.addAll(list, args);
-        if (!list.isEmpty())
-            list.remove(0);
-
-        return list.toArray(new String[list.size()]);
-    }
-
-    protected String combineStringArray(String[] stringArray)
-    {
+    protected String combineStringArray(String[] stringArray) {
         StringBuilder sb = new StringBuilder();
-        for (String part : stringArray)
-        {
-            if (sb.length() > 0)
+        for (String part : stringArray) {
+            if (sb.length() > 0) {
                 sb.append(" ");
+            }
 
             sb.append(part);
         }
@@ -125,10 +53,30 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
         return sb.toString();
     }
 
+    public String getCommandHelpInfo() {
+        return getUsage() + " " + ChatColor.AQUA + getDescription();
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public SpigotCommandPermissions getPermissions() {
+        return permissions;
+    }
+
     @Nonnull
     @Override
     protected SpigotServerSaturday getPluginInstance() {
         return SpigotServerSaturday.instance();
+    }
+
+    public List<AbstractSpigotCommand> getSubCommands() {
+        return subCommands;
     }
 
     @Nonnull
@@ -146,15 +94,15 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
     @Nullable
     @Override
     protected SpigotSubmitter getSubmitter(String playerName) {
-        try
-        {
+        try {
             return getSubmitter(UUIDUtils.getUUIDOf(playerName));
         }
-        catch (IOException e)
-        {
-            for (SpigotSubmitter s : getSubmissions().getSubmitters())
-                if (s.getName().equalsIgnoreCase(playerName))
+        catch (IOException e) {
+            for (SpigotSubmitter s : getSubmissions().getSubmitters()) {
+                if (s.getName().equalsIgnoreCase(playerName)) {
                     return s;
+                }
+            }
         }
 
         return null;
@@ -163,5 +111,45 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
     @Nullable
     protected SpigotSubmitter getSubmitter(UUID uuid) {
         return getSubmissions().getSubmitter(uuid);
+    }
+
+    public SpigotCommandUsage getUsage() {
+        return usage;
+    }
+
+    protected boolean minArgsMet(CommandSender sender, int args) {
+        if (args >= usage.getMinArgs()) {
+            return true;
+        }
+
+        sender.sendMessage(ChatColor.RED + Messages.NOT_ENOUGH_ARGS);
+        sender.sendMessage(usage.getUsage());
+        return false;
+    }
+
+    protected String[] moveArguments(String[] args) {
+        List<String> list = new ArrayList<>();
+        Collections.addAll(list, args);
+        if (!list.isEmpty()) {
+            list.remove(0);
+        }
+
+        return list.toArray(new String[list.size()]);
+    }
+
+    public abstract boolean onCommand(CommandSender sender, String... args);
+
+    protected boolean testPermission(CommandSender sender) {
+        if (permissions.isPlayerOnly() && !(sender instanceof Player)) {
+            sender.sendMessage(permissions.getNoPermission());
+            return false;
+        }
+
+        if (!sender.hasPermission(permissions.getPermissionNode())) {
+            sender.sendMessage(permissions.getPlayerOnly());
+            return false;
+        }
+
+        return true;
     }
 }

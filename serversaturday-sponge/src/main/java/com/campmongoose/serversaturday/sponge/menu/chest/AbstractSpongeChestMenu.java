@@ -29,37 +29,34 @@ import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.api.text.Text;
 
 //TODO create paged Menu
-public abstract class AbstractSpongeChestMenu extends AbstractChestMenu<Inventory, AbstractSpongeChestMenu, Player, ItemStack>
-{
+public abstract class AbstractSpongeChestMenu extends AbstractChestMenu<Inventory, AbstractSpongeChestMenu, Player, ItemStack> {
+
     private final Map<Integer, ItemStack> slots = new HashMap<>();
 
-    public AbstractSpongeChestMenu(@Nonnull String name, int size, @Nonnull Player player, @Nullable AbstractSpongeChestMenu prevMenu)
-    {
+    public AbstractSpongeChestMenu(@Nonnull String name, int size, @Nonnull Player player, @Nullable AbstractSpongeChestMenu prevMenu) {
         super(parseInventory(name, size), player, prevMenu);
         open();
     }
 
-    @Override
-    protected void set(int slot, @Nonnull ItemStack itemStack) {
-        inventory.query(new SlotIndex(slot)).set(itemStack);
-        slots.put(slot, itemStack);
+    private static Inventory parseInventory(String name, int size) {
+        InventoryArchetype.Builder builder = InventoryArchetype.builder().property(new InventoryCapacity(size)).title(Text.of(name));
+        for (int i = 0; i < size; i++) {
+            builder.with(InventoryArchetype.builder().from(InventoryArchetypes.SLOT).property(new SlotIndex(i)).build("minecraft:slot" + i, "Slot"));
+        }
+
+        return Inventory.builder().of(builder.build(Reference.ID + ":" + name.replace("\\s", "_").toLowerCase(), name)).build(SpongeServerSaturday.instance());
     }
 
-    @Override
-    protected void set(int slot, @Nonnull ItemStack itemStack, @Nonnull Consumer<Player> consumer)
-    {
-        set(slot, itemStack);
-        buttons.put(slot, consumer);
-    }
-
-    protected void close()
-    {
+    protected void close() {
         Sponge.getEventManager().unregisterListeners(this);
     }
 
+    private boolean isSameInventory(Inventory inventory, Player player) {
+        return inventory.getName().equals(this.inventory.getName()) && Reference.ID.equals(inventory.getPlugin().getId()) && player.getUniqueId().equals(this.player.getUniqueId());
+    }
+
     @Listener
-    public void onClick(ClickInventoryEvent event, @First Player player)
-    {
+    public void onClick(ClickInventoryEvent event, @First Player player) {
         Container container = event.getTargetInventory();
         if (isSameInventory(container, player)) {
             event.setCancelled(true);
@@ -71,44 +68,44 @@ public abstract class AbstractSpongeChestMenu extends AbstractChestMenu<Inventor
                 ItemStack itemStack = event.getCursorTransaction().getFinal().createStack();
                 if (inverseSlots.containsKey(itemStack)) {
                     int slot = inverseSlots.get(itemStack);
-                    if (buttons.containsKey(slot))
+                    if (buttons.containsKey(slot)) {
                         buttons.get(slot).accept(player);
+                    }
                 }
             }
         }
     }
 
     @Listener
-    public void onClose(InteractInventoryEvent.Close event, @First Player player)
-    {
-        if (isSameInventory(event.getTargetInventory(), player))
+    public void onClose(InteractInventoryEvent.Close event, @First Player player) {
+        if (isSameInventory(event.getTargetInventory(), player)) {
             close();
-    }
-
-    private boolean isSameInventory(Inventory inventory, Player player) {
-        return inventory.getName().equals(this.inventory.getName()) && Reference.ID.equals(inventory.getPlugin().getId()) && player.getUniqueId().equals(this.player.getUniqueId());
+        }
     }
 
     @Override
-    public void open()
-    {
+    public void open() {
         inventory.clear();
         build();
         for (int i = 0; i < inventory.capacity(); i++) {
-            if (slots.containsKey(i))
+            if (slots.containsKey(i)) {
                 inventory.query(new SlotIndex(i)).set(slots.getOrDefault(i, ItemStack.of(ItemTypes.NONE, 1)));
+            }
         }
 
         player.openInventory(inventory, Cause.of(NamedCause.source(SpongeServerSaturday.instance())));
         Sponge.getEventManager().registerListeners(SpongeServerSaturday.instance(), this);
     }
 
-    private static Inventory parseInventory(String name, int size) {
-        InventoryArchetype.Builder builder = InventoryArchetype.builder().property(new InventoryCapacity(size)).title(Text.of(name));
-        for (int i = 0; i < size; i++) {
-            builder.with(InventoryArchetype.builder().from(InventoryArchetypes.SLOT).property(new SlotIndex(i)).build("minecraft:slot" + i, "Slot"));
-        }
+    @Override
+    protected void set(int slot, @Nonnull ItemStack itemStack, @Nonnull Consumer<Player> consumer) {
+        set(slot, itemStack);
+        buttons.put(slot, consumer);
+    }
 
-        return Inventory.builder().of(builder.build(Reference.ID + ":" + name.replace("\\s", "_").toLowerCase(), name)).build(SpongeServerSaturday.instance());
+    @Override
+    protected void set(int slot, @Nonnull ItemStack itemStack) {
+        inventory.query(new SlotIndex(slot)).set(itemStack);
+        slots.put(slot, itemStack);
     }
 }

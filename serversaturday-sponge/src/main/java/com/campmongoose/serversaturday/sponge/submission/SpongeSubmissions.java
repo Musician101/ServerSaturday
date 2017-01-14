@@ -14,39 +14,35 @@ import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.entity.living.player.Player;
 
-public class SpongeSubmissions extends AbstractSubmissions<Player, SpongeSubmitter>
-{
-    public SpongeSubmissions()
-    {
+public class SpongeSubmissions extends AbstractSubmissions<Player, SpongeSubmitter> {
+
+    public SpongeSubmissions() {
         super(new File("config/" + Reference.NAME + "/submitters"));
     }
 
     @Nonnull
     @Override
-    public SpongeSubmitter getSubmitter(@Nonnull Player player)
-    {
+    public SpongeSubmitter getSubmitter(@Nonnull Player player) {
         return submitters.putIfAbsent(player.getUniqueId(), new SpongeSubmitter(player));
     }
 
     @Override
-    public void load()
-    {
+    public void load() {
         Logger logger = SpongeServerSaturday.getLogger();
-        if (dir.mkdirs())
+        if (dir.mkdirs()) {
             logger.info(Messages.newFile(dir));
+        }
 
-        for (File file : dir.listFiles())
-        {
-            if (!file.getName().endsWith(Config.HOCON_EXT))
+        for (File file : dir.listFiles()) {
+            if (!file.getName().endsWith(Config.HOCON_EXT)) {
                 continue;
+            }
 
             ConfigurationNode cn;
-            try
-            {
+            try {
                 cn = HoconConfigurationLoader.builder().setFile(file).build().load();
             }
-            catch (IOException e)
-            {
+            catch (IOException e) {
                 SpongeServerSaturday.getLogger().error(Messages.ioException(file));
                 continue;
             }
@@ -57,8 +53,7 @@ public class SpongeSubmissions extends AbstractSubmissions<Player, SpongeSubmitt
     }
 
     @Override
-    public void save()
-    {
+    public void save() {
         submitters.forEach((key, value) -> value.save(new File(dir, Config.getHOCONFileName(key))));
     }
 }

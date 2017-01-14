@@ -4,45 +4,46 @@ import java.util.Arrays;
 import java.util.List;
 import org.bukkit.ChatColor;
 
-public class SpigotCommandArgument
-{
-    private final List<Syntax> syntaxList;
-    private final String name;
+public class SpigotCommandArgument {
 
-    public SpigotCommandArgument(String name)
-    {
+    private final String name;
+    private final List<Syntax> syntaxList;
+
+    public SpigotCommandArgument(String name) {
         this(name, Syntax.LITERAL);
     }
 
-    public SpigotCommandArgument(String name, Syntax... syntaxes)
-    {
+    public SpigotCommandArgument(String name, Syntax... syntaxes) {
         this.syntaxList = Arrays.asList(syntaxes);
-        if (syntaxList.contains(Syntax.REQUIRED) && syntaxList.contains(Syntax.OPTIONAL))
+        if (syntaxList.contains(Syntax.REQUIRED) && syntaxList.contains(Syntax.OPTIONAL)) {
             throw new IllegalArgumentException("Common arguments cannot be both Optional and Required.");
+        }
 
         this.name = name;
     }
 
-    public String format()
-    {
+    public String format() {
         String name = this.name;
-        if (syntaxList.contains(Syntax.REPLACE))
+        if (syntaxList.contains(Syntax.REPLACE)) {
             name = ChatColor.ITALIC + name;
+        }
 
-        if (syntaxList.contains(Syntax.MULTIPLE))
+        if (syntaxList.contains(Syntax.MULTIPLE)) {
             name = name + "...";
+        }
 
-        if (syntaxList.contains(Syntax.OPTIONAL))
+        if (syntaxList.contains(Syntax.OPTIONAL)) {
             name = "[" + name + "]";
+        }
 
-        if (syntaxList.contains(Syntax.REQUIRED))
+        if (syntaxList.contains(Syntax.REQUIRED)) {
             name = "<" + name + ">";
+        }
 
         return name;
     }
 
-    public enum Syntax
-    {
+    public enum Syntax {
         LITERAL,
         MULTIPLE,
         REPLACE,

@@ -2,19 +2,17 @@ package com.campmongoose.serversaturday.common;
 
 import java.io.File;
 
-public abstract class AbstractConfig
-{
+public abstract class AbstractConfig {
+
     protected final File configFile;
     protected String saveFormat;
 
-    protected AbstractConfig(File configFile)
-    {
+    protected AbstractConfig(File configFile) {
         this.configFile = configFile;
         reload();
     }
 
-    public String getSaveFormat()
-    {
+    public String getSaveFormat() {
         return saveFormat;
     }
 

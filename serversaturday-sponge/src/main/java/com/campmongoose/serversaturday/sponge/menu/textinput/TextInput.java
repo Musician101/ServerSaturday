@@ -11,35 +11,34 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 
-public abstract class TextInput
-{
-    @Nonnull
-    protected final AbstractSpongeChestMenu prevMenu;
+public abstract class TextInput {
+
     @Nonnull
     protected final Player player;
+    @Nonnull
+    protected final AbstractSpongeChestMenu prevMenu;
     @Nullable
     protected BiFunction<String, Player, String> biFunction;
 
-    public TextInput(@Nonnull Player player, @Nonnull AbstractSpongeChestMenu prevMenu)
-    {
+    public TextInput(@Nonnull Player player, @Nonnull AbstractSpongeChestMenu prevMenu) {
         this.player = player;
         this.prevMenu = prevMenu;
         Sponge.getEventManager().registerListeners(SpongeServerSaturday.instance(), this);
-    }
-
-    @Listener
-    public void onChat(MessageChannelEvent.Chat event, @First Player player)
-    {
-        if (player.getUniqueId().equals(this.player.getUniqueId())) {
-            event.setCancelled(true);
-            if (biFunction != null && biFunction.apply(event.getRawMessage().toPlain(), player) != null)
-                end();
-        }
     }
 
     protected abstract void build();
 
     private void end() {
         Sponge.getEventManager().unregisterListeners(this);
+    }
+
+    @Listener
+    public void onChat(MessageChannelEvent.Chat event, @First Player player) {
+        if (player.getUniqueId().equals(this.player.getUniqueId())) {
+            event.setCancelled(true);
+            if (biFunction != null && biFunction.apply(event.getRawMessage().toPlain(), player) != null) {
+                end();
+            }
+        }
     }
 }

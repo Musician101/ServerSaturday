@@ -9,14 +9,13 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AbstractSubmissions<P, S extends AbstractSubmitter>
-{
+public abstract class AbstractSubmissions<P, S extends AbstractSubmitter> {
+
     @Nonnull
     protected final File dir;
     protected final Map<UUID, S> submitters = new HashMap<>();
 
-    protected AbstractSubmissions(@Nonnull File configDir)
-    {
+    protected AbstractSubmissions(@Nonnull File configDir) {
         this.dir = new File(configDir, "submitters");
         load();
     }
@@ -29,8 +28,7 @@ public abstract class AbstractSubmissions<P, S extends AbstractSubmitter>
         return submitters.get(uuid);
     }
 
-    public List<S> getSubmitters()
-    {
+    public List<S> getSubmitters() {
         return new ArrayList<>(submitters.values());
     }
 

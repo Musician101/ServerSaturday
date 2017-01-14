@@ -18,34 +18,29 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SSFeature extends AbstractSpigotCommand
-{
-    public SSFeature()
-    {
+public class SSFeature extends AbstractSpigotCommand {
+
+    public SSFeature() {
         super(Commands.FEATURE_NAME, Commands.FEATURE_DESC, new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD), new SpigotCommandArgument(Commands.FEATURE_NAME), new SpigotCommandArgument(Commands.PLAYER, Syntax.OPTIONAL, Syntax.REPLACE), new SpigotCommandArgument(Commands.BUILD, Syntax.OPTIONAL, Syntax.REPLACE))), new SpigotCommandPermissions(Permissions.FEATURE, true));
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
-    {
-        if (!testPermission(sender))
+    public boolean onCommand(CommandSender sender, String... args) {
+        if (!testPermission(sender)) {
             return false;
+        }
 
         Player player = (Player) sender;
-        if (args.length > 0)
-        {
+        if (args.length > 0) {
             SpigotSubmitter submitter = getSubmitter(args[0]);
-            if (submitter == null)
-            {
+            if (submitter == null) {
                 player.sendMessage(ChatColor.RED + Messages.PLAYER_NOT_FOUND);
                 return false;
             }
 
-            if (args.length > 1)
-            {
+            if (args.length > 1) {
                 SpigotBuild build = submitter.getBuild(combineStringArray(moveArguments(args)));
-                if (build == null)
-                {
+                if (build == null) {
                     player.sendMessage(ChatColor.RED + Messages.BUILD_NOT_FOUND);
                     return false;
                 }

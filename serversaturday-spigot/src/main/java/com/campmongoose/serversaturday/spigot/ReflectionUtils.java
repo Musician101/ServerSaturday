@@ -15,14 +15,6 @@ public class ReflectionUtils {
 
     }
 
-    public static Class<?> getNMSClass(String className) throws ClassNotFoundException {
-        return Class.forName(NMS + className);
-    }
-
-    public static Class<?> getCraftClass(String className) throws ClassNotFoundException {
-        return Class.forName(CRAFTBUKKIT + className);
-    }
-
     public static Class<?> getAttributeClass(String className) throws ClassNotFoundException {
         return getCraftClass("attribute." + className);
     }
@@ -47,6 +39,10 @@ public class ReflectionUtils {
         return getCraftClass("conversations." + className);
     }
 
+    public static Class<?> getCraftClass(String className) throws ClassNotFoundException {
+        return Class.forName(CRAFTBUKKIT + className);
+    }
+
     public static Class<?> getEnchantmentsClass(String className) throws ClassNotFoundException {
         return getCraftClass("enchantments." + className);
     }
@@ -57,6 +53,10 @@ public class ReflectionUtils {
 
     public static Class<?> getEventClass(String className) throws ClassNotFoundException {
         return getCraftClass("event." + className);
+    }
+
+    public static Field getField(Class<?> clazz, String name) throws NoSuchFieldException {
+        return clazz.getDeclaredField(name);
     }
 
     public static Class<?> getGeneratorClass(String className) throws ClassNotFoundException {
@@ -79,6 +79,18 @@ public class ReflectionUtils {
         return getCraftClass("metadata." + className);
     }
 
+    public static Method getMethod(Class<?> clazz, String name, Class<?>... argTypes) throws NoSuchMethodException {
+        return clazz.getMethod(name, argTypes);
+    }
+
+    public static Class<?> getNMSClass(String className) throws ClassNotFoundException {
+        return Class.forName(NMS + className);
+    }
+
+    public static Class<?> getPermissionsClass(String className) throws ClassNotFoundException {
+        return getUtilClass("permissions." + className);
+    }
+
     public static Class<?> getPotionclass(String className) throws ClassNotFoundException {
         return getCraftClass("potion." + className);
     }
@@ -97,18 +109,6 @@ public class ReflectionUtils {
 
     public static Class<?> getUtilClass(String className) throws ClassNotFoundException {
         return getCraftClass("util." + className);
-    }
-
-    public static Class<?> getPermissionsClass(String className) throws ClassNotFoundException {
-        return getUtilClass("permissions." + className);
-    }
-
-    public static Method getMethod(Class<?> clazz, String name, Class<?>... argTypes) throws NoSuchMethodException {
-        return clazz.getMethod(name, argTypes);
-    }
-
-    public static Field getField(Class<?> clazz, String name) throws NoSuchFieldException {
-        return clazz.getDeclaredField(name);
     }
 
     public static Object invokeMethod(Method method, Object instance, Object... args) throws InvocationTargetException, IllegalAccessException {

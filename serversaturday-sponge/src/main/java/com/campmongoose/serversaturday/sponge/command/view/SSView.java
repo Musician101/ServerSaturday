@@ -20,12 +20,11 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class SSView extends SpongeCommandExecutor
-{
+public class SSView extends SpongeCommandExecutor {
+
     @Nonnull
     @Override
-    public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments)
-    {
+    public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments) {
         if (source instanceof Player) {
             Player player = (Player) source;
             SpongeSubmissions submissions = getSubmissions();
@@ -36,9 +35,11 @@ public class SSView extends SpongeCommandExecutor
                     submitter = getSubmitter(UUIDUtils.getUUIDOf(playerName.get()));
                 }
                 catch (IOException e) {
-                    for (SpongeSubmitter s : submissions.getSubmitters())
-                        if (s.getName().equalsIgnoreCase(playerName.get()))
+                    for (SpongeSubmitter s : submissions.getSubmitters()) {
+                        if (s.getName().equalsIgnoreCase(playerName.get())) {
                             submitter = s;
+                        }
+                    }
                 }
 
                 if (submitter == null) {
@@ -60,8 +61,9 @@ public class SSView extends SpongeCommandExecutor
 
                 new SubmitterMenu(player, submitter, 1, null);
             }
-            else
+            else {
                 new SubmissionsMenu(player, 1, null);
+            }
 
             return CommandResult.success();
         }

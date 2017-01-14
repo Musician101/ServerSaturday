@@ -16,10 +16,9 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-public class SpigotSubmissions extends AbstractSubmissions<Player, SpigotSubmitter>
-{
-    public SpigotSubmissions()
-    {
+public class SpigotSubmissions extends AbstractSubmissions<Player, SpigotSubmitter> {
+
+    public SpigotSubmissions() {
         super(SpigotServerSaturday.instance().getDataFolder());
     }
 
@@ -30,16 +29,16 @@ public class SpigotSubmissions extends AbstractSubmissions<Player, SpigotSubmitt
     }
 
     @Override
-    public void load()
-    {
+    public void load() {
         Logger logger = SpigotServerSaturday.instance().getLogger();
-        if (dir.mkdirs())
+        if (dir.mkdirs()) {
             logger.info(Messages.newFile(dir));
+        }
 
-        for (File file : dir.listFiles())
-        {
-            if (!file.getName().endsWith(Config.YAML_EXT))
+        for (File file : dir.listFiles()) {
+            if (!file.getName().endsWith(Config.YAML_EXT)) {
                 continue;
+            }
 
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
             UUID uuid = UUID.fromString(file.getName().replace(Config.YAML_EXT, ""));
@@ -48,32 +47,28 @@ public class SpigotSubmissions extends AbstractSubmissions<Player, SpigotSubmitt
     }
 
     @Override
-    public void save()
-    {
+    public void save() {
         SpigotServerSaturday plugin = SpigotServerSaturday.instance();
         SpigotConfig config = plugin.getPluginConfig();
         MySQLHandler sql = plugin.getMySQLHandler();
         submitters.forEach((uuid, submitter) -> {
-            if (config.getSaveFormat().equals(Config.MYSQL) && sql != null)
-            {
-                try
-                {
+            if (config.getSaveFormat().equals(Config.MYSQL) && sql != null) {
+                try {
                     sql.querySQL(MySQL.CREATE_TABLE);
                     sql.querySQL(MySQL.deletePlayer(uuid));
-                    for (SpigotBuild build : submitter.getBuilds())
-                    {
+                    for (SpigotBuild build : submitter.getBuilds()) {
                         Location location = build.getLocation();
                         sql.querySQL(MySQL.addBuild(submitter.getName(), uuid, build, location.getX(), location.getY(),
                                 location.getZ(), location.getYaw(), location.getPitch(), location.getWorld().getName()));
                     }
                 }
-                catch (ClassNotFoundException | SQLException e)
-                {
+                catch (ClassNotFoundException | SQLException e) {
                     e.printStackTrace();
                 }
             }
-            else if (config.getSaveFormat().equals(Config.YAML_EXT.replace(".", "")))
+            else if (config.getSaveFormat().equals(Config.YAML_EXT.replace(".", ""))) {
                 submitter.save(new File(dir, Config.getYAMLFileName(uuid)));
+            }
         });
     }
 }

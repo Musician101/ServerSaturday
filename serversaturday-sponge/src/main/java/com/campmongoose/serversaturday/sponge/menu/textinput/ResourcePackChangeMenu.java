@@ -12,13 +12,12 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class ResourcePackChangeMenu extends TextInput
-{
+public class ResourcePackChangeMenu extends TextInput {
+
     @Nonnull
     private final SpongeBuild build;
 
-    public ResourcePackChangeMenu(@Nonnull SpongeBuild build, @Nonnull Player player, @Nullable AbstractSpongeChestMenu prevMenu)
-    {
+    public ResourcePackChangeMenu(@Nonnull SpongeBuild build, @Nonnull Player player, @Nullable AbstractSpongeChestMenu prevMenu) {
         super(player, prevMenu);
         this.build = build;
     }
@@ -28,8 +27,9 @@ public class ResourcePackChangeMenu extends TextInput
         player.sendMessage(Text.builder(Messages.PREFIX + "Please type the name of the resource pack to be used when viewing this build.").color(TextColors.RED).build());
         biFunction = (rawMessage, player) -> {
             if (rawMessage.equalsIgnoreCase("/cancel")) {
-                if (prevMenu != null)
+                if (prevMenu != null) {
                     prevMenu.open();
+                }
 
                 return null;
             }

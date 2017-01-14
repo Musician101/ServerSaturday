@@ -29,12 +29,15 @@ public class JumpToPage extends SSAnvilGUI {
 
             //TODO left off here
             //TODO create different jumptopages?
-            if (prevMenu instanceof AllSubmissionsMenu)
+            if (prevMenu instanceof AllSubmissionsMenu) {
                 new AllSubmissionsMenu(player, page, prevMenu);
-            else if (prevMenu instanceof SubmissionsMenu)
+            }
+            else if (prevMenu instanceof SubmissionsMenu) {
                 new SubmissionsMenu(player, page, prevMenu);
-            else if (prevMenu instanceof SubmitterMenu)
+            }
+            else if (prevMenu instanceof SubmitterMenu) {
                 new SubmitterMenu(player, checkNotNull(submitter), page, prevMenu);
+            }
 
             return name;
         });

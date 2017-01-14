@@ -8,12 +8,11 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class SSReload extends SpongeCommandExecutor
-{
+public class SSReload extends SpongeCommandExecutor {
+
     @Nonnull
     @Override
-    public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments)
-    {
+    public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments) {
         getSubmissions().save();
         getSubmissions().load();
         source.sendMessage(Text.builder(Messages.PLUGIN_RELOADED).color(TextColors.GOLD).build());

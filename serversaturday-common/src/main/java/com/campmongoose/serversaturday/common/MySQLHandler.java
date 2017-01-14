@@ -6,17 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class MySQLHandler
-{
-    private Connection connection;
+public class MySQLHandler {
+
     private final String database;
     private final String hostname;
     private final String password;
     private final String port;
     private final String user;
+    private Connection connection;
 
-    public MySQLHandler(String database, String hostname, String password, String port, String user)
-    {
+    public MySQLHandler(String database, String hostname, String password, String port, String user) {
         this.connection = null;
         this.database = database;
         this.hostname = hostname;
@@ -25,36 +24,34 @@ public class MySQLHandler
         this.user = user;
     }
 
-    private Connection openConnection() throws ClassNotFoundException, SQLException
-    {
+    private boolean checkConnection() {
+        return connection != null;
+    }
+
+    public void closeConnection() throws SQLException {
+        if (connection != null) {
+            connection.close();
+        }
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    private Connection openConnection() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Drive");
         connection = DriverManager.getConnection("jdbc:mysql://" + hostname + ":" + port + "/" + database, user, password);
         return connection;
     }
 
-    private boolean checkConnection()
-    {
-        return connection != null;
-    }
-
-    public Connection getConnection()
-    {
-        return connection;
-    }
-
-    public void closeConnection() throws SQLException
-    {
-        if (connection != null)
-            connection.close();
-    }
-
-    public ResultSet querySQL(String query) throws ClassNotFoundException, SQLException
-    {
+    public ResultSet querySQL(String query) throws ClassNotFoundException, SQLException {
         Connection c;
-        if (checkConnection())
+        if (checkConnection()) {
             c = getConnection();
-        else
+        }
+        else {
             c = openConnection();
+        }
 
         Statement s = c.createStatement();
         ResultSet rset = s.executeQuery(query);
@@ -63,13 +60,14 @@ public class MySQLHandler
         return rset;
     }
 
-    public void updateSQL(String update) throws ClassNotFoundException, SQLException
-    {
+    public void updateSQL(String update) throws ClassNotFoundException, SQLException {
         Connection c;
-        if (checkConnection())
+        if (checkConnection()) {
             c = getConnection();
-        else
+        }
+        else {
             c = openConnection();
+        }
 
         Statement s = c.createStatement();
         s.executeUpdate(update);

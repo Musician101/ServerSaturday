@@ -13,18 +13,16 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class SSRemove extends SpongeCommandExecutor
-{
+public class SSRemove extends SpongeCommandExecutor {
+
     @Nonnull
     @Override
-    public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments)
-    {
+    public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments) {
         return arguments.<String>getOne(Commands.NAME).map(name -> {
             if (source instanceof Player) {
                 Player player = (Player) source;
                 SpongeSubmitter submitter = getSubmitter(player);
-                if (!submitter.removeBuild(name))
-                {
+                if (!submitter.removeBuild(name)) {
                     player.sendMessage(Text.builder(Messages.BUILD_NOT_FOUND).color(TextColors.RED).build());
                     return CommandResult.empty();
                 }

@@ -34,14 +34,18 @@ public class JumpToPage extends TextInput {
                 return null;
             }
 
-            if (prevMenu instanceof AllSubmissionsMenu)
+            if (prevMenu instanceof AllSubmissionsMenu) {
                 new AllSubmissionsMenu(player, page, prevMenu);
-            else if (prevMenu instanceof SubmissionsMenu)
+            }
+            else if (prevMenu instanceof SubmissionsMenu) {
                 new SubmissionsMenu(player, page, prevMenu);
-            else if (prevMenu instanceof SubmitterMenu)
+            }
+            else if (prevMenu instanceof SubmitterMenu) {
                 new SubmitterMenu(player, SpongeServerSaturday.instance().getSubmissions().getSubmitter(player), page, prevMenu);
-            else
+            }
+            else {
                 return null;
+            }
 
             return rawMessage;
         };

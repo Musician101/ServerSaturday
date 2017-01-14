@@ -25,8 +25,8 @@ import static com.campmongoose.serversaturday.spigot.ReflectionUtils.getField;
 import static com.campmongoose.serversaturday.spigot.ReflectionUtils.getMethod;
 import static com.campmongoose.serversaturday.spigot.ReflectionUtils.getNMSClass;
 
-public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<Inventory, AbstractSpigotChestMenu, Player, ItemStack> implements Listener
-{
+public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<Inventory, AbstractSpigotChestMenu, Player, ItemStack> implements Listener {
+
     protected static Field activeContainer;
     protected static Field defaultContainer;
     protected static Method getHandle;
@@ -49,28 +49,18 @@ public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<Inventor
         this(inventory, player, prevMenu, false);
     }
 
-    public AbstractSpigotChestMenu(@Nonnull Inventory inventory, @Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu, boolean manualOpen)
-    {
+    public AbstractSpigotChestMenu(@Nonnull Inventory inventory, @Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu, boolean manualOpen) {
         super(inventory, player, prevMenu, manualOpen);
         SpigotServerSaturday.instance().getServer().getPluginManager().registerEvents(this, SpigotServerSaturday.instance());
     }
 
     @Override
-    protected void set(int slot, @Nonnull ItemStack itemStack)
-    {
-        inventory.setItem(slot, itemStack);
-    }
-
-    @Override
-    protected void set(int slot, @Nonnull ItemStack itemStack, @Nonnull Consumer<Player> consumer)
-    {
-        set(slot, itemStack);
-        buttons.put(slot, consumer);
+    protected void close() {
+        HandlerList.unregisterAll(this);
     }
 
     @EventHandler
-    public void onClick(InventoryClickEvent event)
-    {
+    public void onClick(InventoryClickEvent event) {
         if (event.getInventory().getName().equals(inventory.getName()) && event.getInventory().getHolder().equals(player)) {
             event.setCancelled(true);
             if (buttons.containsKey(event.getRawSlot())) {
@@ -80,28 +70,19 @@ public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<Inventor
     }
 
     @EventHandler
-    public void onClose(InventoryCloseEvent event)
-    {
+    public void onClose(InventoryCloseEvent event) {
         if (event.getInventory().getName().equals(inventory.getName()) && event.getInventory().getHolder().equals(player)) {
             close();
         }
     }
 
     @EventHandler
-    public void onDrag(InventoryDragEvent event)
-    {
+    public void onDrag(InventoryDragEvent event) {
         event.setCancelled(event.getInventory().getName().equals(inventory.getName()) && event.getInventory().getHolder().equals(player));
     }
 
     @Override
-    protected void close()
-    {
-        HandlerList.unregisterAll(this);
-    }
-
-    @Override
-    public void open()
-    {
+    public void open() {
         try {
             inventory.clear();
             build();
@@ -116,5 +97,16 @@ public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<Inventor
         catch (IllegalAccessException | InvocationTargetException ex) {
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    protected void set(int slot, @Nonnull ItemStack itemStack, @Nonnull Consumer<Player> consumer) {
+        set(slot, itemStack);
+        buttons.put(slot, consumer);
+    }
+
+    @Override
+    protected void set(int slot, @Nonnull ItemStack itemStack) {
+        inventory.setItem(slot, itemStack);
     }
 }

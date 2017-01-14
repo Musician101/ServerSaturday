@@ -29,14 +29,38 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 
 @Plugin(id = Reference.ID, name = Reference.NAME, description = Reference.DESCRIPTION, version = Reference.VERSION)
-public class SpongeServerSaturday
-{
+public class SpongeServerSaturday {
+
     private SpongeDescriptionChangeHandler dch;
     private SpongeSubmissions submissions;
 
+    public static Logger getLogger() {
+        return getPluginContainer().getLogger();
+    }
+
+    public static PluginContainer getPluginContainer() {
+        return Sponge.getPluginManager().getPlugin(Reference.ID).get();
+    }
+
+    public static SpongeServerSaturday instance() {
+        return (SpongeServerSaturday) getPluginContainer().getInstance().get();
+    }
+
+    public SpongeDescriptionChangeHandler getDescriptionChangeHandler() {
+        return dch;
+    }
+
+    public SpongeSubmissions getSubmissions() {
+        return submissions;
+    }
+
     @Listener
-    public void onEnable(GamePreInitializationEvent event)
-    {
+    public void onDisable(GamePostInitializationEvent event) {
+        submissions.save();
+    }
+
+    @Listener
+    public void onEnable(GamePreInitializationEvent event) {
         dch = new SpongeDescriptionChangeHandler();
         submissions = new SpongeSubmissions();
         Sponge.getCommandManager().register(this, CommandSpec.builder().description(Text.of(Reference.DESCRIPTION))
@@ -109,34 +133,5 @@ public class SpongeServerSaturday
                         .permission(Permissions.RELOAD)
                         .build(), Commands.RELOAD_NAME)
                 .build(), Reference.NAME.replace(" ", ""), Commands.SS_CMD.replace("/", ""));
-    }
-
-    @Listener
-    public void onDisable(GamePostInitializationEvent event)
-    {
-        submissions.save();
-    }
-
-    public SpongeDescriptionChangeHandler getDescriptionChangeHandler()
-    {
-        return dch;
-    }
-
-    public SpongeSubmissions getSubmissions()
-    {
-        return submissions;
-    }
-
-    public static Logger getLogger() {
-        return getPluginContainer().getLogger();
-    }
-
-    public static PluginContainer getPluginContainer() {
-        return Sponge.getPluginManager().getPlugin(Reference.ID).get();
-    }
-
-    public static SpongeServerSaturday instance()
-    {
-        return (SpongeServerSaturday) getPluginContainer().getInstance().get();
     }
 }

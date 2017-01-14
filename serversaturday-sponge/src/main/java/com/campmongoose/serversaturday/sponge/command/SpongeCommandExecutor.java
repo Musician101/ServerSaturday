@@ -1,7 +1,7 @@
 package com.campmongoose.serversaturday.sponge.command;
 
-import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.AbstractCommand;
+import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.uuid.UUIDUtils;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
@@ -21,13 +21,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public abstract class SpongeCommandExecutor extends AbstractCommand<SpongeBuild, SpongeServerSaturday, Location<World>, Player, SpongeSubmitter, SpongeSubmissions, ItemStack> implements CommandExecutor
-{
-    @Nonnull
-    protected CommandResult playerOnly(CommandSource source) {
-        source.sendMessage(Text.builder(Messages.PLAYER_ONLY).color(TextColors.RED).build());
-        return CommandResult.empty();
-    }
+public abstract class SpongeCommandExecutor extends AbstractCommand<SpongeBuild, SpongeServerSaturday, Location<World>, Player, SpongeSubmitter, SpongeSubmissions, ItemStack> implements CommandExecutor {
 
     @Nonnull
     @Override
@@ -50,15 +44,15 @@ public abstract class SpongeCommandExecutor extends AbstractCommand<SpongeBuild,
     @Nullable
     @Override
     protected SpongeSubmitter getSubmitter(String playerName) {
-        try
-        {
+        try {
             return getSubmitter(UUIDUtils.getUUIDOf(playerName));
         }
-        catch (IOException e)
-        {
-            for (SpongeSubmitter s : getSubmissions().getSubmitters())
-                if (s.getName().equalsIgnoreCase(playerName))
+        catch (IOException e) {
+            for (SpongeSubmitter s : getSubmissions().getSubmitters()) {
+                if (s.getName().equalsIgnoreCase(playerName)) {
                     return s;
+                }
+            }
         }
 
         return null;
@@ -67,5 +61,11 @@ public abstract class SpongeCommandExecutor extends AbstractCommand<SpongeBuild,
     @Nullable
     protected SpongeSubmitter getSubmitter(UUID uuid) {
         return getSubmissions().getSubmitter(uuid);
+    }
+
+    @Nonnull
+    protected CommandResult playerOnly(CommandSource source) {
+        source.sendMessage(Text.builder(Messages.PLAYER_ONLY).color(TextColors.RED).build());
+        return CommandResult.empty();
     }
 }

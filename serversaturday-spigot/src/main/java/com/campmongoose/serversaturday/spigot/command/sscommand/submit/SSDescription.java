@@ -15,25 +15,24 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SSDescription extends AbstractSpigotCommand
-{
-    public SSDescription()
-    {
+public class SSDescription extends AbstractSpigotCommand {
+
+    public SSDescription() {
         super(Commands.DESCRIPTION_NAME, Commands.DESCRIPTION_DESC, new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD), new SpigotCommandArgument(Commands.DESCRIPTION_NAME), new SpigotCommandArgument(Commands.BUILD, Syntax.REQUIRED, Syntax.REPLACE)), 1), new SpigotCommandPermissions(Permissions.SUBMIT, true));
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
-    {
-        if (!testPermission(sender))
+    public boolean onCommand(CommandSender sender, String... args) {
+        if (!testPermission(sender)) {
             return false;
+        }
 
-        if (!minArgsMet(sender, args.length))
+        if (!minArgsMet(sender, args.length)) {
             return false;
+        }
 
         Player player = (Player) sender;
-        if (getPluginInstance().getDescriptionChangeHandler().containsPlayer(player.getUniqueId()))
-        {
+        if (getPluginInstance().getDescriptionChangeHandler().containsPlayer(player.getUniqueId())) {
             player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
             return false;
         }
@@ -41,8 +40,7 @@ public class SSDescription extends AbstractSpigotCommand
         String name = combineStringArray(args);
         SpigotSubmitter submitter = getSubmitter(player);
         SpigotBuild build = submitter.getBuild(name);
-        if (build == null)
-        {
+        if (build == null) {
             player.sendMessage(ChatColor.RED + Messages.BUILD_NOT_FOUND);
             return false;
         }

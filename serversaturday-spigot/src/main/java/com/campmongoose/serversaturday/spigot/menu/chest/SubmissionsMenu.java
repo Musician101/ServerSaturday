@@ -21,8 +21,7 @@ public class SubmissionsMenu extends AbstractSpigotChestMenu {
 
     private final int page;
 
-    public SubmissionsMenu(@Nonnull Player player, int page, @Nullable AbstractSpigotChestMenu prevMenu)
-    {
+    public SubmissionsMenu(@Nonnull Player player, int page, @Nullable AbstractSpigotChestMenu prevMenu) {
         super(Bukkit.createInventory(player, 54, MenuText.SUBMISSIONS), player, prevMenu);
         this.page = page;
     }
@@ -32,8 +31,7 @@ public class SubmissionsMenu extends AbstractSpigotChestMenu {
         SpigotSubmissions submissions = SpigotServerSaturday.instance().getSubmissions();
         List<SpigotSubmitter> spigotSubmitters = submissions.getSubmitters();
         List<ItemStack> list = spigotSubmitters.stream().map(SpigotSubmitter::getMenuRepresentation).collect(Collectors.toList());
-        for (int x = 0; x < 54; x++)
-        {
+        for (int x = 0; x < 54; x++) {
             int subListPosition = x + (page - 1) * 45;
             if (x < 45 && list.size() > subListPosition) {
                 ItemStack itemStack = list.get(subListPosition);
@@ -78,10 +76,12 @@ public class SubmissionsMenu extends AbstractSpigotChestMenu {
         backMeta.setDisplayName(MenuText.BACK);
         back.setItemMeta(backMeta);
         set(53, back, player -> {
-            if (prevMenu == null)
+            if (prevMenu == null) {
                 close();
-            else
+            }
+            else {
                 prevMenu.open();
+            }
         });
     }
 }

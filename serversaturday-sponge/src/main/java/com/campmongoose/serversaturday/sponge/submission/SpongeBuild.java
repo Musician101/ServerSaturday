@@ -24,33 +24,28 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class SpongeBuild extends AbstractBuild<ItemStack, Location<World>, SpongeSubmitter>
-{
-    public SpongeBuild(String name, ConfigurationNode cn)
-    {
+public class SpongeBuild extends AbstractBuild<ItemStack, Location<World>, SpongeSubmitter> {
+
+    public SpongeBuild(String name, ConfigurationNode cn) {
         super(name);
         this.featured = cn.getNode(Config.FEATURED).getBoolean();
         this.submitted = cn.getNode(Config.SUBMITTED).getBoolean();
         this.location = deserializeLocation(cn.getNode(Config.LOCATION));
         this.resourcePack = cn.getNode(Config.RESOURCE_PACK).getString();
-        try
-        {
+        try {
             this.description = cn.getNode(Config.DESCRIPTION).getList(TypeToken.of(String.class));
         }
-        catch (ObjectMappingException e)
-        {
+        catch (ObjectMappingException e) {
             this.description = new ArrayList<>();
             SpongeServerSaturday.getLogger().error("An error occurred while parsing the description for " + name);
         }
     }
 
-    public SpongeBuild(String name, Location<World> location)
-    {
+    public SpongeBuild(String name, Location<World> location) {
         super(name, location);
     }
 
-    private Location<World> deserializeLocation(ConfigurationNode cn)
-    {
+    private Location<World> deserializeLocation(ConfigurationNode cn) {
         DataTranslator<ConfigurationNode> dt = DataTranslators.CONFIGURATION_NODE;
         DataView dv = dt.translate(cn);
         World defaultWorld = new ArrayList<>(Sponge.getServer().getWorlds()).get(0);
@@ -62,13 +57,11 @@ public class SpongeBuild extends AbstractBuild<ItemStack, Location<World>, Spong
     }
 
     @Override
-    public ItemStack getMenuRepresentation(SpongeSubmitter submitter)
-    {
+    public ItemStack getMenuRepresentation(SpongeSubmitter submitter) {
         ItemStack itemStack = ItemStack.of(ItemTypes.BOOK, 1);
         itemStack.offer(Keys.ITEM_LORE, Collections.singletonList(Text.of(submitter.getName())));
         itemStack.offer(Keys.DISPLAY_NAME, Text.of(name));
-        if (featured)
-        {
+        if (featured) {
             itemStack.offer(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.AQUA_AFFINITY, 1)));
             itemStack.offer(Keys.HIDE_ENCHANTMENTS, true);
         }
@@ -77,8 +70,7 @@ public class SpongeBuild extends AbstractBuild<ItemStack, Location<World>, Spong
     }
 
     @Override
-    public Map<String, Object> serialize()
-    {
+    public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
         map.put(Config.FEATURED, featured);
         map.put(Config.SUBMITTED, submitted);

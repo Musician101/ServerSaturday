@@ -26,33 +26,31 @@ import static com.campmongoose.serversaturday.spigot.ReflectionUtils.getMethod;
 import static com.campmongoose.serversaturday.spigot.ReflectionUtils.getNMSClass;
 import static com.campmongoose.serversaturday.spigot.ReflectionUtils.invokeMethod;
 
-public class SSViewDescription extends AbstractSpigotCommand
-{
-    public SSViewDescription()
-    {
+public class SSViewDescription extends AbstractSpigotCommand {
+
+    public SSViewDescription() {
         super(Commands.VIEW_DESCRIPTION_NAME, Commands.VIEW_DESCRIPTION_DESC, new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD), new SpigotCommandArgument(Commands.VIEW_DESCRIPTION_NAME), new SpigotCommandArgument(Commands.PLAYER, Syntax.REQUIRED, Syntax.REPLACE), new SpigotCommandArgument(Commands.BUILD, Syntax.REQUIRED, Syntax.REPLACE)), 2), new SpigotCommandPermissions(Permissions.VIEW, true));
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
-    {
-        if (!testPermission(sender))
+    public boolean onCommand(CommandSender sender, String... args) {
+        if (!testPermission(sender)) {
             return false;
+        }
 
-        if (!minArgsMet(sender, args.length))
+        if (!minArgsMet(sender, args.length)) {
             return false;
+        }
 
         Player player = (Player) sender;
         SpigotSubmitter submitter = getSubmitter(args[0]);
-        if (submitter == null)
-        {
+        if (submitter == null) {
             player.sendMessage(ChatColor.RED + Messages.PLAYER_NOT_FOUND);
             return false;
         }
 
         SpigotBuild build = submitter.getBuild(combineStringArray(moveArguments(args)));
-        if (build == null)
-        {
+        if (build == null) {
             player.sendMessage(ChatColor.RED + Messages.BUILD_NOT_FOUND);
             return false;
         }
@@ -63,12 +61,14 @@ public class SSViewDescription extends AbstractSpigotCommand
             Class<?> enumHand = getNMSClass("EnumHand");
             Object mainHand = null;
             for (Object o : enumHand.getEnumConstants()) {
-                if (o.toString().equals("MAIN_HAND"))
+                if (o.toString().equals("MAIN_HAND")) {
                     mainHand = o;
+                }
             }
 
-            if (mainHand == null)
+            if (mainHand == null) {
                 throw new NullPointerException();
+            }
 
             Method openBook = entityHuman.getClass().getDeclaredMethod("a", nmsItemStack, enumHand);
             Method asNMSCopy = getMethod(getInventoryClass("CraftItemStack"), "asNMSCopy", ItemStack.class);

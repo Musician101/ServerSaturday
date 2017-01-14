@@ -23,13 +23,12 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class BuildMenu extends AbstractSpongeChestMenu
-{
+public class BuildMenu extends AbstractSpongeChestMenu {
+
     private final SpongeBuild build;
     private final SpongeSubmitter submitter;
 
-    public BuildMenu(SpongeBuild build, SpongeSubmitter submitter, Player player, AbstractSpongeChestMenu prevMenu)
-    {
+    public BuildMenu(SpongeBuild build, SpongeSubmitter submitter, Player player, AbstractSpongeChestMenu prevMenu) {
         super(build.getName(), 9, player, prevMenu);
         this.build = build;
         this.submitter = submitter;
@@ -38,8 +37,7 @@ public class BuildMenu extends AbstractSpongeChestMenu
     @Override
     protected void build() {
         Location<World> location = build.getLocation();
-        if (player.getUniqueId().equals(submitter.getUUID()))
-        {
+        if (player.getUniqueId().equals(submitter.getUUID())) {
             set(0, ItemStack.builder().itemType(ItemTypes.PAPER).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.RENAME_NAME)).add(Keys.ITEM_LORE, Collections.singletonList(Text.of(MenuText.RENAME_DESC))).build(),
                     player -> new NameChangeTextInput(build, player, this));
             set(1, ItemStack.builder().itemType(ItemTypes.COMPASS).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.CHANGE_LOCATION_NAME)).add(Keys.ITEM_LORE, MenuText.CHANGE_LOCATION_DESC.stream().map(Text::of).collect(Collectors.toList())).build(),
@@ -78,37 +76,40 @@ public class BuildMenu extends AbstractSpongeChestMenu
             set(6, ItemStack.builder().itemType(ItemTypes.BARRIER).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.DELETE_NAME)).add(Keys.ITEM_LORE, MenuText.DELETE_DESC.stream().map(Text::of).collect(Collectors.toList())).build(),
                     player -> {
                         submitter.removeBuild(build.getName());
-                        if (prevMenu == null)
+                        if (prevMenu == null) {
                             close();
-                        else
+                        }
+                        else {
                             prevMenu.open();
+                        }
                     });
 
-            if (player.hasPermission(Permissions.FEATURE))
-            {
+            if (player.hasPermission(Permissions.FEATURE)) {
                 ItemStack.Builder isb = ItemStack.builder().itemType(ItemTypes.GOLDEN_APPLE).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.FEATURE_NAME)).add(Keys.ITEM_LORE, MenuText.FEATURE_DESC.stream().map(Text::of).collect(Collectors.toList()));
-                if (build.featured())
+                if (build.featured()) {
                     set(7, isb.add(Keys.GOLDEN_APPLE_TYPE, GoldenApples.ENCHANTED_GOLDEN_APPLE).build(), player -> {
                         build.setFeatured(!build.featured());
                         new BuildMenu(build, submitter, player, prevMenu);
                     });
-                else
+                }
+                else {
                     set(7, isb.build(), player -> {
                         build.setFeatured(!build.featured());
                         new BuildMenu(build, submitter, player, prevMenu);
                     });
+                }
             }
         }
-        else
-        {
+        else {
             set(0, ItemStack.builder().itemType(ItemTypes.COMPASS).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.TELEPORT_NAME)).add(Keys.ITEM_LORE, Stream.of(MenuText.teleportDesc(location.getExtent().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ())).map(Text::of).collect(Collectors.toList())).build(),
                     player -> {
                         if (player.hasPermission(Permissions.VIEW_GOTO)) {
                             player.setLocation(build.getLocation());
                             player.sendMessage(Text.builder(Messages.teleportedToBuild(build)).color(TextColors.GOLD).build());
                         }
-                        else
+                        else {
                             player.sendMessage(Text.builder(Messages.NO_PERMISSION).color(TextColors.RED).build());
+                        }
                     });
             set(1, ItemStack.builder().itemType(ItemTypes.BOOK).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.DESCRIPTION_NAME)).build(),
                     player -> {
@@ -119,11 +120,11 @@ public class BuildMenu extends AbstractSpongeChestMenu
                         player.sendBookView(bvb.build());
                     });
             set(2, ItemStack.builder().itemType(ItemTypes.PAINTING).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.RESOURCE_PACK_NAME)).add(Keys.ITEM_LORE, Collections.singletonList(Text.of(build.getResourcePack()))).build());
-            if (player.hasPermission(Permissions.FEATURE))
-            {
+            if (player.hasPermission(Permissions.FEATURE)) {
                 ItemStack.Builder isb = ItemStack.builder().itemType(ItemTypes.GOLDEN_APPLE).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.FEATURE_NAME)).add(Keys.ITEM_LORE, MenuText.FEATURE_DESC.stream().map(Text::of).collect(Collectors.toList()));
-                if (build.featured())
+                if (build.featured()) {
                     isb.add(Keys.GOLDEN_APPLE_TYPE, GoldenApples.ENCHANTED_GOLDEN_APPLE).build();
+                }
 
                 set(3, isb.build(), player -> {
                     build.setFeatured(!build.featured());
@@ -133,10 +134,12 @@ public class BuildMenu extends AbstractSpongeChestMenu
         }
 
         set(8, ItemStack.builder().itemType(ItemTypes.ARROW).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.BACK)).build(), player -> {
-            if (prevMenu == null)
+            if (prevMenu == null) {
                 close();
-            else
+            }
+            else {
                 prevMenu.open();
+            }
         });
     }
 }

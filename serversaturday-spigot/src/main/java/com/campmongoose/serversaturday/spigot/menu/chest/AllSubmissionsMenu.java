@@ -22,10 +22,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class AllSubmissionsMenu extends AbstractSpigotChestMenu {
+
     private final int page;
 
-    public AllSubmissionsMenu(Player player, int page, AbstractSpigotChestMenu prevMenu)
-    {
+    public AllSubmissionsMenu(Player player, int page, AbstractSpigotChestMenu prevMenu) {
         super(Bukkit.createInventory(null, 54, MenuText.ALL_SUBMISSIONS), player, prevMenu);
         this.page = page;
     }
@@ -38,8 +38,7 @@ public class AllSubmissionsMenu extends AbstractSpigotChestMenu {
             ItemMeta itemMeta = itemStack.getItemMeta();
             itemMeta.setDisplayName(build.getName());
             itemMeta.setLore(Collections.singletonList(submitter.getName()));
-            if (build.submitted() && !build.featured())
-            {
+            if (build.submitted() && !build.featured()) {
                 itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
@@ -48,8 +47,7 @@ public class AllSubmissionsMenu extends AbstractSpigotChestMenu {
             list.add(itemStack);
         }));
 
-        for (int x = 0; x < 54; x++)
-        {
+        for (int x = 0; x < 54; x++) {
             int subListPosition = x + (page - 1) * 45;
             if (x < 45 && list.size() > subListPosition) {
                 ItemStack itemStack = list.get(subListPosition);
@@ -108,10 +106,12 @@ public class AllSubmissionsMenu extends AbstractSpigotChestMenu {
         backMeta.setDisplayName(MenuText.BACK);
         back.setItemMeta(backMeta);
         set(53, back, player -> {
-            if (prevMenu == null)
+            if (prevMenu == null) {
                 close();
-            else
+            }
+            else {
                 prevMenu.open();
+            }
         });
     }
 }

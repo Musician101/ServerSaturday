@@ -20,8 +20,7 @@ public class SubmitterMenu extends AbstractSpigotChestMenu {
     private final int page;
     private final SpigotSubmitter submitter;
 
-    public SubmitterMenu(@Nonnull Player player, @Nonnull SpigotSubmitter submitter, int page, @Nullable AbstractSpigotChestMenu prevMenu)
-    {
+    public SubmitterMenu(@Nonnull Player player, @Nonnull SpigotSubmitter submitter, int page, @Nullable AbstractSpigotChestMenu prevMenu) {
         super(Bukkit.createInventory(player, 54, MenuText.submitterMenu(submitter)), player, prevMenu);
         this.submitter = submitter;
         this.page = page;
@@ -30,8 +29,7 @@ public class SubmitterMenu extends AbstractSpigotChestMenu {
     @Override
     protected void build() {
         List<ItemStack> list = submitter.getBuilds().stream().map(build -> build.getMenuRepresentation(submitter)).collect(Collectors.toList());
-        for (int x = 0; x < 54; x++)
-        {
+        for (int x = 0; x < 54; x++) {
             int subListPosition = x + (page - 1) * 45;
             if (x < 45 && list.size() > subListPosition) {
                 ItemStack itemStack = list.get(subListPosition);
@@ -44,7 +42,7 @@ public class SubmitterMenu extends AbstractSpigotChestMenu {
                 });
             }
         }
-        
+
         //TODO need back button in all menus
         ItemStack jumpPage = new ItemStack(Material.BOOK);
         ItemMeta jumpPageMeta = jumpPage.getItemMeta();
@@ -76,10 +74,12 @@ public class SubmitterMenu extends AbstractSpigotChestMenu {
         backMeta.setDisplayName(MenuText.BACK);
         back.setItemMeta(backMeta);
         set(53, back, player -> {
-            if (prevMenu == null)
+            if (prevMenu == null) {
                 close();
-            else
+            }
+            else {
                 prevMenu.open();
+            }
         });
     }
 }

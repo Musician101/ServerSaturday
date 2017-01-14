@@ -15,27 +15,26 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SSRemove extends AbstractSpigotCommand
-{
-    public SSRemove()
-    {
+public class SSRemove extends AbstractSpigotCommand {
+
+    public SSRemove() {
         super(Commands.REMOVE_NAME, Commands.REMOVE_DESC, new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD), new SpigotCommandArgument(Commands.REMOVE_NAME), new SpigotCommandArgument(Commands.BUILD, Syntax.REPLACE, Syntax.REQUIRED)), 1), new SpigotCommandPermissions(Permissions.SUBMIT, true));
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
-    {
-        if (!testPermission(sender))
+    public boolean onCommand(CommandSender sender, String... args) {
+        if (!testPermission(sender)) {
             return false;
+        }
 
-        if (!minArgsMet(sender, args.length))
+        if (!minArgsMet(sender, args.length)) {
             return false;
+        }
 
         Player player = (Player) sender;
         String name = combineStringArray(args);
         SpigotSubmitter submitter = getSubmitter(player);
-        if (submitter.getBuild(name) == null)
-        {
+        if (submitter.getBuild(name) == null) {
             player.sendMessage(ChatColor.RED + Messages.BUILD_NOT_FOUND);
             return false;
         }

@@ -40,8 +40,7 @@ public class BuildMenu extends AbstractSpigotChestMenu {
         this(build, submitter, player, prevMenu, false);
     }
 
-    public BuildMenu(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu, boolean manualOpen)
-    {
+    public BuildMenu(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu, boolean manualOpen) {
         super(Bukkit.createInventory(player, 9, build.getName()), player, prevMenu, manualOpen);
         this.build = build;
         this.submitter = submitter;
@@ -50,9 +49,8 @@ public class BuildMenu extends AbstractSpigotChestMenu {
     @Override
     protected void build() {
         Location location = build.getLocation();
-        if (player.getUniqueId().equals(submitter.getUUID()))
-        {
-            set(0, createItem(Material.PAPER, MenuText.RENAME_NAME, MenuText.RENAME_DESC), 
+        if (player.getUniqueId().equals(submitter.getUUID())) {
+            set(0, createItem(Material.PAPER, MenuText.RENAME_NAME, MenuText.RENAME_DESC),
                     player -> new NameChangeMenu(build, submitter, player, this));
             set(1, createItem(Material.COMPASS, MenuText.CHANGE_LOCATION_NAME, MenuText.CHANGE_LOCATION_DESC.toArray(new String[3])),
                     player -> {
@@ -67,7 +65,7 @@ public class BuildMenu extends AbstractSpigotChestMenu {
                             player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
                             return;
                         }
-                        
+
                         sdch.add(player, build);
                     });
             set(3, createItem(Material.PAINTING, MenuText.CHANGE_RESOURCE_PACK_NAME, MenuText.CHANGE_RESOURCE_PACK_DESC.toArray(new String[2])),
@@ -96,16 +94,18 @@ public class BuildMenu extends AbstractSpigotChestMenu {
             set(6, createItem(Material.BARRIER, MenuText.DELETE_NAME, MenuText.DELETE_DESC.toArray(new String[2])),
                     player -> {
                         submitter.removeBuild(build.getName());
-                        if (prevMenu == null)
+                        if (prevMenu == null) {
                             close();
-                        else
+                        }
+                        else {
                             prevMenu.open();
+                        }
                     });
-            if (player.hasPermission(Permissions.FEATURE))
-            {
+            if (player.hasPermission(Permissions.FEATURE)) {
                 ItemStack featured = createItem(Material.GOLDEN_APPLE, MenuText.FEATURE_NAME, MenuText.FEATURE_DESC.toArray(new String[2]));
-                if (build.featured())
+                if (build.featured()) {
                     featured.setDurability((short) 1);
+                }
 
                 set(7, featured, player -> {
                     build.setFeatured(!build.featured());
@@ -114,22 +114,24 @@ public class BuildMenu extends AbstractSpigotChestMenu {
             }
 
             set(8, createItem(Material.ARROW, MenuText.BACK), player -> {
-                if (prevMenu == null)
+                if (prevMenu == null) {
                     close();
-                else
+                }
+                else {
                     prevMenu.open();
+                }
             });
         }
-        else
-        {
+        else {
             set(0, createItem(Material.COMPASS, MenuText.TELEPORT_NAME, MenuText.teleportDesc(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ())),
                     player -> {
                         if (player.hasPermission(Permissions.VIEW_GOTO)) {
                             player.teleport(location);
                             player.sendMessage(ChatColor.RED + Messages.teleportedToBuild(build));
                         }
-                        else
+                        else {
                             player.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
+                        }
                     });
             set(1, createItem(Material.BOOK, MenuText.DESCRIPTION_NAME),
                     player -> {
@@ -139,12 +141,14 @@ public class BuildMenu extends AbstractSpigotChestMenu {
                             Class<?> enumHand = getNMSClass("EnumHand");
                             Object mainHand = null;
                             for (Object o : enumHand.getEnumConstants()) {
-                                if (o.toString().equals("MAIN_HAND"))
+                                if (o.toString().equals("MAIN_HAND")) {
                                     mainHand = o;
+                                }
                             }
 
-                            if (mainHand == null)
+                            if (mainHand == null) {
                                 throw new NullPointerException();
+                            }
 
                             ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
                             BookMeta bookMeta = (BookMeta) book.getItemMeta();
@@ -165,11 +169,11 @@ public class BuildMenu extends AbstractSpigotChestMenu {
                         }
                     });
             set(2, createItem(Material.PAINTING, MenuText.RESOURCE_PACK_NAME, build.getResourcePack()));
-            if (player.hasPermission(Permissions.FEATURE))
-            {
+            if (player.hasPermission(Permissions.FEATURE)) {
                 ItemStack feature = createItem(Material.GOLDEN_APPLE, MenuText.FEATURE_NAME, MenuText.FEATURE_DESC.toArray(new String[2]));
-                if (build.featured())
+                if (build.featured()) {
                     feature.setDurability((short) 1);
+                }
 
                 set(3, feature, player -> {
                     build.setFeatured(!build.featured());
@@ -178,10 +182,12 @@ public class BuildMenu extends AbstractSpigotChestMenu {
             }
 
             set(8, createItem(Material.ARROW, MenuText.BACK), player -> {
-                if (prevMenu == null)
+                if (prevMenu == null) {
                     close();
-                else
+                }
+                else {
                     prevMenu.open();
+                }
             });
         }
     }
@@ -190,8 +196,9 @@ public class BuildMenu extends AbstractSpigotChestMenu {
         ItemStack itemStack = new ItemStack(material);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName(name);
-        if (lore != null && lore.length > 0)
+        if (lore != null && lore.length > 0) {
             meta.setLore(Arrays.asList(lore));
+        }
 
         return itemStack;
     }

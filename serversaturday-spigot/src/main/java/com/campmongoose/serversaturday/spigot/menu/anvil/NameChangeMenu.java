@@ -6,10 +6,9 @@ import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import javax.annotation.Nonnull;
 import org.bukkit.entity.Player;
 
-public class NameChangeMenu extends SSAnvilGUI
-{
-    public NameChangeMenu(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player, @Nonnull AbstractSpigotChestMenu prevMenu)
-    {
+public class NameChangeMenu extends SSAnvilGUI {
+
+    public NameChangeMenu(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player, @Nonnull AbstractSpigotChestMenu prevMenu) {
         super(player, prevMenu, (p, name) ->
         {
             submitter.updateBuildName(build, name);

@@ -13,10 +13,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SpigotBuild extends AbstractBuild<ItemStack, Location, SpigotSubmitter>
-{
-    public SpigotBuild(String name, ConfigurationSection cs)
-    {
+public class SpigotBuild extends AbstractBuild<ItemStack, Location, SpigotSubmitter> {
+
+    public SpigotBuild(String name, ConfigurationSection cs) {
         super(name);
         this.featured = cs.getBoolean(Config.FEATURED);
         this.submitted = cs.getBoolean(Config.SUBMITTED);
@@ -25,20 +24,17 @@ public class SpigotBuild extends AbstractBuild<ItemStack, Location, SpigotSubmit
         this.description = cs.getStringList(Config.DESCRIPTION);
     }
 
-    public SpigotBuild(String name, Location location)
-    {
+    public SpigotBuild(String name, Location location) {
         super(name, location);
     }
 
     @Override
-    public ItemStack getMenuRepresentation(SpigotSubmitter submitter)
-    {
+    public ItemStack getMenuRepresentation(SpigotSubmitter submitter) {
         ItemStack itemStack = new ItemStack(Material.BOOK);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setLore(Collections.singletonList(submitter.getName()));
         itemMeta.setDisplayName(name);
-        if (featured)
-        {
+        if (featured) {
             itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
@@ -48,8 +44,7 @@ public class SpigotBuild extends AbstractBuild<ItemStack, Location, SpigotSubmit
     }
 
     @Override
-    public Map<String, Object> serialize()
-    {
+    public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
         map.put(Config.FEATURED, featured);
         map.put(Config.SUBMITTED, submitted);

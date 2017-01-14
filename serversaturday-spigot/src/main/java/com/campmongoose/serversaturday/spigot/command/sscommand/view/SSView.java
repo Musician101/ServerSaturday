@@ -18,34 +18,29 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SSView extends AbstractSpigotCommand
-{
-    public SSView()
-    {
+public class SSView extends AbstractSpigotCommand {
+
+    public SSView() {
         super(Commands.VIEW_NAME, Commands.VIEW_DESC, new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD), new SpigotCommandArgument(Commands.VIEW_NAME), new SpigotCommandArgument(Commands.PLAYER, Syntax.OPTIONAL, Syntax.REPLACE), new SpigotCommandArgument(Commands.BUILD, Syntax.OPTIONAL, Syntax.REPLACE))), new SpigotCommandPermissions(Permissions.VIEW, true));
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
-    {
-        if (!testPermission(sender))
+    public boolean onCommand(CommandSender sender, String... args) {
+        if (!testPermission(sender)) {
             return false;
+        }
 
         Player player = (Player) sender;
-        if (args.length > 0)
-        {
+        if (args.length > 0) {
             SpigotSubmitter submitter = getSubmitter(args[0]);
-            if (submitter == null)
-            {
+            if (submitter == null) {
                 player.sendMessage(ChatColor.RED + Messages.PLAYER_NOT_FOUND);
                 return false;
             }
 
-            if (args.length > 1)
-            {
+            if (args.length > 1) {
                 SpigotBuild build = submitter.getBuild(combineStringArray(moveArguments(args)));
-                if (build == null)
-                {
+                if (build == null) {
                     player.sendMessage(ChatColor.RED + Messages.BUILD_NOT_FOUND);
                     return false;
                 }
@@ -56,8 +51,9 @@ public class SSView extends AbstractSpigotCommand
 
             new SubmitterMenu(player, submitter, 1, null);
         }
-        else
+        else {
             new SubmissionsMenu(player, 1, null);
+        }
 
         return true;
     }
