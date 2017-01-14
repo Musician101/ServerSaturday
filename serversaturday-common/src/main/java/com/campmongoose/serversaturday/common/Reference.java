@@ -198,12 +198,12 @@ public class Reference {
 
     public static class Permissions {
 
-        public static final String VIEW_GOTO = VIEW + ".goto";
         private static final String BASE = "ss.";
         public static final String FEATURE = BASE + "FEATURE";
         public static final String RELOAD = BASE + "reload";
         public static final String SUBMIT = BASE + "submit";
         public static final String VIEW = BASE + "view";
+        public static final String VIEW_GOTO = VIEW + ".goto";
 
         private Permissions() {
 
