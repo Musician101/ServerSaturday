@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AbstractChestMenu<I, M extends AbstractChestMenu<I, M, P, S>, P, S> {
+public abstract class AbstractChestMenu<F, I, M extends AbstractChestMenu<F, I, M, P, S, T>, P, S, T> {
 
     protected final Map<Integer, Consumer<P>> buttons = new HashMap<>();
     @Nonnull
@@ -16,13 +16,10 @@ public abstract class AbstractChestMenu<I, M extends AbstractChestMenu<I, M, P, 
     @Nullable
     protected final M prevMenu;
 
-    public AbstractChestMenu(@Nonnull I inventory, @Nonnull P player, @Nullable M prevMenu, boolean manualOpen) {
+    public AbstractChestMenu(@Nonnull I inventory, @Nonnull P player, @Nullable M prevMenu) {
         this.inventory = inventory;
         this.player = player;
         this.prevMenu = prevMenu;
-        if (!manualOpen) {
-            open();
-        }
     }
 
     protected abstract void build();
@@ -34,4 +31,9 @@ public abstract class AbstractChestMenu<I, M extends AbstractChestMenu<I, M, P, 
     protected abstract void set(int slot, @Nonnull S itemStack);
 
     protected abstract void set(int slot, @Nonnull S itemStack, @Nonnull Consumer<P> consumer);
+
+    protected abstract void setBackButton(int slot, @Nonnull T itemType);
+
+    @Nonnull
+    protected abstract S createItem(@Nonnull T itemType, @Nonnull F name, @Nonnull F... description);
 }

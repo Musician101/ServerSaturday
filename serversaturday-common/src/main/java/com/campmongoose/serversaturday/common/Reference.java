@@ -103,13 +103,13 @@ public class Reference {
         public static final String CHANGE_LOCATION_NAME = "Change Location";
         public static final List<String> CHANGE_RESOURCE_PACK_DESC = Collections.unmodifiableList(Arrays.asList("Change the recommended resource", "pack for this build."));
         public static final String CHANGE_RESOURCE_PACK_NAME = "Change Resource Pack";
-        public static final String CLICK_TO_CONFIRM = "Click the result to confirm.";
         public static final List<String> DELETE_DESC = Collections.unmodifiableList(Arrays.asList("THIS WILL DELETE THIS BUILD", "FROM THE SUBMISSION LIST!!!"));
         public static final String DELETE_NAME = "Delete";
         public static final String DESCRIPTION_NAME = "Description";
         public static final List<String> FEATURE_DESC = Collections.unmodifiableList(Arrays.asList("Set whether this build has been covered in", "an episode of Server Saturday."));
         public static final String FEATURE_NAME = "Feature";
         public static final String JUMP_PAGE = "Jump To Page";
+        public static final String NOT_A_NUMBER = "That was not a number.";
         public static final String NEXT_PAGE = "Next Page";
         public static final String PREVIOUS_PAGE = "Previous Page";
         public static final String RENAME_DESC = "Rename this build.";
@@ -120,6 +120,9 @@ public class Reference {
         public static final List<String> SUBMIT_UNREADY_DESC = Collections.unmodifiableList(Arrays.asList("Add or remove your build from", "the list of ready builds."));
         public static final String SUBMIT_UNREADY_NAME = "Submit/Unready";
         public static final String TELEPORT_NAME = "Teleport";
+        public static final String[] BACK_DESC = {"Closes this menu and attempts","to go back to the previous one."};
+        public static final String ALREADY_EXISTS = "That field already exists!";
+        public static final String BUILD_DEFAULT_NAME = "A Server Saturday Build";
 
         private MenuText() {
 
@@ -137,6 +140,10 @@ public class Reference {
         public static String[] teleportDesc(String name, int x, int y, int z) {
             return new String[]{"Click to teleport.", "- World: " + name, "- X: " + x, "- Y: " + y, "- Z: " + z};
         }
+
+        public static String maxPage(int maxPage) {
+            return "Must be between 1-" + maxPage;
+        }
     }
 
     public static class Messages {
@@ -150,6 +157,7 @@ public class Reference {
         public static final String PLUGIN_RELOADED = PREFIX + "Submissions reloaded. Check console for errors.";
         public static final String PLAYER_NOT_FOUND = PREFIX + "Could not find a player with that name.";
         public static final String PLAYER_ONLY = PREFIX + "This is a player only command.";
+        public static final String INVALID_MENU = PREFIX + "The previous menu is not a valid menu.";
 
         private Messages() {
 

@@ -1,43 +1,48 @@
 package com.campmongoose.serversaturday.spigot.menu.anvil.page;
 
+import com.campmongoose.serversaturday.common.Reference.MenuText;
+import com.campmongoose.serversaturday.common.TriConsumer;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.menu.AbstractSpigotChestMenu;
 import com.campmongoose.serversaturday.spigot.menu.anvil.SSAnvilGUI;
 import com.campmongoose.serversaturday.spigot.menu.chest.AllSubmissionsMenu;
 import com.campmongoose.serversaturday.spigot.menu.chest.SubmissionsMenu;
-import com.campmongoose.serversaturday.spigot.menu.chest.SubmitterMenu;
-import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class JumpToPage extends SSAnvilGUI {
 
-    public JumpToPage(@Nonnull Player player, @Nonnull AbstractSpigotChestMenu prevMenu, @Nullable SpigotSubmitter submitter) {
+    public JumpToPage(@Nonnull Player player, @Nonnull AbstractSpigotChestMenu prevMenu, int maxPage) {
+        this(player, prevMenu, maxPage, (p, pg, m) -> {
+            if (prevMenu instanceof AllSubmissionsMenu) {
+                new AllSubmissionsMenu(p, pg, m);
+            }
+            else if (prevMenu instanceof SubmissionsMenu) {
+                new SubmissionsMenu(p, pg, m);
+            }
+
+            throw new UnsupportedOperationException(prevMenu.getClass().getName() + " is not supported with this constructor. " +
+                    "Please use new JumpToPage(Player, AbstractSpigotChestMenu, TriConsumer)");
+        });
+    }
+
+    public JumpToPage(@Nonnull Player player, @Nonnull AbstractSpigotChestMenu prevMenu, int maxPage, @Nonnull TriConsumer<Player, Integer, AbstractSpigotChestMenu> biConsumer) {
         super(player, prevMenu, (p, name) -> {
             int page;
             try {
                 page = Integer.parseInt(name);
             }
             catch (NumberFormatException e) {
-                Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.instance(), () -> new JumpToPage(player, prevMenu, submitter));
-                return null;
+                return MenuText.NOT_A_NUMBER;
             }
 
-            if (prevMenu instanceof AllSubmissionsMenu) {
-                new AllSubmissionsMenu(player, page, prevMenu);
-            }
-            else if (prevMenu instanceof SubmissionsMenu) {
-                new SubmissionsMenu(player, page, prevMenu);
-            }
-            else if (prevMenu instanceof SubmitterMenu) {
-                new SubmitterMenu(player, checkNotNull(submitter), page, prevMenu);
+            if (page > maxPage) {
+                return MenuText.maxPage(maxPage);
             }
 
-            return name;
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.instance(), () -> biConsumer.accept(player, page, prevMenu));
+            return null;
         });
     }
 }

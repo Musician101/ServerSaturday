@@ -26,8 +26,12 @@ public class UUIDUtils {
     public static Map<UUID, String> getNames(List<UUID> uuids) throws IOException {
         Map<UUID, String> map = new HashMap<>();
         for (UUID uuid : uuids) {
-            HttpURLConnection connection = (HttpURLConnection) new URL("https://sessionserver.mojang.com/session/minecraft/profile" + uuid.toString().replace("-", "")).openConnection();
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replace("-", "")).openConnection();
             JsonObject response = new Gson().fromJson(new InputStreamReader(connection.getInputStream()), JsonObject.class);
+            if (response == null) {
+                continue;
+            }
+
             String name = response.has("name") ? response.get("name").getAsString() : null;
             if (name == null) {
                 continue;

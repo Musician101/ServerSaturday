@@ -54,7 +54,7 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
     }
 
     public String getCommandHelpInfo() {
-        return getUsage() + " " + ChatColor.AQUA + getDescription();
+        return getUsage().getUsage() + " " + ChatColor.AQUA + getDescription();
     }
 
     public String getDescription() {

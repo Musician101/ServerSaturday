@@ -32,7 +32,8 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
     public SpigotSubmitter(UUID uuid, ConfigurationSection cs) {
         super(getName(uuid, cs), uuid);
         ConfigurationSection buildsCS = cs.getConfigurationSection(Config.BUILDS);
-        buildsCS.getKeys(false).stream().filter(buildName -> !buildName.contains(".")).forEach(buildName -> builds.put(buildName, new SpigotBuild(buildName, buildsCS.getConfigurationSection(buildName))));
+        buildsCS.getKeys(false).stream().filter(buildName ->
+                !buildName.contains(".")).forEach(buildName -> builds.put(buildName, new SpigotBuild(buildName, buildsCS.getConfigurationSection(buildName))));
     }
 
     private static String getName(UUID uuid, ConfigurationSection cs) {
@@ -70,7 +71,8 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
     @Nonnull
     @Override
     public SpigotBuild newBuild(@Nonnull String name, @Nonnull Location location) {
-        return builds.putIfAbsent(name, new SpigotBuild(name, location));
+        builds.putIfAbsent(name, new SpigotBuild(name, location));
+        return builds.get(name);
     }
 
     @Override

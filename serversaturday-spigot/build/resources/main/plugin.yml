@@ -1,7 +1,0 @@
-name: ServerSaturday
-main: com.campmongoose.serversaturday.spigot.SpigotServerSaturday
-version: ${project.version}
-commands:
-    serversaturday:
-      aliases: [ss]
-      description: Base command.

@@ -10,21 +10,16 @@ import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
+import net.minecraft.server.v1_10_R1.EnumHand;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-
-import static com.campmongoose.serversaturday.spigot.ReflectionUtils.getEntityClass;
-import static com.campmongoose.serversaturday.spigot.ReflectionUtils.getInventoryClass;
-import static com.campmongoose.serversaturday.spigot.ReflectionUtils.getMethod;
-import static com.campmongoose.serversaturday.spigot.ReflectionUtils.getNMSClass;
-import static com.campmongoose.serversaturday.spigot.ReflectionUtils.invokeMethod;
 
 public class SSViewDescription extends AbstractSpigotCommand {
 
@@ -55,39 +50,16 @@ public class SSViewDescription extends AbstractSpigotCommand {
             return false;
         }
 
-        try {
-            Object entityHuman = invokeMethod(getMethod(getEntityClass("CraftPlayer"), "getHandle"), player);
-            Class<?> nmsItemStack = getNMSClass("ItemStack");
-            Class<?> enumHand = getNMSClass("EnumHand");
-            Object mainHand = null;
-            for (Object o : enumHand.getEnumConstants()) {
-                if (o.toString().equals("MAIN_HAND")) {
-                    mainHand = o;
-                }
-            }
-
-            if (mainHand == null) {
-                throw new NullPointerException();
-            }
-
-            Method openBook = entityHuman.getClass().getDeclaredMethod("a", nmsItemStack, enumHand);
-            Method asNMSCopy = getMethod(getInventoryClass("CraftItemStack"), "asNMSCopy", ItemStack.class);
-            ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-            BookMeta bookMeta = (BookMeta) book.getItemMeta();
-            bookMeta.setAuthor(submitter.getName());
-            bookMeta.setPages(build.getDescription());
-            bookMeta.setTitle(build.getName());
-            book.setItemMeta(bookMeta);
-            ItemStack old = player.getInventory().getItemInMainHand();
-            player.getInventory().setItemInMainHand(book);
-            openBook.invoke(entityHuman, asNMSCopy.invoke(null, book), mainHand);
-            player.getInventory().setItemInMainHand(old);
-        }
-        catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
-            player.sendMessage(ChatColor.RED + Messages.PREFIX + "An error occurred while attempting this operation.");
-            e.printStackTrace();
-            return false;
-        }
+        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta bookMeta = (BookMeta) book.getItemMeta();
+        bookMeta.setAuthor(submitter.getName());
+        bookMeta.setPages(build.getDescription());
+        bookMeta.setTitle(build.getName());
+        book.setItemMeta(bookMeta);
+        ItemStack old = player.getInventory().getItemInMainHand();
+        player.getInventory().setItemInMainHand(book);
+        ((CraftPlayer) player).getHandle().a(CraftItemStack.asNMSCopy(book), EnumHand.MAIN_HAND);
+        player.getInventory().setItemInMainHand(old);
 
         return true;
     }
