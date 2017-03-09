@@ -6,6 +6,7 @@ import com.campmongoose.serversaturday.spigot.menu.AbstractSpigotChestMenu;
 import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public abstract class SSAnvilGUI extends AnvilGUI {
@@ -21,6 +22,6 @@ public abstract class SSAnvilGUI extends AnvilGUI {
     @Override
     public void closeInventory() {
         super.closeInventory();
-        prevMenu.open();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.instance(), prevMenu::open);
     }
 }
