@@ -64,7 +64,7 @@ public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<String, 
     protected void close() {
         HandlerList.unregisterAll(this);
         if (prevMenu != null) {
-            prevMenu.open();
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.instance(), prevMenu::open);
         }
     }
 
