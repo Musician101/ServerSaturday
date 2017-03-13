@@ -37,13 +37,13 @@ public abstract class SpongeCommandExecutor extends AbstractCommand<SpongeBuild,
 
     @Nonnull
     @Override
-    protected SpongeSubmitter getSubmitter(Player player) {
+    protected SpongeSubmitter getSubmitter(@Nonnull Player player) {
         return getSubmissions().getSubmitter(player);
     }
 
     @Nullable
     @Override
-    protected SpongeSubmitter getSubmitter(String playerName) {
+    protected SpongeSubmitter getSubmitter(@Nonnull String playerName) {
         try {
             return getSubmitter(UUIDUtils.getUUIDOf(playerName));
         }
@@ -59,7 +59,7 @@ public abstract class SpongeCommandExecutor extends AbstractCommand<SpongeBuild,
     }
 
     @Nullable
-    protected SpongeSubmitter getSubmitter(UUID uuid) {
+    protected SpongeSubmitter getSubmitter(@Nonnull UUID uuid) {
         return getSubmissions().getSubmitter(uuid);
     }
 

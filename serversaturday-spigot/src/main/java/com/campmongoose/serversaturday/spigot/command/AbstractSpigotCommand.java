@@ -2,12 +2,10 @@ package com.campmongoose.serversaturday.spigot.command;
 
 import com.campmongoose.serversaturday.common.AbstractCommand;
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.uuid.UUIDUtils;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmissions;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -87,17 +85,20 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
 
     @Nonnull
     @Override
-    protected SpigotSubmitter getSubmitter(Player player) {
+    protected SpigotSubmitter getSubmitter(@Nonnull Player player) {
         return getSubmissions().getSubmitter(player);
     }
 
     @Nullable
     @Override
-    protected SpigotSubmitter getSubmitter(String playerName) {
-        try {
-            return getSubmitter(UUIDUtils.getUUIDOf(playerName));
-        }
-        catch (IOException e) {
+    protected SpigotSubmitter getSubmitter(@Nonnull String playerName) {
+        UUID uuid = getPluginInstance().getUUIDCache().getUUIDOf(playerName);
+        if (uuid != null) {
+            SpigotSubmitter submitter = getSubmitter(uuid);
+            if (submitter != null) {
+                return submitter;
+            }
+
             for (SpigotSubmitter s : getSubmissions().getSubmitters()) {
                 if (s.getName().equalsIgnoreCase(playerName)) {
                     return s;
@@ -109,7 +110,7 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
     }
 
     @Nullable
-    protected SpigotSubmitter getSubmitter(UUID uuid) {
+    protected SpigotSubmitter getSubmitter(@Nonnull UUID uuid) {
         return getSubmissions().getSubmitter(uuid);
     }
 
@@ -117,7 +118,7 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
         return usage;
     }
 
-    protected boolean minArgsMet(CommandSender sender, int args) {
+    protected boolean minArgsMet(@Nonnull CommandSender sender, int args) {
         if (args >= usage.getMinArgs()) {
             return true;
         }

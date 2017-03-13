@@ -3,7 +3,6 @@ package com.campmongoose.serversaturday.spigot.submission;
 import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.submission.AbstractSubmitter;
-import com.campmongoose.serversaturday.common.uuid.UUIDUtils;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import java.io.File;
 import java.io.IOException;
@@ -30,19 +29,14 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
     }
 
     public SpigotSubmitter(UUID uuid, ConfigurationSection cs) {
-        super(getName(uuid, cs), uuid);
+        super(getName(uuid), uuid);
         ConfigurationSection buildsCS = cs.getConfigurationSection(Config.BUILDS);
         buildsCS.getKeys(false).stream().filter(buildName ->
                 !buildName.contains(".")).forEach(buildName -> builds.put(buildName, new SpigotBuild(buildName, buildsCS.getConfigurationSection(buildName))));
     }
 
-    private static String getName(UUID uuid, ConfigurationSection cs) {
-        try {
-            return UUIDUtils.getNameOf(uuid);
-        }
-        catch (IOException e) {
-            return cs.getString(Config.NAME);
-        }
+    private static String getName(UUID uuid) {
+        return SpigotServerSaturday.instance().getUUIDCache().getNameOf(uuid);
     }
 
     @Nonnull
@@ -77,7 +71,8 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
 
     @Override
     public void save(@Nonnull File file) {
-        Logger logger = SpigotServerSaturday.instance().getLogger();
+        SpigotServerSaturday plugin = SpigotServerSaturday.instance();
+        Logger logger = plugin.getLogger();
         try {
             if (file.createNewFile()) {
                 logger.info(Messages.newFile(file));
@@ -89,13 +84,7 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
         }
 
         YamlConfiguration yaml = new YamlConfiguration();
-        try {
-            yaml.set(Config.NAME, UUIDUtils.getNameOf(uuid));
-        }
-        catch (IOException e) {
-            yaml.set(Config.NAME, name);
-        }
-
+        yaml.set(Config.NAME, plugin.getUUIDCache().getNameOf(uuid));
         Map<String, Map<String, Object>> buildsMap = new HashMap<>();
         builds.forEach((buildName, build) -> buildsMap.put(buildName, build.serialize()));
         yaml.set(Config.BUILDS, buildsMap);

@@ -2,14 +2,13 @@ package com.campmongoose.serversaturday.spigot.menu.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.uuid.UUIDUtils;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.menu.AbstractSpigotChestMenu;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmissions;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,12 +34,14 @@ public class AllSubmissionsMenu extends SpigotAbstractPagedMenu {
         setContents(list, (p, itemStack) ->
                 player -> {
                     String submitterName = itemStack.getItemMeta().getLore().get(0);
+                    SpigotServerSaturday plugin = SpigotServerSaturday.instance();
                     SpigotSubmitter submitter = null;
-                    SpigotSubmissions submissions = SpigotServerSaturday.instance().getSubmissions();
-                    try {
-                        submitter = submissions.getSubmitter(UUIDUtils.getUUIDOf(submitterName));
+                    SpigotSubmissions submissions = plugin.getSubmissions();
+                    UUID uuid = plugin.getUUIDCache().getUUIDOf(submitterName);
+                    if (uuid != null) {
+                        submitter = submissions.getSubmitter(uuid);
                     }
-                    catch (IOException exception) {
+                    else {
                         for (SpigotSubmitter s : submissions.getSubmitters()) {
                             if (submitterName.equals(s.getName())) {
                                 submitter = s;

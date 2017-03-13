@@ -16,11 +16,11 @@ public abstract class AbstractCommand<B extends AbstractBuild<T, L, Q>, I, L, P,
     protected abstract S getSubmissions();
 
     @Nonnull
-    protected abstract Q getSubmitter(P player);
+    protected abstract Q getSubmitter(@Nonnull P player);
 
     @Nullable
-    protected abstract Q getSubmitter(UUID uuid);
+    protected abstract Q getSubmitter(@Nonnull UUID uuid);
 
     @Nullable
-    protected abstract Q getSubmitter(String playerName);
+    protected abstract Q getSubmitter(@Nonnull String playerName);
 }
