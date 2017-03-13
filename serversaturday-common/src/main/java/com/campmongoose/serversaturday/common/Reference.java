@@ -191,7 +191,7 @@ public class Reference {
         }
 
         @Nonnull
-        public static <B extends AbstractBuild<I, L, S>, I, L, M, S extends AbstractSubmitter<B, I, L>> String addBuild(@Nonnull String name, UUID uuid, @Nonnull B build, double x, double y, double z, double yaw, double pitch, @Nonnull String worldName) {
+        public static <B extends AbstractBuild<I, L, S>, I, L, S extends AbstractSubmitter<B, I, L>> String addBuild(@Nonnull String name, UUID uuid, @Nonnull B build, double x, double y, double z, double yaw, double pitch, @Nonnull String worldName) {
             return "insert into " + TABLE_NAME + "(PlayerName, PlayerID, BuildName, Featured, Submitted, LocationX, " +
                     "LocationY, LocationZ, LocationYaw, LocationPitch, WorldName, ResourcePack, Description) values " +
                     "(\"" + name + "\", \"" + uuid.toString() + "\", \"" + build.getName() + "\", " + build.featured() +
