@@ -34,6 +34,7 @@ public abstract class AbstractChestMenu<F, I, M extends AbstractChestMenu<F, I, 
 
     protected abstract void setBackButton(int slot, @Nonnull T itemType);
 
+    @SuppressWarnings("unchecked")
     @Nonnull
     protected abstract S createItem(@Nonnull T itemType, @Nonnull F name, @Nonnull F... description);
 }
