@@ -41,7 +41,9 @@ public class SubmitterMenu extends SpigotAbstractPagedMenu {
         }
 
         int maxPage = new Double(Math.ceil(list.size() / 45)).intValue();
-        set(45, createItem(Material.BOOK, MenuText.BACK), player -> new SubmitterJumpToPage(player, this, maxPage, submitter));
+        ItemStack jumpStack = createItem(Material.BOOK, MenuText.JUMP_PAGE);
+        jumpStack.setAmount(page);
+        set(45, jumpStack, player -> new SubmitterJumpToPage(player, this, maxPage, submitter));
         setPageNavigationButton(48, MenuText.PREVIOUS_PAGE, player -> {
             if (page > 1) {
                 new SubmitterMenu(player, submitter, page - 1, prevMenu);
