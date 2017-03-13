@@ -124,7 +124,7 @@ public class BuildMenu extends AbstractSpigotChestMenu {
     }
 
     private void setTeleportButton(int slot, Location location) {
-        set(slot, createItem(Material.COMPASS, MenuText.TELEPORT_NAME, MenuText.teleportDesc(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ())),
+        set(slot, createItem(Material.COMPASS, MenuText.TELEPORT_NAME, MenuText.teleportDesc(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ()).toArray(new String[0])),
                 player -> {
                     if (player.hasPermission(Permissions.VIEW_GOTO)) {
                         player.teleport(location);

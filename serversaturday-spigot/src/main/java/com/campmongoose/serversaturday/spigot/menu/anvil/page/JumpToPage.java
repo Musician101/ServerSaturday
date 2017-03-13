@@ -38,7 +38,7 @@ public class JumpToPage extends SSAnvilGUI {
             }
 
             if (page > maxPage) {
-                return MenuText.maxPage(maxPage);
+                return Integer.toString(maxPage);
             }
 
             Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.instance(), () -> biConsumer.accept(player, page, prevMenu));
