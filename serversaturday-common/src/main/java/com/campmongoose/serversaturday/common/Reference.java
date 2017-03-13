@@ -99,7 +99,10 @@ public class Reference {
     public static class MenuText {
 
         public static final String ALL_SUBMISSIONS = "All S.S. Submissions";
+        public static final String ALREADY_EXISTS = "That field already exists!";
         public static final String BACK = "Back";
+        public static final String[] BACK_DESC = {"Closes this menu and attempts", "to go back to the previous one."};
+        public static final String BUILD_DEFAULT_NAME = "A Server Saturday Build";
         public static final String CHANGE_DESCRIPTION_DESC = "Add or change the description to this build.";
         public static final String CHANGE_DESCRIPTION_NAME = "Change Description";
         public static final List<String> CHANGE_LOCATION_DESC = Collections.unmodifiableList(Arrays.asList("Change the warp location for this build", "to where you are currently standing.", "WARNING: This will affect which direction", "people face when they teleport to your build."));
@@ -112,8 +115,8 @@ public class Reference {
         public static final List<String> FEATURE_DESC = Collections.unmodifiableList(Arrays.asList("Set whether this build has been covered in", "an episode of Server Saturday."));
         public static final String FEATURE_NAME = "Feature";
         public static final String JUMP_PAGE = "Jump To Page";
-        public static final String NOT_A_NUMBER = "That was not a number.";
         public static final String NEXT_PAGE = "Next Page";
+        public static final String NOT_A_NUMBER = "That was not a number.";
         public static final String PREVIOUS_PAGE = "Previous Page";
         public static final String RENAME_DESC = "Rename this build.";
         public static final String RENAME_ME = "Rename me!";
@@ -123,9 +126,6 @@ public class Reference {
         public static final List<String> SUBMIT_UNREADY_DESC = Collections.unmodifiableList(Arrays.asList("Add or remove your build from", "the list of ready builds."));
         public static final String SUBMIT_UNREADY_NAME = "Submit/Unready";
         public static final String TELEPORT_NAME = "Teleport";
-        public static final String[] BACK_DESC = {"Closes this menu and attempts","to go back to the previous one."};
-        public static final String ALREADY_EXISTS = "That field already exists!";
-        public static final String BUILD_DEFAULT_NAME = "A Server Saturday Build";
 
         private MenuText() {
 

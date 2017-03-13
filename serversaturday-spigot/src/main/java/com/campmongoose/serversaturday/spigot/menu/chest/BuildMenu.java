@@ -41,33 +41,6 @@ public class BuildMenu extends AbstractSpigotChestMenu {
         this.submitter = submitter;
     }
 
-    private void setTeleportButton(int slot, Location location) {
-        set(slot, createItem(Material.COMPASS, MenuText.TELEPORT_NAME, MenuText.teleportDesc(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ())),
-                player -> {
-                    if (player.hasPermission(Permissions.VIEW_GOTO)) {
-                        player.teleport(location);
-                        player.sendMessage(ChatColor.GREEN + Messages.teleportedToBuild(build));
-                        return;
-                    }
-
-                    player.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
-                });
-    }
-
-    private void setFeatureButton(int slot) {
-        if (player.hasPermission(Permissions.FEATURE)) {
-            ItemStack featured = createItem(Material.GOLDEN_APPLE, MenuText.FEATURE_NAME, MenuText.FEATURE_DESC.toArray(new String[0]));
-            if (build.featured()) {
-                featured.setDurability((short) 1);
-            }
-
-            set(slot, featured, player -> {
-                build.setFeatured(!build.featured());
-                new BuildMenu(build, submitter, player, prevMenu);
-            });
-        }
-    }
-
     //TODO left off here. Need to test EVERYTHING
     @Override
     protected void build() {
@@ -111,7 +84,7 @@ public class BuildMenu extends AbstractSpigotChestMenu {
                     player -> {
                         submitter.removeBuild(build.getName());
                         player.closeInventory();
-            });
+                    });
             setFeatureButton(7);
         }
         else {
@@ -134,5 +107,32 @@ public class BuildMenu extends AbstractSpigotChestMenu {
         }
 
         setBackButton(8, Material.ARROW);
+    }
+
+    private void setFeatureButton(int slot) {
+        if (player.hasPermission(Permissions.FEATURE)) {
+            ItemStack featured = createItem(Material.GOLDEN_APPLE, MenuText.FEATURE_NAME, MenuText.FEATURE_DESC.toArray(new String[0]));
+            if (build.featured()) {
+                featured.setDurability((short) 1);
+            }
+
+            set(slot, featured, player -> {
+                build.setFeatured(!build.featured());
+                new BuildMenu(build, submitter, player, prevMenu);
+            });
+        }
+    }
+
+    private void setTeleportButton(int slot, Location location) {
+        set(slot, createItem(Material.COMPASS, MenuText.TELEPORT_NAME, MenuText.teleportDesc(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ())),
+                player -> {
+                    if (player.hasPermission(Permissions.VIEW_GOTO)) {
+                        player.teleport(location);
+                        player.sendMessage(ChatColor.GREEN + Messages.teleportedToBuild(build));
+                        return;
+                    }
+
+                    player.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
+                });
     }
 }

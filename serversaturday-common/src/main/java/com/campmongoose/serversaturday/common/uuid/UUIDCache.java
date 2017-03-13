@@ -24,12 +24,12 @@ public class UUIDCache {
     }
 
     @Nullable
-    public UUID getUUIDOf(@Nonnull String name) {
-        return uuidMap.inverse().get(name);
+    public String getNameOf(@Nonnull UUID uuid) {
+        return uuidMap.get(uuid);
     }
 
     @Nullable
-    public String getNameOf(@Nonnull UUID uuid) {
-        return uuidMap.get(uuid);
+    public UUID getUUIDOf(@Nonnull String name) {
+        return uuidMap.inverse().get(name);
     }
 }

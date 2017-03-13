@@ -47,11 +47,11 @@ public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<String, 
         }
     }
 
-    public AbstractSpigotChestMenu(@Nonnull Inventory inventory, @Nonnull Player player,@Nullable AbstractSpigotChestMenu prevMenu) {
-        this(inventory, player, prevMenu,false);
+    public AbstractSpigotChestMenu(@Nonnull Inventory inventory, @Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu) {
+        this(inventory, player, prevMenu, false);
     }
 
-    public AbstractSpigotChestMenu(@Nonnull Inventory inventory, @Nonnull Player player,@Nullable AbstractSpigotChestMenu prevMenu, boolean manualOpen) {
+    public AbstractSpigotChestMenu(@Nonnull Inventory inventory, @Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu, boolean manualOpen) {
         super(inventory, player, prevMenu);
         SpigotServerSaturday.instance().getServer().getPluginManager().registerEvents(this, SpigotServerSaturday.instance());
         if (!manualOpen) {
@@ -62,6 +62,17 @@ public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<String, 
     @Override
     protected void close() {
         HandlerList.unregisterAll(this);
+    }
+
+    @Nonnull
+    @Override
+    protected ItemStack createItem(@Nonnull Material itemType, @Nonnull String name, @Nonnull String... description) {
+        ItemStack itemStack = new ItemStack(itemType);
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setDisplayName(name);
+        meta.setLore(Arrays.asList(description));
+        itemStack.setItemMeta(meta);
+        return itemStack;
     }
 
     @EventHandler
@@ -105,25 +116,14 @@ public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<String, 
     }
 
     @Override
-    protected void set(int slot, @Nonnull ItemStack itemStack, @Nonnull Consumer<Player> consumer) {
-        set(slot, itemStack);
-        buttons.put(slot, consumer);
-    }
-
-    @Override
     protected void set(int slot, @Nonnull ItemStack itemStack) {
         inventory.setItem(slot, itemStack);
     }
 
-    @Nonnull
     @Override
-    protected ItemStack createItem(@Nonnull Material itemType, @Nonnull String name, @Nonnull String... description) {
-        ItemStack itemStack = new ItemStack(itemType);
-        ItemMeta meta = itemStack.getItemMeta();
-        meta.setDisplayName(name);
-        meta.setLore(Arrays.asList(description));
-        itemStack.setItemMeta(meta);
-        return itemStack;
+    protected void set(int slot, @Nonnull ItemStack itemStack, @Nonnull Consumer<Player> consumer) {
+        set(slot, itemStack);
+        buttons.put(slot, consumer);
     }
 
     @Override

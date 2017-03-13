@@ -44,6 +44,10 @@ public class SpigotServerSaturday extends JavaPlugin {
         return submissions;
     }
 
+    public UUIDCache getUUIDCache() {
+        return uuidCache;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         return (command.getName().equalsIgnoreCase(Reference.NAME.replace(" ", "")) || command.getName().equalsIgnoreCase(Commands.SS_CMD.replace("/", ""))) && new SSCommand().onCommand(sender, args);
@@ -78,9 +82,5 @@ public class SpigotServerSaturday extends JavaPlugin {
         });
         getServer().getOnlinePlayers().forEach(player -> uuidCache.add(player.getUniqueId(), player.getName()));
         getLogger().info("Registration complete.");
-    }
-    
-    public UUIDCache getUUIDCache() {
-        return uuidCache;
     }
 }

@@ -26,15 +26,15 @@ public abstract class AbstractChestMenu<F, I, M extends AbstractChestMenu<F, I, 
 
     protected abstract void close();
 
-    public abstract void open();
-
-    protected abstract void set(int slot, @Nonnull S itemStack);
-
-    protected abstract void set(int slot, @Nonnull S itemStack, @Nonnull Consumer<P> consumer);
-
-    protected abstract void setBackButton(int slot, @Nonnull T itemType);
-
     @SuppressWarnings("unchecked")
     @Nonnull
     protected abstract S createItem(@Nonnull T itemType, @Nonnull F name, @Nonnull F... description);
+
+    public abstract void open();
+
+    protected abstract void set(int slot, @Nonnull S itemStack, @Nonnull Consumer<P> consumer);
+
+    protected abstract void set(int slot, @Nonnull S itemStack);
+
+    protected abstract void setBackButton(int slot, @Nonnull T itemType);
 }
