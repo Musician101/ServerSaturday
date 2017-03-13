@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 
 public class Reference {
 
@@ -15,7 +16,7 @@ public class Reference {
     public static final String DUCK = "\\_o<";
     public static final String ID = "server_saturday";
     public static final String NAME = "Server Saturday";
-    public static final String VERSION = "1.3";
+    public static final String VERSION = "2.0";
 
     private Reference() {
 
@@ -84,11 +85,13 @@ public class Reference {
 
         }
 
-        public static String getHOCONFileName(UUID uuid) {
+        @Nonnull
+        public static String getHOCONFileName(@Nonnull UUID uuid) {
             return uuid.toString() + HOCON_EXT;
         }
 
-        public static String getYAMLFileName(UUID uuid) {
+        @Nonnull
+        public static String getYAMLFileName(@Nonnull UUID uuid) {
             return uuid.toString() + YAML_EXT;
         }
     }
@@ -128,21 +131,14 @@ public class Reference {
 
         }
 
-        @Deprecated
-        public static String page(int page) {
-            return "Page " + page;
-        }
-
-        public static <S extends AbstractSubmitter> String submitterMenu(S submitter) {
+        @Nonnull
+        public static <S extends AbstractSubmitter> String submitterMenu(@Nonnull S submitter) {
             return submitter.getName() + "'s Builds";
         }
 
-        public static String[] teleportDesc(String name, int x, int y, int z) {
-            return new String[]{"Click to teleport.", "- World: " + name, "- X: " + x, "- Y: " + y, "- Z: " + z};
-        }
-
-        public static String maxPage(int maxPage) {
-            return "Must be between 1-" + maxPage;
+        @Nonnull
+        public static List<String> teleportDesc(@Nonnull String name, int x, int y, int z) {
+            return Arrays.asList("Click to teleport.", "- World: " + name, "- X: " + x, "- Y: " + y, "- Z: " + z);
         }
     }
 
@@ -157,25 +153,28 @@ public class Reference {
         public static final String PLUGIN_RELOADED = PREFIX + "Submissions reloaded. Check console for errors.";
         public static final String PLAYER_NOT_FOUND = PREFIX + "Could not find a player with that name.";
         public static final String PLAYER_ONLY = PREFIX + "This is a player only command.";
-        public static final String INVALID_MENU = PREFIX + "The previous menu is not a valid menu.";
 
         private Messages() {
 
         }
 
-        public static String ioException(File file) {
+        @Nonnull
+        public static String ioException(@Nonnull File file) {
             return "An error occurred while saving " + file.getName();
         }
 
-        public static <B extends AbstractBuild> String locationChanged(B build) {
+        @Nonnull
+        public static <B extends AbstractBuild> String locationChanged(@Nonnull B build) {
             return PREFIX + "Warp location for " + build.getName() + " updated.";
         }
 
-        public static String newFile(File file) {
+        @Nonnull
+        public static String newFile(@Nonnull File file) {
             return PREFIX + "Generating a new file: " + file.getName();
         }
 
-        public static <B extends AbstractBuild> String teleportedToBuild(B build) {
+        @Nonnull
+        public static <B extends AbstractBuild> String teleportedToBuild(@Nonnull B build) {
             return PREFIX + "You have teleported to " + build.getName();
         }
     }
@@ -191,7 +190,8 @@ public class Reference {
 
         }
 
-        public static <B extends AbstractBuild<I, L, S>, I, L, M, S extends AbstractSubmitter<B, I, L>> String addBuild(String name, UUID uuid, B build, double x, double y, double z, double yaw, double pitch, String worldName) {
+        @Nonnull
+        public static <B extends AbstractBuild<I, L, S>, I, L, M, S extends AbstractSubmitter<B, I, L>> String addBuild(@Nonnull String name, UUID uuid, @Nonnull B build, double x, double y, double z, double yaw, double pitch, @Nonnull String worldName) {
             return "insert into " + TABLE_NAME + "(PlayerName, PlayerID, BuildName, Featured, Submitted, LocationX, " +
                     "LocationY, LocationZ, LocationYaw, LocationPitch, WorldName, ResourcePack, Description) values " +
                     "(\"" + name + "\", \"" + uuid.toString() + "\", \"" + build.getName() + "\", " + build.featured() +
@@ -199,7 +199,8 @@ public class Reference {
                     worldName + "\", \"" + build.getResourcePack() + "\", '" + new Gson().toJson(build.getDescription()) + "');";
         }
 
-        public static String deletePlayer(UUID uuid) {
+        @Nonnull
+        public static String deletePlayer(@Nonnull UUID uuid) {
             return "delete from " + TABLE_NAME + " where PlayerID = " + uuid.toString();
         }
     }

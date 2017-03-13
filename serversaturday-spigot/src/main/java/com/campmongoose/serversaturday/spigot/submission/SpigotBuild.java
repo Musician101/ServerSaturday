@@ -5,6 +5,7 @@ import com.campmongoose.serversaturday.common.submission.AbstractBuild;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,8 +29,9 @@ public class SpigotBuild extends AbstractBuild<ItemStack, Location, SpigotSubmit
         super(name, location);
     }
 
+    @Nonnull
     @Override
-    public ItemStack getMenuRepresentation(SpigotSubmitter submitter) {
+    public ItemStack getMenuRepresentation(@Nonnull SpigotSubmitter submitter) {
         ItemStack itemStack = new ItemStack(Material.BOOK);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setLore(Collections.singletonList(submitter.getName()));
@@ -43,6 +45,7 @@ public class SpigotBuild extends AbstractBuild<ItemStack, Location, SpigotSubmit
         return itemStack;
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();

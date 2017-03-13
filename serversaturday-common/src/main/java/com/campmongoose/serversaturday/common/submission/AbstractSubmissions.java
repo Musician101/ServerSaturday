@@ -28,6 +28,7 @@ public abstract class AbstractSubmissions<P, S extends AbstractSubmitter> {
         return submitters.get(uuid);
     }
 
+    @Nonnull
     public List<S> getSubmitters() {
         return new ArrayList<>(submitters.values());
     }

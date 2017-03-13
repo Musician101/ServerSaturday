@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class UUIDUtils {
 
@@ -19,11 +21,13 @@ public class UUIDUtils {
 
     }
 
-    public static String getNameOf(UUID uuid) throws IOException {
+    @Nullable
+    public static String getNameOf(@Nonnull UUID uuid) throws IOException {
         return getNames(Collections.singletonList(uuid)).get(uuid);
     }
 
-    public static Map<UUID, String> getNames(List<UUID> uuids) throws IOException {
+    @Nonnull
+    public static Map<UUID, String> getNames(@Nonnull List<UUID> uuids) throws IOException {
         Map<UUID, String> map = new HashMap<>();
         for (UUID uuid : uuids) {
             HttpURLConnection connection = (HttpURLConnection) new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replace("-", "")).openConnection();
@@ -49,11 +53,12 @@ public class UUIDUtils {
         return map;
     }
 
-    public static UUID getUUIDOf(String name) throws IOException {
+    public static UUID getUUIDOf(@Nonnull String name) throws IOException {
         return getUUIDs(Collections.singletonList(name.toLowerCase())).get(name.toLowerCase());
     }
 
-    public static Map<String, UUID> getUUIDs(List<String> names) throws IOException {
+    @Nullable
+    public static Map<String, UUID> getUUIDs(@Nonnull List<String> names) throws IOException {
         Map<String, UUID> map = new HashMap<>();
         for (String name : names) {
             URL url = new URL("https://api.mojang.com/profiles/minecraft/" + name);

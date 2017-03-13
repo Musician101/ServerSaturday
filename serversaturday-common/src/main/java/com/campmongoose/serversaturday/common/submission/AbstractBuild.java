@@ -3,21 +3,25 @@ package com.campmongoose.serversaturday.common.submission;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 
 public abstract class AbstractBuild<I, L, S extends AbstractSubmitter> {
 
+    @Nonnull
     protected List<String> description = Collections.singletonList("A Server Saturday Build");
     protected boolean featured = false;
     protected L location;
+    @Nonnull
     protected String name;
+    @Nonnull
     protected String resourcePack = "Vanilla";
     protected boolean submitted = false;
 
-    public AbstractBuild(String name) {
+    public AbstractBuild(@Nonnull String name) {
         this.name = name;
     }
 
-    public AbstractBuild(String name, L location) {
+    public AbstractBuild(@Nonnull String name, @Nonnull L location) {
         this.name = name;
         this.location = location;
     }
@@ -26,40 +30,46 @@ public abstract class AbstractBuild<I, L, S extends AbstractSubmitter> {
         return featured;
     }
 
+    @Nonnull
     public List<String> getDescription() {
         return description;
     }
 
-    public void setDescription(List<String> description) {
+    public void setDescription(@Nonnull List<String> description) {
         this.description = description;
     }
 
+    @Nonnull
     public L getLocation() {
         return location;
     }
 
-    public void setLocation(L location) {
+    public void setLocation(@Nonnull L location) {
         this.location = location;
     }
 
-    public abstract I getMenuRepresentation(S submitter);
+    @Nonnull
+    public abstract I getMenuRepresentation(@Nonnull S submitter);
 
+    @Nonnull
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(@Nonnull String name) {
         this.name = name;
     }
 
+    @Nonnull
     public String getResourcePack() {
         return resourcePack;
     }
 
-    public void setResourcePack(String resourcePack) {
+    public void setResourcePack(@Nonnull String resourcePack) {
         this.resourcePack = resourcePack;
     }
 
+    @Nonnull
     public abstract Map<String, Object> serialize();
 
     public void setFeatured(boolean featured) {
