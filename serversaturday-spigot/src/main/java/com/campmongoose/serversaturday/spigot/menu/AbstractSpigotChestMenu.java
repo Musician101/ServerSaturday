@@ -13,7 +13,6 @@ import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -63,9 +62,6 @@ public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<String, 
     @Override
     protected void close() {
         HandlerList.unregisterAll(this);
-        if (prevMenu != null) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.instance(), prevMenu::open);
-        }
     }
 
     @EventHandler
@@ -133,6 +129,11 @@ public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<String, 
     @Override
     protected void setBackButton(int slot, @Nonnull Material itemType) {
         ItemStack itemStack = createItem(itemType, ChatColor.RED + MenuText.BACK, MenuText.BACK_DESC);
-        set(slot, itemStack, HumanEntity::closeInventory);
+        set(slot, itemStack, player -> {
+            player.closeInventory();
+            if (prevMenu != null) {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.instance(), prevMenu::open);
+            }
+        });
     }
 }
