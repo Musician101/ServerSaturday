@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.annotation.Nonnull;
 
 public class MySQLHandler {
 
@@ -15,7 +16,7 @@ public class MySQLHandler {
     private final String user;
     private Connection connection;
 
-    public MySQLHandler(String database, String hostname, String password, String port, String user) {
+    public MySQLHandler(@Nonnull String database, @Nonnull String hostname, @Nonnull String password, @Nonnull String port, @Nonnull String user) {
         this.connection = null;
         this.database = database;
         this.hostname = hostname;
@@ -34,6 +35,7 @@ public class MySQLHandler {
         }
     }
 
+    @Nonnull
     public Connection getConnection() {
         return connection;
     }
@@ -44,7 +46,8 @@ public class MySQLHandler {
         return connection;
     }
 
-    public ResultSet querySQL(String query) throws ClassNotFoundException, SQLException {
+    @Nonnull
+    public ResultSet querySQL(@Nonnull String query) throws ClassNotFoundException, SQLException {
         Connection c;
         if (checkConnection()) {
             c = getConnection();
@@ -60,7 +63,7 @@ public class MySQLHandler {
         return rset;
     }
 
-    public void updateSQL(String update) throws ClassNotFoundException, SQLException {
+    public void updateSQL(@Nonnull String update) throws ClassNotFoundException, SQLException {
         Connection c;
         if (checkConnection()) {
             c = getConnection();
