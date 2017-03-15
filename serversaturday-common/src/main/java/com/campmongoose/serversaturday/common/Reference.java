@@ -2,7 +2,6 @@ package com.campmongoose.serversaturday.common;
 
 import com.campmongoose.serversaturday.common.submission.AbstractBuild;
 import com.campmongoose.serversaturday.common.submission.AbstractSubmitter;
-import com.google.gson.Gson;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
@@ -172,32 +171,6 @@ public class Reference {
         @Nonnull
         public static <B extends AbstractBuild> String teleportedToBuild(@Nonnull B build) {
             return PREFIX + "You have teleported to " + build.getName();
-        }
-    }
-
-    public static class MySQL {
-
-        private static final String TABLE_NAME = "server_saturday_builds";
-        public static final String CREATE_TABLE = "create table if not exists " + TABLE_NAME + "(PlayerName text, " +
-                "PlayerID text, BuildName text, Featured boolean, Submitted boolean, LocationX float, LocationY float, " +
-                "LocationZ float, LocationYaw decimal, LocationPitch decimal, WorldName text, ResourcePack text, Description json);";
-
-        private MySQL() {
-
-        }
-
-        @Nonnull
-        public static <B extends AbstractBuild<I, L, S>, I, L, S extends AbstractSubmitter<B, I, L>> String addBuild(@Nonnull String name, UUID uuid, @Nonnull B build, double x, double y, double z, double yaw, double pitch, @Nonnull String worldName) {
-            return "insert into " + TABLE_NAME + "(PlayerName, PlayerID, BuildName, Featured, Submitted, LocationX, " +
-                    "LocationY, LocationZ, LocationYaw, LocationPitch, WorldName, ResourcePack, Description) values " +
-                    "(\"" + name + "\", \"" + uuid.toString() + "\", \"" + build.getName() + "\", " + build.featured() +
-                    ", " + build.submitted() + ", " + x + ", " + y + ", " + z + ", " + yaw + ", " + pitch + ", \"" +
-                    worldName + "\", \"" + build.getResourcePack() + "\", '" + new Gson().toJson(build.getDescription()) + "');";
-        }
-
-        @Nonnull
-        public static String deletePlayer(@Nonnull UUID uuid) {
-            return "delete from " + TABLE_NAME + " where PlayerID = " + uuid.toString();
         }
     }
 
