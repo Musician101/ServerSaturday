@@ -16,7 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class SpigotBuild extends AbstractBuild<ItemStack, Location, SpigotSubmitter> {
 
-    public SpigotBuild(String name, ConfigurationSection cs) {
+    public SpigotBuild(@Nonnull String name, @Nonnull ConfigurationSection cs) {
         super(name);
         this.featured = cs.getBoolean(Config.FEATURED);
         this.submitted = cs.getBoolean(Config.SUBMITTED);
@@ -25,7 +25,7 @@ public class SpigotBuild extends AbstractBuild<ItemStack, Location, SpigotSubmit
         this.description = cs.getStringList(Config.DESCRIPTION);
     }
 
-    public SpigotBuild(String name, Location location) {
+    public SpigotBuild(@Nonnull String name, @Nonnull Location location) {
         super(name, location);
     }
 

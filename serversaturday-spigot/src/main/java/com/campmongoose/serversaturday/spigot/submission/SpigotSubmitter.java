@@ -28,7 +28,7 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
         super(player.getName(), player.getUniqueId());
     }
 
-    public SpigotSubmitter(UUID uuid, ConfigurationSection cs) {
+    public SpigotSubmitter(@Nonnull UUID uuid, @Nonnull ConfigurationSection cs) {
         super(getName(uuid), uuid);
         ConfigurationSection buildsCS = cs.getConfigurationSection(Config.BUILDS);
         buildsCS.getKeys(false).stream().filter(buildName ->
