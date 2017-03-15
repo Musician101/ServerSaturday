@@ -53,7 +53,6 @@ public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<String, 
 
     public AbstractSpigotChestMenu(@Nonnull Inventory inventory, @Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu, boolean manualOpen) {
         super(inventory, player, prevMenu);
-        SpigotServerSaturday.instance().getServer().getPluginManager().registerEvents(this, SpigotServerSaturday.instance());
         if (!manualOpen) {
             Bukkit.getScheduler().runTaskLater(SpigotServerSaturday.instance(), this::open, 1);
         }
