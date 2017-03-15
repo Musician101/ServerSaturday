@@ -1,18 +1,13 @@
 package com.campmongoose.serversaturday.spigot.submission;
 
-import com.campmongoose.serversaturday.common.MySQLHandler;
 import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.Reference.MySQL;
 import com.campmongoose.serversaturday.common.submission.AbstractSubmissions;
-import com.campmongoose.serversaturday.spigot.SpigotConfig;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import java.io.File;
-import java.sql.SQLException;
 import java.util.UUID;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
-import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -55,27 +50,6 @@ public class SpigotSubmissions extends AbstractSubmissions<Player, SpigotSubmitt
 
     @Override
     public void save() {
-        SpigotServerSaturday plugin = SpigotServerSaturday.instance();
-        SpigotConfig config = plugin.getPluginConfig();
-        MySQLHandler sql = plugin.getMySQLHandler();
-        submitters.forEach((uuid, submitter) -> {
-            if (config.getSaveFormat().equals(Config.MYSQL) && sql != null) {
-                try {
-                    sql.querySQL(MySQL.CREATE_TABLE);
-                    sql.querySQL(MySQL.deletePlayer(uuid));
-                    for (SpigotBuild build : submitter.getBuilds()) {
-                        Location location = build.getLocation();
-                        sql.querySQL(MySQL.addBuild(submitter.getName(), uuid, build, location.getX(), location.getY(),
-                                location.getZ(), location.getYaw(), location.getPitch(), location.getWorld().getName()));
-                    }
-                }
-                catch (ClassNotFoundException | SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            else if (config.getSaveFormat().equals(Config.YAML_EXT.replace(".", ""))) {
-                submitter.save(new File(dir, Config.getYAMLFileName(uuid)));
-            }
-        });
+        submitters.forEach((uuid, submitter) -> submitter.save(new File(dir, Config.getYAMLFileName(uuid))));
     }
 }

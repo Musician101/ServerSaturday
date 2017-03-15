@@ -36,6 +36,11 @@ public class SSNew extends AbstractSpigotCommand {
         }
 
         Player player = (Player) sender;
+        if (getPluginInstance().getPluginConfig().getMaxBuilds() > 0 && player.hasPermission(Permissions.MAX_BUILDS)) {
+            player.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
+            return false;
+        }
+
         SpigotSubmitter submitter = getSubmitter(player);
         if (args.length == 0) {
             new AnvilGUI(SpigotServerSaturday.instance(), player, MenuText.BUILD_DEFAULT_NAME, (p, name) -> {

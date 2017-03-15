@@ -1,7 +1,2 @@
-save_format: yml
-mysql:
-  database: serversaturday
-  user: user
-  password: password
-  host: 127.0.0.1
-  port: 3306
+# The number of maximum builds allowed per player. Setting this to 0 means near infinite builds. (default: 0)
+max_builds: 0

@@ -1,6 +1,5 @@
 package com.campmongoose.serversaturday.spigot;
 
-import com.campmongoose.serversaturday.common.MySQLHandler;
 import com.campmongoose.serversaturday.common.Reference;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.uuid.UUIDCache;
@@ -16,7 +15,6 @@ public class SpigotServerSaturday extends JavaPlugin {
 
     private SpigotConfig config;
     private SpigotDescriptionChangeHandler dch;
-    private MySQLHandler mySQLHandler;
     private SpigotSubmissions submissions;
     private UUIDCache uuidCache;
 
@@ -26,14 +24,6 @@ public class SpigotServerSaturday extends JavaPlugin {
 
     public SpigotDescriptionChangeHandler getDescriptionChangeHandler() {
         return dch;
-    }
-
-    public MySQLHandler getMySQLHandler() {
-        return mySQLHandler;
-    }
-
-    public void setMySQLHandler(MySQLHandler sql) {
-        this.mySQLHandler = sql;
     }
 
     public SpigotConfig getPluginConfig() {

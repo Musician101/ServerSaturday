@@ -39,7 +39,7 @@ public class BuildMenu extends AbstractSpigotChestMenu {
         this.build = build;
         this.submitter = submitter;
     }
-    
+
     @Override
     protected void build() {
         Location location = build.getLocation();

@@ -7,16 +7,15 @@ public abstract class AbstractConfig {
 
     @Nonnull
     protected final File configFile;
-    protected String saveFormat;
+    protected int maxBuilds;
 
     protected AbstractConfig(@Nonnull File configFile) {
         this.configFile = configFile;
         reload();
     }
 
-    @Nonnull
-    public String getSaveFormat() {
-        return saveFormat;
+    public int getMaxBuilds() {
+        return maxBuilds;
     }
 
     public abstract void reload();

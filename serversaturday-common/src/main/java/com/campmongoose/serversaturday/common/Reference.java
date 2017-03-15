@@ -65,19 +65,15 @@ public class Reference {
     public static class Config {
 
         public static final String BUILDS = "builds";
-        public static final String DATABASE = "database";
         public static final String DESCRIPTION = "description";
         public static final String FEATURED = "featured";
         public static final String HOCON_EXT = ".conf";
-        public static final String HOST = "host";
         public static final String LOCATION = "location";
+        public static final String MAX_BUILDS = "max_builds";
         public static final String MYSQL = "mysql";
         public static final String NAME = "name";
-        public static final String PASS = "password";
-        public static final String PORT = "port";
         public static final String RESOURCE_PACK = "resource_pack";
         public static final String SUBMITTED = "submitted";
-        public static final String USER = "user";
         public static final String VANILLA = "Vanilla";
         public static final String YAML_EXT = ".yml";
 
@@ -211,6 +207,7 @@ public class Reference {
         public static final String FEATURE = BASE + "feature";
         public static final String RELOAD = BASE + "reload";
         public static final String SUBMIT = BASE + "submit";
+        public static final String MAX_BUILDS = SUBMIT + ".max_builds";
         public static final String VIEW = BASE + "view";
         public static final String VIEW_GOTO = VIEW + ".goto";
 
