@@ -25,7 +25,8 @@ public class SpigotSubmissions extends AbstractSubmissions<Player, SpigotSubmitt
     @Nonnull
     @Override
     public SpigotSubmitter getSubmitter(@Nonnull Player player) {
-        return submitters.putIfAbsent(player.getUniqueId(), new SpigotSubmitter(player));
+        submitters.putIfAbsent(player.getUniqueId(), new SpigotSubmitter(player));
+        return submitters.get(player.getUniqueId());
     }
 
     @Override
