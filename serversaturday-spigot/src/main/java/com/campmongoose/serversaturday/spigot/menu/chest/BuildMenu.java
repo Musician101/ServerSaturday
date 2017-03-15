@@ -84,6 +84,9 @@ public class BuildMenu extends AbstractSpigotChestMenu {
                     player -> {
                         submitter.removeBuild(build.getName());
                         player.closeInventory();
+                        if (prevMenu != null) {
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.instance(), prevMenu::open);
+                        }
                     });
             setFeatureButton(7);
         }
