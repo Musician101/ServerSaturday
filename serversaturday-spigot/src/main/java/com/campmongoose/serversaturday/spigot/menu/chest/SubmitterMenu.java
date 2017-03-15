@@ -1,7 +1,6 @@
 package com.campmongoose.serversaturday.spigot.menu.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.spigot.menu.AbstractSpigotChestMenu;
 import com.campmongoose.serversaturday.spigot.menu.anvil.page.SubmitterJumpToPage;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;

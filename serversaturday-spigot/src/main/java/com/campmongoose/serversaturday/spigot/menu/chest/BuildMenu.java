@@ -5,7 +5,6 @@ import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.spigot.SpigotDescriptionChangeHandler;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
-import com.campmongoose.serversaturday.spigot.menu.AbstractSpigotChestMenu;
 import com.campmongoose.serversaturday.spigot.menu.anvil.NameChangeMenu;
 import com.campmongoose.serversaturday.spigot.menu.anvil.ResourcePackChangeMenu;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;

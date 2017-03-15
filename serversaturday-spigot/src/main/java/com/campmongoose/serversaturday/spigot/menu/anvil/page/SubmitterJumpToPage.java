@@ -1,6 +1,6 @@
 package com.campmongoose.serversaturday.spigot.menu.anvil.page;
 
-import com.campmongoose.serversaturday.spigot.menu.AbstractSpigotChestMenu;
+import com.campmongoose.serversaturday.spigot.menu.chest.AbstractSpigotChestMenu;
 import com.campmongoose.serversaturday.spigot.menu.chest.SubmitterMenu;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import javax.annotation.Nonnull;

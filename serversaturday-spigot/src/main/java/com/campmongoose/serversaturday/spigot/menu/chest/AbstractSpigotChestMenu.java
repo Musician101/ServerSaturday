@@ -1,4 +1,4 @@
-package com.campmongoose.serversaturday.spigot.menu;
+package com.campmongoose.serversaturday.spigot.menu.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.menu.AbstractChestMenu;

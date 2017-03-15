@@ -2,7 +2,7 @@ package com.campmongoose.serversaturday.spigot.menu.anvil;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
-import com.campmongoose.serversaturday.spigot.menu.AbstractSpigotChestMenu;
+import com.campmongoose.serversaturday.spigot.menu.chest.AbstractSpigotChestMenu;
 import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

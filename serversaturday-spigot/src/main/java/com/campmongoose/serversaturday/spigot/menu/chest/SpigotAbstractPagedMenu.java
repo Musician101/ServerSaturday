@@ -1,7 +1,6 @@
 package com.campmongoose.serversaturday.spigot.menu.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.spigot.menu.AbstractSpigotChestMenu;
 import com.campmongoose.serversaturday.spigot.menu.anvil.page.JumpToPage;
 import java.util.List;
 import java.util.function.BiFunction;
