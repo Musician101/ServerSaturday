@@ -67,7 +67,7 @@ public class BuildMenu extends AbstractSpongeChestMenu {
                         build.setSubmitted(!build.submitted());
                         new BuildMenu(build, submitter, player, prevMenu);
                     });
-            set(5, ItemStack.builder().itemType(ItemTypes.COMPASS).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.TELEPORT_NAME)).add(Keys.ITEM_LORE, Stream.of(MenuText.teleportDesc(location.getExtent().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ())).map(Text::of).collect(Collectors.toList())).build(),
+            set(5, ItemStack.builder().itemType(ItemTypes.COMPASS).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.TELEPORT_NAME)).add(Keys.ITEM_LORE, MenuText.teleportDesc(location.getExtent().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ()).stream().map(Text::of).collect(Collectors.toList())).build(),
                     player -> {
                         if (player.hasPermission(Permissions.VIEW_GOTO)) {
                             player.setLocation(build.getLocation());
