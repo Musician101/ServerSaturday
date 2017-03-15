@@ -8,13 +8,22 @@ import com.campmongoose.serversaturday.spigot.menu.anvil.SSAnvilGUI;
 import com.campmongoose.serversaturday.spigot.menu.chest.AllSubmissionsMenu;
 import com.campmongoose.serversaturday.spigot.menu.chest.SubmissionsMenu;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class JumpToPage extends SSAnvilGUI {
 
-    public JumpToPage(@Nonnull Player player, @Nonnull AbstractSpigotChestMenu prevMenu, int maxPage) {
+    public JumpToPage(@Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu, int maxPage) {
         this(player, prevMenu, maxPage, (p, pg, m) -> {
+            if (p == null) {
+                throw new NullPointerException("Tried to open a menu without a registered player!");
+            }
+
+            if (pg == null) {
+                throw new NullPointerException("Tried to accept an input that was NULL!");
+            }
+
             if (prevMenu instanceof AllSubmissionsMenu) {
                 new AllSubmissionsMenu(p, pg, m);
             }
@@ -22,12 +31,20 @@ public class JumpToPage extends SSAnvilGUI {
                 new SubmissionsMenu(p, pg, m);
             }
 
-            throw new UnsupportedOperationException(prevMenu.getClass().getName() + " is not supported with this constructor. " +
+            String messageStart;
+            if (prevMenu == null) {
+                messageStart = "A NULL menu";
+            }
+            else {
+                messageStart = prevMenu.getClass().getName();
+            }
+
+            throw new UnsupportedOperationException(messageStart + " is not supported with this constructor. " +
                     "Please use new JumpToPage(Player, AbstractSpigotChestMenu, TriConsumer)");
         });
     }
 
-    public JumpToPage(@Nonnull Player player, @Nonnull AbstractSpigotChestMenu prevMenu, int maxPage, @Nonnull TriConsumer<Player, Integer, AbstractSpigotChestMenu> biConsumer) {
+    public JumpToPage(@Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu, int maxPage, @Nonnull TriConsumer<Player, Integer, AbstractSpigotChestMenu> biConsumer) {
         super(player, prevMenu, (p, name) -> {
             int page;
             try {

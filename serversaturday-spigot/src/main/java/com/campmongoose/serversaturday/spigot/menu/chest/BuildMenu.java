@@ -47,7 +47,7 @@ public class BuildMenu extends AbstractSpigotChestMenu {
         Location location = build.getLocation();
         if (player.getUniqueId().equals(submitter.getUUID())) {
             set(0, createItem(Material.PAPER, MenuText.RENAME_NAME, MenuText.RENAME_DESC),
-                    player -> new NameChangeMenu(build, submitter, player, this));
+                    player -> new NameChangeMenu(build, submitter, player, prevMenu));
             set(1, createItem(Material.COMPASS, MenuText.CHANGE_LOCATION_NAME, MenuText.CHANGE_LOCATION_DESC.toArray(new String[3])),
                     player -> {
                         build.setLocation(player.getLocation());
@@ -65,7 +65,7 @@ public class BuildMenu extends AbstractSpigotChestMenu {
                         sdch.add(player, build);
                     });
             set(3, createItem(Material.PAINTING, MenuText.CHANGE_RESOURCE_PACK_NAME, MenuText.CHANGE_RESOURCE_PACK_DESC.toArray(new String[2])),
-                    player -> new ResourcePackChangeMenu(build, submitter, player, this));
+                    player -> new ResourcePackChangeMenu(build, submitter, player, prevMenu));
 
             ItemStack submit = createItem(Material.FLINT_AND_STEEL, MenuText.SUBMIT_UNREADY_NAME, MenuText.SUBMIT_UNREADY_DESC.toArray(new String[2]));
             if (build.submitted()) {

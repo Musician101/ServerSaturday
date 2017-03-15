@@ -1,9 +1,9 @@
 package com.campmongoose.serversaturday.common;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 @FunctionalInterface
 public interface TriConsumer<T, U, V> {
 
-    void accept(@Nonnull T t, @Nonnull U u, @Nonnull V v);
+    void accept(@Nullable T t, @Nullable U u, @Nullable V v);
 }

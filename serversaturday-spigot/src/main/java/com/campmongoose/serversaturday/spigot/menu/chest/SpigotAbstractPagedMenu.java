@@ -42,7 +42,7 @@ public abstract class SpigotAbstractPagedMenu extends AbstractSpigotChestMenu {
     protected void setJumpToPage(int slot, int maxPage) {
         ItemStack itemStack = createItem(Material.BOOK, MenuText.JUMP_PAGE);
         itemStack.setAmount(page);
-        set(slot, itemStack, player -> new JumpToPage(player, this, maxPage));
+        set(slot, itemStack, player -> new JumpToPage(player, prevMenu, maxPage));
     }
 
     protected void setPageNavigationButton(int slot, @Nonnull String name, @Nonnull Consumer<Player> consumer) {
