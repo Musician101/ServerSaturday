@@ -69,7 +69,6 @@ public class Reference {
         public static final String HOCON_EXT = ".conf";
         public static final String LOCATION = "location";
         public static final String MAX_BUILDS = "max_builds";
-        public static final String MYSQL = "mysql";
         public static final String NAME = "name";
         public static final String RESOURCE_PACK = "resource_pack";
         public static final String SUBMITTED = "submitted";
