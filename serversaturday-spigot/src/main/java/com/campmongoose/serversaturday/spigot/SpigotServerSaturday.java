@@ -65,10 +65,6 @@ public class SpigotServerSaturday extends JavaPlugin {
         getLogger().info("Loading config...");
         config = new SpigotConfig();
         getLogger().info("Config loaded.");
-        getLogger().info("Loading submissions...");
-        submissions = new SpigotSubmissions();
-        getLogger().info("Submissions loaded.");
-        dch = new SpigotDescriptionChangeHandler();
         getLogger().info("Registering player UUIDs...");
         uuidCache = new UUIDCache();
         Stream.of(getServer().getOfflinePlayers()).forEach(player -> {
@@ -82,5 +78,9 @@ public class SpigotServerSaturday extends JavaPlugin {
         });
         getServer().getOnlinePlayers().forEach(player -> uuidCache.add(player.getUniqueId(), player.getName()));
         getLogger().info("Registration complete.");
+        getLogger().info("Loading submissions...");
+        submissions = new SpigotSubmissions();
+        getLogger().info("Submissions loaded.");
+        dch = new SpigotDescriptionChangeHandler();
     }
 }
