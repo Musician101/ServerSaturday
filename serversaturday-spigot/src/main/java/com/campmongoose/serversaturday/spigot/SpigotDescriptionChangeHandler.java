@@ -60,7 +60,9 @@ public class SpigotDescriptionChangeHandler implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().cancelTask(taskIds.remove(uuid));
+        if (taskIds.containsKey(uuid)) {
+            Bukkit.getScheduler().cancelTask(taskIds.remove(uuid));
+        }
     }
 
     @EventHandler
