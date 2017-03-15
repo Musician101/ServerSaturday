@@ -53,11 +53,12 @@ public class UUIDUtils {
         return map;
     }
 
+    @Nullable
     public static UUID getUUIDOf(@Nonnull String name) throws IOException {
         return getUUIDs(Collections.singletonList(name.toLowerCase())).get(name.toLowerCase());
     }
 
-    @Nullable
+    @Nonnull
     public static Map<String, UUID> getUUIDs(@Nonnull List<String> names) throws IOException {
         Map<String, UUID> map = new HashMap<>();
         for (String name : names) {

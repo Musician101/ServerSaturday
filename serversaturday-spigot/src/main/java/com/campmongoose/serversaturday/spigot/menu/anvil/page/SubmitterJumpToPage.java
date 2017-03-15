@@ -10,6 +10,16 @@ import org.bukkit.entity.Player;
 public class SubmitterJumpToPage extends JumpToPage {
 
     public SubmitterJumpToPage(@Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu, int maxPage, @Nonnull SpigotSubmitter submitter) {
-        super(player, prevMenu, maxPage, (p, pg, m) -> new SubmitterMenu(p, submitter, pg, m));
+        super(player, prevMenu, maxPage, (p, pg, m) -> {
+            if (p == null) {
+                throw new NullPointerException("Tried to open a menu without a registered player!");
+            }
+
+            if (pg == null) {
+                throw new NullPointerException("Tried to accept an input that was NULL!");
+            }
+
+            new SubmitterMenu(p, submitter, pg, m);
+        });
     }
 }
