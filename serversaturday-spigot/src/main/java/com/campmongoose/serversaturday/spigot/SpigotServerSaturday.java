@@ -6,6 +6,7 @@ import com.campmongoose.serversaturday.common.uuid.UUIDCache;
 import com.campmongoose.serversaturday.spigot.command.sscommand.SSCommand;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmissions;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.stream.Stream;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -40,7 +41,7 @@ public class SpigotServerSaturday extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return (command.getName().equalsIgnoreCase(Reference.NAME.replace(" ", "")) || command.getName().equalsIgnoreCase(Commands.SS_CMD.replace("/", ""))) && new SSCommand().onCommand(sender, args);
+        return (command.getName().equalsIgnoreCase(Reference.NAME.replace(" ", "")) || command.getName().equalsIgnoreCase(Commands.SS_CMD.replace("/", ""))) && new SSCommand().onCommand(sender, Arrays.asList(args));
     }
 
     @Override

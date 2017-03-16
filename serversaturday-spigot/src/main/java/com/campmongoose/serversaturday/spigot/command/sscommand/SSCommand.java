@@ -20,28 +20,48 @@ import com.campmongoose.serversaturday.spigot.command.sscommand.view.SSView;
 import com.campmongoose.serversaturday.spigot.command.sscommand.view.SSViewDescription;
 import java.util.Arrays;
 import java.util.Collections;
-import org.bukkit.command.CommandSender;
+import java.util.List;
 
 public class SSCommand extends AbstractSpigotCommand {
 
+    /**
+     * @deprecated Temporarily hold sub commands here until command split is complete
+     */
+    @Deprecated
+    private List<AbstractSpigotCommand> subCommands;
+
     public SSCommand() {
-        super(Commands.SS_CMD.replace("/", ""), Reference.DESCRIPTION, new SpigotCommandUsage(Collections.singletonList(new SpigotCommandArgument(Commands.SS_CMD))), new SpigotCommandPermissions("", false), Arrays.asList(new SSDescription(), new SSEdit(), new SSFeature(), new SSGoto(), new SSLocation(), new SSNew(), new SSReload(), new SSRemove(), new SSRename(), new SSResourcePack(), new SSSubmit(), new SSView(), new SSViewDescription()));
+        super(Commands.SS_CMD.replace("/", ""), Reference.DESCRIPTION);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String[] args) {
-        if (args.length > 0) {
-            if (args[0].equalsIgnoreCase(Commands.HELP_NAME)) {
-                return new SpigotHelpCommand(this).onCommand(sender, moveArguments(args));
-            }
+    protected void build() {
+        usage =  new SpigotCommandUsage(Collections.singletonList(new SpigotCommandArgument(Commands.SS_CMD)));
+        permissions = new SpigotCommandPermissions("", false);
+        subCommands = Arrays.asList(new SSDescription(), new SSEdit(), new SSFeature(), new SSGoto(), new SSLocation(), new SSNew(), new SSReload(), new SSRemove(), new SSRename(), new SSResourcePack(), new SSSubmit(), new SSView(), new SSViewDescription());
+        executor = (sender, args) -> {
+            if (!args.isEmpty()) {
+                if (args.get(0).equalsIgnoreCase(Commands.HELP_NAME)) {
+                    return new SpigotHelpCommand(this).onCommand(sender, moveArguments(args));
+                }
 
-            for (AbstractSpigotCommand command : getSubCommands()) {
-                if (command.getName().equalsIgnoreCase(args[0])) {
-                    return command.onCommand(sender, moveArguments(args));
+                for (AbstractSpigotCommand command : subCommands) {
+                    if (command.getName().equalsIgnoreCase(args.get(0))) {
+                        return command.onCommand(sender, moveArguments(args));
+                    }
                 }
             }
-        }
 
-        return new SpigotHelpCommand(this).onCommand(sender, moveArguments(args));
+            return new SpigotHelpCommand(this).onCommand(sender, moveArguments(args));
+        };
+    }
+
+    /**
+     * @deprecated Placeholder
+     * @return
+     */
+    @Deprecated
+    public List<AbstractSpigotCommand> getSubCommands() {
+        return subCommands;
     }
 }

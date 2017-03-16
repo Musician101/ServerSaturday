@@ -1,53 +1,35 @@
 package com.campmongoose.serversaturday.spigot.command;
 
+import com.campmongoose.serversaturday.common.command.AbstractCommandArgument;
+import com.campmongoose.serversaturday.common.command.Syntax;
 import java.util.Arrays;
-import java.util.List;
 import org.bukkit.ChatColor;
 
-public class SpigotCommandArgument {
-
-    private final String name;
-    private final List<Syntax> syntaxList;
+public class SpigotCommandArgument extends AbstractCommandArgument<String> {
 
     public SpigotCommandArgument(String name) {
         this(name, Syntax.LITERAL);
     }
 
-    public SpigotCommandArgument(String name, Syntax... syntaxes) {
-        this.syntaxList = Arrays.asList(syntaxes);
-        if (syntaxList.contains(Syntax.REQUIRED) && syntaxList.contains(Syntax.OPTIONAL)) {
-            throw new IllegalArgumentException("Common arguments cannot be both Optional and Required.");
-        }
+    public SpigotCommandArgument(String name, Syntax... syntaxArray) {
+        super(name, Arrays.asList(syntaxArray), (arg, syntaxList) -> {
+            if (syntaxList.contains(Syntax.REPLACE)) {
+                arg = ChatColor.ITALIC + arg;
+            }
 
-        this.name = name;
-    }
+            if (syntaxList.contains(Syntax.MULTIPLE)) {
+                arg = arg + "...";
+            }
 
-    public String format() {
-        String name = this.name;
-        if (syntaxList.contains(Syntax.REPLACE)) {
-            name = ChatColor.ITALIC + name;
-        }
+            if (syntaxList.contains(Syntax.OPTIONAL)) {
+                arg = "[" + arg + "]";
+            }
 
-        if (syntaxList.contains(Syntax.MULTIPLE)) {
-            name = name + "...";
-        }
+            if (syntaxList.contains(Syntax.REQUIRED)) {
+                arg = "<" + arg + ">";
+            }
 
-        if (syntaxList.contains(Syntax.OPTIONAL)) {
-            name = "[" + name + "]";
-        }
-
-        if (syntaxList.contains(Syntax.REQUIRED)) {
-            name = "<" + name + ">";
-        }
-
-        return name;
-    }
-
-    public enum Syntax {
-        LITERAL,
-        MULTIPLE,
-        REPLACE,
-        REQUIRED,
-        OPTIONAL
+            return arg;
+        });
     }
 }

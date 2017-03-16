@@ -1,32 +1,27 @@
 package com.campmongoose.serversaturday.spigot.command;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
+import com.campmongoose.serversaturday.common.command.AbstractCommandPermissions;
 import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-public class SpigotCommandPermissions {
-
-    private final boolean isPlayerOnly;
-    private final String permissionNode;
+public class SpigotCommandPermissions extends AbstractCommandPermissions<CommandSender> {
 
     public SpigotCommandPermissions(@Nonnull String permissionNode, boolean isPlayerOnly) {
-        this.permissionNode = permissionNode;
-        this.isPlayerOnly = isPlayerOnly;
-    }
+        super(permissionNode, isPlayerOnly, sender -> {
+            if (isPlayerOnly && !(sender instanceof Player)) {
+                sender.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
+                return false;
+            }
 
-    public String getNoPermission() {
-        return ChatColor.RED + Messages.NO_PERMISSION;
-    }
+            if (!sender.hasPermission(permissionNode)) {
+                sender.sendMessage(ChatColor.RED + Messages.PLAYER_ONLY);
+                return false;
+            }
 
-    public String getPermissionNode() {
-        return permissionNode;
-    }
-
-    public String getPlayerOnly() {
-        return ChatColor.RED + Messages.PLAYER_ONLY;
-    }
-
-    public boolean isPlayerOnly() {
-        return isPlayerOnly;
+            return true;
+        });
     }
 }
