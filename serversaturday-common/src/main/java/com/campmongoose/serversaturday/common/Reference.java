@@ -28,7 +28,7 @@ public class Reference {
         public static final String DESCRIPTION_NAME = "description";
         public static final String EDIT_DESC = "Edit a submitted build.";
         public static final String EDIT_NAME = "edit";
-        public static final String FEATURE_DESC = "Toggle if a build has been featured on Server Saturday.";
+        public static final String FEATURE_DESC = "Toggle if a build has been featured.";
         public static final String FEATURE_NAME = "feature";
         public static final String GOTO_DESC = "Teleport to a build.";
         public static final String GOTO_NAME = "goto";
@@ -40,7 +40,7 @@ public class Reference {
         public static final String NEW_DESC = "Register a new build.";
         public static final String NEW_NAME = "new";
         public static final String PLAYER = "player";
-        public static final String RELOAD_DESC = "Reload the plugin";
+        public static final String RELOAD_DESC = "Reload the plugin.";
         public static final String RELOAD_NAME = "reload";
         public static final String REMOVE_DESC = "Remove a build.";
         public static final String REMOVE_NAME = "remove";
@@ -179,7 +179,7 @@ public class Reference {
         public static final String FEATURE = BASE + "feature";
         public static final String RELOAD = BASE + "reload";
         public static final String SUBMIT = BASE + "submit";
-        public static final String MAX_BUILDS = SUBMIT + ".max_builds";
+        public static final String EXCEED_MAX_BUILDS = SUBMIT + "exceed_max_builds";
         public static final String VIEW = BASE + "view";
         public static final String VIEW_GOTO = VIEW + ".goto";
 

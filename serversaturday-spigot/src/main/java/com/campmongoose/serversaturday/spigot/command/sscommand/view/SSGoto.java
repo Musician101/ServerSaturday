@@ -19,7 +19,7 @@ public class SSGoto extends AbstractSpigotCommand {
 
     public SSGoto() {
         super(Commands.GOTO_NAME, Commands.GOTO_DESC);
-        usage = new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD), new SpigotCommandArgument(Commands.GOTO_NAME), new SpigotCommandArgument(Commands.PLAYER, Syntax.REQUIRED, Syntax.REPLACE), new SpigotCommandArgument(Commands.BUILD, Syntax.REQUIRED, Syntax.REPLACE)), 2);
+        usage = new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD + Commands.GOTO_NAME), new SpigotCommandArgument(Commands.PLAYER, Syntax.REQUIRED, Syntax.REPLACE), new SpigotCommandArgument(Commands.BUILD, Syntax.REQUIRED, Syntax.REPLACE)), 2);
         permissions = new SpigotCommandPermissions(Permissions.VIEW_GOTO, true);
         executor = (sender, args) -> {
             Player player = (Player) sender;

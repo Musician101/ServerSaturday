@@ -23,11 +23,11 @@ public class SSNew extends AbstractSpigotCommand {
 
     public SSNew() {
         super(Commands.NEW_NAME, Commands.NEW_DESC);
-        usage = new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD), new SpigotCommandArgument(Commands.NEW_NAME), new SpigotCommandArgument(Commands.NAME, Syntax.REPLACE, Syntax.OPTIONAL)), 0);
+        usage = new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD + Commands.NEW_NAME), new SpigotCommandArgument(Commands.NAME, Syntax.REPLACE, Syntax.OPTIONAL)), 0);
         permissions = new SpigotCommandPermissions(Permissions.SUBMIT, true);
         executor = (sender, args) -> {
             Player player = (Player) sender;
-            if (getPluginInstance().getPluginConfig().getMaxBuilds() > 0 && player.hasPermission(Permissions.MAX_BUILDS)) {
+            if (getPluginInstance().getPluginConfig().getMaxBuilds() > 0 && !player.hasPermission(Permissions.EXCEED_MAX_BUILDS)) {
                 player.sendMessage(ChatColor.RED + Messages.NO_PERMISSION);
                 return false;
             }
