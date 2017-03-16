@@ -23,6 +23,7 @@ public class SSReload extends AbstractSpigotCommand {
         executor = (sender, args) -> {
             getSubmissions().save();
             getSubmissions().load();
+            getPluginInstance().getPluginConfig().reload();
             sender.sendMessage(ChatColor.GOLD + Messages.PLUGIN_RELOADED);
             return true;
         };
