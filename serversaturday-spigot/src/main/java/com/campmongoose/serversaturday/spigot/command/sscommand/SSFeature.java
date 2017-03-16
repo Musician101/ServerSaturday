@@ -22,10 +22,6 @@ public class SSFeature extends AbstractSpigotCommand {
 
     public SSFeature() {
         super(Commands.FEATURE_NAME, Commands.FEATURE_DESC);
-    }
-
-    @Override
-    protected void build() {
         usage = new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD), new SpigotCommandArgument(Commands.FEATURE_NAME), new SpigotCommandArgument(Commands.PLAYER, Syntax.OPTIONAL, Syntax.REPLACE), new SpigotCommandArgument(Commands.BUILD, Syntax.OPTIONAL, Syntax.REPLACE)));
         permissions = new SpigotCommandPermissions(Permissions.FEATURE, true);
         executor = (sender, args) -> {

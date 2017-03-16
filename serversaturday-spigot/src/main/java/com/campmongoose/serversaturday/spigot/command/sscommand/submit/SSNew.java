@@ -23,10 +23,6 @@ public class SSNew extends AbstractSpigotCommand {
 
     public SSNew() {
         super(Commands.NEW_NAME, Commands.NEW_DESC);
-    }
-
-    @Override
-    protected void build() {
         usage = new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD), new SpigotCommandArgument(Commands.NEW_NAME), new SpigotCommandArgument(Commands.NAME, Syntax.REPLACE, Syntax.OPTIONAL)), 0);
         permissions = new SpigotCommandPermissions(Permissions.SUBMIT, true);
         executor = (sender, args) -> {

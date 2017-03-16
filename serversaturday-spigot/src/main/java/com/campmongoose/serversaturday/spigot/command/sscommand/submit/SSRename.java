@@ -21,10 +21,6 @@ public class SSRename extends AbstractSpigotCommand {
 
     public SSRename() {
         super(Commands.RENAME_NAME, Commands.RENAME_DESC);
-    }
-
-    @Override
-    protected void build() {
         usage = new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD), new SpigotCommandArgument(Commands.RENAME_NAME), new SpigotCommandArgument(Commands.BUILD, Syntax.REQUIRED, Syntax.REPLACE)), 1);
         permissions = new SpigotCommandPermissions(Permissions.SUBMIT, true);
         executor = (sender, args) -> {

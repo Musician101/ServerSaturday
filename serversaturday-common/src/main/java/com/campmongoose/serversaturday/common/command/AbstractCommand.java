@@ -29,7 +29,7 @@ public abstract class AbstractCommand<A extends AbstractCommandArgument<M>, B ex
         this.description = description;
     }
 
-    protected abstract void build();
+    public abstract C getHelpCommand();
 
     @Nonnull
     public M getDescription() {

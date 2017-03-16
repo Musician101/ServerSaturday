@@ -22,10 +22,6 @@ public class SSView extends AbstractSpigotCommand {
 
     public SSView() {
         super(Commands.VIEW_NAME, Commands.VIEW_DESC);
-    }
-
-    @Override
-    protected void build() {
         usage = new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD), new SpigotCommandArgument(Commands.VIEW_NAME), new SpigotCommandArgument(Commands.PLAYER, Syntax.OPTIONAL, Syntax.REPLACE), new SpigotCommandArgument(Commands.BUILD, Syntax.OPTIONAL, Syntax.REPLACE)));
         permissions = new SpigotCommandPermissions(Permissions.VIEW, true);
         executor = (sender, args) -> {

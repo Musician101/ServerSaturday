@@ -20,10 +20,6 @@ public class SSLocation extends AbstractSpigotCommand {
 
     public SSLocation() {
         super(Commands.LOCATION_NAME, Commands.LOCATION_DESC);
-    }
-
-    @Override
-    protected void build() {
         usage = new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD), new SpigotCommandArgument(Commands.LOCATION_NAME), new SpigotCommandArgument(Commands.BUILD, Syntax.REPLACE, Syntax.REQUIRED)), 1);
         permissions = new SpigotCommandPermissions(Permissions.SUBMIT, true);
         executor = (sender, args) -> {

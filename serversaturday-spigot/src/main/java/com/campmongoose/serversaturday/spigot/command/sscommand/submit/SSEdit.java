@@ -21,10 +21,6 @@ public class SSEdit extends AbstractSpigotCommand {
 
     public SSEdit() {
         super(Commands.EDIT_NAME, Commands.EDIT_DESC);
-    }
-
-    @Override
-    protected void build() {
         usage = new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD), new SpigotCommandArgument(Commands.EDIT_NAME), new SpigotCommandArgument(Commands.BUILD, Syntax.REPLACE, Syntax.OPTIONAL)));
         permissions = new SpigotCommandPermissions(Permissions.SUBMIT, true);
         executor = (sender, args) -> {

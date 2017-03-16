@@ -53,6 +53,11 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotComman
         return false;
     }
 
+    @Override
+    public AbstractSpigotCommand getHelpCommand() {
+        return new SpigotHelpCommand(this);
+    }
+
     /**
      * @deprecated Replace with org.apache.commons.lang.StringUtils.join(array, separator)
      * @param stringArray

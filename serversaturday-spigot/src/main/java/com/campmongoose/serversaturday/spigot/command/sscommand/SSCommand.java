@@ -32,10 +32,6 @@ public class SSCommand extends AbstractSpigotCommand {
 
     public SSCommand() {
         super(Commands.SS_CMD.replace("/", ""), Reference.DESCRIPTION);
-    }
-
-    @Override
-    protected void build() {
         usage =  new SpigotCommandUsage(Collections.singletonList(new SpigotCommandArgument(Commands.SS_CMD)));
         permissions = new SpigotCommandPermissions("", false);
         subCommands = Arrays.asList(new SSDescription(), new SSEdit(), new SSFeature(), new SSGoto(), new SSLocation(), new SSNew(), new SSReload(), new SSRemove(), new SSRename(), new SSResourcePack(), new SSSubmit(), new SSView(), new SSViewDescription());
