@@ -1,12 +1,12 @@
-package com.campmongoose.serversaturday.spigot.menu.chest;
+package com.campmongoose.serversaturday.spigot.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.spigot.SpigotDescriptionChangeHandler;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
-import com.campmongoose.serversaturday.spigot.menu.anvil.NameChangeMenu;
-import com.campmongoose.serversaturday.spigot.menu.anvil.ResourcePackChangeMenu;
+import com.campmongoose.serversaturday.spigot.gui.anvil.NameChangeMenu;
+import com.campmongoose.serversaturday.spigot.gui.anvil.ResourcePackChangeMenu;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import javax.annotation.Nonnull;
@@ -25,16 +25,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class BuildMenu extends AbstractSpigotChestMenu {
+public class BuildGUI extends AbstractSpigotChestGUI {
 
     private final SpigotBuild build;
     private final SpigotSubmitter submitter;
 
-    public BuildMenu(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu) {
+    public BuildGUI(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player, @Nullable AbstractSpigotChestGUI prevMenu) {
         this(build, submitter, player, prevMenu, false);
     }
 
-    public BuildMenu(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu, boolean manualOpen) {
+    public BuildGUI(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player, @Nullable AbstractSpigotChestGUI prevMenu, boolean manualOpen) {
         super(Bukkit.createInventory(player, 9, build.getName()), player, prevMenu, manualOpen);
         this.build = build;
         this.submitter = submitter;
@@ -49,7 +49,7 @@ public class BuildMenu extends AbstractSpigotChestMenu {
             set(1, createItem(Material.COMPASS, MenuText.CHANGE_LOCATION_NAME, MenuText.CHANGE_LOCATION_DESC.toArray(new String[3])),
                     player -> {
                         build.setLocation(player.getLocation());
-                        new BuildMenu(build, submitter, player, prevMenu);
+                        new BuildGUI(build, submitter, player, prevMenu);
                         player.sendMessage(ChatColor.GREEN + Messages.locationChanged(build));
                     });
             set(2, createItem(Material.BOOK, MenuText.CHANGE_DESCRIPTION_NAME, MenuText.CHANGE_DESCRIPTION_DESC),
@@ -75,7 +75,7 @@ public class BuildMenu extends AbstractSpigotChestMenu {
 
             set(4, submit, player -> {
                 build.setSubmitted(!build.submitted());
-                new BuildMenu(build, submitter, player, prevMenu);
+                new BuildGUI(build, submitter, player, prevMenu);
             });
             setTeleportButton(5, location);
             set(6, createItem(Material.BARRIER, MenuText.DELETE_NAME, MenuText.DELETE_DESC.toArray(new String[2])),
@@ -119,7 +119,7 @@ public class BuildMenu extends AbstractSpigotChestMenu {
 
             set(slot, featured, player -> {
                 build.setFeatured(!build.featured());
-                new BuildMenu(build, submitter, player, prevMenu);
+                new BuildGUI(build, submitter, player, prevMenu);
             });
         }
     }

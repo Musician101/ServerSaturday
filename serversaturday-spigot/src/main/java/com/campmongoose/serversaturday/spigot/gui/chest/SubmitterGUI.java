@@ -1,7 +1,7 @@
-package com.campmongoose.serversaturday.spigot.menu.chest;
+package com.campmongoose.serversaturday.spigot.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.spigot.menu.anvil.page.SubmitterJumpToPage;
+import com.campmongoose.serversaturday.spigot.gui.anvil.page.SubmitterJumpToPage;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.List;
@@ -13,11 +13,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class SubmitterMenu extends SpigotAbstractPagedMenu {
+public class SubmitterGUI extends SpigotAbstractPagedGUI {
 
     private final SpigotSubmitter submitter;
 
-    public SubmitterMenu(@Nonnull Player player, @Nonnull SpigotSubmitter submitter, int page, @Nullable AbstractSpigotChestMenu prevMenu) {
+    public SubmitterGUI(@Nonnull Player player, @Nonnull SpigotSubmitter submitter, int page, @Nullable AbstractSpigotChestGUI prevMenu) {
         super(Bukkit.createInventory(player, 54, MenuText.submitterMenu(submitter)), player, page, prevMenu);
         this.submitter = submitter;
     }
@@ -32,7 +32,7 @@ public class SubmitterMenu extends SpigotAbstractPagedMenu {
                 set(x, itemStack, player -> {
                     for (SpigotBuild build : submitter.getBuilds()) {
                         if (build.getName().equals(itemStack.getItemMeta().getDisplayName())) {
-                            new BuildMenu(build, submitter, player, this);
+                            new BuildGUI(build, submitter, player, this);
                         }
                     }
                 });
@@ -45,13 +45,13 @@ public class SubmitterMenu extends SpigotAbstractPagedMenu {
         set(45, jumpStack, player -> new SubmitterJumpToPage(player, this, maxPage, submitter));
         setPageNavigationButton(48, MenuText.PREVIOUS_PAGE, player -> {
             if (page > 1) {
-                new SubmitterMenu(player, submitter, page - 1, prevMenu);
+                new SubmitterGUI(player, submitter, page - 1, prevMenu);
             }
         });
 
         setPageNavigationButton(50, MenuText.NEXT_PAGE, player -> {
             if (page < maxPage) {
-                new SubmitterMenu(player, submitter, page + 1, prevMenu);
+                new SubmitterGUI(player, submitter, page + 1, prevMenu);
             }
         });
 

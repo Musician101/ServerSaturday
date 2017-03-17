@@ -8,8 +8,8 @@ import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
-import com.campmongoose.serversaturday.spigot.menu.anvil.ResourcePackChangeMenu;
-import com.campmongoose.serversaturday.spigot.menu.chest.BuildMenu;
+import com.campmongoose.serversaturday.spigot.gui.anvil.ResourcePackChangeMenu;
+import com.campmongoose.serversaturday.spigot.gui.chest.BuildGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
@@ -33,7 +33,7 @@ public class SSResourcePack extends AbstractSpigotCommand {
                 return false;
             }
 
-            new ResourcePackChangeMenu(build, submitter, player, new BuildMenu(build, submitter, player, null, true));
+            new ResourcePackChangeMenu(build, submitter, player, new BuildGUI(build, submitter, player, null, true));
             return true;
         };
     }

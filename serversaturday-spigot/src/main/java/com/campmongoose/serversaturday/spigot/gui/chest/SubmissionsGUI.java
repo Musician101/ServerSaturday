@@ -1,4 +1,4 @@
-package com.campmongoose.serversaturday.spigot.menu.chest;
+package com.campmongoose.serversaturday.spigot.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
@@ -15,11 +15,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SubmissionsMenu extends SpigotAbstractPagedMenu {
+public class SubmissionsGUI extends SpigotAbstractPagedGUI {
 
     private final int page;
 
-    public SubmissionsMenu(@Nonnull Player player, int page, @Nullable AbstractSpigotChestMenu prevMenu) {
+    public SubmissionsGUI(@Nonnull Player player, int page, @Nullable AbstractSpigotChestGUI prevMenu) {
         super(Bukkit.createInventory(player, 54, MenuText.SUBMISSIONS), player, page, prevMenu);
         this.page = page;
     }
@@ -32,7 +32,7 @@ public class SubmissionsMenu extends SpigotAbstractPagedMenu {
         setContents(list, (player, itemStack) -> p -> {
             for (SpigotSubmitter submitter : spigotSubmitters) {
                 if (submitter.getName().equals(itemStack.getItemMeta().getDisplayName())) {
-                    new SubmitterMenu(p, submitter, 1, this);
+                    new SubmitterGUI(p, submitter, 1, this);
                     return;
                 }
             }
@@ -42,13 +42,13 @@ public class SubmissionsMenu extends SpigotAbstractPagedMenu {
         setJumpToPage(45, maxPage);
         setPageNavigationButton(48, MenuText.PREVIOUS_PAGE, player -> {
             if (page > 1) {
-                new SubmissionsMenu(player, page - 1, prevMenu);
+                new SubmissionsGUI(player, page - 1, prevMenu);
             }
         });
 
         setPageNavigationButton(50, MenuText.NEXT_PAGE, player -> {
             if (page + 1 > Integer.MAX_VALUE) {
-                new SubmissionsMenu(player, page + 1, prevMenu);
+                new SubmissionsGUI(player, page + 1, prevMenu);
             }
         });
 

@@ -1,4 +1,4 @@
-package com.campmongoose.serversaturday.common.menu;
+package com.campmongoose.serversaturday.common.gui;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AbstractChestMenu<F, I, M extends AbstractChestMenu<F, I, M, P, S, T>, P, S, T> {
+public abstract class AbstractChestGUI<F, I, M extends AbstractChestGUI<F, I, M, P, S, T>, P, S, T> {
 
     protected final Map<Integer, Consumer<P>> buttons = new HashMap<>();
     @Nonnull
@@ -16,7 +16,7 @@ public abstract class AbstractChestMenu<F, I, M extends AbstractChestMenu<F, I, 
     @Nullable
     protected final M prevMenu;
 
-    public AbstractChestMenu(@Nonnull I inventory, @Nonnull P player, @Nullable M prevMenu) {
+    public AbstractChestGUI(@Nonnull I inventory, @Nonnull P player, @Nullable M prevMenu) {
         this.inventory = inventory;
         this.player = player;
         this.prevMenu = prevMenu;

@@ -1,4 +1,4 @@
-package com.campmongoose.serversaturday.spigot.menu.chest;
+package com.campmongoose.serversaturday.spigot.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.Reference.Messages;
@@ -17,9 +17,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class AllSubmissionsMenu extends SpigotAbstractPagedMenu {
+public class AllSubmissionsGUI extends SpigotAbstractPagedGUI {
 
-    public AllSubmissionsMenu(@Nonnull Player player, int page, @Nullable AbstractSpigotChestMenu prevMenu) {
+    public AllSubmissionsGUI(@Nonnull Player player, int page, @Nullable AbstractSpigotChestGUI prevMenu) {
         super(Bukkit.createInventory(null, 54, MenuText.ALL_SUBMISSIONS), player, page, prevMenu);
     }
 
@@ -53,20 +53,20 @@ public class AllSubmissionsMenu extends SpigotAbstractPagedMenu {
                         return;
                     }
 
-                    new SubmitterMenu(player, submitter, 1, this);
+                    new SubmitterGUI(player, submitter, 1, this);
                 });
 
         int maxPage = new Double(Math.ceil(list.size() / 45)).intValue();
         setJumpToPage(45, maxPage);
         setPageNavigationButton(48, MenuText.PREVIOUS_PAGE, player -> {
             if (page > 1) {
-                new AllSubmissionsMenu(player, page - 1, this);
+                new AllSubmissionsGUI(player, page - 1, this);
             }
         });
 
         setPageNavigationButton(50, MenuText.NEXT_PAGE, player -> {
             if (page < maxPage) {
-                new AllSubmissionsMenu(player, page + 1, this);
+                new AllSubmissionsGUI(player, page + 1, this);
             }
         });
 

@@ -1,12 +1,12 @@
-package com.campmongoose.serversaturday.spigot.menu.anvil.page;
+package com.campmongoose.serversaturday.spigot.gui.anvil.page;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.TriConsumer;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
-import com.campmongoose.serversaturday.spigot.menu.anvil.SSAnvilGUI;
-import com.campmongoose.serversaturday.spigot.menu.chest.AbstractSpigotChestMenu;
-import com.campmongoose.serversaturday.spigot.menu.chest.AllSubmissionsMenu;
-import com.campmongoose.serversaturday.spigot.menu.chest.SubmissionsMenu;
+import com.campmongoose.serversaturday.spigot.gui.anvil.SSAnvilGUI;
+import com.campmongoose.serversaturday.spigot.gui.chest.AbstractSpigotChestGUI;
+import com.campmongoose.serversaturday.spigot.gui.chest.AllSubmissionsGUI;
+import com.campmongoose.serversaturday.spigot.gui.chest.SubmissionsGUI;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 
 public class JumpToPage extends SSAnvilGUI {
 
-    public JumpToPage(@Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu, int maxPage) {
+    public JumpToPage(@Nonnull Player player, @Nullable AbstractSpigotChestGUI prevMenu, int maxPage) {
         this(player, prevMenu, maxPage, (p, pg, m) -> {
             if (p == null) {
                 throw new NullPointerException("Tried to open a menu without a registered player!");
@@ -24,11 +24,11 @@ public class JumpToPage extends SSAnvilGUI {
                 throw new NullPointerException("Tried to accept an input that was NULL!");
             }
 
-            if (prevMenu instanceof AllSubmissionsMenu) {
-                new AllSubmissionsMenu(p, pg, m);
+            if (prevMenu instanceof AllSubmissionsGUI) {
+                new AllSubmissionsGUI(p, pg, m);
             }
-            else if (prevMenu instanceof SubmissionsMenu) {
-                new SubmissionsMenu(p, pg, m);
+            else if (prevMenu instanceof SubmissionsGUI) {
+                new SubmissionsGUI(p, pg, m);
             }
 
             String messageStart;
@@ -40,11 +40,11 @@ public class JumpToPage extends SSAnvilGUI {
             }
 
             throw new UnsupportedOperationException(messageStart + " is not supported with this constructor. " +
-                    "Please use new JumpToPage(Player, AbstractSpigotChestMenu, TriConsumer)");
+                    "Please use new JumpToPage(Player, AbstractSpigotChestGUI, TriConsumer)");
         });
     }
 
-    public JumpToPage(@Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu, int maxPage, @Nonnull TriConsumer<Player, Integer, AbstractSpigotChestMenu> biConsumer) {
+    public JumpToPage(@Nonnull Player player, @Nullable AbstractSpigotChestGUI prevMenu, int maxPage, @Nonnull TriConsumer<Player, Integer, AbstractSpigotChestGUI> biConsumer) {
         super(player, prevMenu, (p, name) -> {
             int page;
             try {

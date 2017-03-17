@@ -1,7 +1,7 @@
-package com.campmongoose.serversaturday.spigot.menu.chest;
+package com.campmongoose.serversaturday.spigot.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.spigot.menu.anvil.page.JumpToPage;
+import com.campmongoose.serversaturday.spigot.gui.anvil.page.JumpToPage;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class SpigotAbstractPagedMenu extends AbstractSpigotChestMenu {
+public abstract class SpigotAbstractPagedGUI extends AbstractSpigotChestGUI {
 
     protected final int page;
 
-    public SpigotAbstractPagedMenu(@Nonnull Inventory inventory, @Nonnull Player player, int page, @Nullable AbstractSpigotChestMenu prevMenu) {
+    public SpigotAbstractPagedGUI(@Nonnull Inventory inventory, @Nonnull Player player, int page, @Nullable AbstractSpigotChestGUI prevMenu) {
         super(inventory, player, prevMenu);
         this.page = page;
     }

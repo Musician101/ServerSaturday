@@ -8,8 +8,8 @@ import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
-import com.campmongoose.serversaturday.spigot.menu.chest.BuildMenu;
-import com.campmongoose.serversaturday.spigot.menu.chest.SubmitterMenu;
+import com.campmongoose.serversaturday.spigot.gui.chest.BuildGUI;
+import com.campmongoose.serversaturday.spigot.gui.chest.SubmitterGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
@@ -34,11 +34,11 @@ public class SSEdit extends AbstractSpigotCommand {
                     return false;
                 }
 
-                new BuildMenu(build, submitter, player, null);
+                new BuildGUI(build, submitter, player, null);
                 return true;
             }
 
-            new SubmitterMenu(player, submitter, 1, null);
+            new SubmitterGUI(player, submitter, 1, null);
             return true;
         };
     }

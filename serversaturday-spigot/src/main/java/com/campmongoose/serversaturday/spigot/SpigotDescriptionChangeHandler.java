@@ -1,7 +1,7 @@
 package com.campmongoose.serversaturday.spigot;
 
 import com.campmongoose.serversaturday.common.Reference;
-import com.campmongoose.serversaturday.spigot.menu.chest.BuildMenu;
+import com.campmongoose.serversaturday.spigot.gui.chest.BuildGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Collections;
@@ -124,7 +124,7 @@ public class SpigotDescriptionChangeHandler implements Listener {
 
         SpigotSubmitter submitter = SpigotServerSaturday.instance().getSubmissions().getSubmitter(player);
         submitter.updateBuildDescription(build, event.getNewBookMeta().getPages());
-        new BuildMenu(build, submitter, player, null);
+        new BuildGUI(build, submitter, player, null);
         remove(player);
     }
 

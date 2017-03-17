@@ -1,7 +1,7 @@
-package com.campmongoose.serversaturday.spigot.menu.chest;
+package com.campmongoose.serversaturday.spigot.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.common.menu.AbstractChestMenu;
+import com.campmongoose.serversaturday.common.gui.AbstractChestGUI;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -24,7 +24,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<String, Inventory, AbstractSpigotChestMenu, Player, ItemStack, Material> implements Listener {
+public abstract class AbstractSpigotChestGUI extends AbstractChestGUI<String, Inventory, AbstractSpigotChestGUI, Player, ItemStack, Material> implements Listener {
 
     private static Field activeContainer;
     private static Field defaultContainer;
@@ -47,11 +47,11 @@ public abstract class AbstractSpigotChestMenu extends AbstractChestMenu<String, 
         }
     }
 
-    public AbstractSpigotChestMenu(@Nonnull Inventory inventory, @Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu) {
+    public AbstractSpigotChestGUI(@Nonnull Inventory inventory, @Nonnull Player player, @Nullable AbstractSpigotChestGUI prevMenu) {
         this(inventory, player, prevMenu, false);
     }
 
-    public AbstractSpigotChestMenu(@Nonnull Inventory inventory, @Nonnull Player player, @Nullable AbstractSpigotChestMenu prevMenu, boolean manualOpen) {
+    public AbstractSpigotChestGUI(@Nonnull Inventory inventory, @Nonnull Player player, @Nullable AbstractSpigotChestGUI prevMenu, boolean manualOpen) {
         super(inventory, player, prevMenu);
         if (!manualOpen) {
             Bukkit.getScheduler().runTaskLater(SpigotServerSaturday.instance(), this::open, 1);

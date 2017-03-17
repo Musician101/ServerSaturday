@@ -8,8 +8,8 @@ import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
-import com.campmongoose.serversaturday.spigot.menu.anvil.NameChangeMenu;
-import com.campmongoose.serversaturday.spigot.menu.chest.BuildMenu;
+import com.campmongoose.serversaturday.spigot.gui.anvil.NameChangeMenu;
+import com.campmongoose.serversaturday.spigot.gui.chest.BuildGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
@@ -33,7 +33,7 @@ public class SSRename extends AbstractSpigotCommand {
                 return false;
             }
 
-            new NameChangeMenu(build, submitter, player, new BuildMenu(build, submitter, player, null, true));
+            new NameChangeMenu(build, submitter, player, new BuildGUI(build, submitter, player, null, true));
             return true;
         };
     }
