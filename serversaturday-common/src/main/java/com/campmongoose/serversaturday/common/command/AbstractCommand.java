@@ -16,9 +16,9 @@ public abstract class AbstractCommand<A extends AbstractCommandArgument<M>, B ex
         Q extends AbstractSubmitter<B, T, L>, R, S extends AbstractSubmissions<P, Q>, T,
         U extends AbstractCommandUsage<A, M, Z>, Y extends AbstractCommandPermissions<Z>, Z> {
 
-    protected BiFunction<Z, List<String>, R> executor;
     @Nonnull
     protected M description;
+    protected BiFunction<Z, List<String>, R> executor;
     @Nonnull
     protected String name;
     protected Y permissions;
@@ -29,12 +29,13 @@ public abstract class AbstractCommand<A extends AbstractCommandArgument<M>, B ex
         this.description = description;
     }
 
-    public abstract C getHelpCommand();
-
     @Nonnull
     public M getDescription() {
         return description;
     }
+
+    @Nonnull
+    protected abstract M getHelp();
 
     @Nonnull
     public String getName() {
@@ -42,17 +43,9 @@ public abstract class AbstractCommand<A extends AbstractCommandArgument<M>, B ex
     }
 
     @Nonnull
-    public U getUsage() {
-        return usage;
-    }
-
-    @Nonnull
     public Y getPermissions() {
         return permissions;
     }
-
-    @Nonnull
-    protected abstract M getHelp();
 
     @Nonnull
     protected abstract I getPluginInstance();
@@ -68,6 +61,11 @@ public abstract class AbstractCommand<A extends AbstractCommandArgument<M>, B ex
 
     @Nullable
     protected abstract Q getSubmitter(@Nonnull String playerName);
+
+    @Nonnull
+    public U getUsage() {
+        return usage;
+    }
 
     protected List<String> moveArguments(List<String> args) {
         if (!args.isEmpty()) {

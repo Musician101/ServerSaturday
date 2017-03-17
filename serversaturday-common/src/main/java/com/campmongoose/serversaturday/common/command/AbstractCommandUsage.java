@@ -7,18 +7,14 @@ import javax.annotation.Nonnull;
 
 public abstract class AbstractCommandUsage<A extends AbstractCommandArgument<M>, M, S> {
 
+    protected BiFunction<S, Integer, Boolean> minArgsChecker;
     private int minArgs;
     @Nonnull
     private M usage;
-    protected BiFunction<S, Integer, Boolean> minArgsChecker;
 
     public AbstractCommandUsage(int minArgs, List<A> arguments, Function<List<A>, M> argumentParser) {
         this.minArgs = minArgs;
         this.usage = argumentParser.apply(arguments);
-    }
-
-    public boolean minArgsMet(S source, int argsLength) {
-        return minArgsChecker.apply(source, argsLength);
     }
 
     public int getMinArgs() {
@@ -28,5 +24,9 @@ public abstract class AbstractCommandUsage<A extends AbstractCommandArgument<M>,
     @Nonnull
     public M getUsage() {
         return usage;
+    }
+
+    public boolean minArgsMet(S source, int argsLength) {
+        return minArgsChecker.apply(source, argsLength);
     }
 }

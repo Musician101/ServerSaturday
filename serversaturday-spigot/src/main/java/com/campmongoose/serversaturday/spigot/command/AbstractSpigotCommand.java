@@ -18,63 +18,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-//TODO rewrite commands so that they're separate from each other. Add aliases when accomplishing this
 public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotCommandArgument, SpigotBuild, AbstractSpigotCommand, SpigotServerSaturday, Location, String, Player, SpigotSubmitter, Boolean, SpigotSubmissions, ItemStack, SpigotCommandUsage, SpigotCommandPermissions, CommandSender> implements CommandExecutor {
 
     public AbstractSpigotCommand(String name, String description) {
         super(name, description);
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (permissions.testPermission(sender)) {
-            if (usage.minArgsMet(sender, args.length)) {
-                return executor.apply(sender, Arrays.asList(args));
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @deprecated placeholder until commands are all separated
-     * @param sender
-     * @param args
-     * @return
-     */
-    @Deprecated
-    public boolean onCommand(CommandSender sender, List<String> args) {
-        if (permissions.testPermission(sender)) {
-            if (usage.minArgsMet(sender, args.size())) {
-                return executor.apply(sender, args);
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public AbstractSpigotCommand getHelpCommand() {
-        return new SpigotHelpCommand(this);
-    }
-
-    /**
-     * @deprecated Replace with org.apache.commons.lang.StringUtils.join(array, separator)
-     * @param stringArray
-     * @return
-     */
-    @Deprecated
-    protected String combineStringArray(String[] stringArray) {
-        StringBuilder sb = new StringBuilder();
-        for (String part : stringArray) {
-            if (sb.length() > 0) {
-                sb.append(" ");
-            }
-
-            sb.append(part);
-        }
-
-        return sb.toString();
     }
 
     @Nonnull
@@ -124,5 +71,33 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotComman
     @Nullable
     protected SpigotSubmitter getSubmitter(@Nonnull UUID uuid) {
         return getSubmissions().getSubmitter(uuid);
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (permissions.testPermission(sender)) {
+            if (usage.minArgsMet(sender, args.length)) {
+                return executor.apply(sender, Arrays.asList(args));
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param sender
+     * @param args
+     * @return
+     * @deprecated placeholder until commands are all separated
+     */
+    @Deprecated
+    public boolean onCommand(CommandSender sender, List<String> args) {
+        if (permissions.testPermission(sender)) {
+            if (usage.minArgsMet(sender, args.size())) {
+                return executor.apply(sender, args);
+            }
+        }
+
+        return false;
     }
 }

@@ -32,8 +32,7 @@ public class Reference {
         public static final String FEATURE_NAME = "feature";
         public static final String GOTO_DESC = "Teleport to a build.";
         public static final String GOTO_NAME = "goto";
-        public static final String HELP_DESC_PREFIX = "Display help info for ";
-        public static final String HELP_NAME = "help";
+        public static final String HELP_DESC = "Displays help and plugin info.";
         public static final String LOCATION_DESC = "Change the location of a build.";
         public static final String LOCATION_NAME = "location";
         public static final String NAME = "name";

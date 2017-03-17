@@ -8,11 +8,11 @@ import javax.annotation.Nonnull;
 public abstract class AbstractCommandArgument<M> {
 
     @Nonnull
-    private List<Syntax> syntaxList;
+    private BiFunction<String, List<Syntax>, M> formatter;
     @Nonnull
     private String name;
     @Nonnull
-    private BiFunction<String, List<Syntax>, M> formatter;
+    private List<Syntax> syntaxList;
 
     public AbstractCommandArgument(@Nonnull String name, @Nonnull BiFunction<String, List<Syntax>, M> formatter) {
         this(name, Collections.singletonList(Syntax.LITERAL), formatter);
@@ -30,12 +30,12 @@ public abstract class AbstractCommandArgument<M> {
     }
 
     @Nonnull
-    public List<Syntax> getSyntaxList() {
-        return syntaxList;
+    public String getName() {
+        return name;
     }
 
     @Nonnull
-    public String getName() {
-        return name;
+    public List<Syntax> getSyntaxList() {
+        return syntaxList;
     }
 }

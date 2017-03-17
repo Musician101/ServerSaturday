@@ -20,7 +20,7 @@ public class SSDescription extends AbstractSpigotCommand {
     public SSDescription() {
         super(Commands.DESCRIPTION_NAME, Commands.DESCRIPTION_DESC);
         usage = new SpigotCommandUsage(Arrays.asList(new SpigotCommandArgument(Commands.SS_CMD + Commands.DESCRIPTION_NAME), new SpigotCommandArgument(Commands.BUILD, Syntax.REQUIRED, Syntax.REPLACE)), 1);
-        permissions =  new SpigotCommandPermissions(Permissions.SUBMIT, true);
+        permissions = new SpigotCommandPermissions(Permissions.SUBMIT, true);
         executor = (sender, args) -> {
             Player player = (Player) sender;
             if (getPluginInstance().getDescriptionChangeHandler().containsPlayer(player.getUniqueId())) {
