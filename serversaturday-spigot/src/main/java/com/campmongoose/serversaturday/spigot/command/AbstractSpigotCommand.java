@@ -6,7 +6,6 @@ import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmissions;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -78,23 +77,6 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotComman
         if (permissions.testPermission(sender)) {
             if (usage.minArgsMet(sender, args.length)) {
                 return executor.apply(sender, Arrays.asList(args));
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param sender
-     * @param args
-     * @return
-     * @deprecated placeholder until commands are all separated
-     */
-    @Deprecated
-    public boolean onCommand(CommandSender sender, List<String> args) {
-        if (permissions.testPermission(sender)) {
-            if (usage.minArgsMet(sender, args.size())) {
-                return executor.apply(sender, args);
             }
         }
 
