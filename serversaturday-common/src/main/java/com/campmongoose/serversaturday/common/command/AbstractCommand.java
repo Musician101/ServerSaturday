@@ -4,7 +4,6 @@ import com.campmongoose.serversaturday.common.submission.AbstractBuild;
 import com.campmongoose.serversaturday.common.submission.AbstractSubmissions;
 import com.campmongoose.serversaturday.common.submission.AbstractSubmitter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
@@ -68,20 +67,11 @@ public abstract class AbstractCommand<A extends AbstractCommandArgument<M>, B ex
     }
 
     protected List<String> moveArguments(List<String> args) {
-        if (!args.isEmpty()) {
-            args.remove(0);
-        }
-
-        return args;
-    }
-
-    protected String[] moveArguments(String[] args) {
-        List<String> list = new ArrayList<>();
-        Collections.addAll(list, args);
+        List<String> list = new ArrayList<>(args);
         if (!list.isEmpty()) {
             list.remove(0);
         }
 
-        return list.toArray(new String[list.size()]);
+        return list;
     }
 }
