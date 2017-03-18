@@ -29,7 +29,7 @@ public class SSRename extends AbstractSpigotCommand {
             SpigotSubmitter submitter = getSubmitter(player);
             SpigotBuild build = submitter.getBuild(name);
             if (build == null) {
-                player.sendMessage(ChatColor.RED + Messages.BUILD_ALREADY_EXISTS);
+                player.sendMessage(ChatColor.RED + Messages.BUILD_NOT_FOUND);
                 return false;
             }
 
