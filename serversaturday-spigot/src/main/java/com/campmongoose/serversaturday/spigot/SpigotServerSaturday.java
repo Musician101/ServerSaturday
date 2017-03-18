@@ -81,6 +81,7 @@ public class SpigotServerSaturday extends JavaPlugin {
         Server server = getServer();
         String commandPrefix = Reference.NAME.replace(" ", "").toLowerCase();
         server.getPluginCommand(commandPrefix).setExecutor(new SSCommand());
-        Stream.of(new SSDescription(), new SSEdit(), new SSFeature(), new SSGoto(), new SSLocation(), new SSNew(), new SSReload(), new SSRemove(), new SSRename(), new SSResourcePack(), new SSSubmit(), new SSView(), new SSViewDescription()).forEach(command -> server.getPluginCommand(commandPrefix + command.getName()).setExecutor(command));
+        Stream.of(new SSDescription(), new SSEdit(), new SSFeature(), new SSGoto(), new SSLocation(), new SSNew(), new SSReload(), new SSRemove(), new SSRename(), new SSResourcePack(), new SSSubmit(), new SSView(), new SSViewDescription())
+                .forEach(command -> server.getPluginCommand(commandPrefix + command.getName()).setExecutor(command));
     }
 }
