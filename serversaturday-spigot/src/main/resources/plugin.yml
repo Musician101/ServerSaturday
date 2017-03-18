@@ -5,6 +5,10 @@ commands:
   serversaturday:
     aliases: [ss]
     description: Displays help and plugin info.
+  serversaturdaydescription:
+    aliases: [ssdescription, ssd]
+    description: Change the description of a submission.
+    permission: ss.submit
   serversaturdayedit:
     aliases: [ssedit, sse]
     description: Edit a submitted build.
