@@ -18,12 +18,8 @@ public class SpigotCommandUsage extends AbstractCommandUsage<SpigotCommandArgume
             StringBuilder sb = new StringBuilder();
             sb.append(ChatColor.GRAY).append(arguments.get(0).getFormattedArgument());
             if (arguments.size() > 1) {
-                sb.append(" ").append(ChatColor.RESET).append(arguments.get(1).getFormattedArgument());
-            }
-
-            if (arguments.size() > 2) {
-                for (int x = 2; x < arguments.size() - 1; x++) {
-                    sb.append(" ").append(ChatColor.GREEN).append(arguments.get(x).getFormattedArgument());
+                for (int x = 1; x < arguments.size(); x++) {
+                    sb.append(" ").append(ChatColor.RESET).append(arguments.get(x).getFormattedArgument());
                 }
             }
 

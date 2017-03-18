@@ -14,7 +14,7 @@ public class SpigotCommandArgument extends AbstractCommandArgument<String> {
     public SpigotCommandArgument(String name, Syntax... syntaxArray) {
         super(name, Arrays.asList(syntaxArray), (arg, syntaxList) -> {
             if (syntaxList.contains(Syntax.REPLACE)) {
-                arg = ChatColor.ITALIC + arg;
+                arg = ChatColor.ITALIC + arg + ChatColor.RESET;
             }
 
             if (syntaxList.contains(Syntax.MULTIPLE)) {
