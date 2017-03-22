@@ -17,7 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class AllSubmissionsGUI extends SpigotAbstractPagedGUI {
+public class AllSubmissionsGUI extends AbstractSpigotPagedGUI {
 
     public AllSubmissionsGUI(@Nonnull Player player, int page, @Nullable AbstractSpigotChestGUI prevMenu) {
         super(Bukkit.createInventory(null, 54, MenuText.ALL_SUBMISSIONS), player, page, prevMenu);

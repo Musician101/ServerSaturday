@@ -13,7 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class SubmitterGUI extends SpigotAbstractPagedGUI {
+public class SubmitterGUI extends AbstractSpigotPagedGUI {
 
     private final SpigotSubmitter submitter;
 

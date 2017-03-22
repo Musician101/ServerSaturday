@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SubmissionsGUI extends SpigotAbstractPagedGUI {
+public class SubmissionsGUI extends AbstractSpigotPagedGUI {
 
     private final int page;
 

@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class SpigotAbstractPagedGUI extends AbstractSpigotChestGUI {
+public abstract class AbstractSpigotPagedGUI extends AbstractSpigotChestGUI {
 
     protected final int page;
 
-    public SpigotAbstractPagedGUI(@Nonnull Inventory inventory, @Nonnull Player player, int page, @Nullable AbstractSpigotChestGUI prevMenu) {
+    public AbstractSpigotPagedGUI(@Nonnull Inventory inventory, @Nonnull Player player, int page, @Nullable AbstractSpigotChestGUI prevMenu) {
         super(inventory, player, prevMenu);
         this.page = page;
     }
