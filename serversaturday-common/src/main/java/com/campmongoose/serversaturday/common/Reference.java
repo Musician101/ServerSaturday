@@ -63,6 +63,7 @@ public class Reference {
     public static class Config {
 
         public static final String BUILDS = "builds";
+        public static final String CONFIG_VERSION = "config_version";
         public static final String DESCRIPTION = "description";
         public static final String FEATURED = "featured";
         public static final String HOCON_EXT = ".conf";

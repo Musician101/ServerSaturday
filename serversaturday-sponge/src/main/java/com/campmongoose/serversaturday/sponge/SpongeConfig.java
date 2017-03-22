@@ -30,7 +30,7 @@ public class SpongeConfig extends AbstractConfig {
                 logger.info("Generating default config file...");
                 configFile.createNewFile();
                 config = configManager.load();
-                config.getNode("config_version").setValue(1);
+                config.getNode(Config.CONFIG_VERSION).setValue(1);
                 config.getNode(Config.MAX_BUILDS).setValue(10);
                 configManager.save(config);
                 logger.info("Default file created.");

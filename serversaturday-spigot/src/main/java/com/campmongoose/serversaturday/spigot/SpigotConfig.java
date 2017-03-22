@@ -17,6 +17,17 @@ public class SpigotConfig extends AbstractConfig {
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
         FileConfiguration config = plugin.getConfig();
-        maxBuilds = config.getInt(Config.MAX_BUILDS, 0);
+        //Update as default config is changed
+        if (!config.contains(Config.CONFIG_VERSION)) {
+            config.set(Config.CONFIG_VERSION, 1);
+        }
+
+        if (config.getInt(Config.CONFIG_VERSION) == 1) {
+            if (!config.contains(Config.MAX_BUILDS)) {
+                config.set(Config.MAX_BUILDS, 0);
+            }
+        }
+
+        maxBuilds = config.getInt(Config.MAX_BUILDS);
     }
 }
