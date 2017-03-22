@@ -4,6 +4,7 @@ import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.common.command.Syntax;
+import com.campmongoose.serversaturday.spigot.SpigotDescriptionChangeHandler;
 import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
@@ -23,7 +24,8 @@ public class SSDescription extends AbstractSpigotCommand {
         permissions = new SpigotCommandPermissions(Permissions.SUBMIT, true);
         executor = (sender, args) -> {
             Player player = (Player) sender;
-            if (getPluginInstance().getDescriptionChangeHandler().containsPlayer(player.getUniqueId())) {
+            SpigotDescriptionChangeHandler sdch = getPluginInstance().getDescriptionChangeHandler();
+            if (sdch.containsPlayer(player.getUniqueId())) {
                 player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
                 return false;
             }
@@ -36,7 +38,7 @@ public class SSDescription extends AbstractSpigotCommand {
                 return false;
             }
 
-            getPluginInstance().getDescriptionChangeHandler().add(player, build);
+            sdch.add(player, build);
             return true;
         };
     }

@@ -1,35 +1,50 @@
 package com.campmongoose.serversaturday.spigot.command;
 
-import com.campmongoose.serversaturday.common.command.AbstractCommandArgument;
 import com.campmongoose.serversaturday.common.command.Syntax;
 import java.util.Arrays;
+import java.util.List;
+import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
 
-public class SpigotCommandArgument extends AbstractCommandArgument<String> {
+public class SpigotCommandArgument {
 
-    public SpigotCommandArgument(String name) {
+    @Nonnull
+    private String name;
+    @Nonnull
+    private List<Syntax> syntaxList;
+    
+    public SpigotCommandArgument(@Nonnull String name) {
         this(name, Syntax.LITERAL);
     }
 
-    public SpigotCommandArgument(String name, Syntax... syntaxArray) {
-        super(name, Arrays.asList(syntaxArray), (arg, syntaxList) -> {
-            if (syntaxList.contains(Syntax.REPLACE)) {
-                arg = ChatColor.ITALIC + arg + ChatColor.RESET;
-            }
+    public SpigotCommandArgument(@Nonnull String name, @Nonnull Syntax... syntaxArray) {
+        this.name = name;
+        this.syntaxList = Arrays.asList(syntaxArray);
+    }
 
-            if (syntaxList.contains(Syntax.MULTIPLE)) {
-                arg = arg + "...";
-            }
+    @Nonnull
+    public String getFormattedArgument() {
+        if (syntaxList.contains(Syntax.REPLACE)) {
+            name = ChatColor.ITALIC + name + ChatColor.RESET;
+        }
 
-            if (syntaxList.contains(Syntax.OPTIONAL)) {
-                arg = "[" + arg + "]";
-            }
+        if (syntaxList.contains(Syntax.MULTIPLE)) {
+            name = name + "...";
+        }
 
-            if (syntaxList.contains(Syntax.REQUIRED)) {
-                arg = "<" + arg + ">";
-            }
+        if (syntaxList.contains(Syntax.OPTIONAL)) {
+            name = "[" + name + "]";
+        }
 
-            return arg;
-        });
+        if (syntaxList.contains(Syntax.REQUIRED)) {
+            name = "<" + name + ">";
+        }
+
+        return name;
+    }
+
+    @Nonnull
+    public String getName() {
+        return name;
     }
 }

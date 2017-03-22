@@ -1,7 +1,7 @@
 package com.campmongoose.serversaturday.sponge.menu.textinput;
 
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
-import com.campmongoose.serversaturday.sponge.menu.chest.AbstractSpongeChestMenu;
+import com.campmongoose.serversaturday.sponge.menu.chest.AbstractSpongeChestGUI;
 import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,12 +15,12 @@ public abstract class TextInput {
 
     @Nonnull
     protected final Player player;
-    @Nonnull
-    protected final AbstractSpongeChestMenu prevMenu;
+    @Nullable
+    protected final AbstractSpongeChestGUI prevMenu;
     @Nullable
     protected BiFunction<String, Player, String> biFunction;
 
-    public TextInput(@Nonnull Player player, @Nonnull AbstractSpongeChestMenu prevMenu) {
+    public TextInput(@Nonnull Player player, @Nullable AbstractSpongeChestGUI prevMenu) {
         this.player = player;
         this.prevMenu = prevMenu;
         Sponge.getEventManager().registerListeners(SpongeServerSaturday.instance(), this);

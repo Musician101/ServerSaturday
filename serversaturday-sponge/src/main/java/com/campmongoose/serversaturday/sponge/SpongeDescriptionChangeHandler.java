@@ -2,7 +2,7 @@ package com.campmongoose.serversaturday.sponge;
 
 import com.campmongoose.serversaturday.common.Reference;
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.sponge.menu.chest.BuildMenu;
+import com.campmongoose.serversaturday.sponge.menu.chest.BuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import java.util.Arrays;
@@ -67,7 +67,7 @@ public class SpongeDescriptionChangeHandler {
 
                             submitter.updateBuildDescription(build, itemStackSnapshot.get(Keys.BOOK_PAGES).orElse(Collections.emptyList()).stream().map(Text::toPlain).collect(Collectors.toList()));
                             entity.remove();
-                            new BuildMenu(build, submitter, player, null);
+                            new BuildGUI(build, submitter, player, null);
                         });
             }
         });

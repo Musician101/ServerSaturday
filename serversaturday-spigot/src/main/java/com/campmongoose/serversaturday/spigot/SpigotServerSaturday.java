@@ -1,6 +1,7 @@
 package com.campmongoose.serversaturday.spigot;
 
 import com.campmongoose.serversaturday.common.Reference;
+import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.uuid.UUIDCache;
 import com.campmongoose.serversaturday.spigot.command.sscommand.SSCommand;
 import com.campmongoose.serversaturday.spigot.command.sscommand.SSFeature;
@@ -51,32 +52,32 @@ public class SpigotServerSaturday extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getLogger().info("Saving submissions to disk...");
+        getLogger().info(Messages.SAVING_SUBMISSIONS);
         submissions.save();
-        getLogger().info("Save complete.");
+        getLogger().info(Messages.SUBMISSIONS_SAVED);
     }
 
     @Override
     public void onEnable() {
-        getLogger().info("Loading config...");
+        getLogger().info(Messages.LOADING_CONFIG);
         config = new SpigotConfig();
-        getLogger().info("Config loaded.");
-        getLogger().info("Registering player UUIDs...");
+        getLogger().info(Messages.CONFIG_LOADED);
+        getLogger().info(Messages.REGISTERING_UUIDS);
         uuidCache = new UUIDCache();
         Stream.of(getServer().getOfflinePlayers()).forEach(player -> {
             try {
                 uuidCache.addOffline(player.getUniqueId());
             }
             catch (IOException e) {
-                getLogger().info("Could not retrieve up to date name for " + player.getName() + " (" + player.getUniqueId() + "). Defaulting to the last name they had on the server.");
+                getLogger().info(Messages.uuidRegistrationFailed(player.getName(), player.getUniqueId()));
                 uuidCache.add(player.getUniqueId(), player.getName());
             }
         });
         getServer().getOnlinePlayers().forEach(player -> uuidCache.add(player.getUniqueId(), player.getName()));
-        getLogger().info("UUID registration complete.");
-        getLogger().info("Loading submissions...");
+        getLogger().info(Messages.UUIDS_REGISTERED);
+        getLogger().info(Messages.LOADING_SUBMISSIONS);
         submissions = new SpigotSubmissions();
-        getLogger().info("Submissions loaded.");
+        getLogger().info(Messages.SUBMISSIONS_LOADED);
         dch = new SpigotDescriptionChangeHandler();
         Server server = getServer();
         String commandPrefix = Reference.NAME.replace(" ", "").toLowerCase();

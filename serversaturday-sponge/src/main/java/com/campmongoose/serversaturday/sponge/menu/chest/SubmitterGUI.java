@@ -12,12 +12,12 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
-public class SubmitterMenu extends AbstractSpongeChestMenu {
+public class SubmitterGUI extends AbstractSpongeChestGUI {
 
     private final int page;
     private final SpongeSubmitter submitter;
 
-    public SubmitterMenu(Player player, SpongeSubmitter submitter, int page, AbstractSpongeChestMenu prevMenu) {
+    public SubmitterGUI(Player player, SpongeSubmitter submitter, int page, AbstractSpongeChestGUI prevMenu) {
         super(MenuText.submitterMenu(submitter), 54, player, prevMenu);
         this.page = page;
         this.submitter = submitter;
@@ -33,7 +33,7 @@ public class SubmitterMenu extends AbstractSpongeChestMenu {
                 set(x, itemStack, player -> {
                     for (SpongeBuild build : submitter.getBuilds()) {
                         if (build.getName().equals(itemStack.get(Keys.DISPLAY_NAME).orElse(Text.of()).toPlain())) {
-                            new BuildMenu(build, submitter, player, this);
+                            new BuildGUI(build, submitter, player, this);
                         }
                     }
                 });
@@ -44,7 +44,7 @@ public class SubmitterMenu extends AbstractSpongeChestMenu {
         prevPage.offer(Keys.DISPLAY_NAME, Text.of(MenuText.PREVIOUS_PAGE));
         set(49, prevPage, player -> {
             if (page - 1 > 0) {
-                new SubmitterMenu(player, submitter, page - 1, prevMenu);
+                new SubmitterGUI(player, submitter, page - 1, prevMenu);
             }
         });
 
@@ -56,7 +56,7 @@ public class SubmitterMenu extends AbstractSpongeChestMenu {
         prevPage.offer(Keys.DISPLAY_NAME, Text.of(MenuText.NEXT_PAGE));
         set(53, nextPage, player -> {
             if (page + 1 > Integer.MAX_VALUE) {
-                new SubmitterMenu(player, submitter, page + 1, prevMenu);
+                new SubmitterGUI(player, submitter, page + 1, prevMenu);
             }
         });
     }

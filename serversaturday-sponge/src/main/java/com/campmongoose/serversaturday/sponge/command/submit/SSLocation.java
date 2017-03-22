@@ -2,8 +2,8 @@ package com.campmongoose.serversaturday.sponge.command.submit;
 
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.sponge.command.SpongeCommandExecutor;
-import com.campmongoose.serversaturday.sponge.menu.chest.BuildMenu;
+import com.campmongoose.serversaturday.sponge.command.AbstractSpongeCommand;
+import com.campmongoose.serversaturday.sponge.menu.chest.BuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import javax.annotation.Nonnull;
@@ -14,7 +14,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class SSLocation extends SpongeCommandExecutor {
+public class SSLocation extends AbstractSpongeCommand {
 
     @Nonnull
     @Override
@@ -30,7 +30,7 @@ public class SSLocation extends SpongeCommandExecutor {
                 }
 
                 build.setLocation(player.getLocation());
-                new BuildMenu(build, submitter, player, null);
+                new BuildGUI(build, submitter, player, null);
                 player.sendMessage(Text.builder(Messages.locationChanged(build)).color(TextColors.GREEN).build());
                 return CommandResult.success();
             }

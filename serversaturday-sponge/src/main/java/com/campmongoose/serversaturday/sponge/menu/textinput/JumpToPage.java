@@ -2,17 +2,17 @@ package com.campmongoose.serversaturday.sponge.menu.textinput;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
-import com.campmongoose.serversaturday.sponge.menu.chest.AbstractSpongeChestMenu;
-import com.campmongoose.serversaturday.sponge.menu.chest.AllSubmissionsMenu;
-import com.campmongoose.serversaturday.sponge.menu.chest.SubmissionsMenu;
-import com.campmongoose.serversaturday.sponge.menu.chest.SubmitterMenu;
+import com.campmongoose.serversaturday.sponge.menu.chest.AbstractSpongeChestGUI;
+import com.campmongoose.serversaturday.sponge.menu.chest.AllSubmissionsGUI;
+import com.campmongoose.serversaturday.sponge.menu.chest.SubmissionsGUI;
+import com.campmongoose.serversaturday.sponge.menu.chest.SubmitterGUI;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class JumpToPage extends TextInput {
 
-    public JumpToPage(Player player, AbstractSpongeChestMenu prevMenu) {
+    public JumpToPage(Player player, AbstractSpongeChestGUI prevMenu) {
         super(player, prevMenu);
     }
 
@@ -34,14 +34,14 @@ public class JumpToPage extends TextInput {
                 return null;
             }
 
-            if (prevMenu instanceof AllSubmissionsMenu) {
-                new AllSubmissionsMenu(player, page, prevMenu);
+            if (prevMenu instanceof AllSubmissionsGUI) {
+                new AllSubmissionsGUI(player, page, prevMenu);
             }
-            else if (prevMenu instanceof SubmissionsMenu) {
-                new SubmissionsMenu(player, page, prevMenu);
+            else if (prevMenu instanceof SubmissionsGUI) {
+                new SubmissionsGUI(player, page, prevMenu);
             }
-            else if (prevMenu instanceof SubmitterMenu) {
-                new SubmitterMenu(player, SpongeServerSaturday.instance().getSubmissions().getSubmitter(player), page, prevMenu);
+            else if (prevMenu instanceof SubmitterGUI) {
+                new SubmitterGUI(player, SpongeServerSaturday.instance().getSubmissions().getSubmitter(player), page, prevMenu);
             }
             else {
                 return null;

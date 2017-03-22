@@ -51,7 +51,6 @@ public class SSViewDescription extends AbstractSpigotCommand {
             player.getInventory().setItemInMainHand(book);
             ((CraftPlayer) player).getHandle().a(CraftItemStack.asNMSCopy(book), EnumHand.MAIN_HAND);
             player.getInventory().setItemInMainHand(old);
-
             return true;
         };
     }

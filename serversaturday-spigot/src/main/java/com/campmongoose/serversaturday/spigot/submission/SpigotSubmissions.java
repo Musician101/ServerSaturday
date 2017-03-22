@@ -7,6 +7,7 @@ import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import java.io.File;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -33,15 +34,12 @@ public class SpigotSubmissions extends AbstractSubmissions<Player, SpigotSubmitt
 
         File[] files = dir.listFiles();
         if (files != null) {
-            for (File file : files) {
-                if (!file.getName().endsWith(Config.YAML_EXT)) {
-                    continue;
-                }
-
-                YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-                UUID uuid = UUID.fromString(file.getName().replace(Config.YAML_EXT, ""));
-                submitters.put(uuid, new SpigotSubmitter(uuid, yaml));
-            }
+            Stream.of(files).filter(file -> file.getName().endsWith(Config.YAML_EXT))
+                    .forEach(file -> {
+                        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+                        UUID uuid = UUID.fromString(file.getName().replace(Config.YAML_EXT, ""));
+                        submitters.put(uuid, new SpigotSubmitter(uuid, yaml));
+                    });
         }
         else {
             logger.info("An error occurred whilst attempting to read the files in " + dir.getName());

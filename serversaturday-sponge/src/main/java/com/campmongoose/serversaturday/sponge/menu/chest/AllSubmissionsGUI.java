@@ -20,11 +20,11 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class AllSubmissionsMenu extends AbstractSpongeChestMenu {
+public class AllSubmissionsGUI extends AbstractSpongeChestGUI {
 
     private final int page;
 
-    public AllSubmissionsMenu(Player player, int page, AbstractSpongeChestMenu prevMenu) {
+    public AllSubmissionsGUI(Player player, int page, AbstractSpongeChestGUI prevMenu) {
         super(MenuText.ALL_SUBMISSIONS, 54, player, prevMenu);
         this.page = page;
     }
@@ -69,7 +69,7 @@ public class AllSubmissionsMenu extends AbstractSpongeChestMenu {
                         return;
                     }
 
-                    new SubmitterMenu(player, submitter, 1, this);
+                    new SubmitterGUI(player, submitter, 1, this);
                 });
             }
         }
@@ -78,7 +78,7 @@ public class AllSubmissionsMenu extends AbstractSpongeChestMenu {
         prevPage.offer(Keys.DISPLAY_NAME, Text.of(MenuText.PREVIOUS_PAGE));
         set(48, prevPage, player -> {
             if (page - 1 < 1) {
-                new AllSubmissionsMenu(player, page - 1, prevMenu);
+                new AllSubmissionsGUI(player, page - 1, prevMenu);
             }
         });
 
@@ -90,7 +90,7 @@ public class AllSubmissionsMenu extends AbstractSpongeChestMenu {
         nextPage.offer(Keys.DISPLAY_NAME, Text.of(MenuText.NEXT_PAGE));
         set(50, nextPage, player -> {
             if (page + 1 > Integer.MAX_VALUE) {
-                new AllSubmissionsMenu(player, page + 1, prevMenu);
+                new AllSubmissionsGUI(player, page + 1, prevMenu);
             }
         });
     }

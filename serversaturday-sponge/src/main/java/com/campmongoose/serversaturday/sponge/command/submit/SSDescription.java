@@ -3,7 +3,7 @@ package com.campmongoose.serversaturday.sponge.command.submit;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.sponge.SpongeDescriptionChangeHandler;
-import com.campmongoose.serversaturday.sponge.command.SpongeCommandExecutor;
+import com.campmongoose.serversaturday.sponge.command.AbstractSpongeCommand;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import javax.annotation.Nonnull;
@@ -14,7 +14,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class SSDescription extends SpongeCommandExecutor {
+public class SSDescription extends AbstractSpongeCommand {
 
     @Nonnull
     @Override

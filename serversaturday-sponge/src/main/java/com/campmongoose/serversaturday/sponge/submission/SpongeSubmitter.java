@@ -37,7 +37,7 @@ public class SpongeSubmitter extends AbstractSubmitter<SpongeBuild, ItemStack, L
     public SpongeSubmitter(@Nonnull UUID uuid, @Nonnull ConfigurationNode cn) {
         super(getName(uuid, cn), uuid);
         ConfigurationNode buildsCN = cn.getNode(Config.BUILDS);
-        buildsCN.getChildrenMap().keySet().stream().filter(buildName -> !buildName.toString().contains(".")).forEach(buildName -> builds.put(buildName.toString(), SpongeBuild.of(buildName.toString(), buildsCN.getNode(buildName))));
+        buildsCN.getChildrenMap().keySet().stream().filter(buildName -> !buildName.toString().contains(".")).forEach(buildName -> builds.put(buildName.toString(), new SpongeBuild(buildName.toString(), buildsCN.getNode(buildName))));
     }
 
     private static String getName(UUID uuid, ConfigurationNode cn) {
@@ -78,14 +78,14 @@ public class SpongeSubmitter extends AbstractSubmitter<SpongeBuild, ItemStack, L
 
     @Override
     public void save(@Nonnull File file) {
-        Logger logger = SpongeServerSaturday.getLogger();
+        Logger logger = SpongeServerSaturday.instance().getLogger();
         try {
             if (file.createNewFile()) {
                 logger.info(Messages.newFile(file));
             }
         }
         catch (IOException e) {
-            SpongeServerSaturday.getLogger().error(Messages.ioException(file));
+            logger.error(Messages.ioException(file));
             return;
         }
 
@@ -104,7 +104,7 @@ public class SpongeSubmitter extends AbstractSubmitter<SpongeBuild, ItemStack, L
             HoconConfigurationLoader.builder().setFile(file).build().save(cn);
         }
         catch (IOException e) {
-            SpongeServerSaturday.getLogger().error(Messages.ioException(file));
+            logger.error(Messages.ioException(file));
         }
     }
 

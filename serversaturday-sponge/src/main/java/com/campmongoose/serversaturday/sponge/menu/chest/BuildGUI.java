@@ -6,7 +6,7 @@ import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.sponge.SpongeDescriptionChangeHandler;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
 import com.campmongoose.serversaturday.sponge.menu.textinput.NameChangeTextInput;
-import com.campmongoose.serversaturday.sponge.menu.textinput.ResourcePackChangeMenu;
+import com.campmongoose.serversaturday.sponge.menu.textinput.ResourcePackChangeTextInput;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import java.util.Collections;
@@ -23,16 +23,16 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class BuildMenu extends AbstractSpongeChestMenu {
+public class BuildGUI extends AbstractSpongeChestGUI {
 
     private final SpongeBuild build;
     private final SpongeSubmitter submitter;
 
-    public BuildMenu(SpongeBuild build, SpongeSubmitter submitter, Player player, AbstractSpongeChestMenu prevMenu) {
+    public BuildGUI(SpongeBuild build, SpongeSubmitter submitter, Player player, AbstractSpongeChestGUI prevMenu) {
         this(build, submitter, player, prevMenu, false);
     }
 
-    public BuildMenu(SpongeBuild build, SpongeSubmitter submitter, Player player, AbstractSpongeChestMenu prevMenu, boolean manualOpen) {
+    public BuildGUI(SpongeBuild build, SpongeSubmitter submitter, Player player, AbstractSpongeChestGUI prevMenu, boolean manualOpen) {
         super(build.getName(), 9, player, prevMenu, manualOpen);
         this.build = build;
         this.submitter = submitter;
@@ -47,7 +47,7 @@ public class BuildMenu extends AbstractSpongeChestMenu {
             set(1, ItemStack.builder().itemType(ItemTypes.COMPASS).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.CHANGE_LOCATION_NAME)).add(Keys.ITEM_LORE, MenuText.CHANGE_LOCATION_DESC.stream().map(Text::of).collect(Collectors.toList())).build(),
                     player -> {
                         build.setLocation(player.getLocation());
-                        new BuildMenu(build, submitter, player, prevMenu);
+                        new BuildGUI(build, submitter, player, prevMenu);
                         player.sendMessage(Text.builder(Messages.locationChanged(build)).color(TextColors.GREEN).build());
                     });
             set(2, ItemStack.builder().itemType(ItemTypes.BOOK).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.CHANGE_DESCRIPTION_NAME)).add(Keys.ITEM_LORE, Collections.singletonList(Text.of(MenuText.CHANGE_DESCRIPTION_DESC))).build(),
@@ -61,11 +61,11 @@ public class BuildMenu extends AbstractSpongeChestMenu {
                         sdch.add(player, build);
                     });
             set(3, ItemStack.builder().itemType(ItemTypes.PAINTING).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.CHANGE_RESOURCE_PACK_NAME)).add(Keys.ITEM_LORE, MenuText.CHANGE_RESOURCE_PACK_DESC.stream().map(Text::of).collect(Collectors.toList())).build(),
-                    player -> new ResourcePackChangeMenu(build, player, this));
+                    player -> new ResourcePackChangeTextInput(build, player, this));
             set(4, ItemStack.builder().itemType(ItemTypes.FLINT_AND_STEEL).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.SUBMIT_UNREADY_NAME, build.submitted())).add(Keys.ITEM_LORE, MenuText.SUBMIT_UNREADY_DESC.stream().map(Text::of).collect(Collectors.toList())).build(),
                     player -> {
                         build.setSubmitted(!build.submitted());
-                        new BuildMenu(build, submitter, player, prevMenu);
+                        new BuildGUI(build, submitter, player, prevMenu);
                     });
             set(5, ItemStack.builder().itemType(ItemTypes.COMPASS).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.TELEPORT_NAME)).add(Keys.ITEM_LORE, MenuText.teleportDesc(location.getExtent().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ()).stream().map(Text::of).collect(Collectors.toList())).build(),
                     player -> {
@@ -93,13 +93,13 @@ public class BuildMenu extends AbstractSpongeChestMenu {
                 if (build.featured()) {
                     set(7, isb.add(Keys.GOLDEN_APPLE_TYPE, GoldenApples.ENCHANTED_GOLDEN_APPLE).build(), player -> {
                         build.setFeatured(!build.featured());
-                        new BuildMenu(build, submitter, player, prevMenu);
+                        new BuildGUI(build, submitter, player, prevMenu);
                     });
                 }
                 else {
                     set(7, isb.build(), player -> {
                         build.setFeatured(!build.featured());
-                        new BuildMenu(build, submitter, player, prevMenu);
+                        new BuildGUI(build, submitter, player, prevMenu);
                     });
                 }
             }
@@ -132,7 +132,7 @@ public class BuildMenu extends AbstractSpongeChestMenu {
 
                 set(3, isb.build(), player -> {
                     build.setFeatured(!build.featured());
-                    new BuildMenu(build, submitter, player, prevMenu);
+                    new BuildGUI(build, submitter, player, prevMenu);
                 });
             }
         }

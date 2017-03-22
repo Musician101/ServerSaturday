@@ -12,11 +12,11 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
-public class SubmissionsMenu extends AbstractSpongeChestMenu {
+public class SubmissionsGUI extends AbstractSpongeChestGUI {
 
     private final int page;
 
-    public SubmissionsMenu(Player player, int page, AbstractSpongeChestMenu prevMenu) {
+    public SubmissionsGUI(Player player, int page, AbstractSpongeChestGUI prevMenu) {
         super(MenuText.SUBMISSIONS, 54, player, prevMenu);
         this.page = page;
     }
@@ -31,7 +31,7 @@ public class SubmissionsMenu extends AbstractSpongeChestMenu {
                 set(x, itemStack, player -> {
                     for (SpongeSubmitter submitter : SpongeServerSaturday.instance().getSubmissions().getSubmitters()) {
                         if (submitter.getName().equals(itemStack.get(Keys.DISPLAY_NAME).orElse(Text.of()).toPlain())) {
-                            new SubmitterMenu(player, submitter, 1, this);
+                            new SubmitterGUI(player, submitter, 1, this);
                         }
                     }
                 });
@@ -42,7 +42,7 @@ public class SubmissionsMenu extends AbstractSpongeChestMenu {
         prevPage.offer(Keys.DISPLAY_NAME, Text.of(MenuText.PREVIOUS_PAGE));
         set(48, prevPage, player -> {
             if (page - 1 > 0) {
-                new SubmissionsMenu(player, page - 1, this);
+                new SubmissionsGUI(player, page - 1, this);
             }
         });
 
@@ -54,7 +54,7 @@ public class SubmissionsMenu extends AbstractSpongeChestMenu {
         nextPage.offer(Keys.DISPLAY_NAME, Text.of(MenuText.NEXT_PAGE));
         set(50, nextPage, player -> {
             if (page + 1 > Integer.MAX_VALUE) {
-                new SubmissionsMenu(player, page + 1, this);
+                new SubmissionsGUI(player, page + 1, this);
             }
         });
     }

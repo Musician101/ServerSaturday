@@ -1,49 +1,54 @@
 package com.campmongoose.serversaturday.sponge;
 
 import com.campmongoose.serversaturday.common.Reference;
-import com.campmongoose.serversaturday.common.Reference.Commands;
-import com.campmongoose.serversaturday.common.Reference.Permissions;
-import com.campmongoose.serversaturday.sponge.command.SSFeature;
-import com.campmongoose.serversaturday.sponge.command.SSReload;
-import com.campmongoose.serversaturday.sponge.command.submit.SSDescription;
-import com.campmongoose.serversaturday.sponge.command.submit.SSEdit;
-import com.campmongoose.serversaturday.sponge.command.submit.SSLocation;
-import com.campmongoose.serversaturday.sponge.command.submit.SSNew;
-import com.campmongoose.serversaturday.sponge.command.submit.SSRemove;
-import com.campmongoose.serversaturday.sponge.command.submit.SSRename;
-import com.campmongoose.serversaturday.sponge.command.submit.SSResourcePack;
-import com.campmongoose.serversaturday.sponge.command.submit.SSSubmit;
-import com.campmongoose.serversaturday.sponge.command.view.SSGoto;
-import com.campmongoose.serversaturday.sponge.command.view.SSView;
-import com.campmongoose.serversaturday.sponge.command.view.SSViewDescription;
+import com.campmongoose.serversaturday.common.Reference.Messages;
+import com.campmongoose.serversaturday.common.uuid.UUIDCache;
+import com.campmongoose.serversaturday.sponge.command.SpongeCommands;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
+import com.google.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.text.Text;
+import org.spongepowered.api.service.user.UserStorageService;
 
+//TODO need to rewrite this to incorporate changes
 @Plugin(id = Reference.ID, name = Reference.NAME, description = Reference.DESCRIPTION, version = Reference.VERSION)
 public class SpongeServerSaturday {
 
+    @Inject
+    @DefaultConfig(sharedRoot = false)
+    private ConfigurationLoader<CommentedConfigurationNode> configManager;
+
+    @Inject
+    @DefaultConfig(sharedRoot = false)
+    private File defaultConfig;
+
+    @Inject
+    private Logger logger;
+
+    @Inject
+    private static SpongeServerSaturday instance;
+
+    private SpongeConfig config;
     private SpongeDescriptionChangeHandler dch;
     private SpongeSubmissions submissions;
+    private UUIDCache uuidCache;
 
-    public static Logger getLogger() {
-        return getPluginContainer().getLogger();
-    }
-
-    public static PluginContainer getPluginContainer() {
-        return Sponge.getPluginManager().getPlugin(Reference.ID).get();
+    public Logger getLogger() {
+        return logger;
     }
 
     public static SpongeServerSaturday instance() {
-        return (SpongeServerSaturday) getPluginContainer().getInstance().get();
+        return instance;
     }
 
     public SpongeDescriptionChangeHandler getDescriptionChangeHandler() {
@@ -54,84 +59,48 @@ public class SpongeServerSaturday {
         return submissions;
     }
 
+    public UUIDCache getUUIDCache() {
+        return uuidCache;
+    }
+
     @Listener
     public void onDisable(GamePostInitializationEvent event) {
+        logger.info(Messages.SAVING_SUBMISSIONS);
         submissions.save();
+        logger.info(Messages.SUBMISSIONS_SAVED);
     }
 
     @Listener
     public void onEnable(GamePreInitializationEvent event) {
+        logger.info(Messages.LOADING_CONFIG);
+        config = new SpongeConfig(configManager, defaultConfig);
+        logger.info(Messages.CONFIG_LOADED);
+        logger.info(Messages.REGISTERING_UUIDS);
+        uuidCache = new UUIDCache();
+        Sponge.getServiceManager().getRegistration(UserStorageService.class).ifPresent(providerRegistration -> {
+            UserStorageService userStorage = providerRegistration.getProvider();
+            userStorage.getAll().forEach(gameProfile -> {
+                UUID uuid = gameProfile.getUniqueId();
+                try {
+                    uuidCache.addOffline(uuid);
+                }
+                catch (IOException e) {
+                    String name = gameProfile.getName().orElse("");
+                    logger.info(Messages.uuidRegistrationFailed(name, uuid));
+                    uuidCache.add(gameProfile.getUniqueId(), name);
+                }
+            });
+        });
+        Sponge.getServer().getOnlinePlayers().forEach(player -> uuidCache.add(player.getUniqueId(), player.getName()));
+        logger.info(Messages.UUIDS_REGISTERED);
+        logger.info(Messages.LOADING_SUBMISSIONS);
+        submissions = new SpongeSubmissions(new File(defaultConfig.getParentFile(), "submitters"));
+        logger.info(Messages.SUBMISSIONS_LOADED);
         dch = new SpongeDescriptionChangeHandler();
-        submissions = new SpongeSubmissions();
-        Sponge.getCommandManager().register(this, CommandSpec.builder().description(Text.of(Reference.DESCRIPTION))
-                .child(CommandSpec.builder().description(Text.of(Commands.DESCRIPTION_DESC))
-                        .arguments(GenericArguments.string(Text.of(Commands.BUILD)))
-                        .executor(new SSDescription())
-                        .permission(Permissions.SUBMIT)
-                        .build(), Commands.DESCRIPTION_NAME)
-                .child(CommandSpec.builder().description(Text.of(Commands.EDIT_DESC))
-                        .arguments(GenericArguments.optional(GenericArguments.string(Text.of(Commands.BUILD))))
-                        .executor(new SSEdit())
-                        .permission(Permissions.SUBMIT)
-                        .build(), Commands.EDIT_NAME)
-                .child(CommandSpec.builder().description(Text.of(Commands.LOCATION_DESC))
-                        .arguments(GenericArguments.string(Text.of(Commands.BUILD)))
-                        .executor(new SSLocation())
-                        .permission(Permissions.SUBMIT)
-                        .build(), Commands.LOCATION_NAME)
-                .child(CommandSpec.builder().description(Text.of(Commands.NEW_DESC))
-                        .arguments(GenericArguments.string(Text.of(Commands.NAME)))
-                        .executor(new SSNew())
-                        .permission(Permissions.SUBMIT)
-                        .build(), Commands.NEW_NAME)
-                .child(CommandSpec.builder().description(Text.of(Commands.REMOVE_DESC))
-                        .arguments(GenericArguments.optional(GenericArguments.string(Text.of(Commands.BUILD))))
-                        .executor(new SSRemove())
-                        .permission(Permissions.SUBMIT)
-                        .build(), Commands.REMOVE_NAME)
-                .child(CommandSpec.builder().description(Text.of(Commands.RENAME_DESC))
-                        .arguments(GenericArguments.string(Text.of(Commands.BUILD)))
-                        .executor(new SSRename())
-                        .permission(Permissions.SUBMIT)
-                        .build(), Commands.RENAME_NAME)
-                .child(CommandSpec.builder().description(Text.of(Commands.RESOURCE_PACK_DESC))
-                        .arguments(GenericArguments.string(Text.of(Commands.BUILD)))
-                        .executor(new SSResourcePack())
-                        .permission(Permissions.SUBMIT)
-                        .build(), Commands.RESOURCE_PACK_NAME)
-                .child(CommandSpec.builder().description(Text.of(Commands.SUBMIT_DESC))
-                        .arguments(GenericArguments.string(Text.of(Commands.BUILD)))
-                        .executor(new SSSubmit())
-                        .permission(Permissions.SUBMIT)
-                        .build(), Commands.SUBMIT_NAME)
-                .child(CommandSpec.builder().description(Text.of(Commands.GOTO_DESC))
-                        .arguments(GenericArguments.string(Text.of(Commands.PLAYER)))
-                        .arguments(GenericArguments.string(Text.of(Commands.BUILD)))
-                        .executor(new SSGoto())
-                        .permission(Permissions.VIEW_GOTO)
-                        .build(), Commands.GOTO_NAME)
-                .child(CommandSpec.builder().description(Text.of(Commands.VIEW_DESC))
-                        .arguments(GenericArguments.optional(GenericArguments.string(Text.of(Commands.PLAYER))))
-                        .arguments(GenericArguments.optional(GenericArguments.string(Text.of(Commands.BUILD))))
-                        .executor(new SSView())
-                        .permission(Permissions.VIEW)
-                        .build(), Commands.VIEW_NAME)
-                .child(CommandSpec.builder().description(Text.of(Commands.VIEW_DESCRIPTION_DESC))
-                        .arguments(GenericArguments.string(Text.of(Commands.PLAYER)))
-                        .arguments(GenericArguments.string(Text.of(Commands.BUILD)))
-                        .executor(new SSViewDescription())
-                        .permission(Permissions.VIEW)
-                        .build(), Commands.VIEW_DESCRIPTION_NAME)
-                .child(CommandSpec.builder().description(Text.of(Commands.FEATURE_DESC))
-                        .arguments(GenericArguments.optional(GenericArguments.string(Text.of(Commands.PLAYER))))
-                        .arguments(GenericArguments.optional(GenericArguments.string(Text.of(Commands.BUILD))))
-                        .executor(new SSFeature())
-                        .permission(Permissions.FEATURE)
-                        .build(), Commands.FEATURE_NAME)
-                .child(CommandSpec.builder().description(Text.of(Commands.RELOAD_DESC))
-                        .executor(new SSReload())
-                        .permission(Permissions.RELOAD)
-                        .build(), Commands.RELOAD_NAME)
-                .build(), Reference.NAME.replace(" ", ""), Commands.SS_CMD.replace("/", ""));
+        SpongeCommands.init();
+    }
+    
+    public SpongeConfig getConfig() {
+        return config;
     }
 }

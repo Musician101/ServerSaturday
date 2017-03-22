@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.Sponge;
@@ -37,7 +38,7 @@ public class SpongeBuild extends AbstractBuild<ItemStack, Location<World>, Spong
         }
         catch (ObjectMappingException e) {
             this.description = new ArrayList<>();
-            SpongeServerSaturday.getLogger().error("An error occurred while parsing the description for " + name);
+            SpongeServerSaturday.instance().getLogger().error("An error occurred while parsing the description for " + name);
         }
     }
 
@@ -56,8 +57,9 @@ public class SpongeBuild extends AbstractBuild<ItemStack, Location<World>, Spong
         return new Location<>(world, x, y, z);
     }
 
+    @Nonnull
     @Override
-    public ItemStack getMenuRepresentation(SpongeSubmitter submitter) {
+    public ItemStack getMenuRepresentation(@Nonnull SpongeSubmitter submitter) {
         ItemStack itemStack = ItemStack.of(ItemTypes.BOOK, 1);
         itemStack.offer(Keys.ITEM_LORE, Collections.singletonList(Text.of(submitter.getName())));
         itemStack.offer(Keys.DISPLAY_NAME, Text.of(name));
@@ -69,6 +71,7 @@ public class SpongeBuild extends AbstractBuild<ItemStack, Location<World>, Spong
         return itemStack;
     }
 
+    @Nonnull
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();

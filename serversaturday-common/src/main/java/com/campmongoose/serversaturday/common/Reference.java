@@ -138,6 +138,14 @@ public class Reference {
     public static class Messages {
 
         public static final String PREFIX = "[SS] ";
+        public static final String LOADING_CONFIG = "Loading config...";
+        public static final String CONFIG_LOADED = "Config loaded.";
+        public static final String REGISTERING_UUIDS = "Registering player UUIDs, this might take a while...";
+        public static final String UUIDS_REGISTERED = "UUID registration complete.";
+        public static final String LOADING_SUBMISSIONS = "Loading submissions...";
+        public static final String SUBMISSIONS_LOADED = "Submissions loaded.";
+        public static final String SAVING_SUBMISSIONS = "Saving submissions to disk...";
+        public static final String SUBMISSIONS_SAVED = "Save complete.";
         public static final String BUILD_ALREADY_EXISTS = PREFIX + "A build with that name already exists.";
         public static final String BUILD_NOT_FOUND = PREFIX + "A build with that name does not exist.";
         public static final String EDIT_IN_PROGRESS = PREFIX + "You're in the middle of editing another build.";
@@ -149,6 +157,11 @@ public class Reference {
 
         private Messages() {
 
+        }
+
+        @Nonnull
+        public static String uuidRegistrationFailed(String name, UUID uuid) {
+            return "Could not retrieve up to date name for " + name + " (" + uuid.toString() + "). Defaulting to the last name they had on the server.";
         }
 
         @Nonnull

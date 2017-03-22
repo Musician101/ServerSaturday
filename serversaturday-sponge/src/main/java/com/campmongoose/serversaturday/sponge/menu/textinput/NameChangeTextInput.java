@@ -2,8 +2,8 @@ package com.campmongoose.serversaturday.sponge.menu.textinput;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
-import com.campmongoose.serversaturday.sponge.menu.chest.AbstractSpongeChestMenu;
-import com.campmongoose.serversaturday.sponge.menu.chest.BuildMenu;
+import com.campmongoose.serversaturday.sponge.menu.chest.AbstractSpongeChestGUI;
+import com.campmongoose.serversaturday.sponge.menu.chest.BuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import org.spongepowered.api.entity.living.player.Player;
@@ -14,7 +14,7 @@ public class NameChangeTextInput extends TextInput {
 
     private final SpongeBuild build;
 
-    public NameChangeTextInput(SpongeBuild build, Player player, AbstractSpongeChestMenu prevMenu) {
+    public NameChangeTextInput(SpongeBuild build, Player player, AbstractSpongeChestGUI prevMenu) {
         super(player, prevMenu);
         this.build = build;
     }
@@ -35,7 +35,7 @@ public class NameChangeTextInput extends TextInput {
             }
 
             submitter.updateBuildName(build, rawMessage);
-            new BuildMenu(build, submitter, player, prevMenu);
+            new BuildGUI(build, submitter, player, prevMenu);
             return rawMessage;
         };
     }

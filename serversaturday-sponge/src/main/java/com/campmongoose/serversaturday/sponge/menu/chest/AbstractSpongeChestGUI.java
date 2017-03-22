@@ -1,16 +1,19 @@
 package com.campmongoose.serversaturday.sponge.menu.chest;
 
 import com.campmongoose.serversaturday.common.Reference;
-import com.campmongoose.serversaturday.common.menu.AbstractChestMenu;
+import com.campmongoose.serversaturday.common.gui.AbstractChestGUI;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
@@ -18,6 +21,7 @@ import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Container;
 import org.spongepowered.api.item.inventory.Inventory;
@@ -27,18 +31,19 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.property.InventoryCapacity;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 //TODO create paged Menu
-public abstract class AbstractSpongeChestMenu extends AbstractChestMenu<Inventory, AbstractSpongeChestMenu, Player, ItemStack> {
+public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inventory, AbstractSpongeChestGUI, Player, ItemStack, ItemType> {
 
     private final Map<Integer, ItemStack> slots = new HashMap<>();
 
-    public AbstractSpongeChestMenu(@Nonnull String name, int size, @Nonnull Player player, @Nullable AbstractSpongeChestMenu prevMenu) {
+    public AbstractSpongeChestGUI(@Nonnull String name, int size, @Nonnull Player player, @Nullable AbstractSpongeChestGUI prevMenu) {
         this(name, size, player, prevMenu, false);
     }
 
-    public AbstractSpongeChestMenu(@Nonnull String name, int size, @Nonnull Player player, @Nullable AbstractSpongeChestMenu prevMenu, boolean manualOpen) {
-        super(parseInventory(name, size), player, prevMenu, false);
+    public AbstractSpongeChestGUI(@Nonnull String name, int size, @Nonnull Player player, @Nullable AbstractSpongeChestGUI prevMenu, boolean manualOpen) {
+        super(parseInventory(name, size), player, prevMenu);
         open();
     }
 
@@ -111,5 +116,18 @@ public abstract class AbstractSpongeChestMenu extends AbstractChestMenu<Inventor
     protected void set(int slot, @Nonnull ItemStack itemStack) {
         inventory.query(new SlotIndex(slot)).set(itemStack);
         slots.put(slot, itemStack);
+    }
+
+    @Nonnull
+    @Override
+    protected ItemStack createItem(@Nonnull ItemType itemType, @Nonnull Text name, @Nonnull Text... description) {
+        return ItemStack.builder().itemType(itemType).add(Keys.DISPLAY_NAME, name)
+                .add(Keys.ITEM_LORE, Stream.of(description).map(Text::of).collect(Collectors.toList())).build();
+    }
+
+    @Override
+    protected void setBackButton(int slot, @Nonnull ItemType itemType) {
+        ItemStack itemStack = createItem(itemType, Text.builder("Back").color(TextColors.RED).build(), Text.of("Closes this menu and attempts"), Text.of("to back to the previous menu."));
+        set(slot, itemStack, player -> player.closeInventory(Cause.of(NamedCause.source(inventory.getPlugin()))));
     }
 }

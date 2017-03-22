@@ -3,48 +3,11 @@ package com.campmongoose.serversaturday.common.command;
 import com.campmongoose.serversaturday.common.submission.AbstractBuild;
 import com.campmongoose.serversaturday.common.submission.AbstractSubmissions;
 import com.campmongoose.serversaturday.common.submission.AbstractSubmitter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AbstractCommand<A extends AbstractCommandArgument<M>, B extends AbstractBuild<T, L, Q>,
-        C extends AbstractCommand<A, B, C, I, L, M, P, Q, R, S, T, U, Y, Z>, I, L, M, P,
-        Q extends AbstractSubmitter<B, T, L>, R, S extends AbstractSubmissions<P, Q>, T,
-        U extends AbstractCommandUsage<A, M, Z>, Y extends AbstractCommandPermissions<Z>, Z> {
-
-    @Nonnull
-    protected M description;
-    protected BiFunction<Z, List<String>, R> executor;
-    @Nonnull
-    protected String name;
-    protected Y permissions;
-    protected U usage;
-
-    public AbstractCommand(@Nonnull String name, @Nonnull M description) {
-        this.name = name;
-        this.description = description;
-    }
-
-    @Nonnull
-    public M getDescription() {
-        return description;
-    }
-
-    @Nonnull
-    protected abstract M getHelp();
-
-    @Nonnull
-    public String getName() {
-        return name;
-    }
-
-    @Nonnull
-    public Y getPermissions() {
-        return permissions;
-    }
+public abstract class AbstractCommand<B extends AbstractBuild<T, L, Q>, I, L, P, Q extends AbstractSubmitter<B, T, L>, S extends AbstractSubmissions<P, Q>, T> {
 
     @Nonnull
     protected abstract I getPluginInstance();
@@ -60,18 +23,4 @@ public abstract class AbstractCommand<A extends AbstractCommandArgument<M>, B ex
 
     @Nullable
     protected abstract Q getSubmitter(@Nonnull String playerName);
-
-    @Nonnull
-    public U getUsage() {
-        return usage;
-    }
-
-    protected List<String> moveArguments(List<String> args) {
-        List<String> list = new ArrayList<>(args);
-        if (!list.isEmpty()) {
-            list.remove(0);
-        }
-
-        return list;
-    }
 }
