@@ -2,7 +2,7 @@ package com.campmongoose.serversaturday.sponge.menu.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
-import com.campmongoose.serversaturday.sponge.menu.textinput.JumpToPage;
+import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,50 +12,40 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
-public class SubmissionsGUI extends AbstractSpongeChestGUI {
-
-    private final int page;
+public class SubmissionsGUI extends AbstractSpongePagedGUI {
 
     public SubmissionsGUI(Player player, int page, AbstractSpongeChestGUI prevMenu) {
-        super(MenuText.SUBMISSIONS, 54, player, prevMenu);
-        this.page = page;
+        super(MenuText.SUBMISSIONS, 54, player, page, prevMenu);
     }
 
     @Override
     protected void build() {
-        List<ItemStack> list = SpongeServerSaturday.instance().getSubmissions().getSubmitters().stream().map(SpongeSubmitter::getMenuRepresentation).collect(Collectors.toList());
-        for (int x = 0; x < 54; x++) {
-            int subListPosition = x + (page - 1) * 45;
-            if (x < 45 && list.size() > subListPosition) {
-                ItemStack itemStack = list.get(subListPosition);
-                set(x, itemStack, player -> {
-                    for (SpongeSubmitter submitter : SpongeServerSaturday.instance().getSubmissions().getSubmitters()) {
-                        if (submitter.getName().equals(itemStack.get(Keys.DISPLAY_NAME).orElse(Text.of()).toPlain())) {
-                            new SubmitterGUI(player, submitter, 1, this);
-                        }
-                    }
-                });
-            }
-        }
-
-        ItemStack prevPage = ItemStack.of(ItemTypes.ARROW, 1);
-        prevPage.offer(Keys.DISPLAY_NAME, Text.of(MenuText.PREVIOUS_PAGE));
-        set(48, prevPage, player -> {
-            if (page - 1 > 0) {
-                new SubmissionsGUI(player, page - 1, this);
+        SpongeSubmissions submissions = SpongeServerSaturday.instance().getSubmissions();
+        List<SpongeSubmitter> spongeSubmitters = submissions.getSubmitters();
+        List<ItemStack> list = spongeSubmitters.stream().map(SpongeSubmitter::getMenuRepresentation).collect(Collectors.toList());
+        setContents(list, (player, itemStack) -> p -> {
+            for (SpongeSubmitter submitter : SpongeServerSaturday.instance().getSubmissions().getSubmitters()) {
+                if (submitter.getName().equals(itemStack.get(Keys.DISPLAY_NAME).orElse(Text.of()).toPlain())) {
+                    new SubmitterGUI(player, submitter, 1, this);
+                    return;
+                }
             }
         });
 
-        ItemStack jumpPage = ItemStack.of(ItemTypes.BOOK, 1);
-        jumpPage.offer(Keys.DISPLAY_NAME, Text.of(MenuText.JUMP_PAGE));
-        set(49, prevPage, player -> new JumpToPage(player, this));
+        int maxPage = new Double(Math.ceil(list.size() / 45)).intValue();
+        setJumpToPage(45, maxPage);
+        setPageNavigationButton(48, MenuText.PREVIOUS_PAGE, player -> {
+            if (page > 1) {
+                new SubmissionsGUI(player, page - 1, prevMenu);
+            }
+        });
 
-        ItemStack nextPage = ItemStack.of(ItemTypes.ARROW, 1);
-        nextPage.offer(Keys.DISPLAY_NAME, Text.of(MenuText.NEXT_PAGE));
-        set(50, nextPage, player -> {
-            if (page + 1 > Integer.MAX_VALUE) {
+        setPageNavigationButton(50, MenuText.NEXT_PAGE, player -> {
+            if (page < maxPage) {
                 new SubmissionsGUI(player, page + 1, this);
             }
         });
+
+        setBackButton(53, ItemTypes.BARRIER);
     }
 }

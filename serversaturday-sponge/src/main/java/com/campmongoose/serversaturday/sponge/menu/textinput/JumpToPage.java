@@ -6,14 +6,19 @@ import com.campmongoose.serversaturday.sponge.menu.chest.AbstractSpongeChestGUI;
 import com.campmongoose.serversaturday.sponge.menu.chest.AllSubmissionsGUI;
 import com.campmongoose.serversaturday.sponge.menu.chest.SubmissionsGUI;
 import com.campmongoose.serversaturday.sponge.menu.chest.SubmitterGUI;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class JumpToPage extends TextInput {
 
-    public JumpToPage(Player player, AbstractSpongeChestGUI prevMenu) {
+    protected final int maxPage;
+
+    public JumpToPage(@Nonnull Player player, @Nullable AbstractSpongeChestGUI prevMenu, int maxPage) {
         super(player, prevMenu);
+        this.maxPage = maxPage;
     }
 
     @Override
@@ -21,7 +26,10 @@ public class JumpToPage extends TextInput {
         player.sendMessage(Text.builder(Messages.PREFIX + "Please type in chat what page you would like to jump to. Type /cancel to go back.").color(TextColors.GOLD).build());
         biFunction = (rawMessage, player) -> {
             if (rawMessage.equalsIgnoreCase("/cancel")) {
-                prevMenu.open();
+                if (prevMenu != null) {
+                    prevMenu.open();
+                }
+
                 return null;
             }
 
@@ -30,7 +38,7 @@ public class JumpToPage extends TextInput {
                 page = Integer.parseInt(rawMessage);
             }
             catch (NumberFormatException e) {
-                player.sendMessage(Text.of(Messages.PREFIX + "The message"));
+                player.sendMessage(Text.of(Messages.PREFIX + "That is not a number."));
                 return null;
             }
 
