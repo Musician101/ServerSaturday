@@ -8,6 +8,7 @@ import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -17,10 +18,11 @@ import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.network.ClientConnectionEvent.Login;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.service.user.UserStorageService;
 
-//TODO need to rewrite this to incorporate changes
 @Plugin(id = Reference.ID, name = Reference.NAME, description = Reference.DESCRIPTION, version = Reference.VERSION)
 public class SpongeServerSaturday {
 
@@ -97,6 +99,17 @@ public class SpongeServerSaturday {
         submissions = new SpongeSubmissions(new File(defaultConfig.getParentFile(), "submitters"));
         logger.info(Messages.SUBMISSIONS_LOADED);
         dch = new SpongeDescriptionChangeHandler();
+        Sponge.getEventManager().registerListener(this, Login.class, e -> {
+            GameProfile profile = e.getProfile();
+            UUID uuid = profile.getUniqueId();
+            Optional<String> name = profile.getName();
+            if (name.isPresent()) {
+                uuidCache.add(uuid, name.get());
+            }
+            else {
+                logger.warn("Could not add user to UUID Cache with id " + uuid.toString());
+            }
+        });
         SpongeCommands.init();
     }
     

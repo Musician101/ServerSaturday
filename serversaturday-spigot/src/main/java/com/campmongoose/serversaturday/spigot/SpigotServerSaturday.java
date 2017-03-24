@@ -80,6 +80,7 @@ public class SpigotServerSaturday extends JavaPlugin {
         getLogger().info(Messages.SUBMISSIONS_LOADED);
         dch = new SpigotDescriptionChangeHandler();
         Server server = getServer();
+        server.getPluginManager().registerEvents(new PlayerLoginListener(), this);
         String commandPrefix = Reference.NAME.replace(" ", "").toLowerCase();
         server.getPluginCommand(commandPrefix).setExecutor(new SSCommand());
         Stream.of(new SSDescription(), new SSEdit(), new SSFeature(), new SSGoto(), new SSLocation(), new SSNew(), new SSReload(), new SSRemove(), new SSRename(), new SSResourcePack(), new SSSubmit(), new SSView(), new SSViewDescription())

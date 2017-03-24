@@ -20,7 +20,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-//TODO need to move the majority of the AbstractCommand methods into Spigot since Sponge's command handling covers more
 public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild, SpigotServerSaturday, Location, Player, SpigotSubmitter, SpigotSubmissions, ItemStack> implements CommandExecutor {
 
     @Nonnull
