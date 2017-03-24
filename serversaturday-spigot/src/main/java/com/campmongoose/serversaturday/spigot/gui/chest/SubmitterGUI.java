@@ -25,19 +25,14 @@ public class SubmitterGUI extends AbstractSpigotPagedGUI {
     @Override
     protected void build() {
         List<ItemStack> list = submitter.getBuilds().stream().map(build -> build.getMenuRepresentation(submitter)).collect(Collectors.toList());
-        for (int x = 0; x < 54; x++) {
-            int subListPosition = x + (page - 1) * 45;
-            if (x < 45 && list.size() > subListPosition) {
-                ItemStack itemStack = list.get(subListPosition);
-                set(x, itemStack, player -> {
-                    for (SpigotBuild build : submitter.getBuilds()) {
-                        if (build.getName().equals(itemStack.getItemMeta().getDisplayName())) {
-                            new BuildGUI(build, submitter, player, this);
-                        }
-                    }
-                });
+        setContents(list, (player, itemStack) -> p -> {
+            for (SpigotBuild build : submitter.getBuilds()) {
+                if (build.getName().equals(itemStack.getItemMeta().getDisplayName())) {
+                    new BuildGUI(build, submitter, player, this);
+                    return;
+                }
             }
-        }
+        });
 
         int maxPage = new Double(Math.ceil(list.size() / 45)).intValue();
         ItemStack jumpStack = createItem(Material.BOOK, MenuText.JUMP_PAGE);
