@@ -33,7 +33,6 @@ import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-//TODO create paged Menu
 public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inventory, AbstractSpongeChestGUI, Player, ItemStack, ItemType> {
 
     private final Map<Integer, ItemStack> slots = new HashMap<>();
