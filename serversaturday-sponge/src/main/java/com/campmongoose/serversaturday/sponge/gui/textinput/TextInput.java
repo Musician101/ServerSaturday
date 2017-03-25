@@ -1,7 +1,7 @@
-package com.campmongoose.serversaturday.sponge.menu.textinput;
+package com.campmongoose.serversaturday.sponge.gui.textinput;
 
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
-import com.campmongoose.serversaturday.sponge.menu.chest.AbstractSpongeChestGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.AbstractSpongeChestGUI;
 import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

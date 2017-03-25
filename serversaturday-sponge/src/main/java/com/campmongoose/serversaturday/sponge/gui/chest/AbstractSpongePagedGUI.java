@@ -1,7 +1,7 @@
-package com.campmongoose.serversaturday.sponge.menu.chest;
+package com.campmongoose.serversaturday.sponge.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.sponge.menu.textinput.JumpToPage;
+import com.campmongoose.serversaturday.sponge.gui.textinput.JumpToPage;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;

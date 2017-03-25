@@ -1,4 +1,4 @@
-package com.campmongoose.serversaturday.sponge.menu.chest;
+package com.campmongoose.serversaturday.sponge.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.Reference.Messages;

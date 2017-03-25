@@ -1,11 +1,11 @@
-package com.campmongoose.serversaturday.sponge.menu.textinput;
+package com.campmongoose.serversaturday.sponge.gui.textinput;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
-import com.campmongoose.serversaturday.sponge.menu.chest.AbstractSpongeChestGUI;
-import com.campmongoose.serversaturday.sponge.menu.chest.AllSubmissionsGUI;
-import com.campmongoose.serversaturday.sponge.menu.chest.SubmissionsGUI;
-import com.campmongoose.serversaturday.sponge.menu.chest.SubmitterGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.AbstractSpongeChestGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.AllSubmissionsGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.SubmissionsGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.SubmitterGUI;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.spongepowered.api.entity.living.player.Player;

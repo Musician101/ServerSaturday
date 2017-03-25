@@ -3,7 +3,7 @@ package com.campmongoose.serversaturday.sponge.command.submit;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.sponge.command.AbstractSpongeCommand;
-import com.campmongoose.serversaturday.sponge.menu.chest.BuildGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.BuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import javax.annotation.Nonnull;

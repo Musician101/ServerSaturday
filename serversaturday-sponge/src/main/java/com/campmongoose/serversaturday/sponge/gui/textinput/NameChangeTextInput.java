@@ -1,40 +1,41 @@
-package com.campmongoose.serversaturday.sponge.menu.textinput;
+package com.campmongoose.serversaturday.sponge.gui.textinput;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
-import com.campmongoose.serversaturday.sponge.menu.chest.AbstractSpongeChestGUI;
-import com.campmongoose.serversaturday.sponge.menu.chest.BuildGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.AbstractSpongeChestGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.BuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
-import javax.annotation.Nonnull;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class ResourcePackChangeTextInput extends TextInput {
+public class NameChangeTextInput extends TextInput {
 
-    @Nonnull
     private final SpongeBuild build;
 
-    public ResourcePackChangeTextInput(@Nonnull SpongeBuild build, @Nonnull Player player, @Nonnull AbstractSpongeChestGUI prevMenu) {
+    public NameChangeTextInput(SpongeBuild build, Player player, AbstractSpongeChestGUI prevMenu) {
         super(player, prevMenu);
         this.build = build;
     }
 
     @Override
     protected void build() {
-        player.sendMessage(Text.builder(Messages.PREFIX + "Please type the name of the resource pack to be used when viewing this build.").color(TextColors.RED).build());
+        player.sendMessage(Text.builder(Messages.PREFIX + "Please type in chat what the new name. Type /cancel to go back.").color(TextColors.GOLD).build());
         biFunction = (rawMessage, player) -> {
             if (rawMessage.equalsIgnoreCase("/cancel")) {
-                if (prevMenu != null)
-                    prevMenu.open();
-
+                prevMenu.open();
                 return null;
             }
 
             SpongeSubmitter submitter = SpongeServerSaturday.instance().getSubmissions().getSubmitter(player);
-            submitter.updateBuildResourcePack(build, rawMessage);
-            new BuildGUI(submitter.getBuild(build.getName()), submitter, player, prevMenu);
+            if (submitter.getBuild(rawMessage) != null) {
+                player.sendMessage(Text.builder(Messages.BUILD_ALREADY_EXISTS).color(TextColors.RED).build());
+                return null;
+            }
+
+            submitter.updateBuildName(build, rawMessage);
+            new BuildGUI(build, submitter, player, prevMenu);
             return rawMessage;
         };
     }

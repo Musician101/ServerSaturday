@@ -1,8 +1,7 @@
-package com.campmongoose.serversaturday.sponge.menu.chest;
+package com.campmongoose.serversaturday.sponge.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
-import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
+import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,23 +9,23 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.text.Text;
 
-public class SubmissionsGUI extends AbstractSpongePagedGUI {
+public class SubmitterGUI extends AbstractSpongePagedGUI {
 
-    public SubmissionsGUI(Player player, int page, AbstractSpongeChestGUI prevMenu) {
-        super(MenuText.SUBMISSIONS, 54, player, page, prevMenu);
+    private final SpongeSubmitter submitter;
+
+    public SubmitterGUI(Player player, SpongeSubmitter submitter, int page, AbstractSpongeChestGUI prevMenu) {
+        super(MenuText.submitterMenu(submitter), 54, player, page, prevMenu);
+        this.submitter = submitter;
     }
 
     @Override
     protected void build() {
-        SpongeSubmissions submissions = SpongeServerSaturday.instance().getSubmissions();
-        List<SpongeSubmitter> spongeSubmitters = submissions.getSubmitters();
-        List<ItemStack> list = spongeSubmitters.stream().map(SpongeSubmitter::getMenuRepresentation).collect(Collectors.toList());
+        List<ItemStack> list = submitter.getBuilds().stream().map(build -> build.getMenuRepresentation(submitter)).collect(Collectors.toList());
         setContents(list, (player, itemStack) -> p -> {
-            for (SpongeSubmitter submitter : SpongeServerSaturday.instance().getSubmissions().getSubmitters()) {
-                if (submitter.getName().equals(itemStack.get(Keys.DISPLAY_NAME).orElse(Text.of()).toPlain())) {
-                    new SubmitterGUI(player, submitter, 1, this);
+            for (SpongeBuild build : submitter.getBuilds()) {
+                if (build.getName().equals(itemStack.get(Keys.DISPLAY_NAME).orElseThrow(IllegalArgumentException::new).toPlain())) {
+                    new BuildGUI(build, submitter, player, this);
                     return;
                 }
             }
