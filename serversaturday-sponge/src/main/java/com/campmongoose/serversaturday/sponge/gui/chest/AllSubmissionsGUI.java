@@ -29,31 +29,29 @@ public class AllSubmissionsGUI extends AbstractSpongePagedGUI {
                 list.addAll(submitter.getBuilds().stream().map(build ->
                         build.getMenuRepresentation(submitter)).collect(Collectors.toList())));
 
-        setContents(list, (p, itemStack) -> {
-            return player -> {
-                String submitterName = itemStack.get(Keys.ITEM_LORE).orElseThrow(IllegalArgumentException::new).get(0).toPlain();
-                SpongeServerSaturday plugin = SpongeServerSaturday.instance();
-                SpongeSubmitter submitter = null;
-                SpongeSubmissions submissions = plugin.getSubmissions();
-                UUID uuid = plugin.getUUIDCache().getUUIDOf(submitterName);
-                if (uuid != null) {
-                    submitter = submissions.getSubmitter(uuid);
-                }
-                else {
-                    for (SpongeSubmitter s : submissions.getSubmitters()) {
-                        if (submitterName.equals(s.getName())) {
-                            submitter = s;
-                        }
+        setContents(list, (p, itemStack) -> player -> {
+            String submitterName = itemStack.get(Keys.ITEM_LORE).orElseThrow(IllegalArgumentException::new).get(0).toPlain();
+            SpongeServerSaturday plugin = SpongeServerSaturday.instance();
+            SpongeSubmitter submitter = null;
+            SpongeSubmissions submissions = plugin.getSubmissions();
+            UUID uuid = plugin.getUUIDCache().getUUIDOf(submitterName);
+            if (uuid != null) {
+                submitter = submissions.getSubmitter(uuid);
+            }
+            else {
+                for (SpongeSubmitter s : submissions.getSubmitters()) {
+                    if (submitterName.equals(s.getName())) {
+                        submitter = s;
                     }
                 }
+            }
 
-                if (submitter == null) {
-                    player.sendMessage(Text.builder(Messages.PLAYER_NOT_FOUND).color(TextColors.RED).build());
-                    return;
-                }
+            if (submitter == null) {
+                player.sendMessage(Text.builder(Messages.PLAYER_NOT_FOUND).color(TextColors.RED).build());
+                return;
+            }
 
-                new SubmitterGUI(player, submitter, 1, this);
-            };
+            new SubmitterGUI(player, submitter, 1, this);
         });
 
         int maxPage = new Double(Math.ceil(list.size() / 45)).intValue();
