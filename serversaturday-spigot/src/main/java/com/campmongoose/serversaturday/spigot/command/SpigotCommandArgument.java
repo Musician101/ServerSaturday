@@ -12,7 +12,7 @@ public class SpigotCommandArgument {
     private String name;
     @Nonnull
     private List<Syntax> syntaxList;
-    
+
     public SpigotCommandArgument(@Nonnull String name) {
         this(name, Syntax.LITERAL);
     }

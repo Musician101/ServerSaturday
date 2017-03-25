@@ -36,8 +36,23 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
     }
 
     @Nonnull
+    public String getDescription() {
+        return description;
+    }
+
+    @Nonnull
     public String getHelp() {
         return usage.getUsage() + " " + ChatColor.AQUA + description;
+    }
+
+    @Nonnull
+    public String getName() {
+        return name;
+    }
+
+    @Nonnull
+    public SpigotCommandPermissions getPermissions() {
+        return permissions;
     }
 
     @Nonnull
@@ -83,32 +98,6 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
         return getSubmissions().getSubmitter(uuid);
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (permissions.testPermission(sender)) {
-            if (usage.minArgsMet(sender, args.length)) {
-                return executor.apply(sender, Arrays.asList(args));
-            }
-        }
-
-        return false;
-    }
-
-    @Nonnull
-    public String getDescription() {
-        return description;
-    }
-
-    @Nonnull
-    public String getName() {
-        return name;
-    }
-
-    @Nonnull
-    public SpigotCommandPermissions getPermissions() {
-        return permissions;
-    }
-
     @Nonnull
     public SpigotCommandUsage getUsage() {
         return usage;
@@ -121,5 +110,16 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
         }
 
         return list;
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (permissions.testPermission(sender)) {
+            if (usage.minArgsMet(sender, args.length)) {
+                return executor.apply(sender, Arrays.asList(args));
+            }
+        }
+
+        return false;
     }
 }

@@ -29,6 +29,10 @@ public class SpongeCommands {
 
     }
 
+    private static SpongeServerSaturday getPluginInstance() {
+        return SpongeServerSaturday.instance();
+    }
+
     public static void init() {
         String fullPrefix = Reference.ID.replace("_", "");
         String shortPrefix = Commands.SS_CMD.replace("/", "");
@@ -86,9 +90,5 @@ public class SpongeCommands {
         Sponge.getCommandManager().register(getPluginInstance(), CommandSpec.builder().description(of(Commands.RELOAD_DESC))
                         .executor(new SSReload()).permission(Permissions.RELOAD).build(),
                 fullPrefix + Commands.RELOAD_NAME, shortPrefix + Commands.RELOAD_NAME, shortPrefix + "r");
-    }
-
-    private static SpongeServerSaturday getPluginInstance() {
-        return SpongeServerSaturday.instance();
     }
 }

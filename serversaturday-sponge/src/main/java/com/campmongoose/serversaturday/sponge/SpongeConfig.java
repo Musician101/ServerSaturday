@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 
 public class SpongeConfig extends AbstractConfig {
 
-    private ConfigurationLoader<CommentedConfigurationNode> configManager;
     private ConfigurationNode config;
+    private ConfigurationLoader<CommentedConfigurationNode> configManager;
 
     public SpongeConfig(@Nonnull ConfigurationLoader<CommentedConfigurationNode> configManager, @Nonnull File configFile) {
         super(configFile);

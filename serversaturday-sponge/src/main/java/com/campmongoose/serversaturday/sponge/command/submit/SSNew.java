@@ -46,8 +46,9 @@ public class SSNew extends AbstractSpongeCommand {
                         player.sendMessage(Text.builder(Messages.PREFIX + "Please type the name of the build.").color(TextColors.RED).build());
                         biFunction = (string, player) -> {
                             if (string.equalsIgnoreCase("/cancel")) {
-                                if (prevMenu != null)
+                                if (prevMenu != null) {
                                     prevMenu.open();
+                                }
 
                                 return null;
                             }

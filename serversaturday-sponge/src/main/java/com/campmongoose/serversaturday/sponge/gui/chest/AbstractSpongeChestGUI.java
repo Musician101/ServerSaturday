@@ -60,6 +60,13 @@ public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inve
         Sponge.getEventManager().unregisterListeners(this);
     }
 
+    @Nonnull
+    @Override
+    protected ItemStack createItem(@Nonnull ItemType itemType, @Nonnull Text name, @Nonnull Text... description) {
+        return ItemStack.builder().itemType(itemType).add(Keys.DISPLAY_NAME, name)
+                .add(Keys.ITEM_LORE, Stream.of(description).map(Text::of).collect(Collectors.toList())).build();
+    }
+
     private boolean isSameInventory(Inventory inventory, Player player) {
         return inventory.getName().equals(this.inventory.getName()) && Reference.ID.equals(inventory.getPlugin().getId()) && player.getUniqueId().equals(this.player.getUniqueId());
     }
@@ -107,22 +114,15 @@ public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inve
     }
 
     @Override
-    protected void set(int slot, @Nonnull ItemStack itemStack, @Nonnull Consumer<Player> consumer) {
-        set(slot, itemStack);
-        buttons.put(slot, consumer);
-    }
-
-    @Override
     protected void set(int slot, @Nonnull ItemStack itemStack) {
         inventory.query(new SlotIndex(slot)).set(itemStack);
         slots.put(slot, itemStack);
     }
 
-    @Nonnull
     @Override
-    protected ItemStack createItem(@Nonnull ItemType itemType, @Nonnull Text name, @Nonnull Text... description) {
-        return ItemStack.builder().itemType(itemType).add(Keys.DISPLAY_NAME, name)
-                .add(Keys.ITEM_LORE, Stream.of(description).map(Text::of).collect(Collectors.toList())).build();
+    protected void set(int slot, @Nonnull ItemStack itemStack, @Nonnull Consumer<Player> consumer) {
+        set(slot, itemStack);
+        buttons.put(slot, consumer);
     }
 
     @Override

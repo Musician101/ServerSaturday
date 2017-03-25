@@ -26,8 +26,9 @@ public class ResourcePackChangeTextInput extends TextInput {
         player.sendMessage(Text.builder(Messages.PREFIX + "Please type the name of the resource pack to be used when viewing this build.").color(TextColors.RED).build());
         biFunction = (rawMessage, player) -> {
             if (rawMessage.equalsIgnoreCase("/cancel")) {
-                if (prevMenu != null)
+                if (prevMenu != null) {
                     prevMenu.open();
+                }
 
                 return null;
             }

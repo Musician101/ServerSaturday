@@ -27,34 +27,34 @@ import org.spongepowered.api.service.user.UserStorageService;
 public class SpongeServerSaturday {
 
     @Inject
+    private static SpongeServerSaturday instance;
+    private SpongeConfig config;
+    @Inject
     @DefaultConfig(sharedRoot = false)
     private ConfigurationLoader<CommentedConfigurationNode> configManager;
-
+    private SpongeDescriptionChangeHandler dch;
     @Inject
     @DefaultConfig(sharedRoot = false)
     private File defaultConfig;
-
     @Inject
     private Logger logger;
-
-    @Inject
-    private static SpongeServerSaturday instance;
-
-    private SpongeConfig config;
-    private SpongeDescriptionChangeHandler dch;
     private SpongeSubmissions submissions;
     private UUIDCache uuidCache;
-
-    public Logger getLogger() {
-        return logger;
-    }
 
     public static SpongeServerSaturday instance() {
         return instance;
     }
 
+    public SpongeConfig getConfig() {
+        return config;
+    }
+
     public SpongeDescriptionChangeHandler getDescriptionChangeHandler() {
         return dch;
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 
     public SpongeSubmissions getSubmissions() {
@@ -111,9 +111,5 @@ public class SpongeServerSaturday {
             }
         });
         SpongeCommands.init();
-    }
-    
-    public SpongeConfig getConfig() {
-        return config;
     }
 }
