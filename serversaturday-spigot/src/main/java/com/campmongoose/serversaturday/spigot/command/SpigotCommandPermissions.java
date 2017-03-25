@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 
 public class SpigotCommandPermissions {
 
-    private boolean isPlayerOnly;
+    private final boolean isPlayerOnly;
     @Nonnull
-    private String permissionNode;
+    private final String permissionNode;
 
     public SpigotCommandPermissions(@Nonnull String permissionNode, boolean isPlayerOnly) {
         this.permissionNode = permissionNode;

@@ -23,10 +23,10 @@ import org.bukkit.inventory.ItemStack;
 public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild, SpigotServerSaturday, Location, Player, SpigotSubmitter, SpigotSubmissions, ItemStack> implements CommandExecutor {
 
     @Nonnull
-    protected String description;
+    protected final String description;
     protected BiFunction<CommandSender, List<String>, Boolean> executor;
     @Nonnull
-    protected String name;
+    protected final String name;
     protected SpigotCommandPermissions permissions;
     protected SpigotCommandUsage usage;
 

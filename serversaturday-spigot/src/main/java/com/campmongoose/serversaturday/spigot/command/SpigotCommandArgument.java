@@ -11,7 +11,7 @@ public class SpigotCommandArgument {
     @Nonnull
     private String name;
     @Nonnull
-    private List<Syntax> syntaxList;
+    private final List<Syntax> syntaxList;
 
     public SpigotCommandArgument(@Nonnull String name) {
         this(name, Syntax.LITERAL);

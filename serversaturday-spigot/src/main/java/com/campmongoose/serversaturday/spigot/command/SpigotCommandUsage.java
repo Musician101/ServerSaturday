@@ -8,9 +8,9 @@ import org.bukkit.command.CommandSender;
 
 public class SpigotCommandUsage {
 
-    private int minArgs;
+    private final int minArgs;
     @Nonnull
-    private String usage;
+    private final String usage;
 
     public SpigotCommandUsage(@Nonnull List<SpigotCommandArgument> arguments) {
         this(arguments, 0);
