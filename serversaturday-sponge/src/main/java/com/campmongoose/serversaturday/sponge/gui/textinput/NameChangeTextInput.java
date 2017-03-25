@@ -24,7 +24,10 @@ public class NameChangeTextInput extends TextInput {
         player.sendMessage(Text.builder(Messages.PREFIX + "Please type in chat what the new name. Type /cancel to go back.").color(TextColors.GOLD).build());
         biFunction = (rawMessage, player) -> {
             if (rawMessage.equalsIgnoreCase("/cancel")) {
-                prevMenu.open();
+                if (prevMenu != null) {
+                    prevMenu.open();
+                }
+
                 return null;
             }
 
