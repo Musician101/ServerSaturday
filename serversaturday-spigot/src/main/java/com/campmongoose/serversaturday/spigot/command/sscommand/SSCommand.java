@@ -21,8 +21,6 @@ import com.campmongoose.serversaturday.spigot.command.sscommand.view.SSViewDescr
 import java.util.Collections;
 import java.util.stream.Stream;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 
 public class SSCommand extends AbstractSpigotCommand {
 
@@ -38,10 +36,5 @@ public class SSCommand extends AbstractSpigotCommand {
 
             return true;
         };
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return super.onCommand(sender, command, label, args);
     }
 }
