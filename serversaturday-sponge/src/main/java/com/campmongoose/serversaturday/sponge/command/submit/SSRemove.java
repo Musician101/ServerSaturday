@@ -14,11 +14,11 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public class SSRemove extends AbstractSpongeCommand {
-
+    //TODO left off here. Need to test to see if I fixed the command. Finish testing all other commands
     @Nonnull
     @Override
     public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments) {
-        return arguments.<String>getOne(Commands.NAME).map(name -> {
+        return arguments.<String>getOne(Commands.BUILD).map(name -> {
             if (source instanceof Player) {
                 Player player = (Player) source;
                 SpongeSubmitter submitter = getSubmitter(player);

@@ -23,13 +23,15 @@ public class SSNew extends AbstractSpongeCommand {
     public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments) {
         if (source instanceof Player) {
             Player player = (Player) source;
-            if (getPluginInstance().getConfig().getMaxBuilds() > 0 && !player.hasPermission(Permissions.EXCEED_MAX_BUILDS)) {
+            SpongeSubmitter submitter = getSubmitter(player);
+            int maxBuilds = getPluginInstance().getConfig().getMaxBuilds();
+            if (submitter.getBuilds().size() > maxBuilds && maxBuilds > 0 && !player.hasPermission(Permissions.EXCEED_MAX_BUILDS)) {
                 player.sendMessage(Text.builder(Messages.NO_PERMISSION).color(TextColors.RED).build());
                 return CommandResult.empty();
             }
 
-            SpongeSubmitter submitter = getSubmitter(player);
-            return arguments.<String>getOne(Commands.NAME).map(name -> {
+            return arguments.<String>getOne(Commands.NAME)
+                    .map(name -> {
                 if (submitter.getBuild(name) != null) {
                     player.sendMessage(Text.builder(Messages.BUILD_ALREADY_EXISTS).color(TextColors.RED).build());
                     return CommandResult.empty();
@@ -58,7 +60,8 @@ public class SSNew extends AbstractSpongeCommand {
                                 return null;
                             }
 
-                            submitter.newBuild(string, player.getLocation());
+                            SpongeBuild build = submitter.newBuild(string, player.getLocation());
+                            new BuildGUI(build, submitter, player, null);
                             return string;
                         };
                     }
