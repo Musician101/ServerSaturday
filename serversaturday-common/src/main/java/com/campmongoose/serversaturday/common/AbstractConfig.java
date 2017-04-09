@@ -11,7 +11,6 @@ public abstract class AbstractConfig {
 
     public AbstractConfig(@Nonnull File configFile) {
         this.configFile = configFile;
-        reload();
     }
 
     public int getMaxBuilds() {
