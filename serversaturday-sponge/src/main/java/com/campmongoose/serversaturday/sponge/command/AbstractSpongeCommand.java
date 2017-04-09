@@ -9,11 +9,13 @@ import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
@@ -38,21 +40,18 @@ public abstract class AbstractSpongeCommand extends AbstractCommand<SpongeBuild,
 
     @Nullable
     protected SpongeSubmitter getSubmitter(@Nonnull String playerName) {
-        UUID uuid = getPluginInstance().getUUIDCache().getUUIDOf(playerName);
-        if (uuid != null) {
-            SpongeSubmitter submitter = getSubmitter(uuid);
-            if (submitter != null) {
-                return submitter;
-            }
-
+        return Sponge.getServiceManager().getRegistration(UserStorageService.class).map(providerRegistration -> {
+            UserStorageService userStorage = providerRegistration.getProvider();
+            return userStorage.get(playerName).map(user -> getSubmitter(user.getUniqueId())).orElse(null);
+        }).orElseGet(() -> {
             for (SpongeSubmitter s : getSubmissions().getSubmitters()) {
                 if (s.getName().equalsIgnoreCase(playerName)) {
                     return s;
                 }
             }
-        }
 
-        return null;
+            return null;
+        });
     }
 
     @Nullable
