@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataView;
 import org.spongepowered.api.data.Queries;
@@ -49,8 +50,9 @@ public class SpongeBuild extends AbstractBuild<ItemStack, Location<World>, Spong
     private Location<World> deserializeLocation(ConfigurationNode cn) {
         DataTranslator<ConfigurationNode> dt = DataTranslators.CONFIGURATION_NODE;
         DataView dv = dt.translate(cn);
-        World defaultWorld = new ArrayList<>(Sponge.getServer().getWorlds()).get(0);
-        World world = dv.getString(Queries.WORLD_NAME).map(name -> Sponge.getServer().getWorld(name).orElse(defaultWorld)).orElse(defaultWorld);
+        Server server = Sponge.getServer();
+        World defaultWorld = new ArrayList<>(server.getWorlds()).get(0);
+        World world = dv.getString(Queries.WORLD_NAME).map(name -> server.getWorld(name).orElse(defaultWorld)).orElse(defaultWorld);
         double x = dv.getDouble(Queries.POSITION_X).orElse(0D);
         double y = dv.getDouble(Queries.POSITION_Y).orElse(0D);
         double z = dv.getDouble(Queries.POSITION_Z).orElse(0D);
