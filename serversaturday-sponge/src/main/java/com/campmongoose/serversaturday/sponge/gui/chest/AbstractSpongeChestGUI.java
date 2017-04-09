@@ -1,12 +1,9 @@
 package com.campmongoose.serversaturday.sponge.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference;
+import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.gui.AbstractChestGUI;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,12 +27,11 @@ import org.spongepowered.api.item.inventory.InventoryArchetypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.property.InventoryCapacity;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inventory, AbstractSpongeChestGUI, Player, ItemStack, ItemType> {
-
-    private final Map<Integer, ItemStack> slots = new HashMap<>();
+public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inventory, String, AbstractSpongeChestGUI, Player, ItemStack, ItemType> {
 
     public AbstractSpongeChestGUI(@Nonnull String name, int size, @Nonnull Player player, @Nullable AbstractSpongeChestGUI prevMenu) {
         this(name, size, player, prevMenu, false);
@@ -43,7 +39,9 @@ public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inve
 
     public AbstractSpongeChestGUI(@Nonnull String name, int size, @Nonnull Player player, @Nullable AbstractSpongeChestGUI prevMenu, boolean manualOpen) {
         super(parseInventory(name, size), player, prevMenu);
-        open();
+        if (!manualOpen) {
+            Task.builder().delayTicks(1).execute(this::open).submit(SpongeServerSaturday.instance());
+        }
     }
 
     private static Inventory parseInventory(String name, int size) {
@@ -67,7 +65,7 @@ public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inve
     }
 
     private boolean isSameInventory(Inventory inventory, Player player) {
-        return inventory.getName().equals(this.inventory.getName()) && Reference.ID.equals(inventory.getPlugin().getId()) && player.getUniqueId().equals(this.player.getUniqueId());
+        return inventory.getName().get().equals(this.inventory.getName().get()) && player.getUniqueId().equals(this.player.getUniqueId());
     }
 
     @Listener
@@ -79,12 +77,11 @@ public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inve
                 player.sendMessage(Text.of("That click type is not supported."));
             }
             else {
-                BiMap<ItemStack, Integer> inverseSlots = HashBiMap.create(slots).inverse();
                 ItemStack itemStack = event.getCursorTransaction().getFinal().createStack();
-                if (inverseSlots.containsKey(itemStack)) {
-                    int slot = inverseSlots.get(itemStack);
-                    if (buttons.containsKey(slot)) {
-                        buttons.get(slot).accept(player);
+                if (itemStack.getItem() != ItemTypes.NONE) {
+                    String itemName = getItemName(itemStack);
+                    if (buttons.containsKey(itemName)) {
+                        buttons.get(itemName).accept(player);
                     }
                 }
             }
@@ -102,31 +99,42 @@ public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inve
     public void open() {
         inventory.clear();
         build();
-        for (int i = 0; i < inventory.capacity(); i++) {
-            if (slots.containsKey(i)) {
-                inventory.query(new SlotIndex(i)).set(slots.getOrDefault(i, ItemStack.of(ItemTypes.NONE, 1)));
-            }
-        }
-
-        player.openInventory(inventory, Cause.of(NamedCause.source(SpongeServerSaturday.instance())));
+        player.openInventory(inventory, generatePluginCause());
         Sponge.getEventManager().registerListeners(SpongeServerSaturday.instance(), this);
     }
 
     @Override
     protected void set(int slot, @Nonnull ItemStack itemStack) {
-        inventory.query(new SlotIndex(slot)).set(itemStack);
-        slots.put(slot, itemStack);
+        set(slot, itemStack, player -> {});
     }
 
     @Override
     protected void set(int slot, @Nonnull ItemStack itemStack, @Nonnull Consumer<Player> consumer) {
-        set(slot, itemStack);
-        buttons.put(slot, consumer);
+        String itemName = validateItemStackName(itemStack);
+        inventory.query(new SlotIndex(slot)).offer(itemStack);
+        buttons.put(itemName, consumer);
+    }
+
+    private String getItemName(ItemStack itemStack) {
+        return itemStack.get(Keys.DISPLAY_NAME).map(Text::toPlain).orElse(itemStack.getTranslation().get());
+    }
+
+    private String validateItemStackName(ItemStack itemStack) {
+        String itemName = getItemName(itemStack);
+        if (buttons.containsKey(itemName)) {
+            throw new IllegalArgumentException("A button with that name already exists: " + itemName);
+        }
+
+        return itemName;
     }
 
     @Override
     protected void setBackButton(int slot, @Nonnull ItemType itemType) {
-        ItemStack itemStack = createItem(itemType, Text.builder("Back").color(TextColors.RED).build(), Text.of("Closes this menu and attempts"), Text.of("to back to the previous menu."));
-        set(slot, itemStack, player -> player.closeInventory(Cause.of(NamedCause.source(inventory.getPlugin()))));
+        ItemStack itemStack = createItem(itemType, Text.builder("Back").color(TextColors.RED).build(), Stream.of(MenuText.BACK_DESC).map(Text::of).toArray(Text[]::new));
+        set(slot, itemStack, player -> player.closeInventory(generatePluginCause()));
+    }
+
+    protected Cause generatePluginCause() {
+        return Cause.of(NamedCause.source(SpongeServerSaturday.instance()));
     }
 }

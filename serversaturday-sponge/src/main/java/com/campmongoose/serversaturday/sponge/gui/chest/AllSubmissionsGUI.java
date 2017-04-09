@@ -7,12 +7,13 @@ import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -32,19 +33,19 @@ public class AllSubmissionsGUI extends AbstractSpongePagedGUI {
         setContents(list, (p, itemStack) -> player -> {
             String submitterName = itemStack.get(Keys.ITEM_LORE).orElseThrow(IllegalArgumentException::new).get(0).toPlain();
             SpongeServerSaturday plugin = SpongeServerSaturday.instance();
-            SpongeSubmitter submitter = null;
             SpongeSubmissions submissions = plugin.getSubmissions();
-            UUID uuid = plugin.getUUIDCache().getUUIDOf(submitterName);
-            if (uuid != null) {
-                submitter = submissions.getSubmitter(uuid);
-            }
-            else {
+            SpongeSubmitter submitter = Sponge.getServiceManager().getRegistration(UserStorageService.class).map(providerRegistration -> {
+                UserStorageService userStorage = providerRegistration.getProvider();
+                return userStorage.get(submitterName).map(user -> submissions.getSubmitter(user.getUniqueId())).orElse(null);
+            }).orElseGet(() -> {
                 for (SpongeSubmitter s : submissions.getSubmitters()) {
-                    if (submitterName.equals(s.getName())) {
-                        submitter = s;
+                    if (s.getName().equalsIgnoreCase(submitterName)) {
+                        return s;
                     }
                 }
-            }
+
+                return null;
+            });
 
             if (submitter == null) {
                 player.sendMessage(Text.builder(Messages.PLAYER_NOT_FOUND).color(TextColors.RED).build());

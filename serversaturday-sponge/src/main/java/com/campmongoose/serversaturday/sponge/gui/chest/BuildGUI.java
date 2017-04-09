@@ -12,11 +12,16 @@ import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.data.type.GoldenApples;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.BookView;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -28,11 +33,11 @@ public class BuildGUI extends AbstractSpongeChestGUI {
     private final SpongeBuild build;
     private final SpongeSubmitter submitter;
 
-    public BuildGUI(SpongeBuild build, SpongeSubmitter submitter, Player player, AbstractSpongeChestGUI prevMenu) {
+    public BuildGUI(@Nonnull SpongeBuild build, @Nonnull SpongeSubmitter submitter, Player player, @Nullable AbstractSpongeChestGUI prevMenu) {
         this(build, submitter, player, prevMenu, false);
     }
 
-    public BuildGUI(SpongeBuild build, SpongeSubmitter submitter, Player player, AbstractSpongeChestGUI prevMenu, boolean manualOpen) {
+    public BuildGUI(@Nonnull SpongeBuild build, @Nonnull SpongeSubmitter submitter, @Nonnull Player player, @Nullable AbstractSpongeChestGUI prevMenu, boolean manualOpen) {
         super(build.getName(), 9, player, prevMenu, manualOpen);
         this.build = build;
         this.submitter = submitter;
@@ -42,15 +47,13 @@ public class BuildGUI extends AbstractSpongeChestGUI {
     protected void build() {
         Location<World> location = build.getLocation();
         if (player.getUniqueId().equals(submitter.getUUID())) {
-            set(0, ItemStack.builder().itemType(ItemTypes.PAPER).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.RENAME_NAME)).add(Keys.ITEM_LORE, Collections.singletonList(Text.of(MenuText.RENAME_DESC))).build(),
-                    player -> new NameChangeTextInput(build, player, this));
-            set(1, ItemStack.builder().itemType(ItemTypes.COMPASS).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.CHANGE_LOCATION_NAME)).add(Keys.ITEM_LORE, MenuText.CHANGE_LOCATION_DESC.stream().map(Text::of).collect(Collectors.toList())).build(),
-                    player -> {
-                        build.setLocation(player.getLocation());
-                        new BuildGUI(build, submitter, player, prevMenu);
-                        player.sendMessage(Text.builder(Messages.locationChanged(build)).color(TextColors.GREEN).build());
-                    });
-            set(2, ItemStack.builder().itemType(ItemTypes.BOOK).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.CHANGE_DESCRIPTION_NAME)).add(Keys.ITEM_LORE, Collections.singletonList(Text.of(MenuText.CHANGE_DESCRIPTION_DESC))).build(),
+            set(0, createItem(ItemTypes.PAPER, Text.of(MenuText.RENAME_NAME), Text.of(MenuText.RENAME_DESC)), player -> {
+                //TODO test all text inputs, menu buttons, and commands
+                SpongeServerSaturday.instance().getLogger().info("" + player.closeInventory(generatePluginCause()));
+                new NameChangeTextInput(build, player, this);
+            });
+            set(1, createItem(ItemTypes.COMPASS, Text.of(MenuText.CHANGE_LOCATION_NAME), MenuText.CHANGE_LOCATION_DESC.stream().map(Text::of).toArray(Text[]::new)));
+            set(2, createItem(ItemTypes.BOOK, Text.of(MenuText.CHANGE_DESCRIPTION_NAME, Text.of(MenuText.CHANGE_DESCRIPTION_DESC))),
                     player -> {
                         SpongeDescriptionChangeHandler sdch = SpongeServerSaturday.instance().getDescriptionChangeHandler();
                         if (sdch.containsPlayer(player)) {
@@ -60,62 +63,34 @@ public class BuildGUI extends AbstractSpongeChestGUI {
 
                         sdch.add(player, build);
                     });
-            set(3, ItemStack.builder().itemType(ItemTypes.PAINTING).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.CHANGE_RESOURCE_PACK_NAME)).add(Keys.ITEM_LORE, MenuText.CHANGE_RESOURCE_PACK_DESC.stream().map(Text::of).collect(Collectors.toList())).build(),
+            set(3, createItem(ItemTypes.PAINTING, Text.of(MenuText.CHANGE_RESOURCE_PACK_NAME), MenuText.CHANGE_RESOURCE_PACK_DESC.stream().map(Text::of).toArray(Text[]::new)),
                     player -> new ResourcePackChangeTextInput(build, player, this));
-            set(4, ItemStack.builder().itemType(ItemTypes.FLINT_AND_STEEL).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.SUBMIT_UNREADY_NAME, build.submitted())).add(Keys.ITEM_LORE, MenuText.SUBMIT_UNREADY_DESC.stream().map(Text::of).collect(Collectors.toList())).build(),
-                    player -> {
-                        build.setSubmitted(!build.submitted());
-                        new BuildGUI(build, submitter, player, prevMenu);
-                    });
-            set(5, ItemStack.builder().itemType(ItemTypes.COMPASS).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.TELEPORT_NAME)).add(Keys.ITEM_LORE, MenuText.teleportDesc(location.getExtent().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ()).stream().map(Text::of).collect(Collectors.toList())).build(),
-                    player -> {
-                        if (player.hasPermission(Permissions.VIEW_GOTO)) {
-                            player.setLocation(build.getLocation());
-                            player.sendMessage(Text.builder(Messages.teleportedToBuild(build)).color(TextColors.GOLD).build());
-                            return;
-                        }
 
-                        player.sendMessage(Text.builder(Messages.NO_PERMISSION).color(TextColors.RED).build());
-                    });
-            set(6, ItemStack.builder().itemType(ItemTypes.BARRIER).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.DELETE_NAME)).add(Keys.ITEM_LORE, MenuText.DELETE_DESC.stream().map(Text::of).collect(Collectors.toList())).build(),
+            ItemStack submit = createItem(ItemTypes.FLINT_AND_STEEL, Text.of(MenuText.SUBMIT_UNREADY_NAME), MenuText.SUBMIT_UNREADY_DESC.stream().map(Text::of).toArray(Text[]::new));
+            if (build.submitted()) {
+                submit.offer(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.UNBREAKING, 1)));
+                submit.offer(Keys.HIDE_ENCHANTMENTS, true);
+            }
+
+            set(4, submit, player -> {
+                build.setSubmitted(!build.submitted());
+                new BuildGUI(build, submitter, player, prevMenu);
+            });
+            setTeleportButton(5, location);
+            set(6, createItem(ItemTypes.BARRIER, Text.of(MenuText.DELETE_NAME), MenuText.DELETE_DESC.stream().map(Text::of).toArray(Text[]::new)),
                     player -> {
                         submitter.removeBuild(build.getName());
-                        if (prevMenu == null) {
-                            close();
-                        }
-                        else {
-                            prevMenu.open();
+                        player.closeInventory(generatePluginCause());
+                        if (prevMenu != null) {
+                            Task.builder().delayTicks(1).execute(prevMenu::open).submit(SpongeServerSaturday.instance());
                         }
                     });
 
-            if (player.hasPermission(Permissions.FEATURE)) {
-                ItemStack.Builder isb = ItemStack.builder().itemType(ItemTypes.GOLDEN_APPLE).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.FEATURE_NAME)).add(Keys.ITEM_LORE, MenuText.FEATURE_DESC.stream().map(Text::of).collect(Collectors.toList()));
-                if (build.featured()) {
-                    set(7, isb.add(Keys.GOLDEN_APPLE_TYPE, GoldenApples.ENCHANTED_GOLDEN_APPLE).build(), player -> {
-                        build.setFeatured(!build.featured());
-                        new BuildGUI(build, submitter, player, prevMenu);
-                    });
-                }
-                else {
-                    set(7, isb.build(), player -> {
-                        build.setFeatured(!build.featured());
-                        new BuildGUI(build, submitter, player, prevMenu);
-                    });
-                }
-            }
+            setFeatureButton(7);
         }
         else {
-            set(0, ItemStack.builder().itemType(ItemTypes.COMPASS).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.TELEPORT_NAME)).add(Keys.ITEM_LORE, Stream.of(MenuText.teleportDesc(location.getExtent().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ())).map(Text::of).collect(Collectors.toList())).build(),
-                    player -> {
-                        if (player.hasPermission(Permissions.VIEW_GOTO)) {
-                            player.setLocation(build.getLocation());
-                            player.sendMessage(Text.builder(Messages.teleportedToBuild(build)).color(TextColors.GOLD).build());
-                        }
-                        else {
-                            player.sendMessage(Text.builder(Messages.NO_PERMISSION).color(TextColors.RED).build());
-                        }
-                    });
-            set(1, ItemStack.builder().itemType(ItemTypes.BOOK).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.DESCRIPTION_NAME)).build(),
+            setTeleportButton(0, location);
+            set(1, createItem(ItemTypes.BOOK, Text.of(MenuText.DESCRIPTION_NAME)),
                     player -> {
                         BookView.Builder bvb = BookView.builder();
                         bvb.author(Text.of(submitter.getName()));
@@ -123,27 +98,38 @@ public class BuildGUI extends AbstractSpongeChestGUI {
                         bvb.title(Text.of(build.getName()));
                         player.sendBookView(bvb.build());
                     });
-            set(2, ItemStack.builder().itemType(ItemTypes.PAINTING).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.RESOURCE_PACK_NAME)).add(Keys.ITEM_LORE, Collections.singletonList(Text.of(build.getResourcePack()))).build());
-            if (player.hasPermission(Permissions.FEATURE)) {
-                ItemStack.Builder isb = ItemStack.builder().itemType(ItemTypes.GOLDEN_APPLE).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.FEATURE_NAME)).add(Keys.ITEM_LORE, MenuText.FEATURE_DESC.stream().map(Text::of).collect(Collectors.toList()));
-                if (build.featured()) {
-                    isb.add(Keys.GOLDEN_APPLE_TYPE, GoldenApples.ENCHANTED_GOLDEN_APPLE).build();
-                }
 
-                set(3, isb.build(), player -> {
-                    build.setFeatured(!build.featured());
-                    new BuildGUI(build, submitter, player, prevMenu);
-                });
-            }
+            set(2, createItem(ItemTypes.PAINTING, Text.of(MenuText.RESOURCE_PACK_NAME), Text.of(build.getResourcePack())));
+            setFeatureButton(3);
         }
 
-        set(8, ItemStack.builder().itemType(ItemTypes.ARROW).quantity(1).add(Keys.DISPLAY_NAME, Text.of(MenuText.BACK)).build(), player -> {
-            if (prevMenu == null) {
-                close();
+        setBackButton(8, ItemTypes.ARROW);
+    }
+
+    private void setFeatureButton(int slot) {
+        if (player.hasPermission(Permissions.FEATURE)) {
+            ItemStack featured = createItem(ItemTypes.GOLDEN_APPLE, Text.of(MenuText.FEATURE_NAME), MenuText.FEATURE_DESC.stream().map(Text::of).toArray(Text[]::new));
+            if (build.featured()) {
+                featured.offer(Keys.GOLDEN_APPLE_TYPE, GoldenApples.ENCHANTED_GOLDEN_APPLE);
             }
-            else {
-                prevMenu.open();
-            }
-        });
+
+            set(slot, featured, player -> {
+                build.setFeatured(!build.featured());
+                new BuildGUI(build, submitter, player, prevMenu);
+            });
+        }
+    }
+
+    private void setTeleportButton(int slot, Location<World> location) {
+        set(slot, createItem(ItemTypes.COMPASS, Text.of(MenuText.TELEPORT_NAME), Stream.of(MenuText.teleportDesc(location.getExtent().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ())).map(Text::of).toArray(Text[]::new)),
+                player -> {
+                    if (player.hasPermission(Permissions.VIEW_GOTO)) {
+                        player.setLocation(build.getLocation());
+                        player.sendMessage(Text.builder(Messages.teleportedToBuild(build)).color(TextColors.GOLD).build());
+                    }
+                    else {
+                        player.sendMessage(Text.builder(Messages.NO_PERMISSION).color(TextColors.RED).build());
+                    }
+                });
     }
 }
