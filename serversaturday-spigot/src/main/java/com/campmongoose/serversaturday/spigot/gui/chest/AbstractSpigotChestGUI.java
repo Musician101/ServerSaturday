@@ -24,7 +24,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public abstract class AbstractSpigotChestGUI extends AbstractChestGUI<String, Inventory, AbstractSpigotChestGUI, Player, ItemStack, Material> implements Listener {
+public abstract class AbstractSpigotChestGUI extends AbstractChestGUI<String, Inventory, Integer, AbstractSpigotChestGUI, Player, ItemStack, Material> implements Listener {
 
     private static Field activeContainer;
     private static Field defaultContainer;

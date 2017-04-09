@@ -9,6 +9,7 @@ public class SpigotConfig extends AbstractConfig {
 
     public SpigotConfig() {
         super(new File(SpigotServerSaturday.instance().getDataFolder(), "config.yml"));
+        reload();
     }
 
     @Override
