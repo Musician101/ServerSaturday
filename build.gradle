@@ -22,8 +22,8 @@ subprojects {
     targetCompatibility = '1.8'
 
     repositories {
-        mavenLocal()
         mavenCentral()
+        mavenLocal()
         jcenter()
     }
 
