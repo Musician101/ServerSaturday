@@ -7,6 +7,7 @@ import com.campmongoose.serversaturday.sponge.gui.chest.BuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -16,8 +17,22 @@ public class ResourcePackChangeTextInput extends TextInput {
     @Nonnull
     private final SpongeBuild build;
 
-    public ResourcePackChangeTextInput(@Nonnull SpongeBuild build, @Nonnull Player player, @Nonnull AbstractSpongeChestGUI prevMenu) {
-        super(player, prevMenu);
+    public ResourcePackChangeTextInput(@Nonnull SpongeBuild build, @Nonnull Player player, @Nullable AbstractSpongeChestGUI prevMenu) {
+        super(player, prevMenu, (rawMessage, p) -> {
+            if (rawMessage.equalsIgnoreCase("/cancel")) {
+                if (prevMenu != null) {
+                    prevMenu.open();
+                }
+
+                return rawMessage;
+            }
+
+            SpongeSubmitter submitter = SpongeServerSaturday.instance().getSubmissions().getSubmitter(p);
+            submitter.updateBuildResourcePack(build, rawMessage);
+            //TODO left off here
+            new BuildGUI(submitter.getBuild(build.getName()), submitter, p, prevMenu);
+            return rawMessage;
+        });
         this.build = build;
     }
 

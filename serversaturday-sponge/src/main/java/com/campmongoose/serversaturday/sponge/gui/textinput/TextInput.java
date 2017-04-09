@@ -17,16 +17,15 @@ public abstract class TextInput {
     protected final Player player;
     @Nullable
     protected final AbstractSpongeChestGUI prevMenu;
-    @Nullable
+    @Nonnull
     protected BiFunction<String, Player, String> biFunction;
 
-    public TextInput(@Nonnull Player player, @Nullable AbstractSpongeChestGUI prevMenu) {
+    public TextInput(@Nonnull Player player, @Nullable AbstractSpongeChestGUI prevMenu, @Nonnull BiFunction<String, Player, String> biFunction) {
         this.player = player;
         this.prevMenu = prevMenu;
+        this.biFunction = biFunction;
         Sponge.getEventManager().registerListeners(SpongeServerSaturday.instance(), this);
     }
-
-    protected abstract void build();
 
     private void end() {
         Sponge.getEventManager().unregisterListeners(this);
@@ -36,7 +35,7 @@ public abstract class TextInput {
     public void onChat(MessageChannelEvent.Chat event, @First Player player) {
         if (player.getUniqueId().equals(this.player.getUniqueId())) {
             event.setCancelled(true);
-            if (biFunction != null && biFunction.apply(event.getRawMessage().toPlain(), player) != null) {
+            if (biFunction.apply(event.getRawMessage().toPlain(), player) != null) {
                 end();
             }
         }

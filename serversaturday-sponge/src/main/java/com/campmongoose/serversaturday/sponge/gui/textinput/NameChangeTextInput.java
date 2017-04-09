@@ -15,14 +15,7 @@ public class NameChangeTextInput extends TextInput {
     private final SpongeBuild build;
 
     public NameChangeTextInput(SpongeBuild build, Player player, AbstractSpongeChestGUI prevMenu) {
-        super(player, prevMenu);
-        this.build = build;
-    }
-
-    @Override
-    protected void build() {
-        player.sendMessage(Text.builder(Messages.PREFIX + "Please type in chat what the new name. Type /cancel to go back.").color(TextColors.GOLD).build());
-        biFunction = (rawMessage, player) -> {
+        super(player, prevMenu, (rawMessage, p) -> {
             if (rawMessage.equalsIgnoreCase("/cancel")) {
                 if (prevMenu != null) {
                     prevMenu.open();
@@ -31,15 +24,17 @@ public class NameChangeTextInput extends TextInput {
                 return null;
             }
 
-            SpongeSubmitter submitter = SpongeServerSaturday.instance().getSubmissions().getSubmitter(player);
+            SpongeSubmitter submitter = SpongeServerSaturday.instance().getSubmissions().getSubmitter(p);
             if (submitter.getBuild(rawMessage) != null) {
-                player.sendMessage(Text.builder(Messages.BUILD_ALREADY_EXISTS).color(TextColors.RED).build());
+                p.sendMessage(Text.builder(Messages.BUILD_ALREADY_EXISTS).color(TextColors.RED).build());
                 return null;
             }
 
             submitter.updateBuildName(build, rawMessage);
-            new BuildGUI(build, submitter, player, prevMenu);
+            new BuildGUI(build, submitter, p, prevMenu);
             return rawMessage;
-        };
+        });
+        player.sendMessage(Text.builder(Messages.PREFIX + "Please type in chat what the new name. Type /cancel to go back.").color(TextColors.GOLD).build());
+        this.build = build;
     }
 }
