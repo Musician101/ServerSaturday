@@ -9,12 +9,13 @@ import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.campmongoose.serversaturday.util.UUIDUtils;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
+import net.minecraft.server.v1_11_R1.EntityPlayer;
+import net.minecraft.server.v1_11_R1.EnumHand;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -77,10 +78,10 @@ public class SSViewDescription extends AbstractCommand
             }
         };
 
-        ItemStack old = player.getItemInHand();
-        player.setItemInHand(book);
-        ep.openBook(CraftItemStack.asNMSCopy(book));
-        player.setItemInHand(old);
+        ItemStack old = player.getInventory().getItemInMainHand();
+        player.getInventory().setItemInMainHand(book);
+        ep.a(CraftItemStack.asNMSCopy(book), EnumHand.MAIN_HAND);
+        player.getInventory().setItemInMainHand(old);
         return false;
     }
 }

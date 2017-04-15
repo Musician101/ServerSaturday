@@ -51,15 +51,15 @@ public class DescriptionChangeHandler implements Listener
     {
         UUID uuid = player.getUniqueId();
         builds.put(uuid, build);
-        itemStacks.put(uuid, player.getItemInHand());
-        player.setItemInHand(getBook(player, build));
-        taskIds.put(uuid, Bukkit.getScheduler().runTaskLater(plugin, () -> player.setItemInHand(itemStacks.get(uuid)), 100).getTaskId());
+        itemStacks.put(uuid, player.getInventory().getItemInMainHand());
+        player.getInventory().setItemInMainHand(getBook(player, build));
+        taskIds.put(uuid, Bukkit.getScheduler().runTaskLater(plugin, () -> player.getInventory().setItemInMainHand(itemStacks.get(uuid)), 100).getTaskId());
     }
 
     private void remove(Player player)
     {
         UUID uuid = player.getUniqueId();
-        player.setItemInHand(null);
+        player.getInventory().setItemInMainHand(null);
         if (itemStacks.containsKey(uuid))
         {
             ItemStack itemStack = itemStacks.remove(uuid);
