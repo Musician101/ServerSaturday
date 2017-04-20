@@ -2,23 +2,22 @@ package com.campmongoose.serversaturday.command.sscommand.submit;
 
 import com.campmongoose.serversaturday.Reference;
 import com.campmongoose.serversaturday.Reference.Commands;
-import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
+import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-
 public class SSSubmit extends AbstractCommand
 {
-    public SSSubmit(ServerSaturday plugin)
+    public SSSubmit()
     {
-        super(plugin, "submit", "Toggle whether you build is ready to be featured or not.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("submit"), new CommandArgument("build", Syntax.REQUIRED, Syntax.REPLACE)), 1, "ss.submit", true);
+        super("submit", "Toggle whether you build is ready to be featured or not.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("submit"), new CommandArgument("build", Syntax.REQUIRED, Syntax.REPLACE)), 1, "ss.submit", true);
     }
 
     @Override
@@ -31,8 +30,8 @@ public class SSSubmit extends AbstractCommand
             return false;
 
         Player player = (Player) sender;
-        String name = combineStringArray(args);
-        Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
+        String name = StringUtils.join(args, " ");
+        Submitter submitter = getSubmitter(player);
         if (submitter.getBuild(name) == null)
         {
             player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
@@ -41,7 +40,7 @@ public class SSSubmit extends AbstractCommand
 
         Build build = submitter.getBuild(name);
         build.setSubmitted(!build.submitted());
-        build.openMenu(plugin, submitter, player);
+        build.openMenu(submitter, player);
         return true;
     }
 }

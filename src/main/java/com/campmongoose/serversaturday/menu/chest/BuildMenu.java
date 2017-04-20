@@ -23,63 +23,62 @@ import java.util.UUID;
 
 public class BuildMenu extends ChestMenu
 {
-    public BuildMenu(ServerSaturday plugin, Build build, Submitter submitter, Inventory inv, UUID viewer)
+    public BuildMenu(Build build, Submitter submitter, Inventory inv, UUID viewer)
     {
-        super(plugin, inv, event ->
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
+        super(inv, event ->
+                Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () ->
                 {
-                    //TODO google doc export
                     int slot = event.getSlot();
                     Player player = event.getPlayer();
                     String name = event.getItem().getItemMeta().getDisplayName();
                     if (slot == 0)
                     {
                         if (name.equalsIgnoreCase("Rename"))
-                            new SSRename(plugin).onCommand(player, build.getName());
+                            new SSRename().onCommand(player, build.getName());
                         else if (name.equalsIgnoreCase("Teleport"))
-                            new SSGoto(plugin).onCommand(player, submitter.getName(), build.getName());
+                            new SSGoto().onCommand(player, submitter.getName(), build.getName());
                     }
                     else if (slot == 1)
                     {
                         if (name.equals("Change Location"))
-                            new SSLocation(plugin).onCommand(player, build.getName());
+                            new SSLocation().onCommand(player, build.getName());
                         else if (name.equals("Description"))
-                            new SSViewDescription(plugin).onCommand(player, submitter.getName(), build.getName());
+                            new SSViewDescription().onCommand(player, submitter.getName(), build.getName());
                     }
                     else if (slot == 2)
                     {
                         if (name.equals("Change Description"))
-                            new SSDescription(plugin).onCommand(player, build.getName());
+                            new SSDescription().onCommand(player, build.getName());
                     }
                     else if (slot == 3)
                     {
                         if (name.equals("Change Resource Pack"))
-                            new SSResourcePack(plugin).onCommand(player, build.getName());
+                            new SSResourcePack().onCommand(player, build.getName());
                         else if (name.equals("Feature"))
-                            new SSFeature(plugin).onCommand(player, submitter.getName(), build.getName());
+                            new SSFeature().onCommand(player, submitter.getName(), build.getName());
                     }
                     else if (slot == 4)
                     {
                         if (name.equals("Submit/Unready"))
-                            new SSSubmit(plugin).onCommand(player, build.getName());
+                            new SSSubmit().onCommand(player, build.getName());
                     }
                     else if (slot == 5)
                     {
                         if (name.equals("Teleport"))
-                            new SSGoto(plugin).onCommand(player, submitter.getName(), build.getName());
+                            new SSGoto().onCommand(player, submitter.getName(), build.getName());
                     }
                     else if (slot == 6)
                     {
                         if (name.equals("Delete"))
-                            new SSRemove(plugin).onCommand(player, build.getName());
+                            new SSRemove().onCommand(player, build.getName());
                     }
                     else if (slot == 7)
                     {
                         if (name.equals("Feature"))
-                            new SSFeature(plugin).onCommand(player, submitter.getName(), build.getName());
+                            new SSFeature().onCommand(player, submitter.getName(), build.getName());
                     }
                     else if (slot == 8)
-                        submitter.openMenu(plugin, 1, Bukkit.getPlayer(viewer));
+                        submitter.openMenu(1, Bukkit.getPlayer(viewer));
 
                     if (name.equals(" "))
                     {

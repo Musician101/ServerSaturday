@@ -2,11 +2,16 @@ package com.campmongoose.serversaturday.submission;
 
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.menu.chest.SubmitterMenu;
-import com.campmongoose.serversaturday.util.UUIDUtils;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -15,21 +20,13 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 public class Submitter
 {
     private final Map<String, Build> builds = new HashMap<>();
     private String name;
     private final UUID uuid;
 
-    private Submitter(OfflinePlayer player)
+    private Submitter(Player player)
     {
         this.uuid = player.getUniqueId();
         this.name = player.getName();
@@ -38,13 +35,9 @@ public class Submitter
     private Submitter(UUID uuid, ConfigurationSection cs)
     {
         this.uuid = uuid;
-        try
-        {
-            this.name = UUIDUtils.getNameOf(uuid);
-        }
-        catch (IOException e)
-        {
-            this.name = cs.getString("name");
+        this.name = ServerSaturday.instance().getUUIDCache().getNameOf(uuid);
+        if (name == null) {
+            name = cs.getString("name");
         }
 
         ConfigurationSection buildsCS = cs.getConfigurationSection("builds");
@@ -90,9 +83,9 @@ public class Submitter
         return itemStack;
     }
 
-    public void openMenu(ServerSaturday plugin, int page, Player player)
+    public void openMenu(int page, Player player)
     {
-        new SubmitterMenu(plugin, this, page, Bukkit.createInventory(null, 54, name + "'s Builds")).open(player);
+        new SubmitterMenu(this, page, Bukkit.createInventory(null, 54, name + "'s Builds")).open(player);
     }
 
     public String getName()
@@ -110,7 +103,7 @@ public class Submitter
         builds.remove(name);
     }
 
-    public void save(ServerSaturday plugin, File file)
+    public void save(File file)
     {
         if (!file.exists())
         {
@@ -121,20 +114,14 @@ public class Submitter
             }
             catch (IOException e)
             {
-                plugin.getLogger().severe("An error occurred while saving " + file.getName());
+                ServerSaturday.instance().getLogger().severe("An error occurred while saving " + file.getName());
                 return;
             }
         }
 
         YamlConfiguration yaml = new YamlConfiguration();
-        try
-        {
-            yaml.set("name", UUIDUtils.getNameOf(uuid));
-        }
-        catch (IOException e)
-        {
-            yaml.set("name", name);
-        }
+        String name = ServerSaturday.instance().getUUIDCache().getNameOf(uuid);
+        yaml.set("name", name == null ? this.name : name);
 
         Map<String, Map<String, Object>> buildsMap = new HashMap<>();
         for (String buildName : builds.keySet())
@@ -147,7 +134,7 @@ public class Submitter
         }
         catch (IOException e)
         {
-            plugin.getLogger().severe("An error occurred while saving " + file.getName());
+            ServerSaturday.instance().getLogger().severe("An error occurred while saving " + file.getName());
         }
     }
 
@@ -172,7 +159,7 @@ public class Submitter
         builds.put(build.getName(), build);
     }
 
-    public static Submitter of(OfflinePlayer player)
+    public static Submitter of(Player player)
     {
         return new Submitter(player);
     }

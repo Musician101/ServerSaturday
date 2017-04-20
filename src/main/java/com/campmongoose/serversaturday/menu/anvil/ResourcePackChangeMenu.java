@@ -19,10 +19,10 @@ public class ResourcePackChangeMenu extends AnvilMenu
 {
     private final Build build;
 
-    public ResourcePackChangeMenu(ServerSaturday plugin, Build build, UUID viewer)
+    public ResourcePackChangeMenu(Build build, UUID viewer)
     {
-        super(plugin, event ->
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
+        super(event ->
+                Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () ->
                 {
                     Player player = event.getPlayer();
                     if (!viewer.equals(player.getUniqueId()))
@@ -43,9 +43,9 @@ public class ResourcePackChangeMenu extends AnvilMenu
                             return;
 
                         String name = itemMeta.getDisplayName();
-                        Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
+                        Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(player.getUniqueId());
                         submitter.updateBuildResourcePack(build, name);
-                        submitter.getBuild(build.getName()).openMenu(plugin, submitter, player);
+                        submitter.getBuild(build.getName()).openMenu(submitter, player);
                     }
                     else
                     {

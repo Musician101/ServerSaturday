@@ -1,7 +1,10 @@
 package com.campmongoose.serversaturday.submission;
 
-import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.menu.chest.BuildMenu;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,11 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Build implements ConfigurationSerializable
 {
@@ -112,9 +110,9 @@ public class Build implements ConfigurationSerializable
         return map;
     }
 
-    public void openMenu(ServerSaturday plugin, Submitter submitter, Player player)
+    public void openMenu(Submitter submitter, Player player)
     {
-        new BuildMenu(plugin, this, submitter, Bukkit.createInventory(null, 9, name), player.getUniqueId()).open(player);
+        new BuildMenu(this, submitter, Bukkit.createInventory(null, 9, name), player.getUniqueId()).open(player);
     }
 
     public String getName()

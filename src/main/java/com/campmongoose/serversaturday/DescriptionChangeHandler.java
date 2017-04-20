@@ -24,12 +24,10 @@ public class DescriptionChangeHandler implements Listener
     private final Map<UUID, Build> builds = new HashMap<>();
     private final Map<UUID, ItemStack> itemStacks = new HashMap<>();
     private final Map<UUID, Integer> taskIds = new HashMap<>();
-    private final ServerSaturday plugin;
 
-    public DescriptionChangeHandler(ServerSaturday plugin)
+    public DescriptionChangeHandler()
     {
-        this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(this, ServerSaturday.instance());
     }
 
     private ItemStack getBook(Player player, Build build)
@@ -53,7 +51,7 @@ public class DescriptionChangeHandler implements Listener
         builds.put(uuid, build);
         itemStacks.put(uuid, player.getInventory().getItemInMainHand());
         player.getInventory().setItemInMainHand(getBook(player, build));
-        taskIds.put(uuid, Bukkit.getScheduler().runTaskLater(plugin, () -> player.getInventory().setItemInMainHand(itemStacks.get(uuid)), 100).getTaskId());
+        taskIds.put(uuid, Bukkit.getScheduler().runTaskLater(ServerSaturday.instance(), () -> player.getInventory().setItemInMainHand(itemStacks.get(uuid)), 100).getTaskId());
     }
 
     private void remove(Player player)
@@ -153,9 +151,9 @@ public class DescriptionChangeHandler implements Listener
         if (!isSameBook(event.getPreviousBookMeta(), player, build))
             return;
 
-        Submitter submitter = plugin.getSubmissions().getSubmitter(uuid);
+        Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(uuid);
         submitter.updateBuildDescription(build, event.getNewBookMeta().getPages());
-        build.openMenu(plugin, submitter, player);
+        build.openMenu(submitter, player);
         remove(player);
     }
 }

@@ -19,9 +19,9 @@ public class NameChangeMenu extends AnvilMenu
 {
     private final Build build;
 
-    public NameChangeMenu(ServerSaturday plugin, Build build, UUID viewer)
+    public NameChangeMenu(Build build, UUID viewer)
     {
-        super(plugin, event ->
+        super(event ->
         {
             Player player = event.getPlayer();
             if (!viewer.equals(player.getUniqueId()))
@@ -42,7 +42,7 @@ public class NameChangeMenu extends AnvilMenu
                     return;
 
                 String name = itemMeta.getDisplayName();
-                Submitter submitter = plugin.getSubmissions().getSubmitter(player.getUniqueId());
+                Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(player.getUniqueId());
                 if (submitter.getBuild(name) != null)
                 {
                     event.setWillClose(false);
@@ -51,7 +51,7 @@ public class NameChangeMenu extends AnvilMenu
                 }
 
                 submitter.updateBuildName(build, name);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> build.openMenu(plugin, submitter, Bukkit.getPlayer(viewer)));
+                Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () -> build.openMenu(submitter, Bukkit.getPlayer(viewer)));
             }
             else
             {

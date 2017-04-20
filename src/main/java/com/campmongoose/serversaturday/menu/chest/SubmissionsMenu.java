@@ -15,27 +15,27 @@ import java.util.stream.Collectors;
 
 public class SubmissionsMenu extends ChestMenu
 {
-    public SubmissionsMenu(ServerSaturday plugin, int page, Inventory inv, UUID viewer)
+    public SubmissionsMenu(int page, Inventory inv, UUID viewer)
     {
-        super(plugin, inv, event ->
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
+        super(inv, event ->
+                Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () ->
                 {
                     ItemStack itemStack = event.getItem();
                     int slot = event.getSlot();
                     Player player = event.getPlayer();
                     String name = itemStack.getItemMeta().getDisplayName();
-                    Submissions submissions = plugin.getSubmissions();
+                    Submissions submissions = ServerSaturday.instance().getSubmissions();
                     if (slot == 53)
-                        submissions.openMenu(plugin, page + 1, player);
+                        submissions.openMenu(page + 1, player);
                     else if (slot == 45 && page > 1)
-                        submissions.openMenu(plugin, page - 1, player);
+                        submissions.openMenu(page - 1, player);
                     else if (slot < 45)
                     {
                         for (Submitter submitter : submissions.getSubmitters())
                         {
                             if (submitter.getName().equals(name))
                             {
-                                submitter.openMenu(plugin, 1, Bukkit.getPlayer(viewer));
+                                submitter.openMenu(1, Bukkit.getPlayer(viewer));
                                 return;
                             }
                         }
@@ -46,7 +46,7 @@ public class SubmissionsMenu extends ChestMenu
                 }));
 
         ItemStack[] itemStacks = new ItemStack[54];
-        List<ItemStack> list = plugin.getSubmissions().getSubmitters().stream().map(Submitter::getMenuRepresentation).collect(Collectors.toList());
+        List<ItemStack> list = ServerSaturday.instance().getSubmissions().getSubmitters().stream().map(Submitter::getMenuRepresentation).collect(Collectors.toList());
         for (int x = 0; x < 54; x++)
         {
             int subListPosition = x + (page - 1) * 45;

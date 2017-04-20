@@ -3,41 +3,38 @@ package com.campmongoose.serversaturday.menu.chest;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class SubmitterMenu extends ChestMenu
 {
-    public SubmitterMenu(ServerSaturday plugin, Submitter submitter, int page, Inventory inv)
+    public SubmitterMenu(Submitter submitter, int page, Inventory inv)
     {
-        super(plugin, inv, event ->
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
+        super(inv, event ->
+                Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () ->
                 {
                     ItemStack itemStack = event.getItem();
                     int slot = event.getSlot();
                     Player player = event.getPlayer();
                     if (slot == 53)
-                        submitter.openMenu(plugin, page + 1, player);
+                        submitter.openMenu(page + 1, player);
                     else if (slot == 45 && page > 1)
-                        submitter.openMenu(plugin, page - 1, player);
+                        submitter.openMenu(page - 1, player);
                     else if (slot == 49)
-                        plugin.getSubmissions().openMenu(plugin, 1, player);
+                        ServerSaturday.instance().getSubmissions().openMenu(1, player);
                     else if (slot < 45)
                     {
-                        ItemMeta itemMeta = itemStack.getItemMeta();
                         String name = itemStack.getItemMeta().getDisplayName();
                         for (Build build : submitter.getBuilds())
                         {
                             if (build.getName().equals(name))
                             {
-                                build.openMenu(plugin, submitter, player);
+                                build.openMenu(submitter, player);
                                 return;
                             }
                         }

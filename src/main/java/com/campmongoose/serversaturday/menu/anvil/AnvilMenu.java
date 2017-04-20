@@ -6,6 +6,7 @@ import net.minecraft.server.v1_11_R1.BlockPosition;
 import net.minecraft.server.v1_11_R1.ContainerAnvil;
 import net.minecraft.server.v1_11_R1.EntityHuman;
 import net.minecraft.server.v1_11_R1.EntityPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -18,10 +19,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class AnvilMenu extends AbstractMenu<AnvilMenu>
 {
-    AnvilMenu(ServerSaturday plugin, ClickHandler handler)
+    AnvilMenu(ClickHandler handler)
     {
         super(null, handler);
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(this, ServerSaturday.instance());
     }
 
     @EventHandler

@@ -3,7 +3,9 @@ package com.campmongoose.serversaturday.menu.chest;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
-import com.campmongoose.serversaturday.util.UUIDUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -12,18 +14,12 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
 public class AllSubmissionsMenu extends ChestMenu
 {
-    public AllSubmissionsMenu(ServerSaturday plugin, int page)
+    public AllSubmissionsMenu(int page)
     {
-        super(plugin, Bukkit.createInventory(null, 54, "All S.S. Submissions"), event ->
-                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->
+        super(Bukkit.createInventory(null, 54, "All S.S. Submissions"), event ->
+                Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () ->
                 {
                     ItemStack itemStack = event.getItem();
                     ItemMeta itemMeta = itemStack.getItemMeta();
@@ -31,35 +27,23 @@ public class AllSubmissionsMenu extends ChestMenu
                     Player player = event.getPlayer();
                     String itemName = itemMeta.getDisplayName();
                     String submitterName;
-                    UUID uuid = player.getUniqueId();
                     if (itemStack.getType() == Material.BOOK)
                     {
                         submitterName = itemMeta.getLore().get(0);
-                        Submitter submitter = null;
-                        try
-                        {
-                            submitter = plugin.getSubmissions().getSubmitter(UUIDUtils.getUUIDOf(submitterName));
-                        }
-                        catch (IOException e)
-                        {
-                            for (Submitter s : plugin.getSubmissions().getSubmitters())
-                                if (submitterName.equals(s.getName()))
-                                    submitter = s;
-                        }
-
+                        Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(ServerSaturday.instance().getUUIDCache().getUUIDOf(submitterName));
                         if (submitter == null)
                             return;
 
                         if (slot < 45)
-                            submitter.getBuild(itemName).openMenu(plugin, submitter, player);
+                            submitter.getBuild(itemName).openMenu(submitter, player);
                     }
                     else
                     {
                         itemName = itemMeta.getDisplayName();
                         if (slot == 53)
-                            new AllSubmissionsMenu(plugin, page + 1).open(player);
+                            new AllSubmissionsMenu(page + 1).open(player);
                         else if (slot == 45 && page > 1)
-                            new AllSubmissionsMenu(plugin, page - 1).open(player);
+                            new AllSubmissionsMenu(page - 1).open(player);
                     }
 
                     if (!itemName.equals(" ") && (slot < 46 || slot == 53 || (slot == 46 && page > 1)))
@@ -68,7 +52,7 @@ public class AllSubmissionsMenu extends ChestMenu
 
         ItemStack[] itemStacks = new ItemStack[54];
         List<ItemStack> list = new ArrayList<>();
-        for (Submitter submitter : plugin.getSubmissions().getSubmitters())
+        for (Submitter submitter : ServerSaturday.instance().getSubmissions().getSubmitters())
         {
             for (Build build : submitter.getBuilds())
             {

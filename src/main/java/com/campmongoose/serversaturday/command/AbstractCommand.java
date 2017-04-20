@@ -2,35 +2,35 @@ package com.campmongoose.serversaturday.command;
 
 import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.ServerSaturday;
-import com.campmongoose.serversaturday.submission.Build;
+import com.campmongoose.serversaturday.submission.Submissions;
 import com.campmongoose.serversaturday.submission.Submitter;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public abstract class AbstractCommand
 {
     private final boolean isPlayerOnly;
     private final int minArgs;
-    protected final ServerSaturday plugin;
     private final List<AbstractCommand> subCommands;
     private final String description;
     private final String name;
     private final String permission;
     private final String usage;
 
-    protected AbstractCommand(ServerSaturday plugin, String name, String description, List<CommandArgument> usage, int minArgs, String permission, boolean isPlayerOnly)
+    protected AbstractCommand(String name, String description, List<CommandArgument> usage, int minArgs, String permission, boolean isPlayerOnly)
     {
-        this(plugin, name, description, usage, minArgs, permission, isPlayerOnly, new ArrayList<>());
+        this(name, description, usage, minArgs, permission, isPlayerOnly, new ArrayList<>());
     }
 
-    protected AbstractCommand(ServerSaturday plugin, String name, String description, List<CommandArgument> usage, int minArgs, String permission, boolean isPlayerOnly, List<AbstractCommand> subCommands)
+    protected AbstractCommand(String name, String description, List<CommandArgument> usage, int minArgs, String permission, boolean isPlayerOnly, List<AbstractCommand> subCommands)
     {
-        this.plugin = plugin;
         this.name = name;
         this.description = description;
         this.usage = parseUsage(usage);
@@ -53,7 +53,6 @@ public abstract class AbstractCommand
         return usage;
     }
 
-    @SuppressWarnings("WeakerAccess")
     public abstract boolean onCommand(CommandSender sender, String... args);
 
     protected boolean canSenderUseCommand(CommandSender sender)
@@ -103,7 +102,6 @@ public abstract class AbstractCommand
         return description;
     }
 
-    @SuppressWarnings("WeakerAccess")
     public String getName()
     {
         return name;
@@ -134,6 +132,7 @@ public abstract class AbstractCommand
         return list.toArray(new String[list.size()]);
     }
 
+    @Deprecated
     protected String combineStringArray(String[] stringArray)
     {
         StringBuilder sb = new StringBuilder();
@@ -146,5 +145,42 @@ public abstract class AbstractCommand
         }
 
         return sb.toString();
+    }
+
+    protected ServerSaturday getPluginInstance() {
+        return ServerSaturday.instance();
+    }
+
+    protected Submissions getSubmissions() {
+        return getPluginInstance().getSubmissions();
+    }
+
+    @Nonnull
+    protected Submitter getSubmitter(Player player) {
+        return getSubmissions().getSubmitter(player.getUniqueId());
+    }
+
+    @Nullable
+    protected Submitter getSubmitter(String playerName) {
+        UUID uuid = getPluginInstance().getUUIDCache().getUUIDOf(name);
+        if (uuid != null) {
+            Submitter submitter = getSubmitter(uuid);
+            if (submitter != null) {
+                return submitter;
+            }
+
+            for (Submitter s : getSubmissions().getSubmitters()) {
+                if (s.getName().equalsIgnoreCase(playerName)) {
+                    return s;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    protected Submitter getSubmitter(UUID uuid) {
+        return getSubmissions().getSubmitter(uuid);
     }
 }

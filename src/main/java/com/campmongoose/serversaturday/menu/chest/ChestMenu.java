@@ -2,6 +2,7 @@ package com.campmongoose.serversaturday.menu.chest;
 
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.menu.AbstractMenu;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,10 +14,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class ChestMenu extends AbstractMenu<ChestMenu>
 {
-    ChestMenu(ServerSaturday plugin, Inventory inv, ClickHandler handler)
+    ChestMenu(Inventory inv, ClickHandler handler)
     {
         super(inv, handler);
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        Bukkit.getServer().getPluginManager().registerEvents(this, ServerSaturday.instance());
     }
 
     @EventHandler
