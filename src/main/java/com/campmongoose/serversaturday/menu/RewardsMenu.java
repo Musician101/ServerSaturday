@@ -18,10 +18,10 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class RewardsMenu implements Listener{
+public class RewardsMenu implements Listener {
 
-    private static ItemStack[] rewards;
     private static File REWARDS_FILE;
+    private static ItemStack[] rewards;
     private final Inventory inventory;
     private final Player player;
 
@@ -36,6 +36,29 @@ public class RewardsMenu implements Listener{
         inventory.setContents(rewards);
         Bukkit.getPluginManager().registerEvents(this, ServerSaturday.instance());
         player.openInventory(inventory);
+    }
+
+    public static ItemStack[] getRewards() {
+        return rewards;
+    }
+
+    public static void loadRewards() {
+        REWARDS_FILE = new File(ServerSaturday.instance().getDataFolder(), "rewards.yml");
+        if (!REWARDS_FILE.exists()) {
+            try {
+                REWARDS_FILE.createNewFile();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        int defaultSize = InventoryType.CHEST.getDefaultSize();
+        YamlConfiguration yml = YamlConfiguration.loadConfiguration(REWARDS_FILE);
+        rewards = new ItemStack[defaultSize];
+        for (int i = 0; i < defaultSize; i++) {
+            rewards[i] = yml.getItemStack(Integer.toString(i), null);
+        }
     }
 
     @EventHandler
@@ -64,28 +87,5 @@ public class RewardsMenu implements Listener{
 
             HandlerList.unregisterAll(this);
         }
-    }
-
-    public static void loadRewards() {
-        REWARDS_FILE = new File(ServerSaturday.instance().getDataFolder(), "rewards.yml");
-        if (!REWARDS_FILE.exists()) {
-            try {
-                REWARDS_FILE.createNewFile();
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        int defaultSize = InventoryType.CHEST.getDefaultSize();
-        YamlConfiguration yml = YamlConfiguration.loadConfiguration(REWARDS_FILE);
-        rewards = new ItemStack[defaultSize];
-        for (int i = 0; i < defaultSize; i++) {
-            rewards[i] = yml.getItemStack(Integer.toString(i), null);
-        }
-    }
-
-    public static ItemStack[] getRewards() {
-        return rewards;
     }
 }

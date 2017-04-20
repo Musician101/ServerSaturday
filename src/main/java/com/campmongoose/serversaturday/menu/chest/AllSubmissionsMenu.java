@@ -14,54 +14,51 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class AllSubmissionsMenu extends ChestMenu
-{
-    public AllSubmissionsMenu(int page)
-    {
-        super(Bukkit.createInventory(null, 54, "All S.S. Submissions"), event ->
-                Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () ->
-                {
-                    ItemStack itemStack = event.getItem();
-                    ItemMeta itemMeta = itemStack.getItemMeta();
-                    int slot = event.getSlot();
-                    Player player = event.getPlayer();
-                    String itemName = itemMeta.getDisplayName();
-                    String submitterName;
-                    if (itemStack.getType() == Material.BOOK)
-                    {
-                        submitterName = itemMeta.getLore().get(0);
-                        Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(ServerSaturday.instance().getUUIDCache().getUUIDOf(submitterName));
-                        if (submitter == null)
-                            return;
+public class AllSubmissionsMenu extends ChestMenu {
 
-                        if (slot < 45)
-                            submitter.getBuild(itemName).openMenu(submitter, player);
-                    }
-                    else
-                    {
-                        itemName = itemMeta.getDisplayName();
-                        if (slot == 53)
-                            new AllSubmissionsMenu(page + 1).open(player);
-                        else if (slot == 45 && page > 1)
-                            new AllSubmissionsMenu(page - 1).open(player);
-                    }
+    public AllSubmissionsMenu(int page) {
+        super(Bukkit.createInventory(null, 54, "All S.S. Submissions"), event -> Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () -> {
+            ItemStack itemStack = event.getItem();
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            int slot = event.getSlot();
+            Player player = event.getPlayer();
+            String itemName = itemMeta.getDisplayName();
+            String submitterName;
+            if (itemStack.getType() == Material.BOOK) {
+                submitterName = itemMeta.getLore().get(0);
+                Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(ServerSaturday.instance().getUUIDCache().getUUIDOf(submitterName));
+                if (submitter == null) {
+                    return;
+                }
 
-                    if (!itemName.equals(" ") && (slot < 46 || slot == 53 || (slot == 46 && page > 1)))
-                        event.setWillDestroy(true);
-                }));
+                if (slot < 45) {
+                    submitter.getBuild(itemName).openMenu(submitter, player);
+                }
+            }
+            else {
+                itemName = itemMeta.getDisplayName();
+                if (slot == 53) {
+                    new AllSubmissionsMenu(page + 1).open(player);
+                }
+                else if (slot == 45 && page > 1) {
+                    new AllSubmissionsMenu(page - 1).open(player);
+                }
+            }
+
+            if (!itemName.equals(" ") && (slot < 46 || slot == 53 || (slot == 46 && page > 1))) {
+                event.setWillDestroy(true);
+            }
+        }));
 
         ItemStack[] itemStacks = new ItemStack[54];
         List<ItemStack> list = new ArrayList<>();
-        for (Submitter submitter : ServerSaturday.instance().getSubmissions().getSubmitters())
-        {
-            for (Build build : submitter.getBuilds())
-            {
+        for (Submitter submitter : ServerSaturday.instance().getSubmissions().getSubmitters()) {
+            for (Build build : submitter.getBuilds()) {
                 ItemStack itemStack = new ItemStack(Material.BOOK);
                 ItemMeta itemMeta = itemStack.getItemMeta();
                 itemMeta.setDisplayName(build.getName());
                 itemMeta.setLore(Collections.singletonList(submitter.getName()));
-                if (build.submitted() && !build.featured())
-                {
+                if (build.submitted() && !build.featured()) {
                     itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 }
@@ -71,11 +68,11 @@ public class AllSubmissionsMenu extends ChestMenu
             }
         }
 
-        for (int x = 0; x < 54; x++)
-        {
+        for (int x = 0; x < 54; x++) {
             int subListPosition = x + (page - 1) * 45;
-            if (x < 45 && list.size() > subListPosition)
+            if (x < 45 && list.size() > subListPosition) {
                 itemStacks[x] = list.get(subListPosition);
+            }
         }
 
         inv.setContents(itemStacks);

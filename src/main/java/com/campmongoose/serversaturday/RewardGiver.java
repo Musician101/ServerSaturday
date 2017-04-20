@@ -19,8 +19,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class RewardGiver implements Listener {
 
     private final File file;
-    private final Map<UUID, Integer> rewardsWaiting = new HashMap<>();
     private final Map<UUID, String> names = new HashMap<>();
+    private final Map<UUID, Integer> rewardsWaiting = new HashMap<>();
 
     public RewardGiver() {
         ServerSaturday plugin = ServerSaturday.instance();
@@ -63,6 +63,15 @@ public class RewardGiver implements Listener {
         }
     }
 
+    public void givePlayerReward(Player player) {
+        UUID uuid = player.getUniqueId();
+        for (int i = 0; i < rewardsWaiting.get(uuid); i++) {
+            Stream.of(RewardsMenu.getRewards()).filter(Objects::nonNull).forEach(itemStack -> player.getWorld().dropItem(player.getLocation(), itemStack));
+        }
+
+        rewardsWaiting.put(uuid, 0);
+    }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -71,15 +80,6 @@ public class RewardGiver implements Listener {
         if (rewardsWaiting.getOrDefault(uuid, 0) > 0) {
             player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "Hey, you! You have rewards waiting for you. Claim them with /ss getrewards");
         }
-    }
-
-    public void givePlayerReward(Player player) {
-        UUID uuid = player.getUniqueId();
-        for (int i = 0; i < rewardsWaiting.get(uuid); i++) {
-            Stream.of(RewardsMenu.getRewards()).filter(Objects::nonNull).forEach(itemStack -> player.getWorld().dropItem(player.getLocation(), itemStack));
-        }
-
-        rewardsWaiting.put(uuid, 0);
     }
 
     public void save() {

@@ -8,43 +8,18 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ServerSaturday extends JavaPlugin
-{
+public class ServerSaturday extends JavaPlugin {
+
     private DescriptionChangeHandler dch;
     private RewardGiver rewardGiver;
     private Submissions submissions;
     private UUIDCache uuidCache;
 
-    @Override
-    public void onEnable()
-    {
-        uuidCache = new UUIDCache();
-        dch = new DescriptionChangeHandler();
-        rewardGiver = new RewardGiver();
-        submissions = new Submissions();
-        submissions.getSubmitters().forEach(submitter -> uuidCache.addIfAbsent(submitter.getUUID(), submitter.getName()));
-        RewardsMenu.loadRewards();
+    public static ServerSaturday instance() {
+        return JavaPlugin.getPlugin(ServerSaturday.class);
     }
 
-    @Override
-    public void onDisable()
-    {
-        rewardGiver.save();
-        submissions.save();
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
-    {
-        if ((command.getName().equalsIgnoreCase("serversaturday") || command.getName().equalsIgnoreCase("ss")))
-            if (new SSCommand().onCommand(sender, args))
-                return true;
-
-        return false;
-    }
-
-    public DescriptionChangeHandler getDescriptionChangeHandler()
-    {
+    public DescriptionChangeHandler getDescriptionChangeHandler() {
         return dch;
     }
 
@@ -52,8 +27,7 @@ public class ServerSaturday extends JavaPlugin
         return rewardGiver;
     }
 
-    public Submissions getSubmissions()
-    {
+    public Submissions getSubmissions() {
         return submissions;
     }
 
@@ -61,7 +35,30 @@ public class ServerSaturday extends JavaPlugin
         return uuidCache;
     }
 
-    public static ServerSaturday instance() {
-        return JavaPlugin.getPlugin(ServerSaturday.class);
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if ((command.getName().equalsIgnoreCase("serversaturday") || command.getName().equalsIgnoreCase("ss"))) {
+            if (new SSCommand().onCommand(sender, args)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onDisable() {
+        rewardGiver.save();
+        submissions.save();
+    }
+
+    @Override
+    public void onEnable() {
+        uuidCache = new UUIDCache();
+        dch = new DescriptionChangeHandler();
+        rewardGiver = new RewardGiver();
+        submissions = new Submissions();
+        submissions.getSubmitters().forEach(submitter -> uuidCache.addIfAbsent(submitter.getUUID(), submitter.getName()));
+        RewardsMenu.loadRewards();
     }
 }

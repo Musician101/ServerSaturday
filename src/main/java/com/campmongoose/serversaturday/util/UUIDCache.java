@@ -40,6 +40,23 @@ public class UUIDCache implements Listener {
         });
     }
 
+    public void add(Player player) {
+        uuidMap.put(player.getUniqueId(), player.getName());
+    }
+
+    private void add(UUID uuid, String name) {
+        uuidMap.put(uuid, name);
+    }
+
+    public void addIfAbsent(UUID uuid, String name) {
+        try {
+            uuidMap.putIfAbsent(uuid, getCurrentName(uuid));
+        }
+        catch (IOException e) {
+            ioException(uuid, name);
+        }
+    }
+
     private String getCurrentName(UUID uuid) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL("https://api.mojang.com/user/profiles/" + uuid.toString().replace("-", "") + "/names").openConnection();
         JsonArray response = new Gson().fromJson(new InputStreamReader(connection.getInputStream()), JsonArray.class);
@@ -69,34 +86,17 @@ public class UUIDCache implements Listener {
         throw new IllegalArgumentException("A player with uuid " + uuid.toString() + " does not exist.");
     }
 
-    public void add(Player player) {
-        uuidMap.put(player.getUniqueId(), player.getName());
-    }
-
-    private void add(UUID uuid, String name) {
-        uuidMap.put(uuid, name);
-    }
-
-    public void addIfAbsent(UUID uuid, String name) {
-        try {
-            uuidMap.putIfAbsent(uuid, getCurrentName(uuid));
-        }
-        catch (IOException e) {
-            ioException(uuid, name);
-        }
-    }
-
-    private void ioException(UUID uuid, String name) {
-        ServerSaturday.instance().getLogger().warning("Could not retrieve up to date name for " + name + " (" + uuid + "). Defaulting to the last name they had on the server.");
-        add(uuid, name);
-    }
-
     public String getNameOf(UUID uuid) {
         return uuidMap.get(uuid);
     }
 
     public UUID getUUIDOf(String name) {
         return uuidMap.inverse().get(name);
+    }
+
+    private void ioException(UUID uuid, String name) {
+        ServerSaturday.instance().getLogger().warning("Could not retrieve up to date name for " + name + " (" + uuid + "). Defaulting to the last name they had on the server.");
+        add(uuid, name);
     }
 
     @EventHandler

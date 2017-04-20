@@ -14,27 +14,26 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SSResourcePack extends AbstractCommand
-{
-    public SSResourcePack()
-    {
+public class SSResourcePack extends AbstractCommand {
+
+    public SSResourcePack() {
         super("resourcepack", "Change the recommended resource pack.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("resourcepack"), new CommandArgument("build", Syntax.REQUIRED, Syntax.REPLACE)), 1, "ss.submit", true);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
-    {
-        if (!canSenderUseCommand(sender))
+    public boolean onCommand(CommandSender sender, String... args) {
+        if (!canSenderUseCommand(sender)) {
             return false;
+        }
 
-        if (!minArgsMet(sender, args.length))
+        if (!minArgsMet(sender, args.length)) {
             return false;
+        }
 
         Player player = (Player) sender;
         String name = StringUtils.join(args, " ");
         Submitter submitter = getSubmitter(player);
-        if (submitter.getBuild(name) == null)
-        {
+        if (submitter.getBuild(name) == null) {
             player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
             return false;
         }

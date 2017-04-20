@@ -1,5 +1,6 @@
 package com.campmongoose.serversaturday.menu;
 
+import java.util.Arrays;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -12,47 +13,18 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
+public abstract class AbstractMenu<Menu extends AbstractMenu> implements Listener {
 
-public abstract class AbstractMenu<Menu extends AbstractMenu> implements Listener
-{
     protected final ClickHandler handler;
     protected Inventory inv;
 
-    protected AbstractMenu(Inventory inv, ClickHandler handler)
-    {
+    protected AbstractMenu(Inventory inv, ClickHandler handler) {
         this.inv = inv;
         this.handler = handler;
     }
 
-    protected void setOption(int slot, ItemStack itemStack)
-    {
-        setOption(slot, itemStack, " ");
-    }
-
-    protected void setOption(int slot, ItemStack itemStack, String name)
-    {
-        setOption(slot, itemStack, name, new String[0]);
-    }
-
-    protected void setOption(int slot, ItemStack itemStack, String name, String... description)
-    {
-        setOption(slot, itemStack, name, false, description);
-    }
-
-    protected void setOption(int slot, ItemStack itemStack, String name, boolean willGlow, String... description)
-    {
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(name);
-        itemMeta.setLore(Arrays.asList(description));
-        if (willGlow)
-        {
-            itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        }
-
-        itemStack.setItemMeta(itemMeta);
-        inv.setItem(slot, itemStack);
+    protected <M extends AbstractMenu> void destroy(M menu) {
+        HandlerList.unregisterAll(menu);
     }
 
     public abstract void onClick(InventoryClickEvent event);
@@ -61,69 +33,80 @@ public abstract class AbstractMenu<Menu extends AbstractMenu> implements Listene
 
     public abstract void onQuit(PlayerQuitEvent event);
 
-    protected <M extends AbstractMenu> void destroy(M menu)
-    {
-        HandlerList.unregisterAll(menu);
-    }
-
-    public void open(Player player)
-    {
+    public void open(Player player) {
         player.openInventory(inv);
     }
 
-    public interface ClickHandler
-    {
+    protected void setOption(int slot, ItemStack itemStack, String name) {
+        setOption(slot, itemStack, name, new String[0]);
+    }
+
+    protected void setOption(int slot, ItemStack itemStack, String name, String... description) {
+        setOption(slot, itemStack, name, false, description);
+    }
+
+    protected void setOption(int slot, ItemStack itemStack, String name, boolean willGlow, String... description) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(name);
+        itemMeta.setLore(Arrays.asList(description));
+        if (willGlow) {
+            itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
+
+        itemStack.setItemMeta(itemMeta);
+        inv.setItem(slot, itemStack);
+    }
+
+    protected void setOption(int slot, ItemStack itemStack) {
+        setOption(slot, itemStack, " ");
+    }
+
+    public interface ClickHandler {
+
         void handle(SSClickEvent event);
     }
 
-    public static class SSClickEvent
-    {
-        boolean close = true;
-        boolean destroy = true;
-        final int slot;
+    public static class SSClickEvent {
+
         final ItemStack itemStack;
         final Player player;
+        final int slot;
+        boolean close = true;
+        boolean destroy = true;
 
-        public SSClickEvent(Player player, ItemStack itemStack, int slot)
-        {
+        public SSClickEvent(Player player, ItemStack itemStack, int slot) {
             this.player = player;
             this.itemStack = itemStack;
             this.slot = slot;
         }
 
-        public boolean willClose()
-        {
-            return close;
-        }
-
-        public void setWillClose(@SuppressWarnings("SameParameterValue") boolean close)
-        {
-            this.close = close;
-        }
-
-        public boolean willDestroy()
-        {
-            return destroy;
-        }
-
-        public void setWillDestroy(boolean destroy)
-        {
-            this.destroy = destroy;
-        }
-
-        public int getSlot()
-        {
-            return slot;
-        }
-
-        public ItemStack getItem()
-        {
+        public ItemStack getItem() {
             return itemStack;
         }
 
-        public Player getPlayer()
-        {
+        public Player getPlayer() {
             return player;
+        }
+
+        public int getSlot() {
+            return slot;
+        }
+
+        public void setWillClose(@SuppressWarnings("SameParameterValue") boolean close) {
+            this.close = close;
+        }
+
+        public void setWillDestroy(boolean destroy) {
+            this.destroy = destroy;
+        }
+
+        public boolean willClose() {
+            return close;
+        }
+
+        public boolean willDestroy() {
+            return destroy;
         }
     }
 }

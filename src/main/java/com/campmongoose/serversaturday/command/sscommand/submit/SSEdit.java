@@ -12,26 +12,23 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SSEdit extends AbstractCommand
-{
-    public SSEdit()
-    {
+public class SSEdit extends AbstractCommand {
+
+    public SSEdit() {
         super("edit", "Edit a submitted build for Server Saturday.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("edit"), new CommandArgument("build", Syntax.REPLACE, Syntax.OPTIONAL)), 0, "ss.submit", true);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
-    {
-        if (!canSenderUseCommand(sender))
+    public boolean onCommand(CommandSender sender, String... args) {
+        if (!canSenderUseCommand(sender)) {
             return false;
+        }
 
         Player player = (Player) sender;
         Submitter submitter = getSubmitter(player);
-        if (args.length > 0)
-        {
+        if (args.length > 0) {
             String name = StringUtils.join(args, " ");
-            if (submitter.getBuild(name) == null)
-            {
+            if (submitter.getBuild(name) == null) {
                 player.sendMessage(ChatColor.RED + Reference.PREFIX + "That build does not exist.");
                 return false;
             }

@@ -20,33 +20,31 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
-public class SSViewDescription extends AbstractCommand
-{
-    public SSViewDescription()
-    {
+public class SSViewDescription extends AbstractCommand {
+
+    public SSViewDescription() {
         super("viewdescription", "View the description of a build.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("viewdescription"), new CommandArgument("player", Syntax.REQUIRED, Syntax.REPLACE), new CommandArgument("build", Syntax.REQUIRED, Syntax.REPLACE)), 2, "ss.view", true);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
-    {
-        if (!canSenderUseCommand(sender))
+    public boolean onCommand(CommandSender sender, String... args) {
+        if (!canSenderUseCommand(sender)) {
             return false;
+        }
 
-        if (!minArgsMet(sender, args.length))
+        if (!minArgsMet(sender, args.length)) {
             return false;
+        }
 
         Player player = (Player) sender;
         Submitter submitter = getSubmitter(args[0]);
-        if (submitter == null)
-        {
+        if (submitter == null) {
             player.sendMessage(ChatColor.RED + Reference.PREFIX + "Could not find a player with that name.");
             return false;
         }
 
         Build build = submitter.getBuild(StringUtils.join(moveArguments(args), " "));
-        if (build == null)
-        {
+        if (build == null) {
             player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
             return false;
         }

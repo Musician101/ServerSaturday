@@ -3,6 +3,7 @@ package com.campmongoose.serversaturday.menu.anvil;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
+import java.util.UUID;
 import net.minecraft.server.v1_11_R1.ChatComponentText;
 import net.minecraft.server.v1_11_R1.EntityPlayer;
 import net.minecraft.server.v1_11_R1.PacketPlayOutOpenWindow;
@@ -13,38 +14,36 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.UUID;
+public class NameChangeMenu extends AnvilMenu {
 
-public class NameChangeMenu extends AnvilMenu
-{
     private final Build build;
 
-    public NameChangeMenu(Build build, UUID viewer)
-    {
-        super(event ->
-        {
+    public NameChangeMenu(Build build, UUID viewer) {
+        super(event -> {
             Player player = event.getPlayer();
-            if (!viewer.equals(player.getUniqueId()))
+            if (!viewer.equals(player.getUniqueId())) {
                 return;
+            }
 
             int slot = event.getSlot();
-            if (slot == 2)
-            {
+            if (slot == 2) {
                 ItemStack itemStack = event.getItem();
-                if (itemStack.getType() != Material.PAPER)
+                if (itemStack.getType() != Material.PAPER) {
                     return;
+                }
 
-                if (!itemStack.hasItemMeta())
+                if (!itemStack.hasItemMeta()) {
                     return;
+                }
 
                 ItemMeta itemMeta = itemStack.getItemMeta();
-                if (!itemMeta.hasDisplayName())
+                if (!itemMeta.hasDisplayName()) {
                     return;
+                }
 
                 String name = itemMeta.getDisplayName();
                 Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(player.getUniqueId());
-                if (submitter.getBuild(name) != null)
-                {
+                if (submitter.getBuild(name) != null) {
                     event.setWillClose(false);
                     event.setWillDestroy(false);
                     return;
@@ -53,8 +52,7 @@ public class NameChangeMenu extends AnvilMenu
                 submitter.updateBuildName(build, name);
                 Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () -> build.openMenu(submitter, Bukkit.getPlayer(viewer)));
             }
-            else
-            {
+            else {
                 event.setWillClose(false);
                 event.setWillDestroy(false);
             }
@@ -64,8 +62,7 @@ public class NameChangeMenu extends AnvilMenu
     }
 
     @Override
-    public void open(Player player)
-    {
+    public void open(Player player) {
         EntityPlayer ep = ((CraftPlayer) player).getHandle();
         AnvilContainer container = new AnvilContainer(ep);
         inv = container.getBukkitView().getTopInventory();

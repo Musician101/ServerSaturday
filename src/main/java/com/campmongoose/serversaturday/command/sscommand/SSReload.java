@@ -9,18 +9,17 @@ import java.util.Arrays;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-public class SSReload extends AbstractCommand
-{
-    public SSReload()
-    {
+public class SSReload extends AbstractCommand {
+
+    public SSReload() {
         super("reload", "Reload the plugin.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("reload")), 0, "ss.reload", false);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
-    {
-        if (!canSenderUseCommand(sender))
+    public boolean onCommand(CommandSender sender, String... args) {
+        if (!canSenderUseCommand(sender)) {
             return false;
+        }
 
         getSubmissions().save();
         getSubmissions().load();

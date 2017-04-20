@@ -14,34 +14,32 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SSDescription extends AbstractCommand
-{
-    public SSDescription()
-    {
+public class SSDescription extends AbstractCommand {
+
+    public SSDescription() {
         super("description", "Change the description of a submission.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("description"), new CommandArgument("build", Syntax.REQUIRED, Syntax.REPLACE)), 1, "ss.submit", true);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String... args)
-    {
-        if (!canSenderUseCommand(sender))
+    public boolean onCommand(CommandSender sender, String... args) {
+        if (!canSenderUseCommand(sender)) {
             return false;
+        }
 
-        if (!minArgsMet(sender, args.length))
+        if (!minArgsMet(sender, args.length)) {
             return false;
+        }
 
         Player player = (Player) sender;
         DescriptionChangeHandler dch = getPluginInstance().getDescriptionChangeHandler();
-        if (dch.containsPlayer(player.getUniqueId()))
-        {
+        if (dch.containsPlayer(player.getUniqueId())) {
             player.sendMessage(ChatColor.RED + Reference.PREFIX + "You're in the middle of editing another build.");
             return false;
         }
 
         String name = StringUtils.join(args, " ");
         Submitter submitter = getSubmitter(player);
-        if (submitter.getBuild(name) == null)
-        {
+        if (submitter.getBuild(name) == null) {
             player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
             return false;
         }

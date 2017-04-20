@@ -20,24 +20,24 @@ import java.util.Arrays;
 import java.util.Collections;
 import org.bukkit.command.CommandSender;
 
-public class SSCommand extends AbstractCommand
-{
-    public SSCommand()
-    {
+public class SSCommand extends AbstractCommand {
+
+    public SSCommand() {
         super("ss", "Plugin based submission form for Potato's Server Saturday.", Collections.singletonList(new CommandArgument(Commands.SS_CMD)), 0, "", false, Arrays.asList(new SSDescription(), new SSEdit(), new SSFeature(), new SSGetRewards(), new SSGiveReward(), new SSGoto(), new SSLocation(), new SSNew(), new SSReload(), new SSRemove(), new SSRename(), new SSResourcePack(), new SSSetRewards(), new SSSubmit(), new SSView(), new SSViewDescription()));
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, String[] args)
-    {
-        if (args.length > 0)
-        {
-            if (args[0].equalsIgnoreCase("help"))
+    public boolean onCommand(CommandSender sender, String[] args) {
+        if (args.length > 0) {
+            if (args[0].equalsIgnoreCase("help")) {
                 return new HelpCommand(this).onCommand(sender, moveArguments(args));
+            }
 
-            for (AbstractCommand command : getSubCommands())
-                if (command.getName().equalsIgnoreCase(args[0]))
+            for (AbstractCommand command : getSubCommands()) {
+                if (command.getName().equalsIgnoreCase(args[0])) {
                     return command.onCommand(sender, moveArguments(args));
+                }
+            }
         }
 
         return new HelpCommand(this).onCommand(sender, moveArguments(args));

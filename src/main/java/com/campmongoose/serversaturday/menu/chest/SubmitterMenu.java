@@ -11,46 +11,44 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class SubmitterMenu extends ChestMenu
-{
-    public SubmitterMenu(Submitter submitter, int page, Inventory inv)
-    {
-        super(inv, event ->
-                Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () ->
-                {
-                    ItemStack itemStack = event.getItem();
-                    int slot = event.getSlot();
-                    Player player = event.getPlayer();
-                    if (slot == 53)
-                        submitter.openMenu(page + 1, player);
-                    else if (slot == 45 && page > 1)
-                        submitter.openMenu(page - 1, player);
-                    else if (slot == 49)
-                        ServerSaturday.instance().getSubmissions().openMenu(1, player);
-                    else if (slot < 45)
-                    {
-                        String name = itemStack.getItemMeta().getDisplayName();
-                        for (Build build : submitter.getBuilds())
-                        {
-                            if (build.getName().equals(name))
-                            {
-                                build.openMenu(submitter, player);
-                                return;
-                            }
-                        }
-                    }
+public class SubmitterMenu extends ChestMenu {
 
-                    if (slot < 46 || slot == 49 || slot == 53 || (slot == 46 && page > 1))
-                        event.setWillDestroy(true);
-                }));
+    public SubmitterMenu(Submitter submitter, int page, Inventory inv) {
+        super(inv, event -> Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () -> {
+            ItemStack itemStack = event.getItem();
+            int slot = event.getSlot();
+            Player player = event.getPlayer();
+            if (slot == 53) {
+                submitter.openMenu(page + 1, player);
+            }
+            else if (slot == 45 && page > 1) {
+                submitter.openMenu(page - 1, player);
+            }
+            else if (slot == 49) {
+                ServerSaturday.instance().getSubmissions().openMenu(1, player);
+            }
+            else if (slot < 45) {
+                String name = itemStack.getItemMeta().getDisplayName();
+                for (Build build : submitter.getBuilds()) {
+                    if (build.getName().equals(name)) {
+                        build.openMenu(submitter, player);
+                        return;
+                    }
+                }
+            }
+
+            if (slot < 46 || slot == 49 || slot == 53 || (slot == 46 && page > 1)) {
+                event.setWillDestroy(true);
+            }
+        }));
 
         ItemStack[] itemStacks = new ItemStack[54];
         List<ItemStack> list = submitter.getBuilds().stream().map(build -> build.getMenuRepresentation(submitter)).collect(Collectors.toList());
-        for (int x = 0; x < 54; x++)
-        {
+        for (int x = 0; x < 54; x++) {
             int subListPosition = x + (page - 1) * 45;
-            if (x < 45 && list.size() > subListPosition)
+            if (x < 45 && list.size() > subListPosition) {
                 itemStacks[x] = list.get(subListPosition);
+            }
         }
 
         inv.setContents(itemStacks);

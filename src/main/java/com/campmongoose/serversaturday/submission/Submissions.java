@@ -12,41 +12,32 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-public class Submissions
-{
+public class Submissions {
+
     private final File dir;
     private final Map<UUID, Submitter> submitters = new HashMap<>();
 
-    public Submissions()
-    {
+    public Submissions() {
         this.dir = new File(ServerSaturday.instance().getDataFolder(), "submitters");
         load();
     }
 
-    public Submitter getSubmitter(UUID uuid)
-    {
+    public Submitter getSubmitter(UUID uuid) {
         return submitters.get(uuid);
     }
 
-    public List<Submitter> getSubmitters()
-    {
+    public List<Submitter> getSubmitters() {
         List<Submitter> list = new ArrayList<>();
         list.addAll(submitters.values());
         return list;
     }
 
-    public void openMenu(int page, Player player)
-    {
-        new SubmissionsMenu(page, Bukkit.createInventory(null, 54, "S.S. Submissions"), player.getUniqueId()).open(player);
-    }
-
-    public void load()
-    {
+    public void load() {
         dir.mkdirs();
-        for (File file : dir.listFiles())
-        {
-            if (!file.getName().endsWith(".yml"))
+        for (File file : dir.listFiles()) {
+            if (!file.getName().endsWith(".yml")) {
                 continue;
+            }
 
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
             UUID uuid = UUID.fromString(file.getName().replace(".yml", ""));
@@ -54,9 +45,13 @@ public class Submissions
         }
     }
 
-    public void save()
-    {
-        for (UUID uuid : submitters.keySet())
+    public void openMenu(int page, Player player) {
+        new SubmissionsMenu(page, Bukkit.createInventory(null, 54, "S.S. Submissions"), player.getUniqueId()).open(player);
+    }
+
+    public void save() {
+        for (UUID uuid : submitters.keySet()) {
             getSubmitter(uuid).save(new File(dir, uuid.toString() + ".yml"));
+        }
     }
 }
