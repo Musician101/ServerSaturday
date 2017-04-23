@@ -33,7 +33,7 @@ public class DescriptionChangeHandler implements Listener {
         builds.put(uuid, build);
         itemStacks.put(uuid, player.getInventory().getItemInMainHand());
         player.getInventory().setItemInMainHand(getBook(player, build));
-        taskIds.put(uuid, Bukkit.getScheduler().runTaskLater(ServerSaturday.instance(), () -> player.getInventory().setItemInMainHand(itemStacks.get(uuid)), 100).getTaskId());
+        taskIds.put(uuid, Bukkit.getScheduler().runTaskLater(ServerSaturday.instance(), () -> remove(player), 100).getTaskId());
     }
 
     @EventHandler

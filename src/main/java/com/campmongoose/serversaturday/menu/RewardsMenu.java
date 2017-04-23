@@ -49,7 +49,8 @@ public class RewardsMenu implements Listener {
                 REWARDS_FILE.createNewFile();
             }
             catch (IOException e) {
-                e.printStackTrace();
+                ServerSaturday.instance().getLogger().warning("An error occurred when loading rewards!");
+                return;
             }
         }
 

@@ -19,12 +19,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class RewardGiver implements Listener {
 
     private final File file;
-    private final Map<UUID, String> names = new HashMap<>();
     private final Map<UUID, Integer> rewardsWaiting = new HashMap<>();
 
     public RewardGiver() {
         ServerSaturday plugin = ServerSaturday.instance();
-        file = new File(plugin.getDataFolder(), "rewards_waiting.yaml");
+        file = new File(plugin.getDataFolder(), "rewards_waiting.yml");
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -36,20 +35,9 @@ public class RewardGiver implements Listener {
         }
 
         YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            UUID uuid = player.getUniqueId();
-            rewardsWaiting.put(uuid, yml.getInt(uuid.toString() + ".amount"));
-            names.put(uuid, player.getName());
-        });
-
-        Stream.of(Bukkit.getOfflinePlayers()).forEach(player -> {
-            UUID uuid = player.getUniqueId();
-            rewardsWaiting.put(uuid, yml.getInt(uuid.toString() + ".amount"));
-            String name = plugin.getUUIDCache().getNameOf(uuid);
-            if (name == null) {
-                name = yml.getString(uuid.toString() + ".name");
-            }
-            names.put(uuid, name);
+        yml.getKeys(false).forEach(key -> {
+            UUID uuid = UUID.fromString(key);
+            rewardsWaiting.put(uuid, yml.getInt(key + ".amount", 0));
         });
 
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -86,7 +74,7 @@ public class RewardGiver implements Listener {
         YamlConfiguration yml = new YamlConfiguration();
         rewardsWaiting.forEach((uuid, amount) -> {
             yml.set(uuid.toString() + ".amount", amount);
-            yml.set(uuid.toString() + ".name", names.get(uuid));
+            yml.set(uuid.toString() + ".name", ServerSaturday.instance().getUUIDCache().getNameOf(uuid));
         });
 
         try {

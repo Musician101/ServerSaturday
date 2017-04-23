@@ -86,7 +86,7 @@ public class Build implements ConfigurationSerializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.replace(".", "");
     }
 
     public String getResourcePack() {
