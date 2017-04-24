@@ -111,11 +111,11 @@ public abstract class AbstractCommand {
             if (submitter != null) {
                 return submitter;
             }
+        }
 
-            for (Submitter s : getSubmissions().getSubmitters()) {
-                if (s.getName().equalsIgnoreCase(playerName)) {
-                    return s;
-                }
+        for (Submitter s : getSubmissions().getSubmitters()) {
+            if (s.getName().equalsIgnoreCase(playerName)) {
+                return s;
             }
         }
 

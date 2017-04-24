@@ -41,11 +41,11 @@ public class UUIDCache implements Listener {
     }
 
     public void add(Player player) {
-        uuidMap.put(player.getUniqueId(), player.getName());
+        add(player.getUniqueId(), player.getName());
     }
 
     private void add(UUID uuid, String name) {
-        uuidMap.put(uuid, name);
+        uuidMap.forcePut(uuid, name);
     }
 
     public void addIfAbsent(UUID uuid, String name) {

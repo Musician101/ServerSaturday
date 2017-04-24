@@ -23,6 +23,7 @@ public class Submissions {
     }
 
     public Submitter getSubmitter(UUID uuid) {
+        submitters.putIfAbsent(uuid, Submitter.of(Bukkit.getPlayer(uuid)));
         return submitters.get(uuid);
     }
 
