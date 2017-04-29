@@ -1,6 +1,7 @@
 package com.campmongoose.serversaturday;
 
 import com.campmongoose.serversaturday.menu.RewardsMenu;
+import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ public class RewardGiver implements Listener {
 
     private final File file;
     private final Map<UUID, Integer> rewardsWaiting = new HashMap<>();
+    private final Map<UUID, String> names = new HashMap<>();
 
     public RewardGiver() {
         ServerSaturday plugin = ServerSaturday.instance();
@@ -38,6 +40,7 @@ public class RewardGiver implements Listener {
         yml.getKeys(false).forEach(key -> {
             UUID uuid = UUID.fromString(key);
             rewardsWaiting.put(uuid, yml.getInt(key + ".amount", 0));
+            names.put(uuid, yml.getString(key + ".name", "No Name"));
         });
 
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -73,8 +76,14 @@ public class RewardGiver implements Listener {
     public void save() {
         YamlConfiguration yml = new YamlConfiguration();
         rewardsWaiting.forEach((uuid, amount) -> {
-            yml.set(uuid.toString() + ".amount", amount);
-            yml.set(uuid.toString() + ".name", ServerSaturday.instance().getUUIDCache().getNameOf(uuid));
+            String uuidAsString = uuid.toString();
+            yml.set(uuidAsString + ".amount", amount);
+            try {
+                yml.set(uuidAsString + ".name", ServerSaturday.instance().getUUIDCache().getNameOf(uuid));
+            }
+            catch (UUIDCacheException e) {
+                yml.set(uuidAsString + ".name", names.get(uuid));
+            }
         });
 
         try {

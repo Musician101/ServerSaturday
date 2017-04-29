@@ -6,6 +6,7 @@ import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.submission.Submitter;
+import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -25,19 +26,25 @@ public class SSEdit extends AbstractCommand {
         }
 
         Player player = (Player) sender;
-        Submitter submitter = getSubmitter(player);
-        if (args.length > 0) {
-            String name = StringUtils.join(args, " ");
-            if (submitter.getBuild(name) == null) {
-                player.sendMessage(ChatColor.RED + Reference.PREFIX + "That build does not exist.");
-                return false;
+        try {
+            Submitter submitter = getSubmitter(player);
+            if (args.length > 0) {
+                String name = StringUtils.join(args, " ");
+                if (submitter.getBuild(name) == null) {
+                    player.sendMessage(ChatColor.RED + Reference.PREFIX + "That build does not exist.");
+                    return false;
+                }
+
+                submitter.getBuild(name).openMenu(submitter, player);
+                return true;
             }
 
-            submitter.getBuild(name).openMenu(submitter, player);
+            submitter.openMenu(1, player);
             return true;
         }
-
-        submitter.openMenu(1, player);
-        return true;
+        catch (UUIDCacheException e) {
+            player.sendMessage("An error occurred while trying to complete this action.");
+            return false;
+        }
     }
 }

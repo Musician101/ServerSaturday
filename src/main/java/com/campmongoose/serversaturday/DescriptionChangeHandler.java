@@ -2,6 +2,7 @@ package com.campmongoose.serversaturday;
 
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
+import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -117,9 +118,16 @@ public class DescriptionChangeHandler implements Listener {
             return;
         }
 
-        Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(uuid);
-        submitter.updateBuildDescription(build, event.getNewBookMeta().getPages());
-        build.openMenu(submitter, player);
+        Submitter submitter;
+        try {
+            submitter = ServerSaturday.instance().getSubmissions().getSubmitter(uuid);
+            submitter.updateBuildDescription(build, event.getNewBookMeta().getPages());
+            build.openMenu(submitter, player);
+        }
+        catch (UUIDCacheException e) {
+            player.sendMessage("An error occurred while trying to complete this action.");
+        }
+
         remove(player);
     }
 

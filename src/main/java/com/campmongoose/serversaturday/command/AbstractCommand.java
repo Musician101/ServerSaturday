@@ -4,6 +4,8 @@ import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Submissions;
 import com.campmongoose.serversaturday.submission.Submitter;
+import com.campmongoose.serversaturday.util.UUIDCache;
+import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -94,18 +96,24 @@ public abstract class AbstractCommand {
         return subCommands;
     }
 
-    protected Submissions getSubmissions() {
+    @Nonnull
+    protected Submissions getSubmissions() throws UUIDCacheException {
         return getPluginInstance().getSubmissions();
     }
 
     @Nonnull
-    protected Submitter getSubmitter(Player player) {
+    protected Submitter getSubmitter(Player player) throws UUIDCacheException {
         return getSubmissions().getSubmitter(player.getUniqueId());
     }
 
+    @Nonnull
+    protected UUIDCache getUUIDCache() throws UUIDCacheException {
+        return getPluginInstance().getUUIDCache();
+    }
+
     @Nullable
-    protected Submitter getSubmitter(String playerName) {
-        UUID uuid = getPluginInstance().getUUIDCache().getUUIDOf(name);
+    protected Submitter getSubmitter(String playerName) throws UUIDCacheException {
+        UUID uuid = getUUIDCache().getUUIDOf(name);
         if (uuid != null) {
             Submitter submitter = getSubmitter(uuid);
             if (submitter != null) {
@@ -123,7 +131,7 @@ public abstract class AbstractCommand {
     }
 
     @Nullable
-    protected Submitter getSubmitter(UUID uuid) {
+    protected Submitter getSubmitter(UUID uuid) throws UUIDCacheException {
         return getSubmissions().getSubmitter(uuid);
     }
 
@@ -158,17 +166,18 @@ public abstract class AbstractCommand {
     public abstract boolean onCommand(CommandSender sender, String... args);
 
     private String parseUsage(List<CommandArgument> usageList) {
-        String usage = ChatColor.GRAY + usageList.get(0).format();
+        StringBuilder usage = new StringBuilder();
+        usage.append(ChatColor.GRAY).append(usageList.get(0).format());
         if (usageList.size() > 1) {
-            usage += " " + ChatColor.RESET + usageList.get(1).format();
+            usage.append(" ").append(ChatColor.RESET).append(usageList.get(1).format());
         }
 
         if (usageList.size() > 2) {
             for (int x = 2; x < usageList.size(); x++) {
-                usage += " " + ChatColor.GREEN + usageList.get(x).format();
+                usage.append(" ").append(ChatColor.GREEN).append(usageList.get(x).format());
             }
         }
 
-        return usage;
+        return usage.toString();
     }
 }

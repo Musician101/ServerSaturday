@@ -2,6 +2,7 @@ package com.campmongoose.serversaturday.submission;
 
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.menu.chest.SubmitterMenu;
+import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,8 +34,10 @@ public class Submitter {
 
     private Submitter(UUID uuid, ConfigurationSection cs) {
         this.uuid = uuid;
-        this.name = ServerSaturday.instance().getUUIDCache().getNameOf(uuid);
-        if (name == null) {
+        try {
+            this.name = ServerSaturday.instance().getUUIDCache().getNameOf(uuid);
+        }
+        catch (UUIDCacheException e) {
             name = cs.getString("name");
         }
 
@@ -115,8 +118,14 @@ public class Submitter {
         }
 
         YamlConfiguration yaml = new YamlConfiguration();
-        String name = ServerSaturday.instance().getUUIDCache().getNameOf(uuid);
-        yaml.set("name", name == null ? this.name : name);
+        String name;
+        try {
+            name = ServerSaturday.instance().getUUIDCache().getNameOf(uuid);
+        }
+        catch (UUIDCacheException e) {
+            name = this.name;
+        }
+        yaml.set("name", name);
 
         Map<String, Map<String, Object>> buildsMap = new HashMap<>();
         for (String buildName : builds.keySet()) {

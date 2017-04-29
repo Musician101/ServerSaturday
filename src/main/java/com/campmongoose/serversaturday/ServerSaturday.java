@@ -4,9 +4,11 @@ import com.campmongoose.serversaturday.command.sscommand.SSCommand;
 import com.campmongoose.serversaturday.menu.RewardsMenu;
 import com.campmongoose.serversaturday.submission.Submissions;
 import com.campmongoose.serversaturday.util.UUIDCache;
+import com.campmongoose.serversaturday.util.UUIDCacheException;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class ServerSaturday extends JavaPlugin {
 
@@ -14,9 +16,10 @@ public class ServerSaturday extends JavaPlugin {
     private RewardGiver rewardGiver;
     private Submissions submissions;
     private UUIDCache uuidCache;
+    private int uuidCacheTaskId = -1;
 
     public static ServerSaturday instance() {
-        return JavaPlugin.getPlugin(ServerSaturday.class);
+        return getPlugin(ServerSaturday.class);
     }
 
     public DescriptionChangeHandler getDescriptionChangeHandler() {
@@ -27,11 +30,19 @@ public class ServerSaturday extends JavaPlugin {
         return rewardGiver;
     }
 
-    public Submissions getSubmissions() {
+    public Submissions getSubmissions() throws UUIDCacheException {
+        if (uuidCacheTaskId != -1) {
+            throw new UUIDCacheException("Local UUID Cache has not finished initialization.");
+        }
+
         return submissions;
     }
 
-    public UUIDCache getUUIDCache() {
+    public UUIDCache getUUIDCache() throws UUIDCacheException {
+        if (uuidCacheTaskId != -1) {
+            throw new UUIDCacheException("Local UUID Cache has not finished initialization.");
+        }
+
         return uuidCache;
     }
 
@@ -54,11 +65,19 @@ public class ServerSaturday extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        uuidCache = new UUIDCache();
+        uuidCacheTaskId = new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                uuidCache = new UUIDCache();
+                submissions = new Submissions();
+                submissions.getSubmitters().forEach(submitter -> uuidCache.addIfAbsent(submitter.getUUID(), submitter.getName()));
+                uuidCacheTaskId = -1;
+                getLogger().info("Local UUID Cache and Submitters loaded.");
+            }
+        }.runTaskAsynchronously(this).getTaskId();
         dch = new DescriptionChangeHandler();
         rewardGiver = new RewardGiver();
-        submissions = new Submissions();
-        submissions.getSubmitters().forEach(submitter -> uuidCache.addIfAbsent(submitter.getUUID(), submitter.getName()));
         RewardsMenu.loadRewards();
     }
 }

@@ -7,6 +7,7 @@ import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
+import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.Arrays;
 import net.minecraft.server.v1_11_R1.EntityPlayer;
 import net.minecraft.server.v1_11_R1.EnumHand;
@@ -37,30 +38,36 @@ public class SSViewDescription extends AbstractCommand {
         }
 
         Player player = (Player) sender;
-        Submitter submitter = getSubmitter(args[0]);
-        if (submitter == null) {
-            player.sendMessage(ChatColor.RED + Reference.PREFIX + "Could not find a player with that name.");
+        try {
+            Submitter submitter = getSubmitter(args[0]);
+            if (submitter == null) {
+                player.sendMessage(ChatColor.RED + Reference.PREFIX + "Could not find a player with that name.");
+                return false;
+            }
+
+            Build build = submitter.getBuild(StringUtils.join(moveArguments(args), " "));
+            if (build == null) {
+                player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
+                return false;
+            }
+
+            EntityPlayer ep = ((CraftPlayer) player).getHandle();
+            ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+            BookMeta bookMeta = (BookMeta) book.getItemMeta();
+            bookMeta.setAuthor(submitter.getName());
+            bookMeta.setPages(build.getDescription());
+            bookMeta.setTitle(build.getName());
+            book.setItemMeta(bookMeta);
+
+            ItemStack old = player.getInventory().getItemInMainHand();
+            player.getInventory().setItemInMainHand(book);
+            ep.a(CraftItemStack.asNMSCopy(book), EnumHand.MAIN_HAND);
+            player.getInventory().setItemInMainHand(old);
             return false;
         }
-
-        Build build = submitter.getBuild(StringUtils.join(moveArguments(args), " "));
-        if (build == null) {
-            player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
+        catch (UUIDCacheException e) {
+            player.sendMessage("An error occurred while trying to complete this action.");
             return false;
         }
-
-        EntityPlayer ep = ((CraftPlayer) player).getHandle();
-        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        BookMeta bookMeta = (BookMeta) book.getItemMeta();
-        bookMeta.setAuthor(submitter.getName());
-        bookMeta.setPages(build.getDescription());
-        bookMeta.setTitle(build.getName());
-        book.setItemMeta(bookMeta);
-
-        ItemStack old = player.getInventory().getItemInMainHand();
-        player.getInventory().setItemInMainHand(book);
-        ep.a(CraftItemStack.asNMSCopy(book), EnumHand.MAIN_HAND);
-        player.getInventory().setItemInMainHand(old);
-        return false;
     }
 }

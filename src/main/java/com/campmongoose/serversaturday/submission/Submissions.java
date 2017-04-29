@@ -51,8 +51,6 @@ public class Submissions {
     }
 
     public void save() {
-        for (UUID uuid : submitters.keySet()) {
-            getSubmitter(uuid).save(new File(dir, uuid.toString() + ".yml"));
-        }
+        submitters.forEach((uuid, submitter) -> submitter.save(new File(dir, uuid.toString() + ".yml")));
     }
 }

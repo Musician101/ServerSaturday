@@ -3,6 +3,7 @@ package com.campmongoose.serversaturday.menu.anvil;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
+import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.UUID;
 import net.minecraft.server.v1_11_R1.ChatComponentText;
 import net.minecraft.server.v1_11_R1.EntityPlayer;
@@ -42,15 +43,20 @@ public class NameChangeMenu extends AnvilMenu {
                 }
 
                 String name = itemMeta.getDisplayName();
-                Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(player.getUniqueId());
-                if (submitter.getBuild(name) != null) {
-                    event.setWillClose(false);
-                    event.setWillDestroy(false);
-                    return;
-                }
+                try {
+                    Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(player.getUniqueId());
+                    if (submitter.getBuild(name) != null) {
+                        event.setWillClose(false);
+                        event.setWillDestroy(false);
+                        return;
+                    }
 
-                submitter.updateBuildName(build, name);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () -> build.openMenu(submitter, Bukkit.getPlayer(viewer)));
+                    submitter.updateBuildName(build, name);
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () -> build.openMenu(submitter, Bukkit.getPlayer(viewer)));
+                }
+                catch (UUIDCacheException e) {
+                    player.sendMessage("An error occurred while trying to complete this action.");
+                }
             }
             else {
                 event.setWillClose(false);

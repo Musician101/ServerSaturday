@@ -8,6 +8,7 @@ import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
+import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -38,14 +39,20 @@ public class SSDescription extends AbstractCommand {
         }
 
         String name = StringUtils.join(args, " ");
-        Submitter submitter = getSubmitter(player);
-        if (submitter.getBuild(name) == null) {
-            player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
+        try {
+            Submitter submitter = getSubmitter(player);
+            if (submitter.getBuild(name) == null) {
+                player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
+                return false;
+            }
+
+            Build build = submitter.getBuild(name);
+            dch.add(player, build);
+            return true;
+        }
+        catch (UUIDCacheException e) {
+            player.sendMessage("An error occurred while trying to complete this action.");
             return false;
         }
-
-        Build build = submitter.getBuild(name);
-        dch.add(player, build);
-        return true;
     }
 }

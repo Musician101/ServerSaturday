@@ -5,12 +5,11 @@ import com.campmongoose.serversaturday.Reference.Commands;
 import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
+import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.Arrays;
 import java.util.UUID;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class SSGiveReward extends AbstractCommand {
 
@@ -28,14 +27,13 @@ public class SSGiveReward extends AbstractCommand {
             return false;
         }
 
-        String name = args[0];
-        Player player = Bukkit.getPlayer(name);
         UUID uuid;
-        if (player != null) {
-            uuid = player.getUniqueId();
+        try {
+            uuid = getUUIDCache().getUUIDOf(args[0]);
         }
-        else {
-            uuid = getPluginInstance().getUUIDCache().getUUIDOf(args[0]);
+        catch (UUIDCacheException e) {
+            sender.sendMessage("An error occurred while trying to complete this action.");
+            return false;
         }
 
         getPluginInstance().getRewardGiver().addReward(uuid);

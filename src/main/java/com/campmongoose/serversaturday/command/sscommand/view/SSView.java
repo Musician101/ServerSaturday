@@ -8,6 +8,7 @@ import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submissions;
 import com.campmongoose.serversaturday.submission.Submitter;
+import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -27,29 +28,35 @@ public class SSView extends AbstractCommand {
         }
 
         Player player = (Player) sender;
-        Submissions submissions = getSubmissions();
-        if (args.length > 0) {
-            Submitter submitter = getSubmitter(args[0]);
-            if (submitter == null) {
-                player.sendMessage(ChatColor.RED + Reference.PREFIX + "Could not find a player with that name.");
-                return false;
-            }
-
-            if (args.length > 1) {
-                Build build = submitter.getBuild(StringUtils.join(moveArguments(args), " "));
-                if (build == null) {
-                    player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
+        try {
+            Submissions submissions = getSubmissions();
+            if (args.length > 0) {
+                Submitter submitter = getSubmitter(args[0]);
+                if (submitter == null) {
+                    player.sendMessage(ChatColor.RED + Reference.PREFIX + "Could not find a player with that name.");
                     return false;
                 }
 
-                build.openMenu(submitter, player);
-                return true;
-            }
+                if (args.length > 1) {
+                    Build build = submitter.getBuild(StringUtils.join(moveArguments(args), " "));
+                    if (build == null) {
+                        player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
+                        return false;
+                    }
 
-            submitter.openMenu(1, player);
+                    build.openMenu(submitter, player);
+                    return true;
+                }
+
+                submitter.openMenu(1, player);
+            }
+            else {
+                submissions.openMenu(1, player);
+            }
         }
-        else {
-            submissions.openMenu(1, player);
+        catch (UUIDCacheException e) {
+            player.sendMessage("An error occurred while trying to complete this action.");
+            return false;
         }
 
         return true;

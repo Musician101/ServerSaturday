@@ -3,6 +3,7 @@ package com.campmongoose.serversaturday.menu.chest;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
+import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,13 +27,19 @@ public class AllSubmissionsMenu extends ChestMenu {
             String submitterName;
             if (itemStack.getType() == Material.BOOK) {
                 submitterName = itemMeta.getLore().get(0);
-                Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(ServerSaturday.instance().getUUIDCache().getUUIDOf(submitterName));
-                if (submitter == null) {
-                    return;
-                }
+                try {
+                    Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(ServerSaturday.instance().getUUIDCache().getUUIDOf(submitterName));
+                    if (submitter == null) {
+                        return;
+                    }
 
-                if (slot < 45) {
-                    submitter.getBuild(itemName).openMenu(submitter, player);
+                    if (slot < 45) {
+                        submitter.getBuild(itemName).openMenu(submitter, player);
+                    }
+                }
+                catch (UUIDCacheException e) {
+                    player.sendMessage("An error occurred while trying to complete this action.");
+                    return;
                 }
             }
             else {
@@ -52,30 +59,37 @@ public class AllSubmissionsMenu extends ChestMenu {
 
         ItemStack[] itemStacks = new ItemStack[54];
         List<ItemStack> list = new ArrayList<>();
-        for (Submitter submitter : ServerSaturday.instance().getSubmissions().getSubmitters()) {
-            for (Build build : submitter.getBuilds()) {
-                ItemStack itemStack = new ItemStack(Material.BOOK);
-                ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.setDisplayName(build.getName());
-                itemMeta.setLore(Collections.singletonList(submitter.getName()));
-                if (build.submitted() && !build.featured()) {
-                    itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        try {
+            for (Submitter submitter : ServerSaturday.instance().getSubmissions().getSubmitters()) {
+                for (Build build : submitter.getBuilds()) {
+                    ItemStack itemStack = new ItemStack(Material.BOOK);
+                    ItemMeta itemMeta = itemStack.getItemMeta();
+                    itemMeta.setDisplayName(build.getName());
+                    itemMeta.setLore(Collections.singletonList(submitter.getName()));
+                    if (build.submitted() && !build.featured()) {
+                        itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+                        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    }
+
+                    itemStack.setItemMeta(itemMeta);
+                    list.add(itemStack);
                 }
-
-                itemStack.setItemMeta(itemMeta);
-                list.add(itemStack);
             }
+
+            for (int x = 0; x < 54; x++) {
+                int subListPosition = x + (page - 1) * 45;
+                if (x < 45 && list.size() > subListPosition) {
+                    itemStacks[x] = list.get(subListPosition);
+                }
+            }
+
+            inv.setContents(itemStacks);
+        }
+        catch (UUIDCacheException e) {
+            ServerSaturday.instance().getLogger().info("An error occurred while trying to complete this action.");
+            return;
         }
 
-        for (int x = 0; x < 54; x++) {
-            int subListPosition = x + (page - 1) * 45;
-            if (x < 45 && list.size() > subListPosition) {
-                itemStacks[x] = list.get(subListPosition);
-            }
-        }
-
-        inv.setContents(itemStacks);
         setOption(45, new ItemStack(Material.ARROW), "Page " + (page - 1));
         setOption(53, new ItemStack(Material.ARROW), "Page " + (page + 1));
     }
