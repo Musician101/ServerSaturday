@@ -49,7 +49,7 @@ public class ResourcePackChangeMenu extends AnvilMenu {
                     submitter.getBuild(build.getName()).openMenu(submitter, player);
                 }
                 catch (UUIDCacheException e) {
-                    player.sendMessage("An error occurred while trying to complete this action.");
+                    player.sendMessage(e.getMessage());
                 }
             }
             else {

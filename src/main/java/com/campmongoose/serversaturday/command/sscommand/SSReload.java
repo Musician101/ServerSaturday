@@ -30,7 +30,7 @@ public class SSReload extends AbstractCommand {
             return true;
         }
         catch (UUIDCacheException e) {
-            sender.sendMessage("An error occurred while trying to complete this action.");
+            sender.sendMessage(e.getMessage());
             return false;
         }
     }

@@ -55,7 +55,7 @@ public class NameChangeMenu extends AnvilMenu {
                     Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () -> build.openMenu(submitter, Bukkit.getPlayer(viewer)));
                 }
                 catch (UUIDCacheException e) {
-                    player.sendMessage("An error occurred while trying to complete this action.");
+                    player.sendMessage(e.getMessage());
                 }
             }
             else {

@@ -30,7 +30,7 @@ public class SubmitterMenu extends ChestMenu {
                     ServerSaturday.instance().getSubmissions().openMenu(1, player);
                 }
                 catch (UUIDCacheException e) {
-                    player.sendMessage("An error occurred while trying to complete this action.");
+                    player.sendMessage(e.getMessage());
                 }
             }
             else if (slot < 45) {

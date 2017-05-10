@@ -5,6 +5,7 @@ import com.campmongoose.serversaturday.menu.RewardsMenu;
 import com.campmongoose.serversaturday.submission.Submissions;
 import com.campmongoose.serversaturday.util.UUIDCache;
 import com.campmongoose.serversaturday.util.UUIDCacheException;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,7 +33,7 @@ public class ServerSaturday extends JavaPlugin {
 
     public Submissions getSubmissions() throws UUIDCacheException {
         if (uuidCacheTaskId != -1) {
-            throw new UUIDCacheException("Local UUID Cache has not finished initialization.");
+            throw new UUIDCacheException(ChatColor.RED + Reference.PREFIX + "Local UUID Cache has not finished initialization.");
         }
 
         return submissions;
@@ -40,7 +41,7 @@ public class ServerSaturday extends JavaPlugin {
 
     public UUIDCache getUUIDCache() throws UUIDCacheException {
         if (uuidCacheTaskId != -1) {
-            throw new UUIDCacheException("Local UUID Cache has not finished initialization.");
+            throw new UUIDCacheException(ChatColor.RED + Reference.PREFIX + "Local UUID Cache has not finished initialization.");
         }
 
         return uuidCache;

@@ -39,7 +39,7 @@ public class SubmissionsMenu extends ChestMenu {
                 }
             }
             catch (UUIDCacheException e) {
-                player.sendMessage("An error occurred while trying to complete this action.");
+                player.sendMessage(e.getMessage());
             }
 
             if (!name.equals(" ") && (slot < 46 || slot == 53 || (slot == 46 && page > 1))) {

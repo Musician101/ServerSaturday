@@ -32,7 +32,7 @@ public class SSGiveReward extends AbstractCommand {
             uuid = getUUIDCache().getUUIDOf(args[0]);
         }
         catch (UUIDCacheException e) {
-            sender.sendMessage("An error occurred while trying to complete this action.");
+            sender.sendMessage(e.getMessage());
             return false;
         }
 

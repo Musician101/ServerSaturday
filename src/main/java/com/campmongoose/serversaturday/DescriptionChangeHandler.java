@@ -125,7 +125,7 @@ public class DescriptionChangeHandler implements Listener {
             build.openMenu(submitter, player);
         }
         catch (UUIDCacheException e) {
-            player.sendMessage("An error occurred while trying to complete this action.");
+            player.sendMessage(e.getMessage());
         }
 
         remove(player);

@@ -53,7 +53,7 @@ public class SSFeature extends AbstractCommand {
                 return true;
             }
             catch (UUIDCacheException e) {
-                player.sendMessage("An error occurred while trying to complete this action.");
+                player.sendMessage(e.getMessage());
                 return false;
             }
         }
