@@ -64,7 +64,7 @@ public class UUIDCache implements Listener {
         HttpURLConnection connection = (HttpURLConnection) new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replace("-", "")).openConnection();
         connection.setRequestMethod("GET");
         JsonObject response = new Gson().fromJson(new InputStreamReader(connection.getInputStream()), JsonObject.class);
-        if (response != null) {
+        if (response != null && response.has("name")) {
             return response.get("name").getAsString();
         }
 
