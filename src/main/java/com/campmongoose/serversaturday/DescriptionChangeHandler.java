@@ -35,7 +35,14 @@ public class DescriptionChangeHandler implements Listener {
         UUID uuid = player.getUniqueId();
         builds.put(uuid, build);
         bookSlots.put(uuid, player.getInventory().getHeldItemSlot());
-        player.getInventory().setItemInMainHand(getBook(player, build));
+        ItemStack itemStack = new ItemStack(Material.BOOK_AND_QUILL);
+        BookMeta bookMeta = (BookMeta) itemStack.getItemMeta();
+        bookMeta.setAuthor(player.getName());
+        bookMeta.setDisplayName(build.getName());
+        bookMeta.setLore(Collections.singletonList("\\_o<"));
+        bookMeta.setPages(build.getDescription());
+        itemStack.setItemMeta(bookMeta);
+        player.getInventory().setItemInMainHand(itemStack);
     }
 
     private boolean check(Player player, ItemStack itemStack) {
@@ -103,17 +110,6 @@ public class DescriptionChangeHandler implements Listener {
 
             remove(player);
         }
-    }
-
-    private ItemStack getBook(Player player, Build build) {
-        ItemStack itemStack = new ItemStack(Material.BOOK_AND_QUILL);
-        BookMeta bookMeta = (BookMeta) itemStack.getItemMeta();
-        bookMeta.setAuthor(player.getName());
-        bookMeta.setDisplayName(build.getName());
-        bookMeta.setLore(Collections.singletonList("\\_o<"));
-        bookMeta.setPages(build.getDescription());
-        itemStack.setItemMeta(bookMeta);
-        return itemStack;
     }
 
     private void remove(Player player) {
