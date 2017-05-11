@@ -12,8 +12,10 @@ import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class SSDescription extends AbstractCommand {
 
@@ -32,6 +34,12 @@ public class SSDescription extends AbstractCommand {
         }
 
         Player player = (Player) sender;
+        ItemStack itemStack = player.getInventory().getItemInMainHand();
+        if (itemStack != null && itemStack.getType() != Material.AIR) {
+            player.sendMessage(ChatColor.RED + Reference.PREFIX + "You need an empty hand in order to run this command.");
+            return false;
+        }
+
         DescriptionChangeHandler dch = getPluginInstance().getDescriptionChangeHandler();
         if (dch.containsPlayer(player.getUniqueId())) {
             player.sendMessage(ChatColor.RED + Reference.PREFIX + "You're in the middle of editing another build.");
@@ -48,6 +56,8 @@ public class SSDescription extends AbstractCommand {
 
             Build build = submitter.getBuild(name);
             dch.add(player, build);
+            player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "Open the book to edit the description for your build.");
+            player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "If you change your mind, then just sign the book anyway.");
             return true;
         }
         catch (UUIDCacheException e) {
