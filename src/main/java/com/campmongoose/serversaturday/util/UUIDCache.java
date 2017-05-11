@@ -1,14 +1,14 @@
 package com.campmongoose.serversaturday.util;
 
 import com.campmongoose.serversaturday.ServerSaturday;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
@@ -20,8 +20,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class UUIDCache implements Listener {
 
-    private final Map<UUID, String> uuidMap = new HashMap<>();
-    private final Map<String, UUID> nameMap = new HashMap<>();
+    private final BiMap<UUID, String> uuidMap = HashBiMap.create();
 
     public UUIDCache() {
         Bukkit.getPluginManager().registerEvents(this, ServerSaturday.instance());
@@ -42,9 +41,6 @@ public class UUIDCache implements Listener {
 
     public void addIfAbsent(UUID uuid, String name) {
         uuidMap.putIfAbsent(uuid, name);
-        if (!nameMap.containsValue(uuid)) {
-            nameMap.put(name, uuid);
-        }
     }
 
     public void add(Player player) {
@@ -57,7 +53,6 @@ public class UUIDCache implements Listener {
 
     private void add(UUID uuid, String name) {
         uuidMap.put(uuid, name);
-        nameMap.put(name, uuid);
     }
 
     private String getCurrentName(UUID uuid) throws IOException {
@@ -78,7 +73,7 @@ public class UUIDCache implements Listener {
 
     @Nullable
     public UUID getUUIDOf(String name) {
-        return nameMap.get(name);
+        return uuidMap.inverse().get(name);
     }
 
     @EventHandler
