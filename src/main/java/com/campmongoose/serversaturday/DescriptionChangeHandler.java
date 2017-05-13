@@ -64,7 +64,7 @@ public class DescriptionChangeHandler implements Listener {
         Player player = event.getPlayer();
         PlayerInventory inv = player.getInventory();
         UUID uuid = player.getUniqueId();
-        int slot = bookSlots.get(uuid);
+        int slot = bookSlots.getOrDefault(uuid, 0);
         if (check(player, inv.getItem(slot))) {
             inv.setItem(slot, null);
             remove(player);
