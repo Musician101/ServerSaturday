@@ -2,6 +2,7 @@ package com.campmongoose.serversaturday.submission;
 
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.menu.chest.SubmitterMenu;
+import com.campmongoose.serversaturday.util.UUIDCache;
 import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +36,11 @@ public class Submitter {
     private Submitter(UUID uuid, ConfigurationSection cs) {
         this.uuid = uuid;
         try {
-            this.name = ServerSaturday.instance().getUUIDCache().getNameOf(uuid);
+            UUIDCache uuidCache = ServerSaturday.instance().getUUIDCache();
+            this.name = uuidCache.getNameOf(uuid);
+            if (name == null) {
+                this.name = cs.getString("name");
+            }
         }
         catch (UUIDCacheException e) {
             name = cs.getString("name");
