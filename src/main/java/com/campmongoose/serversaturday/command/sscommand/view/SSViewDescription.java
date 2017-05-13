@@ -6,6 +6,7 @@ import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.submission.Build;
+import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.Arrays;
@@ -65,7 +66,7 @@ public class SSViewDescription extends AbstractCommand {
             player.getInventory().setItemInMainHand(old);
             return false;
         }
-        catch (UUIDCacheException e) {
+        catch (SubmissionsNotLoadedException | UUIDCacheException e) {
             player.sendMessage(e.getMessage());
             return false;
         }

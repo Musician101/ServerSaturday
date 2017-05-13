@@ -2,8 +2,8 @@ package com.campmongoose.serversaturday.menu.anvil;
 
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
+import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
-import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.UUID;
 import net.minecraft.server.v1_11_R1.ChatComponentText;
 import net.minecraft.server.v1_11_R1.EntityPlayer;
@@ -48,7 +48,7 @@ public class ResourcePackChangeMenu extends AnvilMenu {
                     submitter.updateBuildResourcePack(build, name);
                     submitter.getBuild(build.getName()).openMenu(submitter, player);
                 }
-                catch (UUIDCacheException e) {
+                catch (SubmissionsNotLoadedException e) {
                     player.sendMessage(e.getMessage());
                 }
             }

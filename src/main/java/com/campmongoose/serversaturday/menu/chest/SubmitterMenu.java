@@ -2,8 +2,8 @@ package com.campmongoose.serversaturday.menu.chest;
 
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
+import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
-import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
@@ -29,7 +29,7 @@ public class SubmitterMenu extends ChestMenu {
                 try {
                     ServerSaturday.instance().getSubmissions().openMenu(1, player);
                 }
-                catch (UUIDCacheException e) {
+                catch (SubmissionsNotLoadedException e) {
                     player.sendMessage(e.getMessage());
                 }
             }

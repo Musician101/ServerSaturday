@@ -7,8 +7,8 @@ import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.menu.anvil.NameChangeMenu;
 import com.campmongoose.serversaturday.submission.Build;
+import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
-import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -44,7 +44,7 @@ public class SSRename extends AbstractCommand {
             new NameChangeMenu(build, player.getUniqueId()).open(player);
             return true;
         }
-        catch (UUIDCacheException e) {
+        catch (SubmissionsNotLoadedException e) {
             player.sendMessage(e.getMessage());
             return false;
         }

@@ -5,7 +5,7 @@ import com.campmongoose.serversaturday.Reference.Commands;
 import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.menu.RewardsMenu;
-import com.campmongoose.serversaturday.util.UUIDCacheException;
+import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import java.util.Arrays;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -29,7 +29,7 @@ public class SSReload extends AbstractCommand {
             sender.sendMessage(ChatColor.GOLD + Reference.PREFIX + "Submissions and rewards reloaded. Check console for errors.");
             return true;
         }
-        catch (UUIDCacheException e) {
+        catch (SubmissionsNotLoadedException e) {
             sender.sendMessage(e.getMessage());
             return false;
         }

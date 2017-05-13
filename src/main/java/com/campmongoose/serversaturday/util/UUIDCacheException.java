@@ -1,12 +1,11 @@
 package com.campmongoose.serversaturday.util;
 
+import com.campmongoose.serversaturday.Reference;
+import org.bukkit.ChatColor;
+
 public class UUIDCacheException extends Exception {
 
     public UUIDCacheException() {
-        super();
-    }
-
-    public UUIDCacheException(String message) {
-        super(message);
+        super(ChatColor.RED + Reference.PREFIX + "Local UUID Cache has not finished initialization.");
     }
 }

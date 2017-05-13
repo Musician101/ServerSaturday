@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 
 public class Submissions {
 
+    private boolean hasLoaded = false;
     private final File dir;
     private final Map<UUID, Submitter> submitters = new HashMap<>();
 
@@ -33,6 +34,10 @@ public class Submissions {
         return list;
     }
 
+    public boolean hasLoaded() {
+        return hasLoaded;
+    }
+
     public void load() {
         dir.mkdirs();
         for (File file : dir.listFiles()) {
@@ -44,6 +49,8 @@ public class Submissions {
             UUID uuid = UUID.fromString(file.getName().replace(".yml", ""));
             submitters.put(uuid, Submitter.of(uuid, yaml));
         }
+
+        hasLoaded = true;
     }
 
     public void openMenu(int page, Player player) {

@@ -5,8 +5,8 @@ import com.campmongoose.serversaturday.Reference.Commands;
 import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
+import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
-import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -41,7 +41,7 @@ public class SSNew extends AbstractCommand {
             submitter.newBuild(name, player.getLocation()).openMenu(submitter, player);
             return true;
         }
-        catch (UUIDCacheException e) {
+        catch (SubmissionsNotLoadedException e) {
             player.sendMessage(e.getMessage());
             return false;
         }

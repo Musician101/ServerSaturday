@@ -2,6 +2,7 @@ package com.campmongoose.serversaturday.menu.chest;
 
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
+import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class AllSubmissionsMenu extends ChestMenu {
                         submitter.getBuild(itemName).openMenu(submitter, player);
                     }
                 }
-                catch (UUIDCacheException e) {
+                catch (SubmissionsNotLoadedException | UUIDCacheException e) {
                     player.sendMessage(e.getMessage());
                     return;
                 }
@@ -85,7 +86,7 @@ public class AllSubmissionsMenu extends ChestMenu {
 
             inv.setContents(itemStacks);
         }
-        catch (UUIDCacheException e) {
+        catch (SubmissionsNotLoadedException e) {
             ServerSaturday.instance().getLogger().info("An error occurred while trying to complete this action.");
             return;
         }

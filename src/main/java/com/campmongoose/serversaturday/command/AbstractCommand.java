@@ -3,6 +3,7 @@ package com.campmongoose.serversaturday.command;
 import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Submissions;
+import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.campmongoose.serversaturday.util.UUIDCache;
 import com.campmongoose.serversaturday.util.UUIDCacheException;
@@ -97,12 +98,12 @@ public abstract class AbstractCommand {
     }
 
     @Nonnull
-    protected Submissions getSubmissions() throws UUIDCacheException {
+    protected Submissions getSubmissions() throws SubmissionsNotLoadedException {
         return getPluginInstance().getSubmissions();
     }
 
     @Nonnull
-    protected Submitter getSubmitter(Player player) throws UUIDCacheException {
+    protected Submitter getSubmitter(Player player) throws SubmissionsNotLoadedException {
         return getSubmissions().getSubmitter(player.getUniqueId());
     }
 
@@ -112,7 +113,7 @@ public abstract class AbstractCommand {
     }
 
     @Nullable
-    protected Submitter getSubmitter(String playerName) throws UUIDCacheException {
+    protected Submitter getSubmitter(String playerName) throws SubmissionsNotLoadedException, UUIDCacheException {
         UUID uuid = getUUIDCache().getUUIDOf(name);
         if (uuid != null) {
             Submitter submitter = getSubmitter(uuid);
@@ -131,7 +132,7 @@ public abstract class AbstractCommand {
     }
 
     @Nullable
-    protected Submitter getSubmitter(UUID uuid) throws UUIDCacheException {
+    protected Submitter getSubmitter(UUID uuid) throws SubmissionsNotLoadedException {
         return getSubmissions().getSubmitter(uuid);
     }
 

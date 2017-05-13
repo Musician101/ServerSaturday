@@ -3,9 +3,9 @@ package com.campmongoose.serversaturday;
 import com.campmongoose.serversaturday.command.sscommand.SSCommand;
 import com.campmongoose.serversaturday.menu.RewardsMenu;
 import com.campmongoose.serversaturday.submission.Submissions;
+import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.util.UUIDCache;
 import com.campmongoose.serversaturday.util.UUIDCacheException;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,9 +31,9 @@ public class ServerSaturday extends JavaPlugin {
         return rewardGiver;
     }
 
-    public Submissions getSubmissions() throws UUIDCacheException {
-        if (uuidCacheTaskId != -1) {
-            throw new UUIDCacheException(ChatColor.RED + Reference.PREFIX + "Local UUID Cache has not finished initialization.");
+    public Submissions getSubmissions() throws SubmissionsNotLoadedException {
+        if (submissions == null || !submissions.hasLoaded()) {
+            throw new SubmissionsNotLoadedException();
         }
 
         return submissions;
@@ -41,7 +41,7 @@ public class ServerSaturday extends JavaPlugin {
 
     public UUIDCache getUUIDCache() throws UUIDCacheException {
         if (uuidCacheTaskId != -1) {
-            throw new UUIDCacheException(ChatColor.RED + Reference.PREFIX + "Local UUID Cache has not finished initialization.");
+            throw new UUIDCacheException();
         }
 
         return uuidCache;
@@ -71,10 +71,11 @@ public class ServerSaturday extends JavaPlugin {
             @Override
             public void run() {
                 uuidCache = new UUIDCache();
+                getLogger().info("Local UUID cache loaded.");
+                uuidCacheTaskId = -1;
                 submissions = new Submissions();
                 submissions.getSubmitters().forEach(submitter -> uuidCache.addIfAbsent(submitter.getUUID(), submitter.getName()));
-                uuidCacheTaskId = -1;
-                getLogger().info("Local UUID Cache and Submitters loaded.");
+                getLogger().info("Submissions loaded.");
             }
         }.runTaskAsynchronously(this).getTaskId();
         dch = new DescriptionChangeHandler();

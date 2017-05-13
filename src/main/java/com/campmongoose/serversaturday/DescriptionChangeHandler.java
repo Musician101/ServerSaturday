@@ -1,7 +1,7 @@
 package com.campmongoose.serversaturday;
 
 import com.campmongoose.serversaturday.submission.Build;
-import com.campmongoose.serversaturday.util.UUIDCacheException;
+import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -104,7 +104,7 @@ public class DescriptionChangeHandler implements Listener {
                 build.openMenu(ServerSaturday.instance().getSubmissions().getSubmitter(uuid), player);
                 player.sendMessage(ChatColor.GOLD + Reference.PREFIX + build.getName() + "'s description has been updated.");
             }
-            catch (UUIDCacheException e) {
+            catch (SubmissionsNotLoadedException e) {
                 player.sendMessage(e.getMessage());
             }
 
