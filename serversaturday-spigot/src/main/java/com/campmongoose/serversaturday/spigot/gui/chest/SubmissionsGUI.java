@@ -1,6 +1,7 @@
 package com.campmongoose.serversaturday.spigot.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
+import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmissions;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
@@ -26,7 +27,14 @@ public class SubmissionsGUI extends AbstractSpigotPagedGUI {
 
     @Override
     protected void build() {
-        SpigotSubmissions submissions = SpigotServerSaturday.instance().getSubmissions();
+        SpigotSubmissions submissions;
+        try {
+            submissions = SpigotServerSaturday.instance().getSubmissions();
+        }
+        catch (SubmissionsNotLoadedException e) {
+            player.sendMessage(ChatColor.RED + e.getMessage());
+            return;
+        }
         List<SpigotSubmitter> spigotSubmitters = submissions.getSubmitters();
         List<ItemStack> list = spigotSubmitters.stream().map(SpigotSubmitter::getMenuRepresentation).collect(Collectors.toList());
         setContents(list, (player, itemStack) -> p -> {

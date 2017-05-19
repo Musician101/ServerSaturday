@@ -3,21 +3,20 @@ package com.campmongoose.serversaturday.spigot.gui.chest;
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
-import com.campmongoose.serversaturday.spigot.SpigotDescriptionChangeHandler;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
-import com.campmongoose.serversaturday.spigot.gui.anvil.NameChangeMenu;
-import com.campmongoose.serversaturday.spigot.gui.anvil.ResourcePackChangeMenu;
+import com.campmongoose.serversaturday.spigot.gui.anvil.SSAnvilGUI;
+import com.campmongoose.serversaturday.spigot.gui.book.BookGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.server.v1_10_R1.EnumHand;
+import net.minecraft.server.v1_11_R1.EnumHand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -25,6 +24,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+//TODO separate into EditBuildGUI and ViewBuildGUI
+@Deprecated
 public class BuildGUI extends AbstractSpigotChestGUI {
 
     private final SpigotBuild build;
@@ -45,7 +46,11 @@ public class BuildGUI extends AbstractSpigotChestGUI {
         Location location = build.getLocation();
         if (player.getUniqueId().equals(submitter.getUUID())) {
             set(0, createItem(Material.PAPER, MenuText.RENAME_NAME, MenuText.RENAME_DESC),
-                    player -> new NameChangeMenu(build, submitter, player, prevMenu));
+                    player -> new SSAnvilGUI(player, (p, s) -> {
+                        build.setName(s);
+                        open();
+                        return null;
+                    }));
             set(1, createItem(Material.COMPASS, MenuText.CHANGE_LOCATION_NAME, MenuText.CHANGE_LOCATION_DESC.toArray(new String[3])),
                     player -> {
                         build.setLocation(player.getLocation());
@@ -54,16 +59,23 @@ public class BuildGUI extends AbstractSpigotChestGUI {
                     });
             set(2, createItem(Material.BOOK, MenuText.CHANGE_DESCRIPTION_NAME, MenuText.CHANGE_DESCRIPTION_DESC),
                     player -> {
-                        SpigotDescriptionChangeHandler sdch = SpigotServerSaturday.instance().getDescriptionChangeHandler();
-                        if (sdch.containsPlayer(player.getUniqueId())) {
+                        if (BookGUI.isEditing(player)) {
                             player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
                             return;
                         }
 
-                        sdch.add(player, build);
+                        player.closeInventory();
+                        new BookGUI(player, build, pages -> {
+                            build.setDescription(pages);
+                            player.sendMessage(ChatColor.GOLD + Messages.PREFIX + build.getName() + "'s description has been updated.");
+                            open();
+                        });
                     });
             set(3, createItem(Material.PAINTING, MenuText.CHANGE_RESOURCE_PACK_NAME, MenuText.CHANGE_RESOURCE_PACK_DESC.toArray(new String[2])),
-                    player -> new ResourcePackChangeMenu(build, submitter, player, prevMenu));
+                    player -> new BookGUI(player, build, pages -> {
+                        build.setResourcePack(pages);
+                        new BuildGUI(build, submitter, player, prevMenu);
+                    }));
 
             ItemStack submit = createItem(Material.FLINT_AND_STEEL, MenuText.SUBMIT_UNREADY_NAME, MenuText.SUBMIT_UNREADY_DESC.toArray(new String[2]));
             if (build.submitted()) {
@@ -75,7 +87,7 @@ public class BuildGUI extends AbstractSpigotChestGUI {
 
             set(4, submit, player -> {
                 build.setSubmitted(!build.submitted());
-                new BuildGUI(build, submitter, player, prevMenu);
+                open();
             });
             setTeleportButton(5, location);
             set(6, createItem(Material.BARRIER, MenuText.DELETE_NAME, MenuText.DELETE_DESC.toArray(new String[2])),
@@ -103,7 +115,7 @@ public class BuildGUI extends AbstractSpigotChestGUI {
                         ((CraftPlayer) player).getHandle().a(CraftItemStack.asNMSCopy(book), EnumHand.MAIN_HAND);
                         player.getInventory().setItemInMainHand(old);
                     });
-            set(2, createItem(Material.PAINTING, MenuText.RESOURCE_PACK_NAME, build.getResourcePack()));
+            set(2, createItem(Material.PAINTING, MenuText.RESOURCE_PACK_NAME, build.getResourcePack().toArray(new String[0])));
             setFeatureButton(3);
         }
 
@@ -119,7 +131,7 @@ public class BuildGUI extends AbstractSpigotChestGUI {
 
             set(slot, featured, player -> {
                 build.setFeatured(!build.featured());
-                new BuildGUI(build, submitter, player, prevMenu);
+                open();
             });
         }
     }

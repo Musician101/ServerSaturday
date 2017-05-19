@@ -17,14 +17,22 @@ commands:
     aliases: [ssfeature, ssf]
     description: Toggle if a build has been featured.
     permission: ss.feature
-  serversaturdaylocation:
-    aliases: [sslocation, ssl]
-    description: Change the location of a build.
-    permission: ss.submit
+  serversaturdaygetreward:
+      aliases: [ssgetreward, ssgetr]
+      description: Receive any rewards that are currently waiting.
+      permission: ss.submit
+  serversaturdaygivereward:
+    aliases: [ssgivereward, ssgr]
+    description: Give a player a reward.
+    permission: ss.feature
   serversaturdaygoto:
     aliases: [ssgoto, ssg]
     description: Teleport to a build.
     permission: ss.view.goto
+  serversaturdaylocation:
+    aliases: [sslocation, ssl]
+    description: Change the location of a build.
+    permission: ss.submit
   serversaturdaynew:
     aliases: [ssnew, ssn]
     description: Register a new build.
@@ -57,6 +65,10 @@ commands:
     aliases: [ssviewdescription, ssvd]
     description: View the description of a build.
     permission: ss.view
+  serversaturdayviewresourcepack:
+      aliases: [ssviewresourcepack, ssvrp]
+      description: View the build's recommended resource pack.
+      permission: ss.view
 
 permissions:
   ss.*:

@@ -53,10 +53,4 @@ public abstract class AbstractSubmitter<B extends AbstractBuild, I, L> {
     }
 
     public abstract void save(@Nonnull File file);
-
-    public abstract void updateBuildDescription(@Nonnull B build, @Nonnull List<String> description);
-
-    public abstract void updateBuildName(@Nonnull B build, @Nonnull String newName);
-
-    public abstract void updateBuildResourcePack(@Nonnull B build, @Nonnull String resourcePack);
 }

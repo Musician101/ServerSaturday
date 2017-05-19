@@ -1,5 +1,6 @@
 package com.campmongoose.serversaturday.common.submission;
 
+import com.campmongoose.serversaturday.common.Reference.Config;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ public abstract class AbstractBuild<I, L, S extends AbstractSubmitter> {
     @Nonnull
     protected String name;
     @Nonnull
-    protected String resourcePack = "Vanilla";
+    protected List<String> resourcePack = Collections.singletonList(Config.VANILLA);
     protected boolean submitted = false;
 
     public AbstractBuild(@Nonnull String name) {
@@ -61,11 +62,11 @@ public abstract class AbstractBuild<I, L, S extends AbstractSubmitter> {
     }
 
     @Nonnull
-    public String getResourcePack() {
+    public List<String> getResourcePack() {
         return resourcePack;
     }
 
-    public void setResourcePack(@Nonnull String resourcePack) {
+    public void setResourcePack(@Nonnull List<String> resourcePack) {
         this.resourcePack = resourcePack;
     }
 

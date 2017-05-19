@@ -1,10 +1,16 @@
 package com.campmongoose.serversaturday.spigot.command;
 
 import com.campmongoose.serversaturday.common.command.AbstractCommand;
+import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
+import com.campmongoose.serversaturday.common.uuid.MojangAPIException;
+import com.campmongoose.serversaturday.common.uuid.PlayerNotFoundException;
+import com.campmongoose.serversaturday.common.uuid.UUIDCache;
+import com.campmongoose.serversaturday.common.uuid.UUIDCacheException;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmissions;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,19 +69,19 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
 
     @Nonnull
     @Override
-    protected SpigotSubmissions getSubmissions() {
+    protected SpigotSubmissions getSubmissions() throws SubmissionsNotLoadedException {
         return getPluginInstance().getSubmissions();
     }
 
     @Nonnull
     @Override
-    protected SpigotSubmitter getSubmitter(@Nonnull Player player) {
+    protected SpigotSubmitter getSubmitter(@Nonnull Player player) throws SubmissionsNotLoadedException {
         return getSubmissions().getSubmitter(player);
     }
 
     @Nullable
     @Override
-    protected SpigotSubmitter getSubmitter(@Nonnull String playerName) {
+    protected SpigotSubmitter getSubmitter(@Nonnull String playerName) throws UUIDCacheException, MojangAPIException, IOException, PlayerNotFoundException, SubmissionsNotLoadedException {
         UUID uuid = getPluginInstance().getUUIDCache().getUUIDOf(playerName);
         if (uuid != null) {
             SpigotSubmitter submitter = getSubmitter(uuid);
@@ -94,7 +100,7 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
     }
 
     @Nullable
-    protected SpigotSubmitter getSubmitter(@Nonnull UUID uuid) {
+    protected SpigotSubmitter getSubmitter(@Nonnull UUID uuid) throws SubmissionsNotLoadedException {
         return getSubmissions().getSubmitter(uuid);
     }
 
@@ -110,6 +116,12 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
         }
 
         return list;
+    }
+
+    @Nonnull
+    @Override
+    protected UUIDCache getUUIDCache() throws UUIDCacheException {
+        return getPluginInstance().getUUIDCache();
     }
 
     @Override

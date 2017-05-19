@@ -45,7 +45,7 @@ public class JumpToPage extends SSAnvilGUI {
     }
 
     public JumpToPage(@Nonnull Player player, @Nullable AbstractSpigotChestGUI prevMenu, int maxPage, @Nonnull TriConsumer<Player, Integer, AbstractSpigotChestGUI> biConsumer) {
-        super(player, prevMenu, (p, name) -> {
+        super(player, (p, name) -> {
             int page;
             try {
                 page = Integer.parseInt(name);

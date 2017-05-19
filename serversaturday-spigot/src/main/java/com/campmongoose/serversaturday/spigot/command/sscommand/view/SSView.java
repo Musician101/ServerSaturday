@@ -4,6 +4,10 @@ import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.common.command.Syntax;
+import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
+import com.campmongoose.serversaturday.common.uuid.MojangAPIException;
+import com.campmongoose.serversaturday.common.uuid.PlayerNotFoundException;
+import com.campmongoose.serversaturday.common.uuid.UUIDCacheException;
 import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
@@ -13,6 +17,7 @@ import com.campmongoose.serversaturday.spigot.gui.chest.SubmissionsGUI;
 import com.campmongoose.serversaturday.spigot.gui.chest.SubmitterGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
+import java.io.IOException;
 import java.util.Arrays;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -27,7 +32,15 @@ public class SSView extends AbstractSpigotCommand {
         executor = (sender, args) -> {
             Player player = (Player) sender;
             if (!args.isEmpty()) {
-                SpigotSubmitter submitter = getSubmitter(args.get(0));
+                SpigotSubmitter submitter;
+                try {
+                    submitter = getSubmitter(args.get(0));
+                }
+                catch (UUIDCacheException | MojangAPIException | IOException | PlayerNotFoundException | SubmissionsNotLoadedException e) {
+                    player.sendMessage(e.getMessage());
+                    return false;
+                }
+
                 if (submitter == null) {
                     player.sendMessage(ChatColor.RED + Messages.PLAYER_NOT_FOUND);
                     return false;

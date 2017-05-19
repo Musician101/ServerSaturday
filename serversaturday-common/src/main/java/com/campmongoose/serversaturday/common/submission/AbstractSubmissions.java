@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 
 public abstract class AbstractSubmissions<P, S extends AbstractSubmitter> {
 
+    protected boolean hasLoaded = false;
     @Nonnull
     protected final File dir;
     protected final Map<UUID, S> submitters = new HashMap<>();
@@ -18,6 +19,10 @@ public abstract class AbstractSubmissions<P, S extends AbstractSubmitter> {
     protected AbstractSubmissions(@Nonnull File configDir) {
         this.dir = new File(configDir, "submitters");
         load();
+    }
+
+    public boolean hasLoaded() {
+        return hasLoaded;
     }
 
     @Nonnull
@@ -33,7 +38,9 @@ public abstract class AbstractSubmissions<P, S extends AbstractSubmitter> {
         return new ArrayList<>(submitters.values());
     }
 
-    protected abstract void load();
+    protected void load() {
+        hasLoaded = true;
+    }
 
     public abstract void save();
 }

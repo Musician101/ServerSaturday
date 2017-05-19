@@ -23,6 +23,8 @@ public class Reference {
 
     public static class Commands {
 
+        public static final String GET_REWARDS_NAME = "getrewards";
+        public static final String GET_REWARDS_DESC = "Receive any rewards that are currently waiting.";
         public static final String BUILD = "build";
         public static final String DESCRIPTION_DESC = "Change the description of a submission.";
         public static final String DESCRIPTION_NAME = "description";
@@ -54,6 +56,10 @@ public class Reference {
         public static final String VIEW_DESCRIPTION_DESC = "View the description of a build.";
         public static final String VIEW_DESCRIPTION_NAME = "viewdescription";
         public static final String VIEW_NAME = "view";
+        public static final String GIVE_REWARD_NAME = "givereward";
+        public static final String GIVE_REWARD_DESCRIPTION = "Give a player a reward.";
+        public static final String VIEW_RESOURCE_PACK_NAME = "viewresourcepack";
+        public static final String VIEW_RESOURCE_PACK_DESC = "View the build's recommended resource pack.";
 
         private Commands() {
 
@@ -120,6 +126,7 @@ public class Reference {
         public static final List<String> SUBMIT_UNREADY_DESC = Collections.unmodifiableList(Arrays.asList("Add or remove your build from", "the list of ready builds."));
         public static final String SUBMIT_UNREADY_NAME = "Submit/Unready";
         public static final String TELEPORT_NAME = "Teleport";
+        public static final String REWARDS = "S. S. Rewards";
 
         private MenuText() {
 
@@ -155,9 +162,17 @@ public class Reference {
         public static final String SUBMISSIONS_LOADED = "Submissions loaded.";
         public static final String SUBMISSIONS_SAVED = "Save complete.";
         public static final String UUIDS_REGISTERED = "UUID registration complete.";
+        public static final String REWARDS_GIVEN = PREFIX + "All rewards have been given to you.";
+        public static final String REWARDS_WAITING = PREFIX + "Hey, you! You have rewards waiting for you. Claim them with /ssgetrewards";
+        public static final String ERROR = PREFIX + "An error occurred while trying to complete this action.";
 
         private Messages() {
 
+        }
+
+        @Nonnull
+        public static String failedToSaveRewardsFile(@Nonnull File file) {
+            return PREFIX + ioException(file) + " Returning contents just in case.";
         }
 
         @Nonnull
@@ -181,8 +196,12 @@ public class Reference {
         }
 
         @Nonnull
-        public static String uuidRegistrationFailed(String name, UUID uuid) {
-            return "Could not retrieve up to date name for " + name + " (" + uuid.toString() + "). Defaulting to the last name they had on the server.";
+        public static String playerJoinAddFail(String name, UUID uuid) {
+            return "UUIDCache not initialized. Could not add " + name + " (" + uuid.toString() + ").";
+        }
+
+        public static <B extends AbstractBuild<I, L, S>, I, L, S extends AbstractSubmitter<B, I, L>> String descriptionUpdated(B build) {
+            return PREFIX + build.getName() + "'s description has been updated.";
         }
     }
 

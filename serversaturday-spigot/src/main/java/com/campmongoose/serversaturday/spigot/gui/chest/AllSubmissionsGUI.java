@@ -2,9 +2,15 @@ package com.campmongoose.serversaturday.spigot.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.Reference.Messages;
+import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
+import com.campmongoose.serversaturday.common.uuid.MojangAPIException;
+import com.campmongoose.serversaturday.common.uuid.PlayerNotFoundException;
+import com.campmongoose.serversaturday.common.uuid.UUIDCache;
+import com.campmongoose.serversaturday.common.uuid.UUIDCacheException;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmissions;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,17 +32,37 @@ public class AllSubmissionsGUI extends AbstractSpigotPagedGUI {
     @Override
     protected void build() {
         List<ItemStack> list = new ArrayList<>();
-        SpigotServerSaturday.instance().getSubmissions().getSubmitters().forEach(submitter ->
+        SpigotServerSaturday plugin = SpigotServerSaturday.instance();
+        SpigotSubmissions submissions;
+        UUIDCache uuidCache;
+        try {
+            submissions = plugin.getSubmissions();
+            uuidCache = plugin.getUUIDCache();
+        }
+        catch (SubmissionsNotLoadedException | UUIDCacheException e) {
+            player.closeInventory();
+            player.sendMessage(ChatColor.RED + e.getMessage());
+            return;
+        }
+
+        submissions.getSubmitters().forEach(submitter ->
                 list.addAll(submitter.getBuilds().stream().map(build ->
                         build.getMenuRepresentation(submitter)).collect(Collectors.toList())));
 
         setContents(list, (p, itemStack) ->
                 player -> {
                     String submitterName = itemStack.getItemMeta().getLore().get(0);
-                    SpigotServerSaturday plugin = SpigotServerSaturday.instance();
                     SpigotSubmitter submitter = null;
-                    SpigotSubmissions submissions = plugin.getSubmissions();
-                    UUID uuid = plugin.getUUIDCache().getUUIDOf(submitterName);
+                    UUID uuid;
+                    try {
+                        uuid = uuidCache.getUUIDOf(submitterName);
+                    }
+                    catch (IOException | MojangAPIException | PlayerNotFoundException e) {
+                        player.closeInventory();
+                        player.sendMessage(ChatColor.RED + e.getMessage());
+                        return;
+                    }
+
                     if (uuid != null) {
                         submitter = submissions.getSubmitter(uuid);
                     }

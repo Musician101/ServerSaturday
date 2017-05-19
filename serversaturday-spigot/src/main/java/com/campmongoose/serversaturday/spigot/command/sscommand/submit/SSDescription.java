@@ -4,11 +4,13 @@ import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.common.command.Syntax;
-import com.campmongoose.serversaturday.spigot.SpigotDescriptionChangeHandler;
+import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
+import com.campmongoose.serversaturday.spigot.gui.book.BookGUI;
+import com.campmongoose.serversaturday.spigot.gui.chest.BuildGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
@@ -24,21 +26,31 @@ public class SSDescription extends AbstractSpigotCommand {
         permissions = new SpigotCommandPermissions(Permissions.SUBMIT, true);
         executor = (sender, args) -> {
             Player player = (Player) sender;
-            SpigotDescriptionChangeHandler sdch = getPluginInstance().getDescriptionChangeHandler();
-            if (sdch.containsPlayer(player.getUniqueId())) {
+            if (BookGUI.isEditing(player)) {
                 player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
                 return false;
             }
 
             String name = StringUtils.join(args, " ");
-            SpigotSubmitter submitter = getSubmitter(player);
+            SpigotSubmitter submitter;
+            try {
+                submitter =  getSubmitter(player);
+            }
+            catch (SubmissionsNotLoadedException e) {
+                player.sendMessage(ChatColor.RED + Messages.ERROR);
+                return false;
+            }
+
             SpigotBuild build = submitter.getBuild(name);
             if (build == null) {
                 player.sendMessage(ChatColor.RED + Messages.BUILD_NOT_FOUND);
                 return false;
             }
 
-            sdch.add(player, build);
+            new BookGUI(player, build, pages -> {
+                build.setResourcePack(pages);
+                new BuildGUI(build, submitter, player, null);
+            });
             return true;
         };
     }

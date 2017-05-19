@@ -4,6 +4,7 @@ import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.submission.AbstractBuild;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import org.bukkit.Location;
@@ -21,7 +22,15 @@ public class SpigotBuild extends AbstractBuild<ItemStack, Location, SpigotSubmit
         this.featured = cs.getBoolean(Config.FEATURED);
         this.submitted = cs.getBoolean(Config.SUBMITTED);
         this.location = Location.deserialize(cs.getConfigurationSection(Config.LOCATION).getValues(true));
-        this.resourcePack = cs.getString(Config.RESOURCE_PACK, Config.VANILLA);
+        if (cs.contains(Config.RESOURCE_PACK)) {
+            if (cs.get(Config.RESOURCE_PACK) instanceof String) {
+                this.resourcePack = Collections.singletonList(Config.VANILLA);
+            }
+            else if (cs.get(Config.RESOURCE_PACK) instanceof List) {
+                this.resourcePack = cs.getStringList(Config.VANILLA);
+            }
+        }
+
         this.description = cs.getStringList(Config.DESCRIPTION);
     }
 

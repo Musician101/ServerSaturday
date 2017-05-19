@@ -5,6 +5,7 @@ import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.common.command.Syntax;
+import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
@@ -32,7 +33,15 @@ public class SSNew extends AbstractSpigotCommand {
                 return false;
             }
 
-            SpigotSubmitter submitter = getSubmitter(player);
+            SpigotSubmitter submitter;
+            try {
+                submitter = getSubmitter(player);
+            }
+            catch (SubmissionsNotLoadedException e) {
+                player.sendMessage(ChatColor.RED + e.getMessage());
+                return false;
+            }
+
             if (args.isEmpty()) {
                 new AnvilGUI(SpigotServerSaturday.instance(), player, MenuText.BUILD_DEFAULT_NAME, (p, name) -> {
                     if (submitter.getBuild(name) != null) {

@@ -3,11 +3,11 @@ package com.campmongoose.serversaturday.spigot.submission;
 import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.submission.AbstractSubmitter;
+import com.campmongoose.serversaturday.common.uuid.UUIDCacheException;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -29,14 +29,19 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
     }
 
     public SpigotSubmitter(@Nonnull UUID uuid, @Nonnull ConfigurationSection cs) {
-        super(getName(uuid), uuid);
+        super(getName(uuid, cs.getString(Config.NAME)), uuid);
         ConfigurationSection buildsCS = cs.getConfigurationSection(Config.BUILDS);
         buildsCS.getKeys(false).stream().filter(buildName ->
                 !buildName.contains(".")).forEach(buildName -> builds.put(buildName, new SpigotBuild(buildName, buildsCS.getConfigurationSection(buildName))));
     }
 
-    private static String getName(UUID uuid) {
-        return SpigotServerSaturday.instance().getUUIDCache().getNameOf(uuid);
+    private static String getName(UUID uuid, String name) {
+        try {
+            return SpigotServerSaturday.instance().getUUIDCache().getNameOf(uuid);
+        }
+        catch (UUIDCacheException e) {
+            return name;
+        }
     }
 
     @Nonnull
@@ -84,7 +89,13 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
         }
 
         YamlConfiguration yaml = new YamlConfiguration();
-        yaml.set(Config.NAME, plugin.getUUIDCache().getNameOf(uuid));
+        try {
+            yaml.set(Config.NAME, plugin.getUUIDCache().getNameOf(uuid));
+        }
+        catch (UUIDCacheException e) {
+            yaml.set(Config.NAME, name);
+        }
+
         Map<String, Map<String, Object>> buildsMap = new HashMap<>();
         builds.forEach((buildName, build) -> buildsMap.put(buildName, build.serialize()));
         yaml.set(Config.BUILDS, buildsMap);
@@ -94,26 +105,5 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
         catch (IOException e) {
             logger.severe(Messages.ioException(file));
         }
-    }
-
-    @Override
-    public void updateBuildDescription(@Nonnull SpigotBuild build, @Nonnull List<String> description) {
-        builds.remove(build.getName());
-        build.setDescription(description);
-        builds.put(build.getName(), build);
-    }
-
-    @Override
-    public void updateBuildName(@Nonnull SpigotBuild build, @Nonnull String newName) {
-        builds.remove(build.getName());
-        build.setName(newName);
-        builds.put(build.getName(), build);
-    }
-
-    @Override
-    public void updateBuildResourcePack(@Nonnull SpigotBuild build, @Nonnull String resourcePack) {
-        builds.remove(build.getName());
-        build.setResourcePack(resourcePack);
-        builds.put(build.getName(), build);
     }
 }
