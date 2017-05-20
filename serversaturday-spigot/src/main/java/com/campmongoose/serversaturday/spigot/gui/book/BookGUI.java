@@ -25,14 +25,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class BookGUI implements Listener {
 
     private final Player player;
-    private final SpigotBuild build;
     private final int bookSlot;
     private static final String LORE_IDENTIFIER = "\\_o<";
     private final Consumer<List<String>> consumer;
 
     public BookGUI(Player player, SpigotBuild build, Consumer<List<String>> consumer) {
         this.player = player;
-        this.build = build;
         this.bookSlot = player.getInventory().getHeldItemSlot();
         this.consumer = consumer;
         ItemStack itemStack = new ItemStack(Material.BOOK_AND_QUILL);
@@ -47,7 +45,7 @@ public class BookGUI implements Listener {
     }
 
     public static boolean isEditing(Player player) {
-        return Stream.of(player.getInventory().getContents()).filter(itemStack -> {
+        return !Stream.of(player.getInventory().getContents()).filter(itemStack -> {
             Material material = itemStack.getType();
             if (material == Material.BOOK_AND_QUILL || material == Material.WRITTEN_BOOK) {
                 if (itemStack.hasItemMeta()) {
@@ -58,7 +56,7 @@ public class BookGUI implements Listener {
                 }
             }
             return false;
-        }).collect(Collectors.toList()).size() > 1;
+        }).collect(Collectors.toList()).isEmpty();
     }
 
     protected boolean isEditing(Player player, ItemStack itemStack) {
