@@ -9,7 +9,7 @@ import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
-import com.campmongoose.serversaturday.spigot.gui.chest.BuildGUI;
+import com.campmongoose.serversaturday.spigot.gui.chest.build.EditBuildGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
@@ -47,7 +47,7 @@ public class SSLocation extends AbstractSpigotCommand {
             }
 
             build.setLocation(player.getLocation());
-            new BuildGUI(build, submitter, player, null);
+            new EditBuildGUI(build, submitter, player, null);
             player.sendMessage(ChatColor.GREEN + Messages.locationChanged(build));
             return true;
         };

@@ -1,10 +1,11 @@
-package com.campmongoose.serversaturday.sponge.gui.chest;
+package com.campmongoose.serversaturday.sponge.gui.chest.build;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.sponge.SpongeDescriptionChangeHandler;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
+import com.campmongoose.serversaturday.sponge.gui.chest.AbstractSpongeChestGUI;
 import com.campmongoose.serversaturday.sponge.gui.textinput.NameChangeTextInput;
 import com.campmongoose.serversaturday.sponge.gui.textinput.ResourcePackChangeTextInput;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;

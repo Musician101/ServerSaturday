@@ -2,6 +2,8 @@ package com.campmongoose.serversaturday.spigot.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.spigot.gui.anvil.page.SubmitterJumpToPage;
+import com.campmongoose.serversaturday.spigot.gui.chest.build.EditBuildGUI;
+import com.campmongoose.serversaturday.spigot.gui.chest.build.ViewBuildGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.List;
@@ -28,7 +30,13 @@ public class SubmitterGUI extends AbstractSpigotPagedGUI {
         setContents(list, (player, itemStack) -> p -> {
             for (SpigotBuild build : submitter.getBuilds()) {
                 if (build.getName().equals(itemStack.getItemMeta().getDisplayName())) {
-                    new BuildGUI(build, submitter, player, this);
+                    if (submitter.getUUID().equals(player.getUniqueId())) {
+                        new EditBuildGUI(build, submitter, player, this);
+                    }
+                    else {
+                        new ViewBuildGUI(build, submitter, player, this);
+                    }
+
                     return;
                 }
             }

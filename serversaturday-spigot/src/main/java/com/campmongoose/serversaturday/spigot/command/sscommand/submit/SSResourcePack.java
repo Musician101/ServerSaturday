@@ -10,7 +10,7 @@ import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
 import com.campmongoose.serversaturday.spigot.gui.book.BookGUI;
-import com.campmongoose.serversaturday.spigot.gui.chest.BuildGUI;
+import com.campmongoose.serversaturday.spigot.gui.chest.build.EditBuildGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
@@ -44,7 +44,7 @@ public class SSResourcePack extends AbstractSpigotCommand {
 
             new BookGUI(player, build, pages -> {
                 build.setResourcePack(pages);
-                new BuildGUI(build, submitter, player, null, true);
+                new EditBuildGUI(build, submitter, player, null);
             });
             return true;
         };

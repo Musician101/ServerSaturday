@@ -12,9 +12,10 @@ import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
-import com.campmongoose.serversaturday.spigot.gui.chest.BuildGUI;
 import com.campmongoose.serversaturday.spigot.gui.chest.SubmissionsGUI;
 import com.campmongoose.serversaturday.spigot.gui.chest.SubmitterGUI;
+import com.campmongoose.serversaturday.spigot.gui.chest.build.EditBuildGUI;
+import com.campmongoose.serversaturday.spigot.gui.chest.build.ViewBuildGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.io.IOException;
@@ -53,7 +54,13 @@ public class SSView extends AbstractSpigotCommand {
                         return false;
                     }
 
-                    new BuildGUI(build, submitter, player, null);
+                    if (submitter.getUUID().equals(player.getUniqueId())) {
+                        new EditBuildGUI(build, submitter, player, null);
+                    }
+                    else {
+                        new ViewBuildGUI(build, submitter, player, null);
+                    }
+
                     return true;
                 }
 
