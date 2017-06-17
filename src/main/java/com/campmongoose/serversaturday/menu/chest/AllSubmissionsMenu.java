@@ -4,7 +4,10 @@ import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
+import com.campmongoose.serversaturday.util.MojangAPIException;
+import com.campmongoose.serversaturday.util.PlayerNotFoundException;
 import com.campmongoose.serversaturday.util.UUIDCacheException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +41,7 @@ public class AllSubmissionsMenu extends ChestMenu {
                         submitter.getBuild(itemName).openMenu(submitter, player);
                     }
                 }
-                catch (SubmissionsNotLoadedException | UUIDCacheException e) {
+                catch (SubmissionsNotLoadedException | UUIDCacheException | PlayerNotFoundException | MojangAPIException | IOException e) {
                     player.sendMessage(e.getMessage());
                     return;
                 }

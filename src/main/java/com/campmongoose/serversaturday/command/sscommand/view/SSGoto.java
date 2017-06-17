@@ -8,7 +8,10 @@ import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
+import com.campmongoose.serversaturday.util.MojangAPIException;
+import com.campmongoose.serversaturday.util.PlayerNotFoundException;
 import com.campmongoose.serversaturday.util.UUIDCacheException;
+import java.io.IOException;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -49,7 +52,7 @@ public class SSGoto extends AbstractCommand {
             player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "You have teleported to " + build.getName());
             return true;
         }
-        catch (SubmissionsNotLoadedException | UUIDCacheException e) {
+        catch (SubmissionsNotLoadedException | UUIDCacheException | PlayerNotFoundException | MojangAPIException | IOException e) {
             player.sendMessage(e.getMessage());
             return false;
         }

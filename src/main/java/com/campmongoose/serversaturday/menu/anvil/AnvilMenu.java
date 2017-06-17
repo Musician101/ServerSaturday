@@ -9,24 +9,37 @@ import net.minecraft.server.v1_11_R1.EntityPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class AnvilMenu extends AbstractMenu<AnvilMenu> {
+public class AnvilMenu extends AbstractMenu {
 
     AnvilMenu(ClickHandler handler) {
         super(null, handler);
         Bukkit.getServer().getPluginManager().registerEvents(this, ServerSaturday.instance());
     }
 
+    @Override
+    protected <M extends AbstractMenu> void destroy(M menu) {
+        HandlerList.unregisterAll(menu);
+    }
+
     @EventHandler
     @Override
     public void onClick(InventoryClickEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
         if (!(event.getWhoClicked() instanceof Player)) {
             return;
         }
@@ -39,8 +52,12 @@ public class AnvilMenu extends AbstractMenu<AnvilMenu> {
             return;
         }
 
-        event.setCancelled(true);
         Player player = (Player) event.getWhoClicked();
+        if (!isSameInventory(event.getInventory(), player)) {
+            return;
+        }
+
+        event.setCancelled(true);
         float exp = player.getExp();
         int level = player.getLevel();
         ItemStack itemStack = event.getCurrentItem();
@@ -80,16 +97,27 @@ public class AnvilMenu extends AbstractMenu<AnvilMenu> {
         }
 
         Inventory inv = event.getInventory();
-        if (inv.equals(this.inv)) {
+        if (isSameInventory(inv, (Player) event.getPlayer())) {
             inv.clear();
             destroy(this);
         }
     }
 
     @EventHandler
+    public void onDrag(InventoryDragEvent event) {
+        event.setCancelled(isSameInventory(event.getInventory(), (Player) event.getWhoClicked()));
+    }
+
+    @EventHandler
     @Override
     public void onQuit(PlayerQuitEvent event) {
-        if (inv.equals(event.getPlayer().getOpenInventory().getTopInventory())) {
+        Player player = event.getPlayer();
+        InventoryView inv = player.getOpenInventory();
+        if (inv.getType() == InventoryType.CRAFTING) {
+            return;
+        }
+
+        if (isSameInventory(player.getOpenInventory().getTopInventory(), player)) {
             destroy(this);
         }
     }

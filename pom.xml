@@ -5,7 +5,7 @@
     <groupId>com.campmongoose</groupId>
     <artifactId>serversaturday</artifactId>
     <name>Server Saturday</name>
-    <version>1.3.2</version>
+    <version>1.3.3</version>
 
     <build>
         <resources>

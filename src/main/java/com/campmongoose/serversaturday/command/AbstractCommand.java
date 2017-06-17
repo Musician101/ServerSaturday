@@ -5,8 +5,11 @@ import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Submissions;
 import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
+import com.campmongoose.serversaturday.util.MojangAPIException;
+import com.campmongoose.serversaturday.util.PlayerNotFoundException;
 import com.campmongoose.serversaturday.util.UUIDCache;
 import com.campmongoose.serversaturday.util.UUIDCacheException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,20 +58,6 @@ public abstract class AbstractCommand {
         return true;
     }
 
-    @Deprecated
-    protected String combineStringArray(String[] stringArray) {
-        StringBuilder sb = new StringBuilder();
-        for (String part : stringArray) {
-            if (sb.length() > 0) {
-                sb.append(" ");
-            }
-
-            sb.append(part);
-        }
-
-        return sb.toString();
-    }
-
     String getCommandHelpInfo() {
         return getUsage() + " " + ChatColor.AQUA + getDescription();
     }
@@ -113,13 +102,11 @@ public abstract class AbstractCommand {
     }
 
     @Nullable
-    protected Submitter getSubmitter(String playerName) throws SubmissionsNotLoadedException, UUIDCacheException {
+    protected Submitter getSubmitter(String playerName) throws SubmissionsNotLoadedException, UUIDCacheException, MojangAPIException, IOException, PlayerNotFoundException {
         UUID uuid = getUUIDCache().getUUIDOf(name);
-        if (uuid != null) {
-            Submitter submitter = getSubmitter(uuid);
-            if (submitter != null) {
-                return submitter;
-            }
+        Submitter submitter = getSubmitter(uuid);
+        if (submitter != null) {
+            return submitter;
         }
 
         for (Submitter s : getSubmissions().getSubmitters()) {

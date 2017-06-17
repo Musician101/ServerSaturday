@@ -2,7 +2,8 @@ package com.campmongoose.serversaturday.submission;
 
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.menu.chest.SubmitterMenu;
-import com.campmongoose.serversaturday.util.UUIDCache;
+import com.campmongoose.serversaturday.util.MojangAPIException;
+import com.campmongoose.serversaturday.util.PlayerNotFoundException;
 import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.io.File;
 import java.io.IOException;
@@ -36,13 +37,9 @@ public class Submitter {
     private Submitter(UUID uuid, ConfigurationSection cs) {
         this.uuid = uuid;
         try {
-            UUIDCache uuidCache = ServerSaturday.instance().getUUIDCache();
-            this.name = uuidCache.getNameOf(uuid);
-            if (name == null) {
-                this.name = cs.getString("name");
-            }
+            this.name = ServerSaturday.instance().getUUIDCache().getNameOf(uuid);
         }
-        catch (UUIDCacheException e) {
+        catch (UUIDCacheException | IOException | PlayerNotFoundException | MojangAPIException e) {
             name = cs.getString("name");
         }
 
@@ -113,7 +110,6 @@ public class Submitter {
     public void save(File file) {
         if (!file.exists()) {
             try {
-                //noinspection ResultOfMethodCallIgnored
                 file.createNewFile();
             }
             catch (IOException e) {
@@ -127,9 +123,10 @@ public class Submitter {
         try {
             name = ServerSaturday.instance().getUUIDCache().getNameOf(uuid);
         }
-        catch (UUIDCacheException e) {
+        catch (UUIDCacheException | PlayerNotFoundException | MojangAPIException | IOException e) {
             name = this.name;
         }
+
         yaml.set("name", name);
 
         Map<String, Map<String, Object>> buildsMap = new HashMap<>();

@@ -1,6 +1,8 @@
 package com.campmongoose.serversaturday;
 
 import com.campmongoose.serversaturday.menu.RewardsMenu;
+import com.campmongoose.serversaturday.util.MojangAPIException;
+import com.campmongoose.serversaturday.util.PlayerNotFoundException;
 import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.io.File;
 import java.io.IOException;
@@ -81,7 +83,7 @@ public class RewardGiver implements Listener {
             try {
                 yml.set(uuidAsString + ".name", ServerSaturday.instance().getUUIDCache().getNameOf(uuid));
             }
-            catch (UUIDCacheException e) {
+            catch (UUIDCacheException | PlayerNotFoundException | MojangAPIException | IOException e) {
                 yml.set(uuidAsString + ".name", names.get(uuid));
             }
         });

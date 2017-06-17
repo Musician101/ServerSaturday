@@ -5,7 +5,10 @@ import com.campmongoose.serversaturday.Reference.Commands;
 import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
+import com.campmongoose.serversaturday.util.MojangAPIException;
+import com.campmongoose.serversaturday.util.PlayerNotFoundException;
 import com.campmongoose.serversaturday.util.UUIDCacheException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.UUID;
 import org.bukkit.ChatColor;
@@ -31,7 +34,7 @@ public class SSGiveReward extends AbstractCommand {
         try {
             uuid = getUUIDCache().getUUIDOf(args[0]);
         }
-        catch (UUIDCacheException e) {
+        catch (UUIDCacheException | PlayerNotFoundException | MojangAPIException | IOException e) {
             sender.sendMessage(e.getMessage());
             return false;
         }

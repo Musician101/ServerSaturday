@@ -10,4 +10,7 @@ public class PlayerNotFoundException extends Exception {
         super(ChatColor.RED + Reference.PREFIX + "Player with UUID " + uuid.toString() + " does not exist.");
     }
 
+    public PlayerNotFoundException(String name) {
+        super(ChatColor.RED + Reference.PREFIX + "Player with name " + name + " does not exist.");
+    }
 }

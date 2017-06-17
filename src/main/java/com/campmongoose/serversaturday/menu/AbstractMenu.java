@@ -3,17 +3,17 @@ package com.campmongoose.serversaturday.menu;
 import java.util.Arrays;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public abstract class AbstractMenu<Menu extends AbstractMenu> implements Listener {
+public abstract class AbstractMenu implements Listener {
 
     protected final ClickHandler handler;
     protected Inventory inv;
@@ -23,13 +23,19 @@ public abstract class AbstractMenu<Menu extends AbstractMenu> implements Listene
         this.handler = handler;
     }
 
-    protected <M extends AbstractMenu> void destroy(M menu) {
+    protected abstract <M extends AbstractMenu> void destroy(M menu); /*{
         HandlerList.unregisterAll(menu);
+    }*/
+
+    protected boolean isSameInventory(Inventory inventory, Player player) {
+        return inv.getName().equals(inventory.getName()) && inv.getViewers().contains(player);
     }
 
     public abstract void onClick(InventoryClickEvent event);
 
     public abstract void onClose(InventoryCloseEvent event);
+
+    public abstract void onDrag(InventoryDragEvent event);
 
     public abstract void onQuit(PlayerQuitEvent event);
 

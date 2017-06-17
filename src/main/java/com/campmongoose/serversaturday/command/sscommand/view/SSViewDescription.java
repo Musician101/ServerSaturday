@@ -8,7 +8,10 @@ import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
+import com.campmongoose.serversaturday.util.MojangAPIException;
+import com.campmongoose.serversaturday.util.PlayerNotFoundException;
 import com.campmongoose.serversaturday.util.UUIDCacheException;
+import java.io.IOException;
 import java.util.Arrays;
 import net.minecraft.server.v1_11_R1.EntityPlayer;
 import net.minecraft.server.v1_11_R1.EnumHand;
@@ -66,7 +69,7 @@ public class SSViewDescription extends AbstractCommand {
             player.getInventory().setItemInMainHand(old);
             return false;
         }
-        catch (SubmissionsNotLoadedException | UUIDCacheException e) {
+        catch (SubmissionsNotLoadedException | UUIDCacheException | PlayerNotFoundException | MojangAPIException | IOException e) {
             player.sendMessage(e.getMessage());
             return false;
         }

@@ -76,7 +76,9 @@ public class DescriptionChangeHandler implements Listener {
         if (event.getWhoClicked() instanceof Player) {
             Player player = (Player) event.getWhoClicked();
             ItemStack itemStack = event.getCurrentItem();
-            event.setCancelled(check(player, itemStack));
+            if (check(player, itemStack)) {
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -91,30 +93,33 @@ public class DescriptionChangeHandler implements Listener {
 
     @EventHandler
     public void editBook(PlayerEditBookEvent event) {
-        ItemStack itemStack = new ItemStack(Material.BOOK_AND_QUILL);
-        BookMeta meta = event.getNewBookMeta();
-        meta.setLore(event.getPreviousBookMeta().getLore());
-        itemStack.setItemMeta(meta);
-        if (check(event.getPlayer(), itemStack)) {
+        BookMeta oldMeta = event.getPreviousBookMeta();
+        if (oldMeta.hasLore() && oldMeta.getLore().contains("\\_o<")) {
+            ItemStack itemStack = new ItemStack(Material.BOOK_AND_QUILL);
+            BookMeta meta = event.getNewBookMeta();
+            meta.setLore(oldMeta.getLore());
+            itemStack.setItemMeta(meta);
             Player player = event.getPlayer();
-            UUID uuid = player.getUniqueId();
-            Build build = builds.get(uuid);
-            try {
-                build.setDescription(event.getNewBookMeta().getPages());
-                build.openMenu(ServerSaturday.instance().getSubmissions().getSubmitter(uuid), player);
-                player.sendMessage(ChatColor.GOLD + Reference.PREFIX + build.getName() + "'s description has been updated.");
-            }
-            catch (SubmissionsNotLoadedException e) {
-                player.sendMessage(e.getMessage());
-            }
+            if (check(player, itemStack)) {
+                UUID uuid = player.getUniqueId();
+                Build build = builds.get(uuid);
+                try {
+                    build.setDescription(meta.getPages());
+                    build.openMenu(ServerSaturday.instance().getSubmissions().getSubmitter(uuid), player);
+                    player.sendMessage(ChatColor.GOLD + Reference.PREFIX + build.getName() + "'s description has been updated.");
+                }
+                catch (SubmissionsNotLoadedException e) {
+                    player.sendMessage(e.getMessage());
+                }
 
-            remove(player);
+                remove(player);
+            }
         }
     }
 
     private void remove(Player player) {
         UUID uuid = player.getUniqueId();
-        player.getInventory().setItemInMainHand(null);
+        player.getInventory().setItem(bookSlots.getOrDefault(uuid, 0), null);
         builds.remove(uuid);
         bookSlots.remove(uuid);
     }
