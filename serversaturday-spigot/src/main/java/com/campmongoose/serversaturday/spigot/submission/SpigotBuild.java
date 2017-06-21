@@ -58,6 +58,7 @@ public class SpigotBuild extends AbstractBuild<ItemStack, Location, SpigotSubmit
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
+        map.put(Config.NAME, name);
         map.put(Config.FEATURED, featured);
         map.put(Config.SUBMITTED, submitted);
         map.put(Config.DESCRIPTION, description);

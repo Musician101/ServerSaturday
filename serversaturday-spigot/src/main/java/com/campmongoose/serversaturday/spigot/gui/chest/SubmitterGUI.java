@@ -7,7 +7,6 @@ import com.campmongoose.serversaturday.spigot.gui.chest.build.ViewBuildGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
@@ -26,23 +25,17 @@ public class SubmitterGUI extends AbstractSpigotPagedGUI {
 
     @Override
     protected void build() {
-        List<ItemStack> list = submitter.getBuilds().stream().map(build -> build.getMenuRepresentation(submitter)).collect(Collectors.toList());
-        setContents(list, (player, itemStack) -> p -> {
-            for (SpigotBuild build : submitter.getBuilds()) {
-                if (build.getName().equals(itemStack.getItemMeta().getDisplayName())) {
-                    if (submitter.getUUID().equals(player.getUniqueId())) {
-                        new EditBuildGUI(build, submitter, player, this);
-                    }
-                    else {
-                        new ViewBuildGUI(build, submitter, player, this);
-                    }
-
-                    return;
-                }
+        List<SpigotBuild> builds = submitter.getBuilds();
+        setContents(builds, build -> build.getMenuRepresentation(submitter), (player, build) -> p -> {
+            if (submitter.getUUID().equals(player.getUniqueId())) {
+                new EditBuildGUI(build, submitter, player, this);
+            }
+            else {
+                new ViewBuildGUI(build, submitter, player, this);
             }
         });
 
-        int maxPage = new Double(Math.ceil(list.size() / 45)).intValue();
+        int maxPage = new Double(Math.ceil(builds.size() / 45)).intValue();
         ItemStack jumpStack = createItem(Material.BOOK, MenuText.JUMP_PAGE);
         jumpStack.setAmount(page);
         set(45, jumpStack, player -> new SubmitterJumpToPage(player, this, maxPage, submitter));

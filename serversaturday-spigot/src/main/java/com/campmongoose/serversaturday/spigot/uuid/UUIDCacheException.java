@@ -1,4 +1,4 @@
-package com.campmongoose.serversaturday.common.uuid;
+package com.campmongoose.serversaturday.spigot.uuid;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
 

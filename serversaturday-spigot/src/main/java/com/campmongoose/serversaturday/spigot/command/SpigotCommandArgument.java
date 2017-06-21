@@ -1,6 +1,5 @@
 package com.campmongoose.serversaturday.spigot.command;
 
-import com.campmongoose.serversaturday.common.command.Syntax;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;

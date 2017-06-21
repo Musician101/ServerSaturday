@@ -1,9 +1,11 @@
 package com.campmongoose.serversaturday.sponge.command.submit;
 
-import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
+import com.campmongoose.serversaturday.common.command.SSCommandException;
 import com.campmongoose.serversaturday.sponge.command.AbstractSpongeCommand;
-import com.campmongoose.serversaturday.sponge.gui.textinput.NameChangeTextInput;
+import com.campmongoose.serversaturday.sponge.command.args.BuildCommandElement;
+import com.campmongoose.serversaturday.sponge.gui.anvil.AnvilGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.build.EditBuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import javax.annotation.Nonnull;
@@ -19,17 +21,23 @@ public class SSRename extends AbstractSpongeCommand {
     @Nonnull
     @Override
     public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments) {
-        return arguments.<String>getOne(Commands.BUILD).map(name -> {
+        return arguments.<SpongeBuild>getOne(BuildCommandElement.KEY).map(build -> {
             if (source instanceof Player) {
                 Player player = (Player) source;
-                SpongeSubmitter submitter = getSubmitter(player);
-                SpongeBuild build = submitter.getBuild(name);
-                if (build == null) {
-                    player.sendMessage(Text.builder(Messages.BUILD_ALREADY_EXISTS).color(TextColors.RED).build());
+                SpongeSubmitter submitter;
+                try {
+                    submitter = getSubmitter(player);
+                }
+                catch (SSCommandException e) {
+                    player.sendMessage(Text.builder(Messages.ERROR).color(TextColors.RED).build());
                     return CommandResult.empty();
                 }
 
-                new NameChangeTextInput(build, player, null);
+                new AnvilGUI(player, (ep, s) -> {
+                    build.setName(s);
+                    new EditBuildGUI(build, submitter, player, null);
+                    return null;
+                });
                 return CommandResult.success();
             }
 

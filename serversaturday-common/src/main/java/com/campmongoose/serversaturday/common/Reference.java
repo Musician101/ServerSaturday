@@ -141,6 +141,11 @@ public class Reference {
         public static List<String> teleportDesc(@Nonnull String name, int x, int y, int z) {
             return Arrays.asList("Click to teleport.", "- World: " + name, "- X: " + x, "- Y: " + y, "- Z: " + z);
         }
+
+        @Nonnull
+        public static String maxNumber(int max) {
+            return "Maximum input is " + max;
+        }
     }
 
     public static class Messages {
@@ -165,9 +170,15 @@ public class Reference {
         public static final String REWARDS_GIVEN = PREFIX + "All rewards have been given to you.";
         public static final String REWARDS_WAITING = PREFIX + "Hey, you! You have rewards waiting for you. Claim them with /ssgetrewards";
         public static final String ERROR = PREFIX + "An error occurred while trying to complete this action.";
+        public static final String HAND_NOT_EMPTY = PREFIX + "You need an empty in order to run this command.";
 
         private Messages() {
 
+        }
+
+        @Nonnull
+        public static String failedToReadFiles(@Nonnull File dir) {
+            return "An error occurred whilst attempting to read the files in " + dir.getName();
         }
 
         @Nonnull

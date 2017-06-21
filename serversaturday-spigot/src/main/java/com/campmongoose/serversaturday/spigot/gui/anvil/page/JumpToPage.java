@@ -32,19 +32,19 @@ public class JumpToPage extends SSAnvilGUI {
             }
 
             String messageStart;
-            if (prevMenu == null) {
+            if (m == null) {
                 messageStart = "A NULL menu";
             }
             else {
-                messageStart = prevMenu.getClass().getName();
+                messageStart = m.getClass().getName();
             }
 
             throw new UnsupportedOperationException(messageStart + " is not supported with this constructor. " +
-                    "Please use new JumpToPage(Player, AbstractSpigotChestGUI, TriConsumer)");
+                    "Please use new JumpToPage(Player, AbstractSpigotChestGUI, Integer, TriConsumer)");
         });
     }
 
-    public JumpToPage(@Nonnull Player player, @Nullable AbstractSpigotChestGUI prevMenu, int maxPage, @Nonnull TriConsumer<Player, Integer, AbstractSpigotChestGUI> biConsumer) {
+    public JumpToPage(@Nonnull Player player, @Nullable AbstractSpigotChestGUI prevMenu, int maxPage, @Nonnull TriConsumer<Player, Integer, AbstractSpigotChestGUI> triConsumer) {
         super(player, (p, name) -> {
             int page;
             try {
@@ -55,10 +55,10 @@ public class JumpToPage extends SSAnvilGUI {
             }
 
             if (page > maxPage) {
-                return Integer.toString(maxPage);
+                return MenuText.maxNumber(maxPage);
             }
 
-            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.instance(), () -> biConsumer.accept(player, page, prevMenu));
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.instance(), () -> triConsumer.accept(player, page, prevMenu));
             return null;
         });
     }

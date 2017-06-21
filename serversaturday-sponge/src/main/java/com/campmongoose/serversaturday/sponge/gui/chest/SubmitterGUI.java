@@ -1,14 +1,16 @@
 package com.campmongoose.serversaturday.sponge.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
+import com.campmongoose.serversaturday.sponge.gui.anvil.page.SubmitterJumpToPage;
+import com.campmongoose.serversaturday.sponge.gui.chest.build.EditBuildGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.build.ViewBuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.text.Text;
 
 public class SubmitterGUI extends AbstractSpongePagedGUI {
 
@@ -21,18 +23,20 @@ public class SubmitterGUI extends AbstractSpongePagedGUI {
 
     @Override
     protected void build() {
-        List<ItemStack> list = submitter.getBuilds().stream().map(build -> build.getMenuRepresentation(submitter)).collect(Collectors.toList());
-        setContents(list, (player, itemStack) -> p -> {
-            for (SpongeBuild build : submitter.getBuilds()) {
-                if (build.getName().equals(itemStack.get(Keys.DISPLAY_NAME).orElseThrow(IllegalArgumentException::new).toPlain())) {
-                    new BuildGUI(build, submitter, player, this);
-                    return;
-                }
+        List<SpongeBuild> list = submitter.getBuilds();
+        setContents(list, build -> build.getMenuRepresentation(submitter), build -> player -> {
+            if (player.getUniqueId().equals(this.player.getUniqueId())) {
+                new EditBuildGUI(build, submitter, player, this);
+            }
+            else {
+                new ViewBuildGUI(build, submitter, player, this);
             }
         });
 
         int maxPage = new Double(Math.ceil(list.size() / 45)).intValue();
-        setJumpToPage(45, maxPage);
+        ItemStack jumpStack = createItem(ItemTypes.BOOK, Text.of(MenuText.JUMP_PAGE));
+        jumpStack.setQuantity(page);
+        set(45, jumpStack, player -> new SubmitterJumpToPage(player, this, maxPage, submitter));
         setPageNavigationButton(48, MenuText.PREVIOUS_PAGE, player -> {
             if (page > 1) {
                 new SubmissionsGUI(player, page - 1, prevMenu);

@@ -18,7 +18,6 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -29,7 +28,7 @@ public class BookGUI implements Listener {
     private static final String LORE_IDENTIFIER = "\\_o<";
     private final Consumer<List<String>> consumer;
 
-    public BookGUI(Player player, SpigotBuild build, Consumer<List<String>> consumer) {
+    public BookGUI(Player player, SpigotBuild build, List<String> originalPages, Consumer<List<String>> consumer) {
         this.player = player;
         this.bookSlot = player.getInventory().getHeldItemSlot();
         this.consumer = consumer;
@@ -38,7 +37,7 @@ public class BookGUI implements Listener {
         bookMeta.setAuthor(player.getName());
         bookMeta.setDisplayName(build.getName());
         bookMeta.setLore(Collections.singletonList(LORE_IDENTIFIER));
-        bookMeta.setPages(build.getDescription());
+        bookMeta.setPages(originalPages);
         itemStack.setItemMeta(bookMeta);
         player.getInventory().setItemInMainHand(itemStack);
         Bukkit.getServer().getPluginManager().registerEvents(this, SpigotServerSaturday.instance());
@@ -59,8 +58,8 @@ public class BookGUI implements Listener {
         }).collect(Collectors.toList()).isEmpty();
     }
 
-    protected boolean isEditing(Player player, ItemStack itemStack) {
-        if (player.getUniqueId().equals(player.getUniqueId()) && itemStack != null && (itemStack.getType() == Material.BOOK_AND_QUILL || itemStack.getType() == Material.WRITTEN_BOOK) && itemStack.hasItemMeta()) {
+    private boolean isEditing(Player player, ItemStack itemStack) {
+        if (player.getUniqueId().equals(this.player.getUniqueId()) && itemStack != null && (itemStack.getType() == Material.BOOK_AND_QUILL || itemStack.getType() == Material.WRITTEN_BOOK) && itemStack.hasItemMeta()) {
             ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta.hasLore()) {
                 List<String> lore = itemMeta.getLore();
@@ -76,23 +75,23 @@ public class BookGUI implements Listener {
     @EventHandler
     public void playerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        PlayerInventory inv = player.getInventory();
-        if (isEditing(player, inv.getItem(bookSlot))) {
-            inv.setItem(bookSlot, null);
+        if (isEditing(player, player.getInventory().getItem(bookSlot))) {
             remove();
         }
     }
 
     @EventHandler
     public void clickBook(InventoryClickEvent event) {
-        if (event.getWhoClicked() instanceof Player) {
-            event.setCancelled(isEditing((Player) event.getWhoClicked(), event.getCurrentItem()));
+        if (event.getWhoClicked() instanceof Player && isEditing((Player) event.getWhoClicked(), event.getCurrentItem())) {
+            event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void dropBook(PlayerDropItemEvent event) {
-        event.setCancelled(isEditing(event.getPlayer(), event.getItemDrop().getItemStack()));
+        if (isEditing(event.getPlayer(), event.getItemDrop().getItemStack())) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -111,7 +110,7 @@ public class BookGUI implements Listener {
         }
     }
 
-    protected void remove() {
+    private void remove() {
         player.getInventory().setItem(bookSlot, null);
         HandlerList.unregisterAll(this);
     }

@@ -1,10 +1,10 @@
 package com.campmongoose.serversaturday.sponge.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.sponge.gui.textinput.JumpToPage;
+import com.campmongoose.serversaturday.sponge.gui.anvil.page.JumpToPage;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.spongepowered.api.entity.living.player.Player;
@@ -21,12 +21,13 @@ public abstract class AbstractSpongePagedGUI extends AbstractSpongeChestGUI {
         this.page = page;
     }
 
-    protected void setContents(List<ItemStack> contents, BiFunction<Player, ItemStack, Consumer<Player>> consumerMapper) {
+    protected <T> void setContents(List<T> contents, Function<T, ItemStack> itemStackMapper, Function<T, Consumer<Player>> consumerMapper) {
         for (int x = 0; x < 45; x++) {
             try {
-                ItemStack itemStack = contents.get(x + (page - 1) * 45);
+                T content = contents.get(x + (page - 1) * 45);
+                ItemStack itemStack = itemStackMapper.apply(content);
                 if (consumerMapper != null) {
-                    set(x, itemStack, consumerMapper.apply(player, itemStack));
+                    set(x, itemStack, consumerMapper.apply(content));
                 }
                 else {
                     set(x, itemStack);

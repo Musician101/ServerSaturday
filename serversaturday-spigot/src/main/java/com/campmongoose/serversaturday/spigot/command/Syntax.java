@@ -1,4 +1,4 @@
-package com.campmongoose.serversaturday.common.command;
+package com.campmongoose.serversaturday.spigot.command;
 
 public enum Syntax {
     LITERAL,

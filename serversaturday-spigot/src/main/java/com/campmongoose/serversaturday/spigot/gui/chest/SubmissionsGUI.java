@@ -14,7 +14,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class SubmissionsGUI extends AbstractSpigotPagedGUI {
 
@@ -37,14 +36,7 @@ public class SubmissionsGUI extends AbstractSpigotPagedGUI {
         }
         List<SpigotSubmitter> spigotSubmitters = submissions.getSubmitters();
         List<ItemStack> list = spigotSubmitters.stream().map(SpigotSubmitter::getMenuRepresentation).collect(Collectors.toList());
-        setContents(list, (player, itemStack) -> p -> {
-            for (SpigotSubmitter submitter : spigotSubmitters) {
-                if (submitter.getName().equals(itemStack.getItemMeta().getDisplayName())) {
-                    new SubmitterGUI(p, submitter, 1, this);
-                    return;
-                }
-            }
-        });
+        setContents(spigotSubmitters, SpigotSubmitter::getMenuRepresentation, (player, submitter) -> p -> new SubmitterGUI(p, submitter, 1, this));
 
         int maxPage = new Double(Math.ceil(list.size() / 45)).intValue();
         setJumpToPage(45, maxPage);
@@ -60,17 +52,6 @@ public class SubmissionsGUI extends AbstractSpigotPagedGUI {
             }
         });
 
-        ItemStack back = new ItemStack(Material.BARRIER);
-        ItemMeta backMeta = back.getItemMeta();
-        backMeta.setDisplayName(ChatColor.RED + MenuText.BACK);
-        back.setItemMeta(backMeta);
-        set(53, back, player -> {
-            if (prevMenu == null) {
-                player.closeInventory();
-            }
-            else {
-                prevMenu.open();
-            }
-        });
+        setBackButton(53, Material.BARRIER);
     }
 }

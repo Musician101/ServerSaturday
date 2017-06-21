@@ -1,11 +1,11 @@
 package com.campmongoose.serversaturday.sponge.command.submit;
 
-import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
+import com.campmongoose.serversaturday.common.command.SSCommandException;
 import com.campmongoose.serversaturday.sponge.command.AbstractSpongeCommand;
-import com.campmongoose.serversaturday.sponge.gui.chest.BuildGUI;
+import com.campmongoose.serversaturday.sponge.command.args.BuildCommandElement;
+import com.campmongoose.serversaturday.sponge.gui.chest.build.EditBuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
-import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import javax.annotation.Nonnull;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -19,20 +19,19 @@ public class SSLocation extends AbstractSpongeCommand {
     @Nonnull
     @Override
     public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments) {
-        return arguments.<String>getOne(Commands.BUILD).map(name -> {
+        return arguments.<SpongeBuild>getOne(BuildCommandElement.KEY).map(build -> {
             if (source instanceof Player) {
                 Player player = (Player) source;
-                SpongeSubmitter submitter = getSubmitter(player);
-                SpongeBuild build = submitter.getBuild(name);
-                if (build == null) {
-                    player.sendMessage(Text.builder(Messages.BUILD_NOT_FOUND).color(TextColors.RED).build());
+                build.setLocation(player.getLocation());
+                try {
+                    new EditBuildGUI(build, getSubmitter(player), player, null);
+                    player.sendMessage(Text.builder(Messages.locationChanged(build)).color(TextColors.GREEN).build());
+                    return CommandResult.success();
+                }
+                catch (SSCommandException e) {
+                    player.sendMessage(Text.builder(e.getMessage()).color(TextColors.RED).build());
                     return CommandResult.empty();
                 }
-
-                build.setLocation(player.getLocation());
-                new BuildGUI(build, submitter, player, null);
-                player.sendMessage(Text.builder(Messages.locationChanged(build)).color(TextColors.GREEN).build());
-                return CommandResult.success();
             }
 
             return playerOnly(source);

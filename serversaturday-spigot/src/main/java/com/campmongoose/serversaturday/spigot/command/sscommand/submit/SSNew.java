@@ -4,19 +4,19 @@ import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
-import com.campmongoose.serversaturday.common.command.Syntax;
-import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
+import com.campmongoose.serversaturday.common.command.SSCommandException;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
+import com.campmongoose.serversaturday.spigot.command.Syntax;
 import com.campmongoose.serversaturday.spigot.gui.chest.build.EditBuildGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
 import net.wesjd.anvilgui.AnvilGUI;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -37,7 +37,7 @@ public class SSNew extends AbstractSpigotCommand {
             try {
                 submitter = getSubmitter(player);
             }
-            catch (SubmissionsNotLoadedException e) {
+            catch (SSCommandException e) {
                 player.sendMessage(ChatColor.RED + e.getMessage());
                 return false;
             }

@@ -3,20 +3,16 @@ package com.campmongoose.serversaturday.spigot.command.sscommand.view;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
-import com.campmongoose.serversaturday.common.command.Syntax;
-import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
-import com.campmongoose.serversaturday.common.uuid.MojangAPIException;
-import com.campmongoose.serversaturday.common.uuid.PlayerNotFoundException;
-import com.campmongoose.serversaturday.common.uuid.UUIDCacheException;
+import com.campmongoose.serversaturday.common.command.SSCommandException;
 import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
+import com.campmongoose.serversaturday.spigot.command.Syntax;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
-import java.io.IOException;
 import java.util.Arrays;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -32,7 +28,7 @@ public class SSGoto extends AbstractSpigotCommand {
             try {
                 submitter = getSubmitter(args.get(0));
             }
-            catch (UUIDCacheException | MojangAPIException | PlayerNotFoundException | IOException | SubmissionsNotLoadedException e) {
+            catch (SSCommandException e) {
                 player.sendMessage(ChatColor.RED + e.getMessage());
             }
 

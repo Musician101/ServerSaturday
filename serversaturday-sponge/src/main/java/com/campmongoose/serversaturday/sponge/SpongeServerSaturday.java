@@ -2,13 +2,18 @@ package com.campmongoose.serversaturday.sponge;
 
 import com.campmongoose.serversaturday.common.Reference;
 import com.campmongoose.serversaturday.common.Reference.Messages;
+import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.sponge.command.SpongeCommands;
+import com.campmongoose.serversaturday.sponge.data.ImmutableInventorySlotData;
+import com.campmongoose.serversaturday.sponge.data.InventorySlotData;
+import com.campmongoose.serversaturday.sponge.data.InventorySlotDataManipulatorBuilder;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
 import com.google.inject.Inject;
 import java.io.File;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.DefaultConfig;
+import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
@@ -19,7 +24,6 @@ public class SpongeServerSaturday {
 
     private static SpongeServerSaturday instance;
     private SpongeConfig config;
-    private SpongeDescriptionChangeHandler dch;
     @Inject
     @DefaultConfig(sharedRoot = false)
     private File defaultConfig;
@@ -35,15 +39,15 @@ public class SpongeServerSaturday {
         return config;
     }
 
-    public SpongeDescriptionChangeHandler getDescriptionChangeHandler() {
-        return dch;
-    }
-
     public Logger getLogger() {
         return logger;
     }
 
-    public SpongeSubmissions getSubmissions() {
+    public SpongeSubmissions getSubmissions() throws SubmissionsNotLoadedException {
+        if (submissions == null || !submissions.hasLoaded()) {
+            throw new SubmissionsNotLoadedException();
+        }
+
         return submissions;
     }
 
@@ -60,12 +64,12 @@ public class SpongeServerSaturday {
         logger.info(Messages.LOADING_CONFIG);
         config = new SpongeConfig(Sponge.getGame().getConfigManager().getPluginConfig(this));
         logger.info(Messages.CONFIG_LOADED);
-        //logger.info(Messages.REGISTERING_UUIDS);
-        //logger.info(Messages.UUIDS_REGISTERED);
+        DataRegistration.builder().dataClass(InventorySlotData.class).immutableClass(ImmutableInventorySlotData.class)
+                .manipulatorId("inventory_slot").dataName("InventorySlot")
+                .builder(new InventorySlotDataManipulatorBuilder()).buildAndRegister(Sponge.getPluginManager().fromInstance(this).get());
         logger.info(Messages.LOADING_SUBMISSIONS);
         submissions = new SpongeSubmissions(defaultConfig.getParentFile());
         logger.info(Messages.SUBMISSIONS_LOADED);
-        dch = new SpongeDescriptionChangeHandler();
         SpongeCommands.init();
     }
 }

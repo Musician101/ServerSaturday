@@ -1,19 +1,19 @@
 package com.campmongoose.serversaturday.sponge.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.common.Reference.Messages;
+import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
+import com.campmongoose.serversaturday.sponge.gui.chest.build.EditBuildGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.build.ViewBuildGUI;
+import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -25,37 +25,36 @@ public class AllSubmissionsGUI extends AbstractSpongePagedGUI {
 
     @Override
     protected void build() {
-        List<ItemStack> list = new ArrayList<>();
-        SpongeServerSaturday.instance().getSubmissions().getSubmitters().forEach(submitter ->
-                list.addAll(submitter.getBuilds().stream().map(build ->
-                        build.getMenuRepresentation(submitter)).collect(Collectors.toList())));
+        SpongeSubmissions submissions;
+        try {
+            submissions = SpongeServerSaturday.instance().getSubmissions();
+        }
+        catch (SubmissionsNotLoadedException e) {
+            player.closeInventory(generatePluginCause());
+            player.sendMessage(Text.builder(e.getMessage()).color(TextColors.RED).build());
+            return;
+        }
 
-        setContents(list, (p, itemStack) -> player -> {
-            String submitterName = itemStack.get(Keys.ITEM_LORE).orElseThrow(IllegalArgumentException::new).get(0).toPlain();
-            SpongeServerSaturday plugin = SpongeServerSaturday.instance();
-            SpongeSubmissions submissions = plugin.getSubmissions();
-            SpongeSubmitter submitter = Sponge.getServiceManager().getRegistration(UserStorageService.class).map(providerRegistration -> {
-                UserStorageService userStorage = providerRegistration.getProvider();
-                return userStorage.get(submitterName).map(user -> submissions.getSubmitter(user.getUniqueId())).orElse(null);
-            }).orElseGet(() -> {
-                for (SpongeSubmitter s : submissions.getSubmitters()) {
-                    if (s.getName().equalsIgnoreCase(submitterName)) {
-                        return s;
-                    }
+        List<SpongeSubmitter> submitters = submissions.getSubmitters();
+        Multimap<SpongeBuild, SpongeSubmitter> map = HashMultimap.create();
+        submitters.forEach(submitter -> submitter.getBuilds().forEach(build -> map.put(build, submitter)));
+        setContents(new ArrayList<>(map.keySet()), build -> {
+            SpongeSubmitter submitter = new ArrayList<>(map.get(build)).get(0);
+            return build.getMenuRepresentation(submitter);
+        }, build -> {
+            SpongeSubmitter submitter = new ArrayList<>(map.get(build)).get(0);
+            map.remove(build, submitter);
+            return player -> {
+                if (player.getUniqueId().equals(this.player.getUniqueId())) {
+                    new EditBuildGUI(build, submitter, player, this);
                 }
-
-                return null;
-            });
-
-            if (submitter == null) {
-                player.sendMessage(Text.builder(Messages.PLAYER_NOT_FOUND).color(TextColors.RED).build());
-                return;
-            }
-
-            new SubmitterGUI(player, submitter, 1, this);
+                else {
+                    new ViewBuildGUI(build, submitter, player, this);
+                }
+            };
         });
 
-        int maxPage = new Double(Math.ceil(list.size() / 45)).intValue();
+        int maxPage = new Double(Math.ceil(map.keySet().size() / 45)).intValue();
         setJumpToPage(45, maxPage);
         setPageNavigationButton(48, MenuText.PREVIOUS_PAGE, player -> {
             if (page > 1) {

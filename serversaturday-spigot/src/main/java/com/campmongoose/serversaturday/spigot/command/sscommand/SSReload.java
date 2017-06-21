@@ -3,7 +3,7 @@ package com.campmongoose.serversaturday.spigot.command.sscommand;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
-import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
+import com.campmongoose.serversaturday.common.command.SSCommandException;
 import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
@@ -22,7 +22,7 @@ public class SSReload extends AbstractSpigotCommand {
                 getSubmissions().save();
                 getSubmissions().load();
             }
-            catch (SubmissionsNotLoadedException e) {
+            catch (SSCommandException e) {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
             }
 

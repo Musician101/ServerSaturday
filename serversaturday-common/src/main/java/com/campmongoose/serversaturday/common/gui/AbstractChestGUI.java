@@ -6,9 +6,9 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AbstractChestGUI<F, I, K, M extends AbstractChestGUI<F, I, K, M, P, S, T>, P, S, T> {
+public abstract class AbstractChestGUI<F, I, M extends AbstractChestGUI<F, I, M, P, S, T>, P, S, T> {
 
-    protected final Map<K, Consumer<P>> buttons = new HashMap<>();
+    protected final Map<Integer, Consumer<P>> buttons = new HashMap<>();
     @Nonnull
     protected final I inventory;
     @Nonnull

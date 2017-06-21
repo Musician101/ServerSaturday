@@ -6,8 +6,8 @@ import com.campmongoose.serversaturday.common.submission.AbstractSubmitter;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -39,7 +39,16 @@ public class SpongeSubmitter extends AbstractSubmitter<SpongeBuild, ItemStack, L
     public SpongeSubmitter(@Nonnull UUID uuid, @Nonnull ConfigurationNode cn) {
         super(getName(uuid, cn), uuid);
         ConfigurationNode buildsCN = cn.getNode(Config.BUILDS);
-        buildsCN.getChildrenMap().keySet().stream().filter(buildName -> !buildName.toString().contains(".")).forEach(buildName -> builds.put(buildName.toString(), new SpongeBuild(buildName.toString(), buildsCN.getNode(buildName))));
+        //Backwards compat for old save formats
+        if (buildsCN.hasMapChildren()) {
+            buildsCN.getChildrenMap().keySet().stream().filter(buildName -> !buildName.toString().contains(".")).forEach(buildName -> builds.put(buildName.toString(), new SpongeBuild(buildName.toString(), buildsCN.getNode(buildName))));
+        }
+        else {
+            buildsCN.getChildrenList().forEach(buildCN -> {
+                String name = buildCN.getNode(Config.NAME).getString();
+                builds.put(name, new SpongeBuild(name, buildCN));
+            });
+        }
     }
 
     private static String getName(UUID uuid, ConfigurationNode cn) {
@@ -92,8 +101,8 @@ public class SpongeSubmitter extends AbstractSubmitter<SpongeBuild, ItemStack, L
 
         ConfigurationNode cn = SimpleConfigurationNode.root();
         cn.getNode(Config.NAME).setValue(Sponge.getServer().getGameProfileManager().getCache().getById(uuid).map(gp -> gp.getName().orElse(name)).orElse(name));
-        Map<String, Map<String, Object>> buildsMap = new HashMap<>();
-        builds.forEach((key, value) -> buildsMap.put(key, value.serialize()));
+        List<Map<String, Object>> buildsMap = new ArrayList<>();
+        builds.forEach((key, value) -> buildsMap.add(value.serialize()));
         cn.getNode(Config.BUILDS).setValue(buildsMap);
         try {
             HoconConfigurationLoader.builder().setFile(file).build().save(cn);
@@ -101,26 +110,5 @@ public class SpongeSubmitter extends AbstractSubmitter<SpongeBuild, ItemStack, L
         catch (IOException e) {
             logger.error(Messages.ioException(file));
         }
-    }
-
-    @Override
-    public void updateBuildDescription(@Nonnull SpongeBuild build, @Nonnull List<String> description) {
-        builds.remove(build.getName());
-        build.setDescription(description);
-        builds.put(build.getName(), build);
-    }
-
-    @Override
-    public void updateBuildName(@Nonnull SpongeBuild build, @Nonnull String newName) {
-        builds.remove(build.getName());
-        build.setName(newName);
-        builds.put(build.getName(), build);
-    }
-
-    @Override
-    public void updateBuildResourcePack(@Nonnull SpongeBuild build, @Nonnull String resourcePack) {
-        builds.remove(build.getName());
-        build.setResourcePack(resourcePack);
-        builds.put(build.getName(), build);
     }
 }

@@ -2,7 +2,7 @@ package com.campmongoose.serversaturday.spigot;
 
 import com.campmongoose.serversaturday.common.AbstractRewardGiver;
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.uuid.UUIDCacheException;
+import com.campmongoose.serversaturday.spigot.uuid.UUIDCacheException;
 import com.campmongoose.serversaturday.spigot.gui.chest.RewardsGUI;
 import java.io.File;
 import java.io.IOException;

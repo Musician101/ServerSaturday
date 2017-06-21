@@ -1,27 +1,23 @@
 package com.campmongoose.serversaturday.spigot.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
-import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
-import com.campmongoose.serversaturday.common.uuid.MojangAPIException;
-import com.campmongoose.serversaturday.common.uuid.PlayerNotFoundException;
-import com.campmongoose.serversaturday.common.uuid.UUIDCache;
-import com.campmongoose.serversaturday.common.uuid.UUIDCacheException;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
+import com.campmongoose.serversaturday.spigot.gui.chest.build.EditBuildGUI;
+import com.campmongoose.serversaturday.spigot.gui.chest.build.ViewBuildGUI;
+import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmissions;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
-import java.io.IOException;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class AllSubmissionsGUI extends AbstractSpigotPagedGUI {
 
@@ -31,58 +27,36 @@ public class AllSubmissionsGUI extends AbstractSpigotPagedGUI {
 
     @Override
     protected void build() {
-        List<ItemStack> list = new ArrayList<>();
-        SpigotServerSaturday plugin = SpigotServerSaturday.instance();
         SpigotSubmissions submissions;
-        UUIDCache uuidCache;
         try {
-            submissions = plugin.getSubmissions();
-            uuidCache = plugin.getUUIDCache();
+            submissions = SpigotServerSaturday.instance().getSubmissions();
         }
-        catch (SubmissionsNotLoadedException | UUIDCacheException e) {
+        catch (SubmissionsNotLoadedException e) {
             player.closeInventory();
             player.sendMessage(ChatColor.RED + e.getMessage());
             return;
         }
 
-        submissions.getSubmitters().forEach(submitter ->
-                list.addAll(submitter.getBuilds().stream().map(build ->
-                        build.getMenuRepresentation(submitter)).collect(Collectors.toList())));
+        List<SpigotSubmitter> submitters = submissions.getSubmitters();
+        Multimap<SpigotBuild, SpigotSubmitter> map = HashMultimap.create();
+        submitters.forEach(submitter -> submitter.getBuilds().forEach(build -> map.put(build, submitter)));
+        setContents(new ArrayList<>(map.keySet()), build -> {
+            SpigotSubmitter submitter = new ArrayList<>(map.get(build)).get(0);
+            return build.getMenuRepresentation(submitter);
+        }, (p, build) -> {
+            SpigotSubmitter submitter = new ArrayList<>(map.get(build)).get(0);
+            map.remove(build, submitter);
+            return player -> {
+                if (player.getUniqueId().equals(this.player.getUniqueId())) {
+                    new EditBuildGUI(build, submitter, player, this);
+                }
+                else {
+                    new ViewBuildGUI(build, submitter, player, this);
+                }
+            };
+        });
 
-        setContents(list, (p, itemStack) ->
-                player -> {
-                    String submitterName = itemStack.getItemMeta().getLore().get(0);
-                    SpigotSubmitter submitter = null;
-                    UUID uuid;
-                    try {
-                        uuid = uuidCache.getUUIDOf(submitterName);
-                    }
-                    catch (IOException | MojangAPIException | PlayerNotFoundException e) {
-                        player.closeInventory();
-                        player.sendMessage(ChatColor.RED + e.getMessage());
-                        return;
-                    }
-
-                    if (uuid != null) {
-                        submitter = submissions.getSubmitter(uuid);
-                    }
-                    else {
-                        for (SpigotSubmitter s : submissions.getSubmitters()) {
-                            if (submitterName.equals(s.getName())) {
-                                submitter = s;
-                            }
-                        }
-                    }
-
-                    if (submitter == null) {
-                        player.sendMessage(ChatColor.RED + Messages.PLAYER_NOT_FOUND);
-                        return;
-                    }
-
-                    new SubmitterGUI(player, submitter, 1, this);
-                });
-
-        int maxPage = new Double(Math.ceil(list.size() / 45)).intValue();
+        int maxPage = new Double(Math.ceil(map.keySet().size() / 45)).intValue();
         setJumpToPage(45, maxPage);
         setPageNavigationButton(48, MenuText.PREVIOUS_PAGE, player -> {
             if (page > 1) {

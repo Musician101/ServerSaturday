@@ -1,10 +1,10 @@
 package com.campmongoose.serversaturday.sponge.command.submit;
 
-import com.campmongoose.serversaturday.common.Reference.Commands;
-import com.campmongoose.serversaturday.common.Reference.Messages;
+import com.campmongoose.serversaturday.common.command.SSCommandException;
 import com.campmongoose.serversaturday.sponge.command.AbstractSpongeCommand;
-import com.campmongoose.serversaturday.sponge.gui.chest.BuildGUI;
+import com.campmongoose.serversaturday.sponge.command.args.BuildCommandElement;
 import com.campmongoose.serversaturday.sponge.gui.chest.SubmitterGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.build.EditBuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import javax.annotation.Nonnull;
@@ -22,15 +22,17 @@ public class SSEdit extends AbstractSpongeCommand {
     public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments) {
         if (source instanceof Player) {
             Player player = (Player) source;
-            SpongeSubmitter submitter = getSubmitter(player);
-            return arguments.<String>getOne(Commands.BUILD).map(buildName -> {
-                SpongeBuild build = submitter.getBuild(buildName);
-                if (build == null) {
-                    player.sendMessage(Text.builder(Messages.BUILD_NOT_FOUND).color(TextColors.RED).build());
-                    return CommandResult.empty();
-                }
+            SpongeSubmitter submitter;
+            try {
+                submitter = getSubmitter(player);
+            }
+            catch (SSCommandException e) {
+                player.sendMessage(Text.builder(e.getMessage()).color(TextColors.RED).build());
+                return CommandResult.empty();
+            }
 
-                new BuildGUI(build, submitter, player, null);
+            return arguments.<SpongeBuild>getOne(BuildCommandElement.KEY).map(build -> {
+                new EditBuildGUI(build, submitter, player, null);
                 return CommandResult.success();
             }).orElseGet(() -> {
                 new SubmitterGUI(player, submitter, 1, null);

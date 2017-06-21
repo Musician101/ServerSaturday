@@ -4,6 +4,8 @@ import com.campmongoose.serversaturday.common.Reference;
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.gui.AbstractChestGUI;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
+import com.campmongoose.serversaturday.sponge.data.InventorySlotData;
+import com.campmongoose.serversaturday.sponge.data.SSKeys;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,7 +33,7 @@ import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inventory, String, AbstractSpongeChestGUI, Player, ItemStack, ItemType> {
+public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inventory, AbstractSpongeChestGUI, Player, ItemStack, ItemType> {
 
     public AbstractSpongeChestGUI(@Nonnull String name, int size, @Nonnull Player player, @Nullable AbstractSpongeChestGUI prevMenu) {
         this(name, size, player, prevMenu, false);
@@ -45,9 +47,9 @@ public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inve
     }
 
     private static Inventory parseInventory(String name, int size) {
-        InventoryArchetype.Builder builder = InventoryArchetype.builder().property(new InventoryCapacity(size)).title(Text.of(name));
-        for (int i = 0; i < size; i++) {
-            builder.with(InventoryArchetype.builder().from(InventoryArchetypes.SLOT).property(new SlotIndex(i)).build("minecraft:slot" + i, "Slot"));
+        InventoryArchetype.Builder builder = InventoryArchetype.builder().property(new InventoryCapacity(54)).title(Text.of(name));
+        for (int x = 0; x < size; x++) {
+            builder.with(InventoryArchetype.builder().with(InventoryArchetypes.SLOT).property(new SlotIndex(x)).build("minecraft:slot" + x, "Slot"));
         }
 
         return Inventory.builder().of(builder.build(Reference.ID + ":" + name.replace("\\s", "_").toLowerCase(), name)).build(SpongeServerSaturday.instance());
@@ -60,8 +62,7 @@ public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inve
     @Nonnull
     @Override
     protected ItemStack createItem(@Nonnull ItemType itemType, @Nonnull Text name, @Nonnull Text... description) {
-        return ItemStack.builder().itemType(itemType).add(Keys.DISPLAY_NAME, name)
-                .add(Keys.ITEM_LORE, Stream.of(description).map(Text::of).collect(Collectors.toList())).build();
+        return ItemStack.builder().itemType(itemType).add(Keys.DISPLAY_NAME, name).add(Keys.ITEM_LORE, Stream.of(description).map(Text::of).collect(Collectors.toList())).build();
     }
 
     private boolean isSameInventory(Inventory inventory, Player player) {
@@ -79,10 +80,7 @@ public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inve
             else {
                 ItemStack itemStack = event.getCursorTransaction().getFinal().createStack();
                 if (itemStack.getItem() != ItemTypes.NONE) {
-                    String itemName = getItemName(itemStack);
-                    if (buttons.containsKey(itemName)) {
-                        buttons.get(itemName).accept(player);
-                    }
+                    itemStack.get(SSKeys.INVENTORY_SLOT).ifPresent(slot -> buttons.getOrDefault(slot, p -> {}).accept(player));
                 }
             }
         }
@@ -105,33 +103,27 @@ public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inve
 
     @Override
     protected void set(int slot, @Nonnull ItemStack itemStack) {
-        set(slot, itemStack, player -> {});
+        itemStack.offer(new InventorySlotData(slot));
+        inventory.query(new SlotIndex(slot)).offer(itemStack);
     }
 
     @Override
     protected void set(int slot, @Nonnull ItemStack itemStack, @Nonnull Consumer<Player> consumer) {
-        String itemName = validateItemStackName(itemStack);
-        inventory.query(new SlotIndex(slot)).offer(itemStack);
-        buttons.put(itemName, consumer);
-    }
-
-    private String getItemName(ItemStack itemStack) {
-        return itemStack.get(Keys.DISPLAY_NAME).map(Text::toPlain).orElse(itemStack.getTranslation().get());
-    }
-
-    private String validateItemStackName(ItemStack itemStack) {
-        String itemName = getItemName(itemStack);
-        if (buttons.containsKey(itemName)) {
-            throw new IllegalArgumentException("A button with that name already exists: " + itemName);
-        }
-
-        return itemName;
+        set(slot, itemStack);
+        buttons.put(slot, consumer);
     }
 
     @Override
     protected void setBackButton(int slot, @Nonnull ItemType itemType) {
         ItemStack itemStack = createItem(itemType, Text.builder("Back").color(TextColors.RED).build(), Stream.of(MenuText.BACK_DESC).map(Text::of).toArray(Text[]::new));
-        set(slot, itemStack, player -> player.closeInventory(generatePluginCause()));
+        set(slot, itemStack, player -> {
+            if (prevMenu != null) {
+                prevMenu.open();
+            }
+            else {
+                player.closeInventory(generatePluginCause());
+            }
+        });
     }
 
     protected Cause generatePluginCause() {

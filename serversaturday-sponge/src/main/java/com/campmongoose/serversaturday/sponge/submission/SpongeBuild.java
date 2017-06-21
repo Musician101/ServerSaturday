@@ -33,7 +33,7 @@ public class SpongeBuild extends AbstractBuild<ItemStack, Location<World>, Spong
         this.featured = cn.getNode(Config.FEATURED).getBoolean();
         this.submitted = cn.getNode(Config.SUBMITTED).getBoolean();
         this.location = deserializeLocation(cn.getNode(Config.LOCATION));
-        this.resourcePack = cn.getNode(Config.RESOURCE_PACK).getString();
+        this.resourcePack = cn.getNode(Config.RESOURCE_PACK).getList(Object::toString, Collections.singletonList(Config.VANILLA));
         try {
             this.description = cn.getNode(Config.DESCRIPTION).getList(TypeToken.of(String.class));
         }

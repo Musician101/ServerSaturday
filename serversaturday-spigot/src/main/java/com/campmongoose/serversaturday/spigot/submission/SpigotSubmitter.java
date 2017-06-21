@@ -3,11 +3,12 @@ package com.campmongoose.serversaturday.spigot.submission;
 import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.submission.AbstractSubmitter;
-import com.campmongoose.serversaturday.common.uuid.UUIDCacheException;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
+import com.campmongoose.serversaturday.spigot.uuid.UUIDCacheException;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -30,9 +31,19 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
 
     public SpigotSubmitter(@Nonnull UUID uuid, @Nonnull ConfigurationSection cs) {
         super(getName(uuid, cs.getString(Config.NAME)), uuid);
-        ConfigurationSection buildsCS = cs.getConfigurationSection(Config.BUILDS);
-        buildsCS.getKeys(false).stream().filter(buildName ->
-                !buildName.contains(".")).forEach(buildName -> builds.put(buildName, new SpigotBuild(buildName, buildsCS.getConfigurationSection(buildName))));
+        //Backwards compat for old save formats
+        if (cs.get(Config.BUILDS) instanceof ConfigurationSection) {
+            ConfigurationSection buildsCS = cs.getConfigurationSection(Config.BUILDS);
+            buildsCS.getKeys(false).stream().filter(buildName ->
+                    !buildName.contains(".")).forEach(buildName -> builds.put(buildName, new SpigotBuild(buildName, buildsCS.getConfigurationSection(buildName))));
+        }
+        else {
+            cs.getList(Config.BUILDS).forEach(object -> {
+                ConfigurationSection buildCS = (ConfigurationSection) object;
+                String name = cs.getString(Config.NAME);
+                builds.put(name, new SpigotBuild(name, buildCS));
+            });
+        }
     }
 
     private static String getName(UUID uuid, String name) {
@@ -96,9 +107,9 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
             yaml.set(Config.NAME, name);
         }
 
-        Map<String, Map<String, Object>> buildsMap = new HashMap<>();
-        builds.forEach((buildName, build) -> buildsMap.put(buildName, build.serialize()));
-        yaml.set(Config.BUILDS, buildsMap);
+        List<Map<String, Object>> builds = new ArrayList<>();
+        this.builds.forEach((buildName, build) -> builds.add(build.serialize()));
+        yaml.set(Config.BUILDS, builds);
         try {
             yaml.save(file);
         }

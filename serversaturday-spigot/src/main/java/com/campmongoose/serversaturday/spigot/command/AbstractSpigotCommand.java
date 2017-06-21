@@ -1,11 +1,12 @@
 package com.campmongoose.serversaturday.spigot.command;
 
 import com.campmongoose.serversaturday.common.command.AbstractCommand;
+import com.campmongoose.serversaturday.common.command.SSCommandException;
 import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
-import com.campmongoose.serversaturday.common.uuid.MojangAPIException;
-import com.campmongoose.serversaturday.common.uuid.PlayerNotFoundException;
-import com.campmongoose.serversaturday.common.uuid.UUIDCache;
-import com.campmongoose.serversaturday.common.uuid.UUIDCacheException;
+import com.campmongoose.serversaturday.spigot.uuid.MojangAPIException;
+import com.campmongoose.serversaturday.spigot.uuid.PlayerNotFoundException;
+import com.campmongoose.serversaturday.spigot.uuid.UUIDCache;
+import com.campmongoose.serversaturday.spigot.uuid.UUIDCacheException;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmissions;
@@ -69,20 +70,32 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
 
     @Nonnull
     @Override
-    protected SpigotSubmissions getSubmissions() throws SubmissionsNotLoadedException {
-        return getPluginInstance().getSubmissions();
+    protected SpigotSubmissions getSubmissions() throws SSCommandException {
+        try {
+            return getPluginInstance().getSubmissions();
+        }
+        catch (SubmissionsNotLoadedException e) {
+            throw new SSCommandException(e.getMessage());
+        }
     }
 
     @Nonnull
     @Override
-    protected SpigotSubmitter getSubmitter(@Nonnull Player player) throws SubmissionsNotLoadedException {
+    protected SpigotSubmitter getSubmitter(@Nonnull Player player) throws SSCommandException {
         return getSubmissions().getSubmitter(player);
     }
 
     @Nullable
     @Override
-    protected SpigotSubmitter getSubmitter(@Nonnull String playerName) throws UUIDCacheException, MojangAPIException, IOException, PlayerNotFoundException, SubmissionsNotLoadedException {
-        UUID uuid = getPluginInstance().getUUIDCache().getUUIDOf(playerName);
+    protected SpigotSubmitter getSubmitter(@Nonnull String playerName) throws SSCommandException {
+        UUID uuid;
+        try {
+            uuid = getPluginInstance().getUUIDCache().getUUIDOf(playerName);
+        }
+        catch (IOException | MojangAPIException | PlayerNotFoundException | UUIDCacheException e) {
+            throw new SSCommandException(e.getMessage());
+        }
+
         if (uuid != null) {
             SpigotSubmitter submitter = getSubmitter(uuid);
             if (submitter != null) {
@@ -100,7 +113,7 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
     }
 
     @Nullable
-    protected SpigotSubmitter getSubmitter(@Nonnull UUID uuid) throws SubmissionsNotLoadedException {
+    protected SpigotSubmitter getSubmitter(@Nonnull UUID uuid) throws SSCommandException {
         return getSubmissions().getSubmitter(uuid);
     }
 
@@ -119,7 +132,6 @@ public abstract class AbstractSpigotCommand extends AbstractCommand<SpigotBuild,
     }
 
     @Nonnull
-    @Override
     protected UUIDCache getUUIDCache() throws UUIDCacheException {
         return getPluginInstance().getUUIDCache();
     }

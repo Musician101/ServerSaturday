@@ -45,24 +45,41 @@ public class EditBuildGUI extends BuildGUI {
                 });
         set(2, createItem(Material.BOOK, MenuText.CHANGE_DESCRIPTION_NAME, MenuText.CHANGE_DESCRIPTION_DESC),
                 player -> {
+                    ItemStack itemStack = player.getInventory().getItemInMainHand();
+                    if (itemStack != null && itemStack.getType() != Material.AIR) {
+                        player.sendMessage(ChatColor.RED + Messages.HAND_NOT_EMPTY);
+                        return;
+                    }
+
                     if (BookGUI.isEditing(player)) {
                         player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
                         return;
                     }
 
                     player.closeInventory();
-                    new BookGUI(player, build, pages -> {
+                    new BookGUI(player, build, build.getDescription(), pages -> {
                         build.setDescription(pages);
-                        player.sendMessage(ChatColor.GOLD + Messages.PREFIX + build.getName() + "'s description has been updated.");
                         open();
                     });
                 });
         set(3, createItem(Material.PAINTING, MenuText.CHANGE_RESOURCE_PACK_NAME, MenuText.CHANGE_RESOURCE_PACK_DESC.toArray(new String[2])),
-                player -> new BookGUI(player, build, pages -> {
-                    build.setResourcePack(pages);
-                    player.closeInventory();
-                    open();
-                }));
+                player -> {
+                    ItemStack itemStack = player.getInventory().getItemInMainHand();
+                    if (itemStack != null && itemStack.getType() != Material.AIR) {
+                        player.sendMessage(ChatColor.RED + Messages.HAND_NOT_EMPTY);
+                        return;
+                    }
+
+                    if (BookGUI.isEditing(player)) {
+                        player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
+                        return;
+                    }
+
+                    new BookGUI(player, build, build.getResourcePack(), pages -> {
+                        build.setResourcePack(pages);
+                        open();
+                    });
+                });
 
         ItemStack submit = createItem(Material.FLINT_AND_STEEL, MenuText.SUBMIT_UNREADY_NAME, MenuText.SUBMIT_UNREADY_DESC.toArray(new String[2]));
         if (build.submitted()) {

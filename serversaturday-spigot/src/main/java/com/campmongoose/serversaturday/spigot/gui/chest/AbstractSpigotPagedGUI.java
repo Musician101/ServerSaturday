@@ -5,6 +5,7 @@ import com.campmongoose.serversaturday.spigot.gui.anvil.page.JumpToPage;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.bukkit.Material;
@@ -21,12 +22,13 @@ public abstract class AbstractSpigotPagedGUI extends AbstractSpigotChestGUI {
         this.page = page;
     }
 
-    protected void setContents(List<ItemStack> contents, BiFunction<Player, ItemStack, Consumer<Player>> consumerMapper) {
+    protected <T> void setContents(List<T> contents, Function<T, ItemStack> itemStackMapper, BiFunction<Player, T, Consumer<Player>> consumerMapper) {
         for (int x = 0; x < 45; x++) {
             try {
-                ItemStack itemStack = contents.get(x + (page - 1) * 45);
+                T content = contents.get(x + (page - 1) * 45);
+                ItemStack itemStack = itemStackMapper.apply(content);
                 if (consumerMapper != null) {
-                    set(x, itemStack, consumerMapper.apply(player, itemStack));
+                    set(x, itemStack, consumerMapper.apply(player, content));
                 }
                 else {
                     set(x, itemStack);

@@ -42,7 +42,7 @@ public class SpigotSubmissions extends AbstractSubmissions<Player, SpigotSubmitt
                     });
         }
         else {
-            logger.info("An error occurred whilst attempting to read the files in " + dir.getName());
+            logger.info(Messages.failedToReadFiles(dir));
         }
 
         super.load();

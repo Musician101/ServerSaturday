@@ -24,7 +24,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public abstract class AbstractSpigotChestGUI extends AbstractChestGUI<String, Inventory, Integer, AbstractSpigotChestGUI, Player, ItemStack, Material> implements Listener {
+public abstract class AbstractSpigotChestGUI extends AbstractChestGUI<String, Inventory, AbstractSpigotChestGUI, Player, ItemStack, Material> implements Listener {
 
     private static Field activeContainer;
     private static Field defaultContainer;
@@ -63,6 +63,10 @@ public abstract class AbstractSpigotChestGUI extends AbstractChestGUI<String, In
         HandlerList.unregisterAll(this);
     }
 
+    private boolean isSameInventory(Inventory inventory) {
+        return inventory.getName().equals(this.inventory.getName()) && inventory.getHolder().equals(player);
+    }
+
     @Nonnull
     @Override
     protected ItemStack createItem(@Nonnull Material itemType, @Nonnull String name, @Nonnull String... description) {
@@ -76,7 +80,7 @@ public abstract class AbstractSpigotChestGUI extends AbstractChestGUI<String, In
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        if (event.getInventory().getName().equals(inventory.getName()) && event.getInventory().getHolder().equals(player)) {
+        if (isSameInventory(event.getClickedInventory())) {
             event.setCancelled(true);
             if (buttons.containsKey(event.getRawSlot())) {
                 buttons.get(event.getRawSlot()).accept((Player) event.getWhoClicked());
@@ -86,14 +90,14 @@ public abstract class AbstractSpigotChestGUI extends AbstractChestGUI<String, In
 
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
-        if (event.getInventory().getName().equals(inventory.getName()) && event.getInventory().getHolder().equals(player)) {
+        if (isSameInventory(event.getInventory())) {
             close();
         }
     }
 
     @EventHandler
     public void onDrag(InventoryDragEvent event) {
-        event.setCancelled(event.getInventory().getName().equals(inventory.getName()) && event.getInventory().getHolder().equals(player));
+        event.setCancelled(isSameInventory(event.getInventory()));
     }
 
     @Override
