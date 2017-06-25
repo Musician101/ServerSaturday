@@ -32,14 +32,13 @@ public class EditBuildGUI extends BuildGUI {
     protected void build() {
         set(0, createItem(Material.PAPER, MenuText.RENAME_NAME, MenuText.RENAME_DESC),
                 player -> new SSAnvilGUI(player, (p, s) -> {
-                    build.setName(s);
-                    open();
+                    submitter.renameBuild(s, build);
+                    Bukkit.getScheduler().runTaskLater(SpigotServerSaturday.instance(), () -> new EditBuildGUI(build, submitter, player, prevMenu), 1L);
                     return null;
                 }));
         set(1, createItem(Material.COMPASS, MenuText.CHANGE_LOCATION_NAME, MenuText.CHANGE_LOCATION_DESC.toArray(new String[3])),
                 player -> {
                     build.setLocation(player.getLocation());
-                    player.closeInventory();
                     open();
                     player.sendMessage(ChatColor.GREEN + Messages.locationChanged(build));
                 });
