@@ -120,7 +120,7 @@ public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inve
 
     @Override
     protected void setBackButton(int slot, @Nonnull ItemType itemType) {
-        ItemStack itemStack = createItem(itemType, Text.builder("Back").color(TextColors.RED).build(), Stream.of(MenuText.BACK_DESC).map(Text::of).toArray(Text[]::new));
+        ItemStack itemStack = createItem(itemType, Text.builder(MenuText.BACK).color(TextColors.RED).build(), MenuText.BACK_DESC.stream().map(Text::of).toArray(Text[]::new));
         set(slot, itemStack, player -> {
             if (prevMenu != null) {
                 prevMenu.open();
