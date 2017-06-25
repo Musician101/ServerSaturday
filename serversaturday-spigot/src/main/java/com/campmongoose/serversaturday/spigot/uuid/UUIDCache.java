@@ -73,7 +73,11 @@ public class UUIDCache {
     }
 
     @Nullable
-    public String getNameOf(@Nonnull UUID uuid) {
+    public String getNameOf(@Nonnull UUID uuid) throws MojangAPIException, IOException, PlayerNotFoundException {
+        if (!uuidMap.containsKey(uuid)) {
+            add(uuid, getCurrentNameOf(uuid));
+        }
+
         return uuidMap.get(uuid);
     }
 
