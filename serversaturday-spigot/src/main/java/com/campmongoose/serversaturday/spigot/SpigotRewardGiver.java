@@ -2,6 +2,8 @@ package com.campmongoose.serversaturday.spigot;
 
 import com.campmongoose.serversaturday.common.AbstractRewardGiver;
 import com.campmongoose.serversaturday.common.Reference.Messages;
+import com.campmongoose.serversaturday.spigot.uuid.MojangAPIException;
+import com.campmongoose.serversaturday.spigot.uuid.PlayerNotFoundException;
 import com.campmongoose.serversaturday.spigot.uuid.UUIDCacheException;
 import com.campmongoose.serversaturday.spigot.gui.chest.RewardsGUI;
 import java.io.File;
@@ -62,7 +64,7 @@ public class SpigotRewardGiver extends AbstractRewardGiver<PlayerJoinEvent, Play
             try {
                 yml.set(uuid.toString() + ".name", SpigotServerSaturday.instance().getUUIDCache().getNameOf(uuid));
             }
-            catch (UUIDCacheException e) {
+            catch (IOException | MojangAPIException | PlayerNotFoundException | UUIDCacheException e) {
                 SpigotServerSaturday.instance().getLogger().warning(e.getMessage().replace(Messages.PREFIX, ""));
             }
         });
