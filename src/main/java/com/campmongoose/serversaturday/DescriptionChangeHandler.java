@@ -88,7 +88,9 @@ public class DescriptionChangeHandler implements Listener {
 
     @EventHandler
     public void dropBook(PlayerDropItemEvent event) {
-        event.setCancelled(check(event.getPlayer(), event.getItemDrop().getItemStack()));
+        if (check(event.getPlayer(), event.getItemDrop().getItemStack())) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
