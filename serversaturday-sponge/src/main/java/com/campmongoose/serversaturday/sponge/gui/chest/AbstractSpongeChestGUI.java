@@ -102,6 +102,11 @@ public abstract class AbstractSpongeChestGUI extends AbstractChestGUI<Text, Inve
     }
 
     @Override
+    public void delayedOpen() {
+        Task.builder().name(getClass().getName() + "#delayedOpen()-Task").execute(this::open).delayTicks(1L).submit(SpongeServerSaturday.instance());
+    }
+
+    @Override
     protected void set(int slot, @Nonnull ItemStack itemStack) {
         itemStack.offer(new InventorySlotData(slot));
         inventory.query(new SlotIndex(slot)).offer(itemStack);

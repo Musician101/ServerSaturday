@@ -37,4 +37,6 @@ public abstract class AbstractChestGUI<F, I, M extends AbstractChestGUI<F, I, M,
     protected abstract void set(int slot, @Nonnull S itemStack);
 
     protected abstract void setBackButton(int slot, @Nonnull T itemType);
+
+    public abstract void delayedOpen();
 }
