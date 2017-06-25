@@ -52,5 +52,11 @@ public abstract class AbstractSubmitter<B extends AbstractBuild, I, L> {
         return builds.remove(name) != null;
     }
 
+    public void renameBuild(String newName, B build) {
+        builds.remove(build.getName());
+        build.setName(newName);
+        builds.put(newName, build);
+    }
+
     public abstract void save(@Nonnull File file);
 }
