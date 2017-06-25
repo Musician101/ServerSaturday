@@ -119,6 +119,11 @@ public abstract class AbstractSpigotChestGUI extends AbstractChestGUI<String, In
     }
 
     @Override
+    public void delayedOpen() {
+        Bukkit.getScheduler().runTaskLater(SpigotServerSaturday.instance(), this::open, 1L);
+    }
+
+    @Override
     protected void set(int slot, @Nonnull ItemStack itemStack) {
         inventory.setItem(slot, itemStack);
     }
@@ -131,7 +136,7 @@ public abstract class AbstractSpigotChestGUI extends AbstractChestGUI<String, In
 
     @Override
     protected void setBackButton(int slot, @Nonnull Material itemType) {
-        ItemStack itemStack = createItem(itemType, ChatColor.RED + MenuText.BACK, MenuText.BACK_DESC);
+        ItemStack itemStack = createItem(itemType, ChatColor.RED + MenuText.BACK, MenuText.BACK_DESC.toArray(new String[0]));
         set(slot, itemStack, player -> {
             player.closeInventory();
             if (prevMenu != null) {
