@@ -4,18 +4,19 @@ import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.submission.AbstractSubmitter;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
+import com.campmongoose.serversaturday.spigot.uuid.MojangAPIException;
+import com.campmongoose.serversaturday.spigot.uuid.PlayerNotFoundException;
 import com.campmongoose.serversaturday.spigot.uuid.UUIDCacheException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -35,13 +36,13 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
         if (cs.get(Config.BUILDS) instanceof ConfigurationSection) {
             ConfigurationSection buildsCS = cs.getConfigurationSection(Config.BUILDS);
             buildsCS.getKeys(false).stream().filter(buildName ->
-                    !buildName.contains(".")).forEach(buildName -> builds.put(buildName, new SpigotBuild(buildName, buildsCS.getConfigurationSection(buildName))));
+                    !buildName.contains(".")).forEach(buildName -> builds.put(buildName, new SpigotBuild(buildsCS.getConfigurationSection(buildName))));
         }
         else {
-            cs.getList(Config.BUILDS).forEach(object -> {
-                ConfigurationSection buildCS = (ConfigurationSection) object;
-                String name = cs.getString(Config.NAME);
-                builds.put(name, new SpigotBuild(name, buildCS));
+            cs.getMapList(Config.BUILDS).forEach(object -> {
+                MemoryConfiguration mc = new MemoryConfiguration();
+                object.forEach((k, v) -> mc.set(k.toString(), v));
+                builds.put(name, new SpigotBuild(mc));
             });
         }
     }
@@ -50,7 +51,7 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
         try {
             return SpigotServerSaturday.instance().getUUIDCache().getNameOf(uuid);
         }
-        catch (UUIDCacheException e) {
+        catch (IOException | MojangAPIException | PlayerNotFoundException | UUIDCacheException e) {
             return name;
         }
     }
@@ -103,13 +104,11 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
         try {
             yaml.set(Config.NAME, plugin.getUUIDCache().getNameOf(uuid));
         }
-        catch (UUIDCacheException e) {
+        catch (IOException | MojangAPIException | PlayerNotFoundException | UUIDCacheException e) {
             yaml.set(Config.NAME, name);
         }
-
-        List<Map<String, Object>> builds = new ArrayList<>();
-        this.builds.forEach((buildName, build) -> builds.add(build.serialize()));
-        yaml.set(Config.BUILDS, builds);
+        
+        yaml.set(Config.BUILDS, builds.values().stream().map(SpigotBuild::serialize).collect(Collectors.toList()));
         try {
             yaml.save(file);
         }

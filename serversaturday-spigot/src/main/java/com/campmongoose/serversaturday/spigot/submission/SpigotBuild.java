@@ -17,17 +17,25 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class SpigotBuild extends AbstractBuild<ItemStack, Location, SpigotSubmitter> {
 
-    public SpigotBuild(@Nonnull String name, @Nonnull ConfigurationSection cs) {
-        super(name);
+    public SpigotBuild(@Nonnull ConfigurationSection cs) {
+        super(cs.getString(Config.NAME));
         this.featured = cs.getBoolean(Config.FEATURED);
         this.submitted = cs.getBoolean(Config.SUBMITTED);
-        this.location = Location.deserialize(cs.getConfigurationSection(Config.LOCATION).getValues(true));
+        Object locationCS = cs.get(Config.LOCATION);
+        if (locationCS instanceof ConfigurationSection) {
+            this.location = Location.deserialize(cs.getConfigurationSection(Config.LOCATION).getValues(true));
+        }
+        else {
+            Map<String, Object> location = new HashMap<>();
+            ((Map) cs.get(Config.LOCATION)).forEach((k, v) -> location.put(k.toString(), v));
+            this.location = Location.deserialize(location);
+        }
         if (cs.contains(Config.RESOURCE_PACK)) {
             if (cs.get(Config.RESOURCE_PACK) instanceof String) {
-                this.resourcePack = Collections.singletonList(Config.VANILLA);
+                this.resourcePack = Collections.singletonList(cs.getString(Config.RESOURCE_PACK));
             }
             else if (cs.get(Config.RESOURCE_PACK) instanceof List) {
-                this.resourcePack = cs.getStringList(Config.VANILLA);
+                this.resourcePack = cs.getStringList(Config.RESOURCE_PACK);
             }
         }
 
