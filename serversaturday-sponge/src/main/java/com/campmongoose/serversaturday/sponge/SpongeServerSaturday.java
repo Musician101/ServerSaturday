@@ -31,11 +31,12 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 @Plugin(id = Reference.ID, name = Reference.NAME, description = Reference.DESCRIPTION, version = Reference.VERSION)
-public class SpongeServerSaturday implements ServerSaturday<SpongeBuild, ItemStack, ClientConnectionEvent.Join, Logger, Location<World>, Player, SpongeRewardGiver, SpongeSubmissions, SpongeSubmitter> {
+public class SpongeServerSaturday implements ServerSaturday<SpongeBuild, ItemStack, ClientConnectionEvent.Join, Logger, Location<World>, Player, SpongeRewardGiver, SpongeSubmissions, Text, SpongeSubmitter> {
 
     private SpongeConfig config;
     @Inject

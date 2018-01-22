@@ -10,7 +10,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class Submitter<B extends Build<B, I, L, S>, I, L, S extends Submitter<B, I, L, S>> {
+public abstract class Submitter<B extends Build<B, I, L, S, T>, I, L, S extends Submitter<B, I, L, S, T>, T> {
 
     protected final Map<String, B> builds = new HashMap<>();
     @Nonnull
@@ -63,7 +63,7 @@ public abstract class Submitter<B extends Build<B, I, L, S>, I, L, S extends Sub
         builds.put(newName, build);
     }
 
-    public interface Serializer<B extends Build<B, I, L, S>, I, L, S extends Submitter<B, I, L, S>> extends JsonDeserializer<S>, JsonSerializer<S> {
+    public interface Serializer<B extends Build<B, I, L, S, T>, I, L, S extends Submitter<B, I, L, S, T>, T> extends JsonDeserializer<S>, JsonSerializer<S> {
 
     }
 }

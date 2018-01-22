@@ -30,13 +30,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class SpigotServerSaturday extends JavaPlugin implements ServerSaturday<SpigotBuild, ItemStack, PlayerJoinEvent, Logger, Location, Player, SpigotRewardGiver, SpigotSubmissions, SpigotSubmitter> {
+public class SpigotServerSaturday extends JavaPlugin implements ServerSaturday<SpigotBuild, ItemStack, PlayerJoinEvent, Logger, Location, Player, SpigotRewardGiver, SpigotSubmissions, String, SpigotSubmitter> {
 
     private SpigotConfig config;
     private SpigotRewardGiver rewardGiver;
     private SpigotSubmissions submissions;
 
-    public static ServerSaturday<SpigotBuild, ItemStack, PlayerJoinEvent, Logger, Location, Player, SpigotRewardGiver, SpigotSubmissions, SpigotSubmitter> instance() {
+    public static ServerSaturday<SpigotBuild, ItemStack, PlayerJoinEvent, Logger, Location, Player, SpigotRewardGiver, SpigotSubmissions, String, SpigotSubmitter> instance() {
         return JavaPlugin.getPlugin(SpigotServerSaturday.class);
     }
 

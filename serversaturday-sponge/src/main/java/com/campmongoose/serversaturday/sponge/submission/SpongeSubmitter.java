@@ -30,7 +30,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class SpongeSubmitter extends Submitter<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter> {
+public class SpongeSubmitter extends Submitter<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter, Text> {
 
     public SpongeSubmitter(@Nonnull Player player) {
         super(player.getName(), player.getUniqueId());
@@ -72,7 +72,7 @@ public class SpongeSubmitter extends Submitter<SpongeBuild, ItemStack, Location<
         return builds.get(name);
     }
 
-    public static class SpongeSerializer implements Serializer<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter> {
+    public static class SpongeSerializer implements Serializer<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter, Text> {
 
         @Override
         public SpongeSubmitter deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {

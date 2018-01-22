@@ -1,23 +1,22 @@
 package com.campmongoose.serversaturday.common.submission;
 
-import com.campmongoose.serversaturday.common.Reference.Config;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 
-//TODO allow resourcepack and description to be Text in Sponge
-public abstract class Build<B extends Build<B, I, L, S>, I, L, S extends Submitter<B, I, L, S>> {
+public abstract class Build<B extends Build<B, I, L, S, T>, I, L, S extends Submitter<B, I, L, S, T>, T> {
 
     @Nonnull
-    protected List<String> description = Collections.singletonList("A Server Saturday Build");
+    protected List<T> description = new ArrayList<>();
     protected boolean featured = false;
+    @Nonnull
     protected L location;
     @Nonnull
     protected String name;
     @Nonnull
-    protected List<String> resourcePacks = Collections.singletonList(Config.VANILLA);
+    protected List<T> resourcePacks = new ArrayList<>();
     protected boolean submitted = false;
 
     protected Build(@Nonnull String name, @Nonnull L location) {
@@ -30,11 +29,11 @@ public abstract class Build<B extends Build<B, I, L, S>, I, L, S extends Submitt
     }
 
     @Nonnull
-    public List<String> getDescription() {
+    public List<T> getDescription() {
         return description;
     }
 
-    public void setDescription(@Nonnull List<String> description) {
+    public void setDescription(@Nonnull List<T> description) {
         this.description = description;
     }
 
@@ -60,11 +59,11 @@ public abstract class Build<B extends Build<B, I, L, S>, I, L, S extends Submitt
     }
 
     @Nonnull
-    public List<String> getResourcePacks() {
+    public List<T> getResourcePacks() {
         return resourcePacks;
     }
 
-    public void setResourcePacks(@Nonnull List<String> resourcePacks) {
+    public void setResourcePacks(@Nonnull List<T> resourcePacks) {
         this.resourcePacks = resourcePacks;
     }
 
@@ -80,7 +79,7 @@ public abstract class Build<B extends Build<B, I, L, S>, I, L, S extends Submitt
         return submitted;
     }
 
-    public interface Serializer<B extends Build<B, I, L, S>, I, L, S extends Submitter<B, I, L, S>> extends JsonDeserializer<B>, JsonSerializer<B> {
+    public interface Serializer<B extends Build<B, I, L, S, T>, I, L, S extends Submitter<B, I, L, S, T>, T> extends JsonDeserializer<B>, JsonSerializer<B> {
 
     }
 }

@@ -12,7 +12,6 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
 public class SSResourcePack extends SSCommandExecutor {
 
@@ -24,7 +23,7 @@ public class SSResourcePack extends SSCommandExecutor {
                 Player player = (Player) source;
                 return getSubmitter(player).map(submitter -> {
                     new SpongeBookGUI(player, build, build.getResourcePacks().stream().map(Text::of).collect(Collectors.toList()), pages -> {
-                        build.setResourcePacks(pages.stream().map(Text::toPlain).collect(Collectors.toList()));
+                        build.setResourcePacks(pages);
                         SpongeChestGUIs.INSTANCE.editBuild(build, submitter, player, null);
                     });
                     return CommandResult.success();

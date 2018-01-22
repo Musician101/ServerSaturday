@@ -125,7 +125,7 @@ public class SpongeChestGUIs extends ChestGUIs<SpongeChestGUIBuilder, Class<? ex
 
                     p.closeInventory();
                     new SpongeBookGUI(p, build, build.getDescription().stream().map(Text::of).collect(Collectors.toList()), pages -> {
-                        build.setDescription(pages.stream().map(Text::toPlain).collect(Collectors.toList()));
+                        build.setDescription(pages);
                         g.open();
                     });
                 })).setButton(new GUIButton<>(3, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.PAINTING).name(Text.of(MenuText.CHANGE_RESOURCE_PACKS_NAME)).description(MenuText.CHANGE_RESOURCES_PACK_DESC.stream().map(Text::of).collect(Collectors.toList())).build(), (g, p) -> {
@@ -142,7 +142,7 @@ public class SpongeChestGUIs extends ChestGUIs<SpongeChestGUIBuilder, Class<? ex
 
                     p.closeInventory();
                     new SpongeBookGUI(p, build, build.getResourcePacks().stream().map(Text::of).collect(Collectors.toList()), pages -> {
-                        build.setResourcePacks(pages.stream().map(Text::toPlain).collect(Collectors.toList()));
+                        build.setResourcePacks(pages);
                         g.open();
                     });
                 })).setButton(new GUIButton<>(4, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.FLINT_AND_STEEL).name(Text.of(MenuText.SUBMIT_UNREADY_NAME)).description(MenuText.SUBMIT_UNREADY_DESC.stream().map(Text::of).collect(Collectors.toList())).addGlow(build.submitted()).build(), (g, p) -> {

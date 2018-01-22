@@ -3,6 +3,7 @@ package com.campmongoose.serversaturday.sponge.submission;
 import com.campmongoose.serversaturday.common.JsonUtils;
 import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.submission.Build;
+import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -21,12 +22,13 @@ import org.spongepowered.api.item.enchantment.Enchantment;
 import org.spongepowered.api.item.enchantment.EnchantmentTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class SpongeBuild extends Build<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter> {
+public class SpongeBuild extends Build<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter, Text> {
 
-    public SpongeBuild(@Nonnull String name, @Nonnull Location<World> location, @Nonnull List<String> description, @Nonnull List<String> resourcePacks, boolean featured, boolean submitted) {
+    public SpongeBuild(@Nonnull String name, @Nonnull Location<World> location, @Nonnull List<Text> description, @Nonnull List<Text> resourcePacks, boolean featured, boolean submitted) {
         this(name, location);
         this.description = description;
         this.resourcePacks = resourcePacks;
@@ -52,15 +54,15 @@ public class SpongeBuild extends Build<SpongeBuild, ItemStack, Location<World>, 
         return itemStack;
     }
 
-    public static class SpongeSerializer implements Serializer<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter> {
+    public static class SpongeSerializer implements Serializer<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter, Text> {
 
         @Override
         public SpongeBuild deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             String name = jsonObject.get(Config.NAME).getAsString();
             Location<World> location = jsonDeserializationContext.deserialize(jsonObject.getAsJsonObject(Config.LOCATION), new TypeToken<Location<World>>(){}.getType());
-            List<String> description = StreamSupport.stream(jsonObject.getAsJsonArray(Config.DESCRIPTION).spliterator(), false).map(JsonElement::getAsString).collect(Collectors.toList());
-            List<String> resourcePacks = StreamSupport.stream(jsonObject.getAsJsonArray(Config.RESOURCE_PACKS).spliterator(), false).map(JsonElement::getAsString).collect(Collectors.toList());
+            List<Text> description = StreamSupport.stream(jsonObject.getAsJsonArray(Config.DESCRIPTION).spliterator(), false).map(json -> TextSerializers.JSON.deserialize(json.toString())).collect(Collectors.toList());
+            List<Text> resourcePacks = StreamSupport.stream(jsonObject.getAsJsonArray(Config.RESOURCE_PACKS).spliterator(), false).map(json -> TextSerializers.JSON.deserialize(json.toString())).collect(Collectors.toList());
             boolean featured = jsonObject.get(Config.FEATURED).getAsBoolean();
             boolean submitted = jsonObject.get(Config.SUBMITTED).getAsBoolean();
             return new SpongeBuild(name, location, description, resourcePacks, featured, submitted);
@@ -73,8 +75,8 @@ public class SpongeBuild extends Build<SpongeBuild, ItemStack, Location<World>, 
             jsonObject.addProperty(Config.SUBMITTED, SpongeBuild.submitted);
             jsonObject.addProperty(Config.NAME, SpongeBuild.name);
             jsonObject.add(Config.LOCATION, jsonSerializationContext.serialize(SpongeBuild.location));
-            jsonObject.add(Config.DESCRIPTION, SpongeBuild.description.stream().collect(JsonUtils.jsonArrayStringCollector()));
-            jsonObject.add(Config.RESOURCE_PACKS, SpongeBuild.resourcePacks.stream().collect(JsonUtils.jsonArrayStringCollector()));
+            jsonObject.add(Config.DESCRIPTION, SpongeBuild.description.stream().map(text -> new Gson().fromJson(TextSerializers.JSON.serialize(text), JsonObject.class)).collect(JsonUtils.jsonArrayElementCollector()));
+            jsonObject.add(Config.RESOURCE_PACKS, SpongeBuild.resourcePacks.stream().map(text -> new Gson().fromJson(TextSerializers.JSON.serialize(text), JsonObject.class)).collect(JsonUtils.jsonArrayElementCollector()));
             return jsonObject;
         }
     }

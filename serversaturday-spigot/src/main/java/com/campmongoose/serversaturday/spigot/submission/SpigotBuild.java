@@ -21,7 +21,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SpigotBuild extends Build<SpigotBuild, ItemStack, Location, SpigotSubmitter> {
+public class SpigotBuild extends Build<SpigotBuild, ItemStack, Location, SpigotSubmitter, String> {
 
     public SpigotBuild(@Nonnull String name, @Nonnull Location location, @Nonnull List<String> description, @Nonnull List<String> resourcePacks, boolean featured, boolean submitted) {
         this(name, location);
@@ -51,7 +51,7 @@ public class SpigotBuild extends Build<SpigotBuild, ItemStack, Location, SpigotS
         return itemStack;
     }
 
-    public static class SpigotSerializer implements Serializer<SpigotBuild, ItemStack, Location, SpigotSubmitter> {
+    public static class SpigotSerializer implements Serializer<SpigotBuild, ItemStack, Location, SpigotSubmitter, String> {
 
         @Override
         public SpigotBuild deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {

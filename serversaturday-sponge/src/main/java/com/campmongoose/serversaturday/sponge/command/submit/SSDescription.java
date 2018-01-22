@@ -17,7 +17,6 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
 public class SSDescription extends SSCommandExecutor {
 
@@ -40,7 +39,7 @@ public class SSDescription extends SSCommandExecutor {
 
                 return getSubmitter(player).map(submitter -> {
                     new SpongeBookGUI(player, build, build.getDescription().stream().map(Text::of).collect(Collectors.toList()), pages -> {
-                        build.setDescription(pages.stream().map(Text::toPlain).collect(Collectors.toList()));
+                        build.setDescription(pages);
                         SpongeChestGUIs.INSTANCE.editBuild(build, submitter, player, null);
                     });
                     return CommandResult.success();

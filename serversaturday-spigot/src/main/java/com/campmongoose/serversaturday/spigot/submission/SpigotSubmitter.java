@@ -24,7 +24,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location, SpigotSubmitter> {
+public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location, SpigotSubmitter, String> {
 
     public SpigotSubmitter(Player player) {
         super(player.getName(), player.getUniqueId());
@@ -65,7 +65,7 @@ public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location,
         return builds.get(name);
     }
 
-    public static class SpigotSerializer implements Serializer<SpigotBuild, ItemStack, Location, SpigotSubmitter> {
+    public static class SpigotSerializer implements Serializer<SpigotBuild, ItemStack, Location, SpigotSubmitter, String> {
 
         @Override
         public SpigotSubmitter deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
