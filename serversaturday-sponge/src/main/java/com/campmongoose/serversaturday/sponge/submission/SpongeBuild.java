@@ -27,7 +27,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class SpongeBuild extends Build<ItemStack, Location<World>, SpongeSubmitter> {
+public class SpongeBuild extends Build<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter> {
 
     public SpongeBuild(String name, ConfigurationNode cn) {
         super(name);

@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SpigotBuild extends Build<ItemStack, Location, SpigotSubmitter> {
+public class SpigotBuild extends Build<SpigotBuild, ItemStack, Location, SpigotSubmitter> {
 
     //TODO going to change this over to JSON
     @Deprecated
