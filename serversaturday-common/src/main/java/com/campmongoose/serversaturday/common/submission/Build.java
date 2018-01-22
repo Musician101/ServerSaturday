@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 //TODO allow resourcepack and description to be Text in Sponge
-public abstract class Build<B extends Build<B, I, L, S>, I, L, S extends Submitter<B, I, L>> {
+public abstract class Build<B extends Build<B, I, L, S>, I, L, S extends Submitter<B, I, L, S>> {
 
     @Nonnull
     protected List<String> description = Collections.singletonList("A Server Saturday Build");

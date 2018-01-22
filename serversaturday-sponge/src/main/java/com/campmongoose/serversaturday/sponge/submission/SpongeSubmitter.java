@@ -30,7 +30,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class SpongeSubmitter extends Submitter<SpongeBuild, ItemStack, Location<World>> {
+public class SpongeSubmitter extends Submitter<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter> {
 
     public SpongeSubmitter(@Nonnull Player player) {
         super(player.getName(), player.getUniqueId());

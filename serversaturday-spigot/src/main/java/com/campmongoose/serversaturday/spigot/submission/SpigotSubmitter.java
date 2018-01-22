@@ -26,7 +26,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location> {
+public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location, SpigotSubmitter> {
 
     public SpigotSubmitter(Player player) {
         super(player.getName(), player.getUniqueId());

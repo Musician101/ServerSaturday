@@ -9,7 +9,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class Submitter<B extends Build, I, L> {
+public abstract class Submitter<B extends Build<B, I, L, S>, I, L, S extends Submitter<B, I, L, S>> {
 
     protected final Map<String, B> builds = new HashMap<>();
     @Nonnull
