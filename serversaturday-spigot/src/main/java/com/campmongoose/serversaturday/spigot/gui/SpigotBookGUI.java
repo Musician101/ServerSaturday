@@ -2,13 +2,18 @@ package com.campmongoose.serversaturday.spigot.gui;
 
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
+import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nonnull;
+import net.minecraft.server.v1_12_R1.EnumHand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -108,5 +113,18 @@ public class SpigotBookGUI implements Listener {
     private void remove() {
         player.getInventory().setItem(bookSlot, null);
         HandlerList.unregisterAll(this);
+    }
+
+    public static void openWrittenBook(@Nonnull Player player, @Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter) {
+        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta bookMeta = (BookMeta) book.getItemMeta();
+        bookMeta.setAuthor(submitter.getName());
+        bookMeta.setPages(build.getDescription());
+        bookMeta.setTitle(build.getName());
+        book.setItemMeta(bookMeta);
+        ItemStack old = player.getInventory().getItemInMainHand();
+        player.getInventory().setItemInMainHand(book);
+        ((CraftPlayer) player).getHandle().a(CraftItemStack.asNMSCopy(book), EnumHand.MAIN_HAND);
+        player.getInventory().setItemInMainHand(old);
     }
 }

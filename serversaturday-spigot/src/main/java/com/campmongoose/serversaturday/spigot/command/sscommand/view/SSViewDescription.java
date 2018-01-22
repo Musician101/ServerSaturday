@@ -8,18 +8,13 @@ import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
 import com.campmongoose.serversaturday.spigot.command.Syntax;
+import com.campmongoose.serversaturday.spigot.gui.SpigotBookGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
-import net.minecraft.server.v1_12_R1.EnumHand;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 
 public class SSViewDescription extends SpigotCommand {
 
@@ -42,16 +37,7 @@ public class SSViewDescription extends SpigotCommand {
             }
 
             //TODO move this and the one in the viewBuild and the resource pack versions to a utility class to limit errors when updating major versions
-            ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-            BookMeta bookMeta = (BookMeta) book.getItemMeta();
-            bookMeta.setAuthor(submitter.getName());
-            bookMeta.setPages(build.getDescription());
-            bookMeta.setTitle(build.getName());
-            book.setItemMeta(bookMeta);
-            ItemStack old = player.getInventory().getItemInMainHand();
-            player.getInventory().setItemInMainHand(book);
-            ((CraftPlayer) player).getHandle().a(CraftItemStack.asNMSCopy(book), EnumHand.MAIN_HAND);
-            player.getInventory().setItemInMainHand(old);
+            SpigotBookGUI.openWrittenBook(player, build, submitter);
             return true;
         };
     }

@@ -82,7 +82,7 @@ public class SpongeServerSaturday implements ServerSaturday<SpongeBuild, ItemSta
         submissions.save();
         logger.info(Messages.SUBMISSIONS_SAVED);
     }
-    
+
     @Listener
     public void onEnable(GameStartingServerEvent event) {
         logger.info(Messages.LOADING_CONFIG);

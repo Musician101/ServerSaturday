@@ -21,17 +21,13 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.server.v1_12_R1.EnumHand;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 
 public class SpigotChestGUIs extends ChestGUIs<SpigotChestGUIBuilder, ClickType, SpigotChestGUI, Inventory, SpigotBuild, Location, Player, ItemStack, String, SpigotSubmitter> {
 
@@ -92,61 +88,57 @@ public class SpigotChestGUIs extends ChestGUIs<SpigotChestGUIBuilder, ClickType,
 
     @Nonnull
     public Optional<SpigotChestGUI> editBuild(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player, @Nullable SpigotChestGUI prevGUI) {
-        if (player.getUniqueId().equals(submitter.getUUID())) {
-            return Optional.of(build(7, 5, build, player, prevGUI).setButton(new GUIButton<>(0, ClickType.LEFT, SpigotIconBuilder.builder(Material.PAPER).name(MenuText.RENAME_NAME).description(MenuText.RENAME_DESC).build(), (g, p) -> new SSAnvilGUI(player, (ply, s) -> {
-                submitter.renameBuild(s, build);
-                editBuild(build, submitter, ply, prevGUI);
-                return null;
-            }))).setButton(new GUIButton<>(1, ClickType.LEFT, SpigotIconBuilder.builder(Material.COMPASS).name(MenuText.CHANGE_LOCATION_NAME).description(MenuText.CHANGE_LOCATION_DESC).build(), (g, p) -> {
-                build.setLocation(player.getLocation());
+        return Optional.of(build(7, 5, build, player, prevGUI).setButton(new GUIButton<>(0, ClickType.LEFT, SpigotIconBuilder.builder(Material.PAPER).name(MenuText.RENAME_NAME).description(MenuText.RENAME_DESC).build(), (g, p) -> new SSAnvilGUI(player, (ply, s) -> {
+            submitter.renameBuild(s, build);
+            editBuild(build, submitter, ply, prevGUI);
+            return null;
+        }))).setButton(new GUIButton<>(1, ClickType.LEFT, SpigotIconBuilder.builder(Material.COMPASS).name(MenuText.CHANGE_LOCATION_NAME).description(MenuText.CHANGE_LOCATION_DESC).build(), (g, p) -> {
+            build.setLocation(player.getLocation());
+            g.open();
+            player.sendMessage(ChatColor.GREEN + Messages.locationChanged(build));
+        })).setButton(new GUIButton<>(2, ClickType.LEFT, SpigotIconBuilder.builder(Material.BOOK).name(MenuText.CHANGE_DESCRIPTION_NAME).description(MenuText.CHANGE_DESCRIPTION_DESC).build(), (g, p) -> {
+            ItemStack itemStack = p.getInventory().getItemInMainHand();
+            if (itemStack != null && itemStack.getType() != Material.AIR) {
+                player.sendMessage(ChatColor.RED + Messages.HAND_NOT_EMPTY);
+                return;
+            }
+
+            if (SpigotBookGUI.isEditing(p)) {
+                player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
+                return;
+            }
+
+            p.closeInventory();
+            new SpigotBookGUI(p, build, build.getDescription(), pages -> {
+                build.setDescription(pages);
                 g.open();
-                player.sendMessage(ChatColor.GREEN + Messages.locationChanged(build));
-            })).setButton(new GUIButton<>(2, ClickType.LEFT, SpigotIconBuilder.builder(Material.BOOK).name(MenuText.CHANGE_DESCRIPTION_NAME).description(MenuText.CHANGE_DESCRIPTION_DESC).build(), (g, p) -> {
-                ItemStack itemStack = p.getInventory().getItemInMainHand();
-                if (itemStack != null && itemStack.getType() != Material.AIR) {
-                    player.sendMessage(ChatColor.RED + Messages.HAND_NOT_EMPTY);
-                    return;
-                }
+            });
+        })).setButton(new GUIButton<>(3, ClickType.LEFT, SpigotIconBuilder.builder(Material.PAINTING).name(MenuText.CHANGE_RESOURCE_PACKS_NAME).description(MenuText.CHANGE_RESOURCES_PACK_DESC).build(), (g, p) -> {
+            ItemStack itemStack = p.getInventory().getItemInMainHand();
+            if (itemStack != null && itemStack.getType() != Material.AIR) {
+                player.sendMessage(ChatColor.RED + Messages.HAND_NOT_EMPTY);
+                return;
+            }
 
-                if (SpigotBookGUI.isEditing(p)) {
-                    player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
-                    return;
-                }
+            if (SpigotBookGUI.isEditing(p)) {
+                player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
+                return;
+            }
 
-                p.closeInventory();
-                new SpigotBookGUI(p, build, build.getDescription(), pages -> {
-                    build.setDescription(pages);
-                    g.open();
-                });
-            })).setButton(new GUIButton<>(3, ClickType.LEFT, SpigotIconBuilder.builder(Material.PAINTING).name(MenuText.CHANGE_RESOURCE_PACKS_NAME).description(MenuText.CHANGE_RESOURCES_PACK_DESC).build(), (g, p) -> {
-                ItemStack itemStack = p.getInventory().getItemInMainHand();
-                if (itemStack != null && itemStack.getType() != Material.AIR) {
-                    player.sendMessage(ChatColor.RED + Messages.HAND_NOT_EMPTY);
-                    return;
-                }
-
-                if (SpigotBookGUI.isEditing(p)) {
-                    player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
-                    return;
-                }
-
-                p.closeInventory();
-                new SpigotBookGUI(p, build, build.getResourcePack(), pages -> {
-                    build.setResourcePack(pages);
-                    g.open();
-                });
-            })).setButton(new GUIButton<>(4, ClickType.LEFT, SpigotIconBuilder.builder(Material.FLINT_AND_STEEL).name(MenuText.SUBMIT_UNREADY_NAME).description(MenuText.SUBMIT_UNREADY_DESC).addGlow(build.submitted()).build(), (g, p) -> {
-                build.setSubmitted(!build.submitted());
+            p.closeInventory();
+            new SpigotBookGUI(p, build, build.getResourcePack(), pages -> {
+                build.setResourcePack(pages);
                 g.open();
-            })).setButton(new GUIButton<>(6, ClickType.LEFT, SpigotIconBuilder.builder(Material.ENDER_CHEST).name(MenuText.DELETE_NAME).description(MenuText.DELETE_DESC).build(), (g, p) -> {
-                submitter.removeBuild(build.getName());
-                if (prevGUI != null) {
-                    prevGUI.open();
-                }
-            })).build());
-        }
-
-        return Optional.empty();
+            });
+        })).setButton(new GUIButton<>(4, ClickType.LEFT, SpigotIconBuilder.builder(Material.FLINT_AND_STEEL).name(MenuText.SUBMIT_UNREADY_NAME).description(MenuText.SUBMIT_UNREADY_DESC).addGlow(build.submitted()).build(), (g, p) -> {
+            build.setSubmitted(!build.submitted());
+            g.open();
+        })).setButton(new GUIButton<>(6, ClickType.LEFT, SpigotIconBuilder.builder(Material.ENDER_CHEST).name(MenuText.DELETE_NAME).description(MenuText.DELETE_DESC).build(), (g, p) -> {
+            submitter.removeBuild(build.getName());
+            if (prevGUI != null) {
+                prevGUI.open();
+            }
+        })).build()).filter(gui -> player.getUniqueId().equals(submitter.getUUID()));
     }
 
     @Nonnull
@@ -185,32 +177,6 @@ public class SpigotChestGUIs extends ChestGUIs<SpigotChestGUIBuilder, ClickType,
 
     @Nonnull
     public Optional<SpigotChestGUI> viewBuild(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player, @Nullable SpigotChestGUI prevGUI) {
-        if (!player.getUniqueId().equals(submitter.getUUID())) {
-            return Optional.of(build(3, 0, build, player, prevGUI).setButton(new GUIButton<>(1, ClickType.LEFT, SpigotIconBuilder.builder(Material.BOOK).name(MenuText.DESCRIPTION_NAME).description(MenuText.DESCRIPTION_DESC).build(), (g, p) -> {
-                ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-                BookMeta bookMeta = (BookMeta) book.getItemMeta();
-                bookMeta.setAuthor(submitter.getName());
-                bookMeta.setPages(build.getDescription());
-                bookMeta.setTitle(build.getName());
-                book.setItemMeta(bookMeta);
-                ItemStack old = player.getInventory().getItemInMainHand();
-                player.getInventory().setItemInMainHand(book);
-                ((CraftPlayer) player).getHandle().a(CraftItemStack.asNMSCopy(book), EnumHand.MAIN_HAND);
-                player.getInventory().setItemInMainHand(old);
-            })).setButton(new GUIButton<>(2, ClickType.LEFT, SpigotIconBuilder.builder(Material.PAINTING).name(MenuText.RESOURCE_PACK_NAME).description(MenuText.RESOURCE_PACK_DESC).build(), (g, p) -> {
-                ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-                BookMeta bookMeta = (BookMeta) book.getItemMeta();
-                bookMeta.setAuthor(submitter.getName());
-                bookMeta.setPages(build.getResourcePack());
-                bookMeta.setTitle(build.getName());
-                book.setItemMeta(bookMeta);
-                ItemStack old = player.getInventory().getItemInMainHand();
-                player.getInventory().setItemInMainHand(book);
-                ((CraftPlayer) player).getHandle().a(CraftItemStack.asNMSCopy(book), EnumHand.MAIN_HAND);
-                player.getInventory().setItemInMainHand(old);
-            })).build());
-        }
-
-        return Optional.empty();
+        return Optional.of(build(3, 0, build, player, prevGUI).setButton(new GUIButton<>(1, ClickType.LEFT, SpigotIconBuilder.builder(Material.BOOK).name(MenuText.DESCRIPTION_NAME).description(MenuText.DESCRIPTION_DESC).build(), (g, p) -> SpigotBookGUI.openWrittenBook(player, build, submitter))).setButton(new GUIButton<>(2, ClickType.LEFT, SpigotIconBuilder.builder(Material.PAINTING).name(MenuText.RESOURCE_PACK_NAME).description(MenuText.RESOURCE_PACK_DESC).build(), (g, p) -> SpigotBookGUI.openWrittenBook(player, build, submitter))).build()).filter(gui -> !player.getUniqueId().equals(submitter.getUUID()));
     }
 }

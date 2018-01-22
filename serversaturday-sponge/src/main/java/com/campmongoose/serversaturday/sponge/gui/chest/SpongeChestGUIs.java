@@ -100,64 +100,60 @@ public class SpongeChestGUIs extends ChestGUIs<SpongeChestGUIBuilder, Class<? ex
     @Nonnull
     @Override
     public Optional<SpongeChestGUI> editBuild(@Nonnull SpongeBuild build, @Nonnull SpongeSubmitter submitter, @Nonnull Player player, @Nullable SpongeChestGUI prevGUI) {
-        if (player.getUniqueId().equals(submitter.getUUID())) {
-            return Optional.of(build(7, 5, build, player, prevGUI).setButton(new GUIButton<>(0, ClickInventoryEvent.Primary.class,
-                    SpongeIconBuilder.builder(ItemTypes.PAPER).name(Text.of(MenuText.RENAME_NAME)).description(Text.of(MenuText.RENAME_DESC)).build(),
-                    (g, p) -> new AnvilGUI(player, (ply, s) -> {
-                        submitter.renameBuild(s, build);
-                        editBuild(build, submitter, (Player) ply, prevGUI);
-                        return null;
-                    })))
-                    .setButton(new GUIButton<>(1, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.COMPASS).name(Text.of(MenuText.CHANGE_LOCATION_NAME)).description(MenuText.CHANGE_LOCATION_DESC.stream().map(Text::of).collect(Collectors.toList())).build(), (g, p) -> {
-                        build.setLocation(player.getLocation());
+        return Optional.of(build(7, 5, build, player, prevGUI).setButton(new GUIButton<>(0, ClickInventoryEvent.Primary.class,
+                SpongeIconBuilder.builder(ItemTypes.PAPER).name(Text.of(MenuText.RENAME_NAME)).description(Text.of(MenuText.RENAME_DESC)).build(),
+                (g, p) -> new AnvilGUI(player, (ply, s) -> {
+                    submitter.renameBuild(s, build);
+                    editBuild(build, submitter, (Player) ply, prevGUI);
+                    return null;
+                })))
+                .setButton(new GUIButton<>(1, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.COMPASS).name(Text.of(MenuText.CHANGE_LOCATION_NAME)).description(MenuText.CHANGE_LOCATION_DESC.stream().map(Text::of).collect(Collectors.toList())).build(), (g, p) -> {
+                    build.setLocation(player.getLocation());
+                    g.open();
+                    player.sendMessage(Text.of(TextColors.GREEN, Messages.locationChanged(build)));
+                })).setButton(new GUIButton<>(2, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.BOOK).name(Text.of(MenuText.CHANGE_DESCRIPTION_NAME)).description(Text.of(MenuText.CHANGE_DESCRIPTION_DESC)).build(), (g, p) -> {
+                    Optional<ItemStack> itemStack = p.getItemInHand(HandTypes.MAIN_HAND);
+                    if (itemStack.isPresent() && itemStack.get().getType() != ItemTypes.AIR) {
+                        player.sendMessage(Text.of(TextColors.RED, Messages.HAND_NOT_EMPTY));
+                        return;
+                    }
+
+                    if (SpongeBookGUI.isEditing(p)) {
+                        player.sendMessage(Text.of(TextColors.RED, Messages.EDIT_IN_PROGRESS));
+                        return;
+                    }
+
+                    p.closeInventory();
+                    new SpongeBookGUI(p, build, build.getDescription().stream().map(Text::of).collect(Collectors.toList()), pages -> {
+                        build.setDescription(pages.stream().map(Text::toPlain).collect(Collectors.toList()));
                         g.open();
-                        player.sendMessage(Text.of(TextColors.GREEN, Messages.locationChanged(build)));
-                    })).setButton(new GUIButton<>(2, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.BOOK).name(Text.of(MenuText.CHANGE_DESCRIPTION_NAME)).description(Text.of(MenuText.CHANGE_DESCRIPTION_DESC)).build(), (g, p) -> {
-                        Optional<ItemStack> itemStack = p.getItemInHand(HandTypes.MAIN_HAND);
-                        if (itemStack.isPresent() && itemStack.get().getType() != ItemTypes.AIR) {
-                            player.sendMessage(Text.of(TextColors.RED, Messages.HAND_NOT_EMPTY));
-                            return;
-                        }
+                    });
+                })).setButton(new GUIButton<>(3, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.PAINTING).name(Text.of(MenuText.CHANGE_RESOURCE_PACKS_NAME)).description(MenuText.CHANGE_RESOURCES_PACK_DESC.stream().map(Text::of).collect(Collectors.toList())).build(), (g, p) -> {
+                    Optional<ItemStack> itemStack = p.getItemInHand(HandTypes.MAIN_HAND);
+                    if (itemStack.isPresent() && itemStack.get().getType() != ItemTypes.AIR) {
+                        player.sendMessage(Text.of(TextColors.RED, Messages.HAND_NOT_EMPTY));
+                        return;
+                    }
 
-                        if (SpongeBookGUI.isEditing(p)) {
-                            player.sendMessage(Text.of(TextColors.RED, Messages.EDIT_IN_PROGRESS));
-                            return;
-                        }
+                    if (SpongeBookGUI.isEditing(p)) {
+                        player.sendMessage(Text.of(TextColors.RED, Messages.EDIT_IN_PROGRESS));
+                        return;
+                    }
 
-                        p.closeInventory();
-                        new SpongeBookGUI(p, build, build.getDescription().stream().map(Text::of).collect(Collectors.toList()), pages -> {
-                            build.setDescription(pages.stream().map(Text::toPlain).collect(Collectors.toList()));
-                            g.open();
-                        });
-                    })).setButton(new GUIButton<>(3, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.PAINTING).name(Text.of(MenuText.CHANGE_RESOURCE_PACKS_NAME)).description(MenuText.CHANGE_RESOURCES_PACK_DESC.stream().map(Text::of).collect(Collectors.toList())).build(), (g, p) -> {
-                        Optional<ItemStack> itemStack = p.getItemInHand(HandTypes.MAIN_HAND);
-                        if (itemStack.isPresent() && itemStack.get().getType() != ItemTypes.AIR) {
-                            player.sendMessage(Text.of(TextColors.RED, Messages.HAND_NOT_EMPTY));
-                            return;
-                        }
-
-                        if (SpongeBookGUI.isEditing(p)) {
-                            player.sendMessage(Text.of(TextColors.RED, Messages.EDIT_IN_PROGRESS));
-                            return;
-                        }
-
-                        p.closeInventory();
-                        new SpongeBookGUI(p, build, build.getResourcePack().stream().map(Text::of).collect(Collectors.toList()), pages -> {
-                            build.setResourcePack(pages.stream().map(Text::toPlain).collect(Collectors.toList()));
-                            g.open();
-                        });
-                    })).setButton(new GUIButton<>(4, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.FLINT_AND_STEEL).name(Text.of(MenuText.SUBMIT_UNREADY_NAME)).description(MenuText.SUBMIT_UNREADY_DESC.stream().map(Text::of).collect(Collectors.toList())).addGlow(build.submitted()).build(), (g, p) -> {
-                        build.setSubmitted(!build.submitted());
+                    p.closeInventory();
+                    new SpongeBookGUI(p, build, build.getResourcePack().stream().map(Text::of).collect(Collectors.toList()), pages -> {
+                        build.setResourcePack(pages.stream().map(Text::toPlain).collect(Collectors.toList()));
                         g.open();
-                    })).setButton(new GUIButton<>(6, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.ENDER_CHEST).name(Text.of(MenuText.DELETE_NAME)).description(MenuText.DELETE_DESC.stream().map(Text::of).collect(Collectors.toList())).build(), (g, p) -> {
-                        submitter.removeBuild(build.getName());
-                        if (prevGUI != null) {
-                            prevGUI.open();
-                        }
-                    })).build());
-        }
-
-        return Optional.empty();
+                    });
+                })).setButton(new GUIButton<>(4, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.FLINT_AND_STEEL).name(Text.of(MenuText.SUBMIT_UNREADY_NAME)).description(MenuText.SUBMIT_UNREADY_DESC.stream().map(Text::of).collect(Collectors.toList())).addGlow(build.submitted()).build(), (g, p) -> {
+                    build.setSubmitted(!build.submitted());
+                    g.open();
+                })).setButton(new GUIButton<>(6, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.ENDER_CHEST).name(Text.of(MenuText.DELETE_NAME)).description(MenuText.DELETE_DESC.stream().map(Text::of).collect(Collectors.toList())).build(), (g, p) -> {
+                    submitter.removeBuild(build.getName());
+                    if (prevGUI != null) {
+                        prevGUI.open();
+                    }
+                })).build()).filter(gui -> player.getUniqueId().equals(submitter.getUUID()));
     }
 
     @Nonnull
@@ -199,10 +195,6 @@ public class SpongeChestGUIs extends ChestGUIs<SpongeChestGUIBuilder, Class<? ex
     @Nonnull
     @Override
     public Optional<SpongeChestGUI> viewBuild(@Nonnull SpongeBuild build, @Nonnull SpongeSubmitter submitter, @Nonnull Player player, @Nullable SpongeChestGUI prevGUI) {
-        if (!player.getUniqueId().equals(submitter.getUUID())) {
-            return Optional.of(build(3, 0, build, player, prevGUI).setButton(new GUIButton<>(1, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.BOOK).name(Text.of(MenuText.DESCRIPTION_NAME)).description(Text.of(MenuText.DESCRIPTION_DESC)).build(), (g, p) -> player.sendBookView(BookView.builder().author(Text.of(submitter.getName())).addPages(build.getDescription().stream().map(Text::of).collect(Collectors.toList())).title(Text.of(build.getName())).build()))).setButton(new GUIButton<>(2, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.PAINTING).name(Text.of(MenuText.RESOURCE_PACK_NAME)).description(Text.of(MenuText.RESOURCE_PACK_DESC)).build(), (g, p) -> player.sendBookView(BookView.builder().author(Text.of(submitter.getName())).addPages(build.getDescription().stream().map(Text::of).collect(Collectors.toList())).title(Text.of(build.getName())).build()))).build());
-        }
-
-        return Optional.empty();
+        return Optional.of(build(3, 0, build, player, prevGUI).setButton(new GUIButton<>(1, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.BOOK).name(Text.of(MenuText.DESCRIPTION_NAME)).description(Text.of(MenuText.DESCRIPTION_DESC)).build(), (g, p) -> player.sendBookView(BookView.builder().author(Text.of(submitter.getName())).addPages(build.getDescription().stream().map(Text::of).collect(Collectors.toList())).title(Text.of(build.getName())).build()))).setButton(new GUIButton<>(2, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.PAINTING).name(Text.of(MenuText.RESOURCE_PACK_NAME)).description(Text.of(MenuText.RESOURCE_PACK_DESC)).build(), (g, p) -> player.sendBookView(BookView.builder().author(Text.of(submitter.getName())).addPages(build.getDescription().stream().map(Text::of).collect(Collectors.toList())).title(Text.of(build.getName())).build()))).build()).filter(gui -> !player.getUniqueId().equals(submitter.getUUID()));
     }
 }
