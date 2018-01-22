@@ -36,7 +36,6 @@ public class SSViewDescription extends SpigotCommand {
                 return false;
             }
 
-            //TODO move this and the one in the viewBuild and the resource pack versions to a utility class to limit errors when updating major versions
             SpigotBookGUI.openWrittenBook(player, build, submitter);
             return true;
         };
