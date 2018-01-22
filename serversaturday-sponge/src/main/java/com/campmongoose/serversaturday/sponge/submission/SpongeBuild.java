@@ -1,7 +1,6 @@
 package com.campmongoose.serversaturday.sponge.submission;
 
 import com.campmongoose.serversaturday.common.Reference.Config;
-import com.campmongoose.serversaturday.common.ServerSaturday;
 import com.campmongoose.serversaturday.common.submission.Build;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
 import com.google.common.reflect.TypeToken;
@@ -40,7 +39,7 @@ public class SpongeBuild extends Build<SpongeBuild, ItemStack, Location<World>, 
         }
         catch (ObjectMappingException e) {
             this.description = new ArrayList<>();
-            SpongeServerSaturday.instance().map(ServerSaturday::getLogger).ifPresent(logger -> logger.error("An error occurred while parsing the description for " + name));
+            SpongeServerSaturday.instance().map(SpongeServerSaturday::getLogger).ifPresent(logger -> logger.error("An error occurred while parsing the description for " + name));
         }
     }
 
