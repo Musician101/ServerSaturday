@@ -49,7 +49,7 @@ public abstract class SSCommandExecutor implements CommandExecutor {
 
     @Nonnull
     protected CommandResult playerOnly(CommandSource source) {
-        source.sendMessage(Text.builder(Messages.PLAYER_ONLY).color(TextColors.RED).build());
+        source.sendMessage(Text.of(TextColors.RED, Messages.PLAYER_ONLY));
         return CommandResult.empty();
     }
 }

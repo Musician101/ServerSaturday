@@ -21,7 +21,6 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-//TODO simplify text usages so we don't actively use the builder so often
 public class SubmitterBuildCommandElement extends SSCommandElement {
 
     public static final Text KEY = Text.of("submitter_build");
@@ -68,7 +67,7 @@ public class SubmitterBuildCommandElement extends SSCommandElement {
             String playerName = args.next();
             Optional<SpongeSubmitter> submitter = getSubmitter(playerName);
             if (!submitter.isPresent()) {
-                throw args.createError(Text.builder(Messages.PLAYER_NOT_FOUND).color(TextColors.RED).build());
+                throw args.createError(Text.of(TextColors.RED, Messages.PLAYER_NOT_FOUND));
             }
 
             if (!args.hasNext()) {
@@ -77,12 +76,12 @@ public class SubmitterBuildCommandElement extends SSCommandElement {
 
             SpongeBuild build = submitter.get().getBuild(getBuild(args));
             if (build == null) {
-                throw args.createError(Text.builder(Messages.BUILD_NOT_FOUND).color(TextColors.RED).build());
+                throw args.createError(Text.of(TextColors.RED, Messages.BUILD_NOT_FOUND));
             }
 
             return new SimpleEntry<>(submitter, build);
         }
 
-        throw args.createError(Text.builder(Messages.PLAYER_ONLY).color(TextColors.RED).build());
+        throw args.createError(Text.of(TextColors.RED, Messages.PLAYER_ONLY));
     }
 }

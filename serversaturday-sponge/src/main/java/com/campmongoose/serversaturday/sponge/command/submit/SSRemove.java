@@ -23,7 +23,7 @@ public class SSRemove extends SSCommandExecutor {
                 Player player = (Player) source;
                 return getSubmitter(player).map(submitter -> {
                     if (!submitter.removeBuild(build.getName())) {
-                        player.sendMessage(Text.builder(Messages.BUILD_NOT_FOUND).color(TextColors.RED).build());
+                        player.sendMessage(Text.of(TextColors.RED, Messages.BUILD_NOT_FOUND));
                         return CommandResult.empty();
                     }
 

@@ -68,7 +68,7 @@ public class SpongeRewardGiver extends RewardGiver<ClientConnectionEvent.Join, P
         UUID uuid = player.getUniqueId();
         rewardsWaiting.putIfAbsent(uuid, 0);
         if (rewardsWaiting.getOrDefault(uuid, 0) > 0) {
-            player.sendMessage(Text.builder(Messages.REWARDS_WAITING).color(TextColors.GOLD).build());
+            player.sendMessage(Text.of(TextColors.GOLD, Messages.REWARDS_WAITING));
         }
     }
 

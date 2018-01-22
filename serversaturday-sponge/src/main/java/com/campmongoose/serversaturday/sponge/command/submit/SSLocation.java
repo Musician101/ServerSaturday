@@ -24,7 +24,7 @@ public class SSLocation extends SSCommandExecutor {
                 return getSubmitter(player).map(submitter -> {
                     build.setLocation(player.getLocation());
                     SpongeChestGUIs.INSTANCE.editBuild(build, submitter, player, null);
-                    player.sendMessage(Text.builder(Messages.locationChanged(build)).color(TextColors.GREEN).build());
+                    player.sendMessage(Text.of(TextColors.GREEN, Messages.locationChanged(build)));
                     return CommandResult.success();
                 }).orElse(CommandResult.empty());
             }

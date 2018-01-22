@@ -29,12 +29,12 @@ public class SSDescription extends SSCommandExecutor {
                 Player player = (Player) source;
                 ItemStack itemStack = player.getItemInHand(HandTypes.MAIN_HAND).orElse(ItemStack.empty());
                 if (itemStack.getType() == ItemTypes.NONE) {
-                    player.sendMessage(Text.builder(Messages.HAND_NOT_EMPTY).color(TextColors.RED).build());
+                    player.sendMessage(Text.of(TextColors.RED, Messages.HAND_NOT_EMPTY));
                     return CommandResult.empty();
                 }
 
                 if (SpongeBookGUI.isEditing(player)) {
-                    player.sendMessage(Text.builder(Messages.EDIT_IN_PROGRESS).color(TextColors.RED).build());
+                    player.sendMessage(Text.of(TextColors.RED, Messages.EDIT_IN_PROGRESS));
                     return CommandResult.empty();
                 }
 

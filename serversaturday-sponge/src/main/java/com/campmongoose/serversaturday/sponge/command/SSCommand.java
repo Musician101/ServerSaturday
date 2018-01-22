@@ -16,11 +16,11 @@ public class SSCommand extends SSCommandExecutor {
     @Nonnull
     @Override
     public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext args) {
-        source.sendMessage(Text.join(Text.builder("===== ").color(TextColors.GREEN).build(), Text.of(Reference.NAME + " v" + Reference.VERSION), Text.builder(" by ").color(TextColors.GREEN).build(), Text.of("Musician101"), Text.builder(" =====").color(TextColors.GREEN).build()));
+        source.sendMessage(Text.of(TextColors.GREEN, "===== ", TextColors.RESET, Reference.NAME + " v" + Reference.VERSION, TextColors.GREEN, " by ", TextColors.RESET, "Musician101", TextColors.GREEN, " ====="));
         Sponge.getCommandManager().getOwnedBy(SpongeServerSaturday.instance()).forEach(commandMapping -> {
             CommandCallable command = commandMapping.getCallable();
             command.getShortDescription(source).ifPresent(description ->
-                    source.sendMessage(Text.join(Text.builder("/" + commandMapping.getPrimaryAlias() + " ").color(TextColors.GRAY).build(), command.getUsage(source), Text.of(" "), Text.builder().append(description).color(TextColors.AQUA).build())));
+                    source.sendMessage(Text.of(TextColors.GRAY, "/" + commandMapping.getPrimaryAlias() + " ", command.getUsage(source), " ", TextColors.AQUA, description)));
         });
 
         return CommandResult.success();

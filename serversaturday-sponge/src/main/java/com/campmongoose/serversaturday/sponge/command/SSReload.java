@@ -20,7 +20,7 @@ public class SSReload extends SSCommandExecutor {
             submissions.load();
         });
         SpongeServerSaturday.instance().map(SpongeServerSaturday.class::cast).map(SpongeServerSaturday::getConfig).ifPresent(SpongeConfig::reload);
-        source.sendMessage(Text.builder(Messages.PLUGIN_RELOADED).color(TextColors.GOLD).build());
+        source.sendMessage(Text.of(TextColors.GOLD, Messages.PLUGIN_RELOADED));
         return CommandResult.success();
     }
 }

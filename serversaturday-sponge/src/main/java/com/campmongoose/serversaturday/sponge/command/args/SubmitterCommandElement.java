@@ -43,9 +43,9 @@ public class SubmitterCommandElement extends SSCommandElement {
                 return submitter.get();
             }
 
-            throw args.createError(Text.builder(Messages.PLAYER_NOT_FOUND).color(TextColors.RED).build());
+            throw args.createError(Text.of(TextColors.RED, Messages.PLAYER_NOT_FOUND));
         }
 
-        throw args.createError(Text.builder(Messages.PLAYER_ONLY).color(TextColors.RED).build());
+        throw args.createError(Text.of(TextColors.RED, Messages.PLAYER_ONLY));
     }
 }

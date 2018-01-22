@@ -36,7 +36,7 @@ public final class SpongeChestGUIBuilder extends ChestGUIBuilder<SpongeChestGUIB
     @Nonnull
     @Override
     public SpongeChestGUIBuilder setBackButton(int slot, @Nonnull Class<? extends ClickInventoryEvent> clickType) {
-        return setButton(new GUIButton<>(slot, clickType, SpongeIconBuilder.builder(ItemTypes.BARRIER).name(Text.builder("Back").color(TextColors.RED).build()).description(Text.of("Close this GUI and go back"), Text.of("to the previous GUI.")).build(), (gui, player) -> gui.close()));
+        return setButton(new GUIButton<>(slot, clickType, SpongeIconBuilder.builder(ItemTypes.BARRIER).name(Text.of(TextColors.RED, "Back")).description(Text.of("Close this GUI and go back"), Text.of("to the previous GUI.")).build(), (gui, player) -> gui.close()));
     }
 
     @Nonnull

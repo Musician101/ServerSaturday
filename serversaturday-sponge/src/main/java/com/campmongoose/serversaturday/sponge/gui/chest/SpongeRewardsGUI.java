@@ -89,7 +89,7 @@ public class SpongeRewardsGUI extends RewardsGUI<Inventory, Player> {
                 LOADER.save(node);
             }
             catch (IOException e) {
-                player.sendMessage(Text.builder(Messages.failedToSaveRewardsFile(REWARDS_FILE)).color(TextColors.RED).build());
+                player.sendMessage(Text.of(TextColors.RED, Messages.failedToSaveRewardsFile(REWARDS_FILE)));
                 REWARDS.forEach(itemStack -> {
                     World world = player.getWorld();
                     Entity entity = world.createEntity(EntityTypes.ITEM, player.getLocation().getPosition());

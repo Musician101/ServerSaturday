@@ -52,12 +52,12 @@ public class BuildCommandElement extends SSCommandElement {
 
             SpongeBuild build = submitter.get().getBuild(StringUtils.join(args.getAll(), " "));
             if (build == null) {
-                throw args.createError(Text.builder(Messages.BUILD_NOT_FOUND).color(TextColors.RED).build());
+                throw args.createError(Text.of(TextColors.RED, Messages.BUILD_NOT_FOUND));
             }
 
             return build;
         }
 
-        throw args.createError(Text.builder(Messages.PLAYER_ONLY).color(TextColors.RED).build());
+        throw args.createError(Text.of(TextColors.RED, Messages.PLAYER_ONLY));
     }
 }

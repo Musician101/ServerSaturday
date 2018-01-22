@@ -25,13 +25,13 @@ public class SSNew extends SSCommandExecutor {
             return getSubmitter(player).flatMap(submitter -> getPluginInstance().map(SpongeServerSaturday.class::cast).map(SpongeServerSaturday::getConfig).map(config -> {
                 int maxBuilds = config.getMaxBuilds();
                 if (submitter.getBuilds().size() > maxBuilds && maxBuilds > 0 && !player.hasPermission(Permissions.EXCEED_MAX_BUILDS)) {
-                    player.sendMessage(Text.builder(Messages.NO_PERMISSION).color(TextColors.RED).build());
+                    player.sendMessage(Text.of(TextColors.RED, Messages.NO_PERMISSION));
                     return CommandResult.empty();
                 }
 
                 return arguments.<String>getOne(Commands.NAME).map(name -> {
                     if (submitter.getBuild(name) != null) {
-                        player.sendMessage(Text.builder(Messages.BUILD_ALREADY_EXISTS).color(TextColors.RED).build());
+                        player.sendMessage(Text.of(TextColors.RED, Messages.BUILD_ALREADY_EXISTS));
                         return CommandResult.empty();
                     }
 

@@ -24,12 +24,12 @@ public class SSGoto extends SSCommandExecutor {
                 Player player = (Player) source;
                 SpongeBuild build = entry.getValue();
                 if (build == null) {
-                    player.sendMessage(Text.builder(Messages.BUILD_NOT_FOUND).color(TextColors.RED).build());
+                    player.sendMessage(Text.of(TextColors.RED, Messages.BUILD_NOT_FOUND));
                     return CommandResult.empty();
                 }
 
                 player.setLocation(build.getLocation());
-                player.sendMessage(Text.builder(Messages.teleportedToBuild(build)).color(TextColors.GOLD).build());
+                player.sendMessage(Text.of(TextColors.GOLD, Messages.teleportedToBuild(build)));
                 return CommandResult.success();
             }
 
