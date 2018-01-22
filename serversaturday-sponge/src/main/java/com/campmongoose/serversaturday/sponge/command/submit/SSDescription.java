@@ -40,7 +40,7 @@ public class SSDescription extends SSCommandExecutor {
 
                 return getSubmitter(player).map(submitter -> {
                     new SpongeBookGUI(player, build, build.getDescription().stream().map(Text::of).collect(Collectors.toList()), pages -> {
-                        build.setDescription(pages.stream().map(TextSerializers.PLAIN::serialize).collect(Collectors.toList()));
+                        build.setDescription(pages.stream().map(Text::toPlain).collect(Collectors.toList()));
                         SpongeChestGUIs.INSTANCE.editBuild(build, submitter, player, null);
                     });
                     return CommandResult.success();

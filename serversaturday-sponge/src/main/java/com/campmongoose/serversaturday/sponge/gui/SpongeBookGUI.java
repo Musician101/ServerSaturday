@@ -36,7 +36,7 @@ public class SpongeBookGUI {
     private static final String LORE_IDENTIFIER = "\\_o<";
     private static final Predicate<ItemStack> BOOK_FILTER = itemStack -> {
         ItemType itemType = itemStack.getType();
-        return (itemType == ItemTypes.WRITABLE_BOOK || itemType == ItemTypes.WRITTEN_BOOK) && itemStack.get(Keys.ITEM_LORE).map(lore -> lore.stream().map(TextSerializers.PLAIN::serialize).collect(Collectors.toList())).filter(lore -> lore.contains(LORE_IDENTIFIER)).isPresent();
+        return (itemType == ItemTypes.WRITABLE_BOOK || itemType == ItemTypes.WRITTEN_BOOK) && itemStack.get(Keys.ITEM_LORE).map(lore -> lore.stream().map(Text::toPlain).collect(Collectors.toList())).filter(lore -> lore.contains(LORE_IDENTIFIER)).isPresent();
 
     };
     private final Consumer<List<Text>> action;
