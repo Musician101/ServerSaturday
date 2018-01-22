@@ -23,7 +23,7 @@ public class SpigotRewardGiver extends RewardGiver<PlayerJoinEvent, Player> {
                 file.createNewFile();
             }
             catch (IOException e) {
-                SpigotServerSaturday.instance().getLogger().warning(Messages.ioException(file));
+                SpigotServerSaturday.instance().getLogger().warning(Messages.failedToReadFile(file));
                 return;
             }
         }
@@ -71,7 +71,7 @@ public class SpigotRewardGiver extends RewardGiver<PlayerJoinEvent, Player> {
             yml.save(file);
         }
         catch (IOException e) {
-            SpigotServerSaturday.instance().getLogger().warning(Messages.ioException(file));
+            SpigotServerSaturday.instance().getLogger().warning(Messages.failedToWriteFile(file));
         }
     }
 }

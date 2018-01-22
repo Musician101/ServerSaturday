@@ -23,8 +23,8 @@ public class SSResourcePack extends SSCommandExecutor {
             if (source instanceof Player) {
                 Player player = (Player) source;
                 return getSubmitter(player).map(submitter -> {
-                    new SpongeBookGUI(player, build, build.getResourcePack().stream().map(Text::of).collect(Collectors.toList()), pages -> {
-                        build.setResourcePack(pages.stream().map(TextSerializers.PLAIN::serialize).collect(Collectors.toList()));
+                    new SpongeBookGUI(player, build, build.getResourcePacks().stream().map(Text::of).collect(Collectors.toList()), pages -> {
+                        build.setResourcePacks(pages.stream().map(TextSerializers.PLAIN::serialize).collect(Collectors.toList()));
                         SpongeChestGUIs.INSTANCE.editBuild(build, submitter, player, null);
                     });
                     return CommandResult.success();

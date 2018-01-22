@@ -1,21 +1,21 @@
 package com.campmongoose.serversaturday.sponge.submission;
 
+import com.campmongoose.serversaturday.common.JsonUtils;
 import com.campmongoose.serversaturday.common.Reference.Config;
-import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.ServerSaturday;
+import com.campmongoose.serversaturday.common.submission.Build;
 import com.campmongoose.serversaturday.common.submission.Submitter;
-import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.SimpleConfigurationNode;
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.SkullTypes;
@@ -36,23 +36,9 @@ public class SpongeSubmitter extends Submitter<SpongeBuild, ItemStack, Location<
         super(player.getName(), player.getUniqueId());
     }
 
-    public SpongeSubmitter(@Nonnull UUID uuid, @Nonnull ConfigurationNode cn) {
-        super(getName(uuid, cn), uuid);
-        ConfigurationNode buildsCN = cn.getNode(Config.BUILDS);
-        //Backwards compat for old save formats
-        if (buildsCN.hasMapChildren()) {
-            buildsCN.getChildrenMap().keySet().stream().filter(buildName -> !buildName.toString().contains(".")).forEach(buildName -> builds.put(buildName.toString(), new SpongeBuild(buildName.toString(), buildsCN.getNode(buildName))));
-        }
-        else {
-            buildsCN.getChildrenList().forEach(buildCN -> {
-                String name = buildCN.getNode(Config.NAME).getString();
-                builds.put(name, new SpongeBuild(name, buildCN));
-            });
-        }
-    }
-
-    private static String getName(UUID uuid, ConfigurationNode cn) {
-        return Sponge.getServer().getGameProfileManager().getCache().getById(uuid).map(gp -> gp.getName().orElse(cn.getNode(Config.NAME).getString())).orElse(cn.getNode(Config.NAME).getString());
+    public SpongeSubmitter(String name, UUID uuid, Map<String, SpongeBuild> builds) {
+        super(name, uuid);
+        this.builds.putAll(builds);
     }
 
     @Nonnull
@@ -86,30 +72,24 @@ public class SpongeSubmitter extends Submitter<SpongeBuild, ItemStack, Location<
         return builds.get(name);
     }
 
-    @Override
-    public void save(@Nonnull File file) {
-        SpongeServerSaturday.instance().map(ServerSaturday::getLogger).ifPresent(logger -> {
-            try {
-                if (file.createNewFile()) {
-                    logger.info(Messages.newFile(file));
-                }
-            }
-            catch (IOException e) {
-                logger.error(Messages.ioException(file));
-                return;
-            }
+    public static class SpongeSerializer implements Serializer<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter> {
 
-            ConfigurationNode cn = SimpleConfigurationNode.root();
-            cn.getNode(Config.NAME).setValue(Sponge.getServer().getGameProfileManager().getCache().getById(uuid).map(gp -> gp.getName().orElse(name)).orElse(name));
-            List<Map<String, Object>> buildsMap = new ArrayList<>();
-            builds.forEach((key, value) -> buildsMap.add(value.serialize()));
-            cn.getNode(Config.BUILDS).setValue(buildsMap);
-            try {
-                HoconConfigurationLoader.builder().setFile(file).build().save(cn);
-            }
-            catch (IOException e) {
-                logger.error(Messages.ioException(file));
-            }
-        });
+        @Override
+        public SpongeSubmitter deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            UUID uuid = UUID.fromString(jsonObject.get(Config.UUID).getAsString());
+            String name = jsonObject.get(Config.NAME).getAsString();
+            Map<String, SpongeBuild> builds = StreamSupport.stream(jsonObject.getAsJsonArray(Config.BUILDS).spliterator(), false).map(build -> jsonDeserializationContext.<SpongeBuild>deserialize(build, SpongeBuild.class)).collect(Collectors.toMap(Build::getName, build -> build));
+            return new SpongeSubmitter(name, uuid, builds);
+        }
+
+        @Override
+        public JsonElement serialize(SpongeSubmitter submitter, Type type, JsonSerializationContext jsonSerializationContext) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty(Config.NAME, submitter.name);
+            jsonObject.addProperty(Config.UUID, submitter.uuid.toString());
+            jsonObject.add(Config.BUILDS, submitter.builds.values().stream().map(jsonSerializationContext::serialize).collect(JsonUtils.jsonArrayElementCollector()));
+            return jsonObject;
+        }
     }
 }

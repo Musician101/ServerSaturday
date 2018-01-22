@@ -63,7 +63,7 @@ public class SpongeRewardsGUI extends RewardsGUI<Inventory, Player> {
 
         }
         catch (IOException e) {
-            plugin.getLogger().error(Messages.ioException(REWARDS_FILE));
+            plugin.getLogger().error(Messages.failedToSaveRewardsFile(REWARDS_FILE));
         }
     }
 

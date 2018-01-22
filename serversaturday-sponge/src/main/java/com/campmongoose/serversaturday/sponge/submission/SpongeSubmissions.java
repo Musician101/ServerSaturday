@@ -5,19 +5,24 @@ import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.ServerSaturday;
 import com.campmongoose.serversaturday.common.submission.Submissions;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
+import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter.SpongeSerializer;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.UUID;
+import java.io.OutputStream;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 public class SpongeSubmissions extends Submissions<Player, SpongeSubmitter> {
 
     public SpongeSubmissions(@Nonnull File storageDir) {
-        super(storageDir);
+        super(storageDir, new GsonBuilder().setPrettyPrinting().registerTypeAdapter(SpongeBuild.class, new SpongeBuild.SpongeSerializer()).registerTypeAdapter(SpongeSubmitter.class, new SpongeSerializer()).registerTypeAdapter(new TypeToken<Location<World>>(){}.getType(), new LocationSerializer()).create());
     }
 
     @Nonnull
@@ -30,21 +35,17 @@ public class SpongeSubmissions extends Submissions<Player, SpongeSubmitter> {
     @Override
     public void load() {
         SpongeServerSaturday.instance().map(ServerSaturday::getLogger).ifPresent(logger -> {
-            if (dir.mkdirs()) {
-                logger.info(Messages.newFile(dir));
-            }
-
+            dir.mkdirs();
             File[] files = dir.listFiles();
             if (files != null) {
                 Stream.of(files).filter(file -> file.getName().endsWith(Config.HOCON_EXT))
                         .forEach(file -> {
                             try {
-                                ConfigurationNode cn = HoconConfigurationLoader.builder().setFile(file).build().load();
-                                UUID uuid = UUID.fromString(file.getName().replace(Config.HOCON_EXT, ""));
-                                submitters.put(uuid, new SpongeSubmitter(uuid, cn));
+                                SpongeSubmitter submitter = gson.fromJson(new FileReader(file), SpongeSubmitter.class);
+                                submitters.put(submitter.getUUID(), submitter);
                             }
                             catch (IOException e) {
-                                logger.error(Messages.ioException(file));
+                                logger.error(Messages.failedToReadFile(file));
                             }
                         });
             }
@@ -56,6 +57,20 @@ public class SpongeSubmissions extends Submissions<Player, SpongeSubmitter> {
 
     @Override
     public void save() {
-        submitters.forEach((uuid, submitter) -> submitter.save(new File(dir, Config.getHOCONFileName(uuid))));
+        submitters.forEach((uuid, submitter) -> {
+            File file = new File(dir, Config.getFileName(uuid));
+            try {
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+
+                OutputStream os = new FileOutputStream(file);
+                os.write(gson.toJson(submitter).getBytes());
+                os.close();
+            }
+            catch (IOException e) {
+                SpongeServerSaturday.instance().map(ServerSaturday::getLogger).ifPresent(logger -> logger.error(Messages.failedToWriteFile(file)));
+            }
+        });
     }
 }

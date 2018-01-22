@@ -1,5 +1,6 @@
 package com.campmongoose.serversaturday.common.submission;
 
+import com.google.gson.Gson;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,10 +14,12 @@ public abstract class Submissions<P, S extends Submitter> {
 
     @Nonnull
     protected final File dir;
+    protected final Gson gson;
     protected final Map<UUID, S> submitters = new HashMap<>();
 
-    protected Submissions(@Nonnull File configDir) {
+    protected Submissions(@Nonnull File configDir, Gson gson) {
         this.dir = new File(configDir, "submitters");
+        this.gson = gson;
         load();
     }
 

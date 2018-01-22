@@ -1,6 +1,7 @@
 package com.campmongoose.serversaturday.common.submission;
 
-import java.io.File;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonSerializer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,5 +63,7 @@ public abstract class Submitter<B extends Build<B, I, L, S>, I, L, S extends Sub
         builds.put(newName, build);
     }
 
-    public abstract void save(@Nonnull File file);
+    public interface Serializer<B extends Build<B, I, L, S>, I, L, S extends Submitter<B, I, L, S>> extends JsonDeserializer<S>, JsonSerializer<S> {
+
+    }
 }

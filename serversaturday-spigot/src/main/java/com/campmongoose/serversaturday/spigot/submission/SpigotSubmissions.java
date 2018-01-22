@@ -4,20 +4,24 @@ import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.submission.Submissions;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
+import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter.SpigotSerializer;
+import com.google.gson.GsonBuilder;
 import java.io.File;
-import java.util.UUID;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class SpigotSubmissions extends Submissions<Player, SpigotSubmitter> {
 
-    //TODO going to change this over to JSON
-    @Deprecated
     public SpigotSubmissions() {
-        super(((SpigotServerSaturday) SpigotServerSaturday.instance()).getDataFolder());
+        super(((SpigotServerSaturday) SpigotServerSaturday.instance()).getDataFolder(), new GsonBuilder().setPrettyPrinting().registerTypeAdapter(SpigotBuild.class, new SpigotBuild.SpigotSerializer()).registerTypeAdapter(SpigotSubmitter.class, new SpigotSerializer()).registerTypeAdapter(Location.class, new LocationSerializer()).create());
     }
 
     @Nonnull
@@ -30,17 +34,18 @@ public class SpigotSubmissions extends Submissions<Player, SpigotSubmitter> {
     @Override
     public void load() {
         Logger logger = SpigotServerSaturday.instance().getLogger();
-        if (dir.mkdirs()) {
-            logger.info(Messages.newFile(dir));
-        }
-
+        dir.mkdirs();
         File[] files = dir.listFiles();
         if (files != null) {
-            Stream.of(files).filter(file -> file.getName().endsWith(Config.YAML_EXT))
+            Stream.of(files).filter(file -> file.getName().endsWith(Config.ITEMBANK_EXT))
                     .forEach(file -> {
-                        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-                        UUID uuid = UUID.fromString(file.getName().replace(Config.YAML_EXT, ""));
-                        submitters.put(uuid, new SpigotSubmitter(uuid, yaml));
+                        try {
+                            SpigotSubmitter submitter = gson.fromJson(new FileReader(file), SpigotSubmitter.class);
+                            submitters.put(submitter.getUUID(), submitter);
+                        }
+                        catch (FileNotFoundException e) {
+                            logger.warning(Messages.failedToReadFile(file));
+                        }
                     });
         }
         else {
@@ -50,6 +55,20 @@ public class SpigotSubmissions extends Submissions<Player, SpigotSubmitter> {
 
     @Override
     public void save() {
-        submitters.forEach((uuid, submitter) -> submitter.save(new File(dir, Config.getYAMLFileName(uuid))));
+        submitters.forEach((uuid, submitter) -> {
+            File file = new File(dir, Config.getFileName(uuid));
+            try {
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+
+                OutputStream os = new FileOutputStream(file);
+                os.write(gson.toJson(submitter).getBytes());
+                os.close();
+            }
+            catch (IOException e) {
+                SpigotServerSaturday.instance().getLogger().warning(Messages.failedToWriteFile(file));
+            }
+        });
     }
 }

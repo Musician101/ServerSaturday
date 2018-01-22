@@ -1,27 +1,25 @@
 package com.campmongoose.serversaturday.spigot.submission;
 
+import com.campmongoose.serversaturday.common.JsonUtils;
 import com.campmongoose.serversaturday.common.Reference.Config;
-import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.ServerSaturday;
+import com.campmongoose.serversaturday.common.submission.Build;
 import com.campmongoose.serversaturday.common.submission.Submitter;
-import com.campmongoose.serversaturday.spigot.SpigotRewardGiver;
-import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
-import com.campmongoose.serversaturday.spigot.uuid.UUIDUtils;
-import java.io.File;
-import java.io.IOException;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemoryConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -32,35 +30,9 @@ public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location,
         super(player.getName(), player.getUniqueId());
     }
 
-    //TODO going to change this over to JSON
-    @Deprecated
-    public SpigotSubmitter(@Nonnull UUID uuid, @Nonnull ConfigurationSection cs) {
-        super(getName(uuid, cs.getString(Config.NAME)), uuid);
-        //Backwards compat for old save formats
-        if (cs.get(Config.BUILDS) instanceof ConfigurationSection) {
-            ConfigurationSection buildsCS = cs.getConfigurationSection(Config.BUILDS);
-            buildsCS.getKeys(false).stream().filter(buildName ->
-                    !buildName.contains(".")).forEach(buildName -> builds.put(buildName, new SpigotBuild(buildsCS.getConfigurationSection(buildName))));
-        }
-        else {
-            cs.getMapList(Config.BUILDS).forEach(object -> {
-                MemoryConfiguration mc = new MemoryConfiguration();
-                object.forEach((k, v) -> mc.set(k.toString(), v));
-                builds.put(name, new SpigotBuild(mc));
-            });
-        }
-    }
-
-    //TODO update name when player joins the server
-    @Deprecated
-    private static String getName(UUID uuid, String name) {
-        try {
-            String retrievedName = UUIDUtils.getNameOf(uuid);
-            return retrievedName == null ? name : retrievedName;
-        }
-        catch (IOException e) {
-            return name;
-        }
+    public SpigotSubmitter(String name, UUID uuid, Map<String, SpigotBuild> builds) {
+        super(name, uuid);
+        this.builds.putAll(builds);
     }
 
     @Nonnull
@@ -93,34 +65,24 @@ public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location,
         return builds.get(name);
     }
 
-    @Override
-    public void save(@Nonnull File file) {
-        ServerSaturday<SpigotBuild, ItemStack, PlayerJoinEvent, Logger, Location, Player, SpigotRewardGiver, SpigotSubmissions, SpigotSubmitter> plugin = SpigotServerSaturday.instance();
-        Logger logger = plugin.getLogger();
-        try {
-            if (file.createNewFile()) {
-                logger.info(Messages.newFile(file));
-            }
-        }
-        catch (IOException e) {
-            logger.severe(Messages.ioException(file));
-            return;
+    public static class SpigotSerializer implements Serializer<SpigotBuild, ItemStack, Location, SpigotSubmitter> {
+
+        @Override
+        public SpigotSubmitter deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            UUID uuid = UUID.fromString(jsonObject.get(Config.UUID).getAsString());
+            String name = jsonObject.get(Config.NAME).getAsString();
+            Map<String, SpigotBuild> builds = StreamSupport.stream(jsonObject.getAsJsonArray(Config.BUILDS).spliterator(), false).map(build -> jsonDeserializationContext.<SpigotBuild>deserialize(build, SpigotBuild.class)).collect(Collectors.toMap(Build::getName, build -> build));
+            return new SpigotSubmitter(name, uuid, builds);
         }
 
-        YamlConfiguration yaml = new YamlConfiguration();
-        try {
-            yaml.set(Config.NAME, UUIDUtils.getNameOf(uuid));
-        }
-        catch (IOException e) {
-            yaml.set(Config.NAME, name);
-        }
-
-        yaml.set(Config.BUILDS, builds.values().stream().map(SpigotBuild::serialize).collect(Collectors.toList()));
-        try {
-            yaml.save(file);
-        }
-        catch (IOException e) {
-            logger.severe(Messages.ioException(file));
+        @Override
+        public JsonElement serialize(SpigotSubmitter submitter, Type type, JsonSerializationContext jsonSerializationContext) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty(Config.NAME, submitter.name);
+            jsonObject.addProperty(Config.UUID, submitter.uuid.toString());
+            jsonObject.add(Config.BUILDS, submitter.builds.values().stream().map(jsonSerializationContext::serialize).collect(JsonUtils.jsonArrayElementCollector()));
+            return jsonObject;
         }
     }
 }

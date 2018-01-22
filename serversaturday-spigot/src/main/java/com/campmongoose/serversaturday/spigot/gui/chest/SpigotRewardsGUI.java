@@ -34,7 +34,7 @@ public class SpigotRewardsGUI extends RewardsGUI<Inventory, Player> implements L
                 REWARDS_FILE.createNewFile();
             }
             catch (IOException e) {
-                SpigotServerSaturday.instance().getLogger().warning(Messages.ioException(REWARDS_FILE));
+                SpigotServerSaturday.instance().getLogger().warning(Messages.failedToWriteFile(REWARDS_FILE));
             }
         }
 

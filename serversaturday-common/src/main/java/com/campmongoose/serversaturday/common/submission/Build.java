@@ -1,9 +1,10 @@
 package com.campmongoose.serversaturday.common.submission;
 
 import com.campmongoose.serversaturday.common.Reference.Config;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonSerializer;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Nonnull;
 
 //TODO allow resourcepack and description to be Text in Sponge
@@ -16,12 +17,8 @@ public abstract class Build<B extends Build<B, I, L, S>, I, L, S extends Submitt
     @Nonnull
     protected String name;
     @Nonnull
-    protected List<String> resourcePack = Collections.singletonList(Config.VANILLA);
+    protected List<String> resourcePacks = Collections.singletonList(Config.VANILLA);
     protected boolean submitted = false;
-
-    protected Build(@Nonnull String name) {
-        this.name = name;
-    }
 
     protected Build(@Nonnull String name, @Nonnull L location) {
         this.name = name;
@@ -63,16 +60,13 @@ public abstract class Build<B extends Build<B, I, L, S>, I, L, S extends Submitt
     }
 
     @Nonnull
-    public List<String> getResourcePack() {
-        return resourcePack;
+    public List<String> getResourcePacks() {
+        return resourcePacks;
     }
 
-    public void setResourcePack(@Nonnull List<String> resourcePack) {
-        this.resourcePack = resourcePack;
+    public void setResourcePacks(@Nonnull List<String> resourcePacks) {
+        this.resourcePacks = resourcePacks;
     }
-
-    @Nonnull
-    public abstract Map<String, Object> serialize();
 
     public void setFeatured(boolean featured) {
         this.featured = featured;
@@ -84,5 +78,9 @@ public abstract class Build<B extends Build<B, I, L, S>, I, L, S extends Submitt
 
     public boolean submitted() {
         return submitted;
+    }
+
+    public interface Serializer<B extends Build<B, I, L, S>, I, L, S extends Submitter<B, I, L, S>> extends JsonDeserializer<B>, JsonSerializer<B> {
+
     }
 }

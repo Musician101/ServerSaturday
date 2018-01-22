@@ -71,13 +71,15 @@ public class Reference {
         public static final String DESCRIPTION = "description";
         public static final String FEATURED = "featured";
         public static final String HOCON_EXT = ".conf";
+        public static final String ITEMBANK_EXT = ".itembank";
         public static final String LOCATION = "location";
         public static final String MAX_BUILDS = "max_builds";
         public static final String NAME = "name";
-        public static final String RESOURCE_PACK = "resource_pack";
+        public static final String RESOURCE_PACKS = "resource_packs";
         public static final String SUBMITTED = "submitted";
         public static final String VANILLA = "Vanilla";
         public static final String YAML_EXT = ".yml";
+        public static final String UUID = "uuid";
 
         private Config() {
 
@@ -89,8 +91,8 @@ public class Reference {
         }
 
         @Nonnull
-        public static String getYAMLFileName(@Nonnull UUID uuid) {
-            return uuid.toString() + YAML_EXT;
+        public static String getFileName(@Nonnull UUID uuid) {
+            return uuid.toString() + ".itembank";
         }
     }
 
@@ -173,12 +175,7 @@ public class Reference {
 
         @Nonnull
         public static String failedToSaveRewardsFile(@Nonnull File file) {
-            return PREFIX + ioException(file) + " Returning contents just in case.";
-        }
-
-        @Nonnull
-        public static String ioException(@Nonnull File file) {
-            return "An error occurred while saving " + file.getName();
+            return PREFIX + failedToWriteFile(file) + " Returning contents just in case.";
         }
 
         @Nonnull
@@ -187,13 +184,18 @@ public class Reference {
         }
 
         @Nonnull
-        public static String newFile(@Nonnull File file) {
-            return PREFIX + "Generating a new file: " + file.getName();
+        public static <B extends Build> String teleportedToBuild(@Nonnull B build) {
+            return PREFIX + "You have teleported to " + build.getName();
         }
 
         @Nonnull
-        public static <B extends Build> String teleportedToBuild(@Nonnull B build) {
-            return PREFIX + "You have teleported to " + build.getName();
+        public static String failedToReadFile(@Nonnull File file) {
+            return "Failed to read " + file.getName();
+        }
+
+        @Nonnull
+        public static String failedToWriteFile(@Nonnull File file) {
+            return "Failed to write " + file.getName();
         }
     }
 

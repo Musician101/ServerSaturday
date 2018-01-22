@@ -44,7 +44,7 @@ public class SpongeRewardGiver extends RewardGiver<ClientConnectionEvent.Join, P
             });
         }
         catch (IOException e) {
-            SpongeServerSaturday.instance().map(ServerSaturday::getLogger).ifPresent(logger -> logger.error(Messages.ioException(this.file)));
+            SpongeServerSaturday.instance().map(ServerSaturday::getLogger).ifPresent(logger -> logger.error(Messages.failedToReadFile(this.file)));
         }
     }
 
@@ -84,7 +84,7 @@ public class SpongeRewardGiver extends RewardGiver<ClientConnectionEvent.Join, P
             loader.save(node);
         }
         catch (IOException e) {
-            SpongeServerSaturday.instance().map(ServerSaturday::getLogger).ifPresent(logger -> logger.error(Messages.ioException(file)));
+            SpongeServerSaturday.instance().map(ServerSaturday::getLogger).ifPresent(logger -> logger.error(Messages.failedToWriteFile(file)));
         }
     }
 }

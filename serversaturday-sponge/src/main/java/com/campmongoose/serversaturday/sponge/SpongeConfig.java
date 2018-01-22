@@ -48,7 +48,7 @@ public class SpongeConfig extends AbstractConfig {
                 loader.save(config);
             }
             catch (IOException e) {
-                logger.info(Messages.ioException(configFile));
+                logger.info(Messages.failedToReadFile(configFile));
             }
         });
     }

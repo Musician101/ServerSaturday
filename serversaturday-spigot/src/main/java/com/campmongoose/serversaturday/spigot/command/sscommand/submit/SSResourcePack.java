@@ -46,8 +46,8 @@ public class SSResourcePack extends SpigotCommand {
                 return false;
             }
 
-            new SpigotBookGUI(player, build, build.getResourcePack(), pages -> {
-                build.setResourcePack(pages);
+            new SpigotBookGUI(player, build, build.getResourcePacks(), pages -> {
+                build.setResourcePacks(pages);
                 SpigotChestGUIs.INSTANCE.editBuild(build, submitter, player, null);
             });
             return true;

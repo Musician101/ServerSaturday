@@ -126,8 +126,8 @@ public class SpigotChestGUIs extends ChestGUIs<SpigotChestGUIBuilder, ClickType,
             }
 
             p.closeInventory();
-            new SpigotBookGUI(p, build, build.getResourcePack(), pages -> {
-                build.setResourcePack(pages);
+            new SpigotBookGUI(p, build, build.getResourcePacks(), pages -> {
+                build.setResourcePacks(pages);
                 g.open();
             });
         })).setButton(new GUIButton<>(4, ClickType.LEFT, SpigotIconBuilder.builder(Material.FLINT_AND_STEEL).name(MenuText.SUBMIT_UNREADY_NAME).description(MenuText.SUBMIT_UNREADY_DESC).addGlow(build.submitted()).build(), (g, p) -> {

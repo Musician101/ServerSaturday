@@ -141,8 +141,8 @@ public class SpongeChestGUIs extends ChestGUIs<SpongeChestGUIBuilder, Class<? ex
                     }
 
                     p.closeInventory();
-                    new SpongeBookGUI(p, build, build.getResourcePack().stream().map(Text::of).collect(Collectors.toList()), pages -> {
-                        build.setResourcePack(pages.stream().map(Text::toPlain).collect(Collectors.toList()));
+                    new SpongeBookGUI(p, build, build.getResourcePacks().stream().map(Text::of).collect(Collectors.toList()), pages -> {
+                        build.setResourcePacks(pages.stream().map(Text::toPlain).collect(Collectors.toList()));
                         g.open();
                     });
                 })).setButton(new GUIButton<>(4, ClickInventoryEvent.Primary.class, SpongeIconBuilder.builder(ItemTypes.FLINT_AND_STEEL).name(Text.of(MenuText.SUBMIT_UNREADY_NAME)).description(MenuText.SUBMIT_UNREADY_DESC.stream().map(Text::of).collect(Collectors.toList())).addGlow(build.submitted()).build(), (g, p) -> {
