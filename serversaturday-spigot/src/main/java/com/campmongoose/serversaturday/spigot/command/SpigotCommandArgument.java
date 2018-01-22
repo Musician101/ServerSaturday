@@ -8,9 +8,9 @@ import org.bukkit.ChatColor;
 public class SpigotCommandArgument {
 
     @Nonnull
-    private String name;
-    @Nonnull
     private final List<Syntax> syntaxList;
+    @Nonnull
+    private String name;
 
     public SpigotCommandArgument(@Nonnull String name) {
         this(name, Syntax.LITERAL);

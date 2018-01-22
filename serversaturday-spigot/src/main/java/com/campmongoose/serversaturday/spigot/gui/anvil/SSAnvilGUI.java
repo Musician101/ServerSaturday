@@ -10,6 +10,10 @@ import org.bukkit.entity.Player;
 public class SSAnvilGUI extends AnvilGUI {
 
     public SSAnvilGUI(@Nonnull Player player, BiFunction<Player, String, String> biFunction) {
-        super(SpigotServerSaturday.instance(), player, MenuText.RENAME_ME, biFunction);
+        this(player, MenuText.RENAME_ME, biFunction);
+    }
+
+    public SSAnvilGUI(@Nonnull Player player, String name, BiFunction<Player, String, String> biFunction) {
+        super((SpigotServerSaturday) SpigotServerSaturday.instance(), player, name, biFunction);
     }
 }

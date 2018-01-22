@@ -3,8 +3,7 @@ package com.campmongoose.serversaturday.spigot.command.sscommand.view;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
-import com.campmongoose.serversaturday.common.command.SSCommandException;
-import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
+import com.campmongoose.serversaturday.spigot.command.SpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
@@ -16,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class SSGoto extends AbstractSpigotCommand {
+public class SSGoto extends SpigotCommand {
 
     public SSGoto() {
         super(Commands.GOTO_NAME, Commands.GOTO_DESC);
@@ -24,14 +23,7 @@ public class SSGoto extends AbstractSpigotCommand {
         permissions = new SpigotCommandPermissions(Permissions.VIEW_GOTO, true);
         executor = (sender, args) -> {
             Player player = (Player) sender;
-            SpigotSubmitter submitter = null;
-            try {
-                submitter = getSubmitter(args.get(0));
-            }
-            catch (SSCommandException e) {
-                player.sendMessage(ChatColor.RED + e.getMessage());
-            }
-
+            SpigotSubmitter submitter = getSubmitter(args.get(0));
             if (submitter == null) {
                 player.sendMessage(ChatColor.RED + Messages.PLAYER_NOT_FOUND);
                 return false;

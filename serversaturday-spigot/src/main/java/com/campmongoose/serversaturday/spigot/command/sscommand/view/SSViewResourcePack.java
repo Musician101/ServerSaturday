@@ -3,8 +3,7 @@ package com.campmongoose.serversaturday.spigot.command.sscommand.view;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
-import com.campmongoose.serversaturday.common.command.SSCommandException;
-import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
+import com.campmongoose.serversaturday.spigot.command.SpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
@@ -12,18 +11,18 @@ import com.campmongoose.serversaturday.spigot.command.Syntax;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
-import net.minecraft.server.v1_11_R1.EnumHand;
+import net.minecraft.server.v1_12_R1.EnumHand;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 
-public class SSViewResourcePack extends AbstractSpigotCommand {
+public class SSViewResourcePack extends SpigotCommand {
 
     public SSViewResourcePack() {
         super(Commands.VIEW_RESOURCE_PACK_NAME, Commands.VIEW_RESOURCE_PACK_DESC);
@@ -31,15 +30,7 @@ public class SSViewResourcePack extends AbstractSpigotCommand {
         permissions = new SpigotCommandPermissions(Permissions.VIEW, true);
         executor = (sender, args) -> {
             Player player = (Player) sender;
-            SpigotSubmitter submitter;
-            try {
-                submitter = getSubmitter(args.get(0));
-            }
-            catch (SSCommandException e) {
-                player.sendMessage(ChatColor.RED + e.getMessage());
-                return false;
-            }
-
+            SpigotSubmitter submitter = getSubmitter(args.get(0));
             if (submitter == null) {
                 player.sendMessage(ChatColor.RED + Messages.PLAYER_NOT_FOUND);
                 return false;

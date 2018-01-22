@@ -1,22 +1,20 @@
 package com.campmongoose.serversaturday.sponge.command.submit;
 
-import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.command.SSCommandException;
-import com.campmongoose.serversaturday.sponge.command.AbstractSpongeCommand;
+import com.campmongoose.serversaturday.sponge.command.SSCommandExecutor;
 import com.campmongoose.serversaturday.sponge.command.args.BuildCommandElement;
-import com.campmongoose.serversaturday.sponge.gui.book.BookGUI;
-import com.campmongoose.serversaturday.sponge.gui.chest.build.EditBuildGUI;
+import com.campmongoose.serversaturday.sponge.gui.SpongeBookGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.SpongeChestGUIs;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
-import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
-public class SSResourcePack extends AbstractSpongeCommand {
+public class SSResourcePack extends SSCommandExecutor {
 
     @Nonnull
     @Override
@@ -24,20 +22,13 @@ public class SSResourcePack extends AbstractSpongeCommand {
         return arguments.<SpongeBuild>getOne(BuildCommandElement.KEY).map(build -> {
             if (source instanceof Player) {
                 Player player = (Player) source;
-                SpongeSubmitter submitter;
-                try {
-                    submitter = getSubmitter(player);
-                }
-                catch (SSCommandException e) {
-                    player.sendMessage(Text.join(Text.of(Messages.PREFIX), Text.builder(e.getMessage()).color(TextColors.RED).build()));
-                    return CommandResult.empty();
-                }
-
-                new BookGUI(player, build, build.getResourcePack(), pages -> {
-                    build.setResourcePack(pages);
-                    new EditBuildGUI(build, submitter, player, null);
-                });
-                return CommandResult.success();
+                return getSubmitter(player).map(submitter -> {
+                    new SpongeBookGUI(player, build, build.getResourcePack().stream().map(Text::of).collect(Collectors.toList()), pages -> {
+                        build.setResourcePack(pages.stream().map(TextSerializers.PLAIN::serialize).collect(Collectors.toList()));
+                        SpongeChestGUIs.INSTANCE.editBuild(build, submitter, player, null);
+                    });
+                    return CommandResult.success();
+                }).orElse(CommandResult.empty());
             }
 
             return playerOnly(source);

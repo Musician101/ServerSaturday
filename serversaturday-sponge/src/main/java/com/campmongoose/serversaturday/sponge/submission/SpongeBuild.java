@@ -1,7 +1,8 @@
 package com.campmongoose.serversaturday.sponge.submission;
 
 import com.campmongoose.serversaturday.common.Reference.Config;
-import com.campmongoose.serversaturday.common.submission.AbstractBuild;
+import com.campmongoose.serversaturday.common.ServerSaturday;
+import com.campmongoose.serversaturday.common.submission.Build;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
 import com.google.common.reflect.TypeToken;
 import java.util.ArrayList;
@@ -16,17 +17,17 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataView;
 import org.spongepowered.api.data.Queries;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.data.persistence.DataTranslator;
 import org.spongepowered.api.data.persistence.DataTranslators;
-import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.enchantment.Enchantment;
+import org.spongepowered.api.item.enchantment.EnchantmentTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class SpongeBuild extends AbstractBuild<ItemStack, Location<World>, SpongeSubmitter> {
+public class SpongeBuild extends Build<ItemStack, Location<World>, SpongeSubmitter> {
 
     public SpongeBuild(String name, ConfigurationNode cn) {
         super(name);
@@ -39,7 +40,7 @@ public class SpongeBuild extends AbstractBuild<ItemStack, Location<World>, Spong
         }
         catch (ObjectMappingException e) {
             this.description = new ArrayList<>();
-            SpongeServerSaturday.instance().getLogger().error("An error occurred while parsing the description for " + name);
+            SpongeServerSaturday.instance().map(ServerSaturday::getLogger).ifPresent(logger -> logger.error("An error occurred while parsing the description for " + name));
         }
     }
 
@@ -66,7 +67,7 @@ public class SpongeBuild extends AbstractBuild<ItemStack, Location<World>, Spong
         itemStack.offer(Keys.ITEM_LORE, Collections.singletonList(Text.of(submitter.getName())));
         itemStack.offer(Keys.DISPLAY_NAME, Text.of(name));
         if (featured) {
-            itemStack.offer(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.AQUA_AFFINITY, 1)));
+            itemStack.offer(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(Enchantment.of(EnchantmentTypes.AQUA_AFFINITY, 1)));
             itemStack.offer(Keys.HIDE_ENCHANTMENTS, true);
         }
 

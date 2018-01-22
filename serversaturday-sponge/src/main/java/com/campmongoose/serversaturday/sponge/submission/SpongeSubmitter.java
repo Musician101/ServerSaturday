@@ -2,7 +2,8 @@ package com.campmongoose.serversaturday.sponge.submission;
 
 import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.submission.AbstractSubmitter;
+import com.campmongoose.serversaturday.common.ServerSaturday;
+import com.campmongoose.serversaturday.common.submission.Submitter;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
 import java.io.File;
 import java.io.IOException;
@@ -15,14 +16,13 @@ import javax.annotation.Nonnull;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.SimpleConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
-import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.data.type.SkullTypes;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.enchantment.Enchantment;
+import org.spongepowered.api.item.enchantment.EnchantmentTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.profile.GameProfileManager;
@@ -30,7 +30,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class SpongeSubmitter extends AbstractSubmitter<SpongeBuild, ItemStack, Location<World>> {
+public class SpongeSubmitter extends Submitter<SpongeBuild, ItemStack, Location<World>> {
 
     public SpongeSubmitter(@Nonnull Player player) {
         super(player.getName(), player.getUniqueId());
@@ -72,7 +72,7 @@ public class SpongeSubmitter extends AbstractSubmitter<SpongeBuild, ItemStack, L
         }
 
         if (hasNonFeaturedBuilds) {
-            itemStack.offer(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(new ItemEnchantment(Enchantments.AQUA_AFFINITY, 1)));
+            itemStack.offer(Keys.ITEM_ENCHANTMENTS, Collections.singletonList(Enchantment.of(EnchantmentTypes.AQUA_AFFINITY, 1)));
             itemStack.offer(Keys.HIDE_ENCHANTMENTS, true);
         }
 
@@ -88,27 +88,28 @@ public class SpongeSubmitter extends AbstractSubmitter<SpongeBuild, ItemStack, L
 
     @Override
     public void save(@Nonnull File file) {
-        Logger logger = SpongeServerSaturday.instance().getLogger();
-        try {
-            if (file.createNewFile()) {
-                logger.info(Messages.newFile(file));
+        SpongeServerSaturday.instance().map(ServerSaturday::getLogger).ifPresent(logger -> {
+            try {
+                if (file.createNewFile()) {
+                    logger.info(Messages.newFile(file));
+                }
             }
-        }
-        catch (IOException e) {
-            logger.error(Messages.ioException(file));
-            return;
-        }
+            catch (IOException e) {
+                logger.error(Messages.ioException(file));
+                return;
+            }
 
-        ConfigurationNode cn = SimpleConfigurationNode.root();
-        cn.getNode(Config.NAME).setValue(Sponge.getServer().getGameProfileManager().getCache().getById(uuid).map(gp -> gp.getName().orElse(name)).orElse(name));
-        List<Map<String, Object>> buildsMap = new ArrayList<>();
-        builds.forEach((key, value) -> buildsMap.add(value.serialize()));
-        cn.getNode(Config.BUILDS).setValue(buildsMap);
-        try {
-            HoconConfigurationLoader.builder().setFile(file).build().save(cn);
-        }
-        catch (IOException e) {
-            logger.error(Messages.ioException(file));
-        }
+            ConfigurationNode cn = SimpleConfigurationNode.root();
+            cn.getNode(Config.NAME).setValue(Sponge.getServer().getGameProfileManager().getCache().getById(uuid).map(gp -> gp.getName().orElse(name)).orElse(name));
+            List<Map<String, Object>> buildsMap = new ArrayList<>();
+            builds.forEach((key, value) -> buildsMap.add(value.serialize()));
+            cn.getNode(Config.BUILDS).setValue(buildsMap);
+            try {
+                HoconConfigurationLoader.builder().setFile(file).build().save(cn);
+            }
+            catch (IOException e) {
+                logger.error(Messages.ioException(file));
+            }
+        });
     }
 }

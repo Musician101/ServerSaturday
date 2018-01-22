@@ -2,9 +2,7 @@ package com.campmongoose.serversaturday.spigot;
 
 import com.campmongoose.serversaturday.common.Reference;
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
-import com.campmongoose.serversaturday.spigot.uuid.UUIDCache;
-import com.campmongoose.serversaturday.spigot.uuid.UUIDCacheException;
+import com.campmongoose.serversaturday.common.ServerSaturday;
 import com.campmongoose.serversaturday.spigot.command.sscommand.SSCommand;
 import com.campmongoose.serversaturday.spigot.command.sscommand.SSFeature;
 import com.campmongoose.serversaturday.spigot.command.sscommand.SSGiveReward;
@@ -20,46 +18,45 @@ import com.campmongoose.serversaturday.spigot.command.sscommand.submit.SSSubmit;
 import com.campmongoose.serversaturday.spigot.command.sscommand.view.SSGoto;
 import com.campmongoose.serversaturday.spigot.command.sscommand.view.SSView;
 import com.campmongoose.serversaturday.spigot.command.sscommand.view.SSViewDescription;
+import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmissions;
+import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
+import org.bukkit.Location;
 import org.bukkit.Server;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
-public class SpigotServerSaturday extends JavaPlugin {
+public class SpigotServerSaturday extends JavaPlugin implements ServerSaturday<SpigotBuild, ItemStack, PlayerJoinEvent, Logger, Location, Player, SpigotRewardGiver, SpigotSubmissions, SpigotSubmitter> {
 
     private SpigotConfig config;
     private SpigotRewardGiver rewardGiver;
     private SpigotSubmissions submissions;
-    private UUIDCache uuidCache;
-    private int taskId = -1;
 
-    public static SpigotServerSaturday instance() {
+    public static ServerSaturday<SpigotBuild, ItemStack, PlayerJoinEvent, Logger, Location, Player, SpigotRewardGiver, SpigotSubmissions, SpigotSubmitter> instance() {
         return JavaPlugin.getPlugin(SpigotServerSaturday.class);
+    }
+
+    @Override
+    public String getId() {
+        return Reference.ID;
     }
 
     public SpigotConfig getPluginConfig() {
         return config;
     }
 
+    @Override
     public SpigotRewardGiver getRewardGiver() {
         return rewardGiver;
     }
 
-    public SpigotSubmissions getSubmissions() throws SubmissionsNotLoadedException {
-        if (submissions == null || !submissions.hasLoaded()) {
-            throw new SubmissionsNotLoadedException();
-        }
-
+    @Override
+    public SpigotSubmissions getSubmissions() {
         return submissions;
-    }
-
-    public UUIDCache getUUIDCache() throws UUIDCacheException {
-        if (taskId != -1) {
-            throw new UUIDCacheException();
-        }
-
-        return uuidCache;
     }
 
     @Override
@@ -75,21 +72,9 @@ public class SpigotServerSaturday extends JavaPlugin {
         config = new SpigotConfig();
         getLogger().info(Messages.CONFIG_LOADED);
         getLogger().info(Messages.REGISTERING_UUIDS);
-        uuidCache = new UUIDCache();
-        taskId = new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                Stream.of(getServer().getOfflinePlayers()).forEach(player -> uuidCache.add(player.getUniqueId(), player.getName()));
-                getServer().getOnlinePlayers().forEach(player -> uuidCache.add(player.getUniqueId(), player.getName()));
-                getLogger().info(Messages.UUIDS_REGISTERED);
-                taskId = -1;
-                getLogger().info(Messages.LOADING_SUBMISSIONS);
-                submissions = new SpigotSubmissions();
-                submissions.getSubmitters().forEach(spigotSubmitter -> uuidCache.addIfAbsent(spigotSubmitter.getUUID(), spigotSubmitter.getName()));
-                getLogger().info(Messages.SUBMISSIONS_LOADED);
-            }
-        }.runTaskAsynchronously(SpigotServerSaturday.instance()).getTaskId();
+        getLogger().info(Messages.LOADING_SUBMISSIONS);
+        submissions = new SpigotSubmissions();
+        getLogger().info(Messages.SUBMISSIONS_LOADED);
         rewardGiver = new SpigotRewardGiver();
         Server server = getServer();
         server.getPluginManager().registerEvents(new PlayerLoginListener(), this);

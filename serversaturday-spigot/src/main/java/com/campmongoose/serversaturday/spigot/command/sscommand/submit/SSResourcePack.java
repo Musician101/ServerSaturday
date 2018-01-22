@@ -3,14 +3,13 @@ package com.campmongoose.serversaturday.spigot.command.sscommand.submit;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
-import com.campmongoose.serversaturday.common.command.SSCommandException;
-import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
+import com.campmongoose.serversaturday.spigot.command.SpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
 import com.campmongoose.serversaturday.spigot.command.Syntax;
-import com.campmongoose.serversaturday.spigot.gui.book.BookGUI;
-import com.campmongoose.serversaturday.spigot.gui.chest.build.EditBuildGUI;
+import com.campmongoose.serversaturday.spigot.gui.SpigotBookGUI;
+import com.campmongoose.serversaturday.spigot.gui.chest.SpigotChestGUIs;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
@@ -20,7 +19,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class SSResourcePack extends AbstractSpigotCommand {
+public class SSResourcePack extends SpigotCommand {
 
     public SSResourcePack() {
         super(Commands.RESOURCE_PACK_NAME, Commands.RESOURCE_PACK_DESC);
@@ -34,30 +33,22 @@ public class SSResourcePack extends AbstractSpigotCommand {
                 return false;
             }
 
-            if (BookGUI.isEditing(player)) {
+            if (SpigotBookGUI.isEditing(player)) {
                 player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
                 return false;
             }
 
             String name = StringUtils.join(args, " ");
-            SpigotSubmitter submitter;
-            try {
-                submitter = getSubmitter(player);
-            }
-            catch (SSCommandException e) {
-                player.sendMessage(ChatColor.RED + e.getMessage());
-                return false;
-            }
-
+            SpigotSubmitter submitter = getSubmitter(player);
             SpigotBuild build = submitter.getBuild(name);
             if (build == null) {
                 player.sendMessage(ChatColor.RED + Messages.BUILD_NOT_FOUND);
                 return false;
             }
 
-            new BookGUI(player, build, build.getResourcePack(), pages -> {
+            new SpigotBookGUI(player, build, build.getResourcePack(), pages -> {
                 build.setResourcePack(pages);
-                new EditBuildGUI(build, submitter, player, null);
+                SpigotChestGUIs.INSTANCE.editBuild(build, submitter, player, null);
             });
             return true;
         };

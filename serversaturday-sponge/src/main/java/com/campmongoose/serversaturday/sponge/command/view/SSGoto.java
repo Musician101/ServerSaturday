@@ -1,7 +1,7 @@
 package com.campmongoose.serversaturday.sponge.command.view;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.sponge.command.AbstractSpongeCommand;
+import com.campmongoose.serversaturday.sponge.command.SSCommandExecutor;
 import com.campmongoose.serversaturday.sponge.command.args.SubmitterBuildCommandElement;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
@@ -14,7 +14,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class SSGoto extends AbstractSpongeCommand {
+public class SSGoto extends SSCommandExecutor {
 
     @Nonnull
     @Override

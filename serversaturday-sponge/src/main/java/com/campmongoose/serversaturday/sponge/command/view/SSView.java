@@ -1,12 +1,12 @@
 package com.campmongoose.serversaturday.sponge.command.view;
 
-import com.campmongoose.serversaturday.sponge.command.AbstractSpongeCommand;
+import com.campmongoose.serversaturday.common.gui.chest.ChestGUIs;
+import com.campmongoose.serversaturday.sponge.command.SSCommandExecutor;
 import com.campmongoose.serversaturday.sponge.command.args.SubmitterBuildCommandElement;
 import com.campmongoose.serversaturday.sponge.command.args.SubmitterCommandElement;
-import com.campmongoose.serversaturday.sponge.gui.chest.SubmissionsGUI;
-import com.campmongoose.serversaturday.sponge.gui.chest.SubmitterGUI;
-import com.campmongoose.serversaturday.sponge.gui.chest.build.EditBuildGUI;
-import com.campmongoose.serversaturday.sponge.gui.chest.build.ViewBuildGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.SpongeChestGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.SpongeChestGUIBuilder;
+import com.campmongoose.serversaturday.sponge.gui.chest.SpongeChestGUIs;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import java.util.AbstractMap.SimpleEntry;
@@ -15,30 +15,37 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
+import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
-public class SSView extends AbstractSpongeCommand {
+public class SSView extends SSCommandExecutor {
 
     @Nonnull
     @Override
     public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments) {
         if (source instanceof Player) {
             Player player = (Player) source;
+            ChestGUIs<SpongeChestGUIBuilder, Class<? extends ClickInventoryEvent>, SpongeChestGUI, Inventory, SpongeBuild, Location<World>, Player, ItemStack, Text, SpongeSubmitter> chestGUIs = SpongeChestGUIs.INSTANCE;
             return arguments.<SpongeSubmitter>getOne(SubmitterCommandElement.KEY).map(submitter -> {
-                new SubmitterGUI(player, submitter, 1, null);
+                chestGUIs.submitter(1, player, submitter, null);
                 return CommandResult.success();
             }).orElseGet(() -> arguments.<SimpleEntry<SpongeSubmitter, SpongeBuild>>getOne(SubmitterBuildCommandElement.KEY).map(entry -> {
                 SpongeSubmitter submitter = entry.getKey();
                 SpongeBuild build = entry.getValue();
                 if (player.getUniqueId().equals(submitter.getUUID())) {
-                    new EditBuildGUI(build, submitter, player, null);
+                    chestGUIs.editBuild(build, submitter, player, null);
                 }
                 else {
-                    new ViewBuildGUI(entry.getValue(), entry.getKey(), player, null);
+                    chestGUIs.viewBuild(entry.getValue(), entry.getKey(), player, null);
                 }
 
                 return CommandResult.success();
             }).orElseGet(() -> {
-                new SubmissionsGUI(player, 1, null);
+                chestGUIs.submissions(1, player, null);
                 return CommandResult.success();
             }));
         }

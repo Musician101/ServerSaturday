@@ -4,23 +4,21 @@ import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.MenuText;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
-import com.campmongoose.serversaturday.common.command.SSCommandException;
-import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
-import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
+import com.campmongoose.serversaturday.spigot.command.SpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
 import com.campmongoose.serversaturday.spigot.command.Syntax;
-import com.campmongoose.serversaturday.spigot.gui.chest.build.EditBuildGUI;
+import com.campmongoose.serversaturday.spigot.gui.anvil.SSAnvilGUI;
+import com.campmongoose.serversaturday.spigot.gui.chest.SpigotChestGUIs;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
-import net.wesjd.anvilgui.AnvilGUI;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class SSNew extends AbstractSpigotCommand {
+public class SSNew extends SpigotCommand {
 
     public SSNew() {
         super(Commands.NEW_NAME, Commands.NEW_DESC);
@@ -33,17 +31,9 @@ public class SSNew extends AbstractSpigotCommand {
                 return false;
             }
 
-            SpigotSubmitter submitter;
-            try {
-                submitter = getSubmitter(player);
-            }
-            catch (SSCommandException e) {
-                player.sendMessage(ChatColor.RED + e.getMessage());
-                return false;
-            }
-
+            SpigotSubmitter submitter = getSubmitter(player);
             if (args.isEmpty()) {
-                new AnvilGUI(SpigotServerSaturday.instance(), player, MenuText.BUILD_DEFAULT_NAME, (p, name) -> {
+                new SSAnvilGUI(player, MenuText.BUILD_DEFAULT_NAME, (p, name) -> {
                     if (submitter.getBuild(name) != null) {
                         return MenuText.ALREADY_EXISTS;
                     }
@@ -61,7 +51,7 @@ public class SSNew extends AbstractSpigotCommand {
             }
 
             SpigotBuild build = submitter.newBuild(name, player.getLocation());
-            new EditBuildGUI(build, submitter, player, null);
+            SpigotChestGUIs.INSTANCE.editBuild(build, submitter, player, null);
             return true;
         };
     }

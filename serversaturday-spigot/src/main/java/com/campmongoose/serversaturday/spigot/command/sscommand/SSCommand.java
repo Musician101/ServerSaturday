@@ -3,7 +3,7 @@ package com.campmongoose.serversaturday.spigot.command.sscommand;
 import com.campmongoose.serversaturday.common.Reference;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
-import com.campmongoose.serversaturday.spigot.command.AbstractSpigotCommand;
+import com.campmongoose.serversaturday.spigot.command.SpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
@@ -24,14 +24,14 @@ import java.util.Collections;
 import java.util.stream.Stream;
 import org.bukkit.ChatColor;
 
-public class SSCommand extends AbstractSpigotCommand {
+public class SSCommand extends SpigotCommand {
 
     public SSCommand() {
         super(Commands.SS_CMD.replace("/", ""), Commands.HELP_DESC);
         usage = new SpigotCommandUsage(Collections.singletonList(new SpigotCommandArgument(Commands.SS_CMD)));
         permissions = new SpigotCommandPermissions("", false);
         executor = (sender, args) -> {
-            sender.sendMessage(ChatColor.GREEN + "===== " + ChatColor.RESET + Reference.NAME + " v" + SpigotServerSaturday.instance().getDescription().getVersion() + ChatColor.GREEN + " by " + ChatColor.RESET + "Musician101" + ChatColor.GREEN + " =====");
+            sender.sendMessage(ChatColor.GREEN + "===== " + ChatColor.RESET + Reference.NAME + " v" + ((SpigotServerSaturday) SpigotServerSaturday.instance()).getDescription().getVersion() + ChatColor.GREEN + " by " + ChatColor.RESET + "Musician101" + ChatColor.GREEN + " =====");
             sender.sendMessage(getHelp());
             Stream.of(new SSDescription(), new SSEdit(), new SSFeature(), new SSGetRewards(), new SSGoto(), new SSLocation(), new SSNew(), new SSReload(), new SSRemove(), new SSRename(), new SSResourcePack(), new SSSubmit(), new SSView(), new SSViewDescription(), new SSViewResourcePack())
                     .filter(command -> sender.hasPermission(command.getPermissions().getPermissionNode())).forEach(command -> sender.sendMessage(command.getHelp()));

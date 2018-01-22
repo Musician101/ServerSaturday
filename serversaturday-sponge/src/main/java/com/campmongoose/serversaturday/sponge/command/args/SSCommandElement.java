@@ -1,9 +1,11 @@
 package com.campmongoose.serversaturday.sponge.command.args;
 
-import com.campmongoose.serversaturday.common.submission.SubmissionsNotLoadedException;
+import com.campmongoose.serversaturday.common.ServerSaturday;
+import com.campmongoose.serversaturday.common.submission.Submissions;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -24,43 +26,6 @@ public abstract class SSCommandElement extends CommandElement {
     }
 
     @Nonnull
-    protected SpongeSubmissions getSubmissions() throws SubmissionsNotLoadedException {
-        return SpongeServerSaturday.instance().getSubmissions();
-    }
-
-    @Nonnull
-    protected SpongeSubmitter getSubmitter(@Nonnull Player player) throws SubmissionsNotLoadedException {
-        return getSubmissions().getSubmitter(player);
-    }
-
-    @Nullable
-    protected SpongeSubmitter getSubmitter(@Nonnull String playerName) throws SubmissionsNotLoadedException {
-        int nameLength = playerName.length();
-        UserStorageService userStorage = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
-        if (nameLength >= 3 && nameLength <= 16) {
-            Optional<User> user = userStorage.get(playerName);
-            if (user.isPresent()) {
-                return getSubmitter(user.get().getUniqueId());
-            }
-        }
-
-        if (nameLength <= 16) {
-            for (SpongeSubmitter s : getSubmissions().getSubmitters()) {
-                if (s.getName().equalsIgnoreCase(playerName)) {
-                    return s;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    @Nullable
-    protected SpongeSubmitter getSubmitter(@Nonnull UUID uuid) throws SubmissionsNotLoadedException {
-        return getSubmissions().getSubmitter(uuid);
-    }
-
-    @Nonnull
     protected String getBuild(@Nonnull CommandArgs args) throws ArgumentParseException {
         StringBuilder sb = new StringBuilder(args.next());
         while (args.hasNext()) {
@@ -68,5 +33,25 @@ public abstract class SSCommandElement extends CommandElement {
         }
 
         return sb.toString();
+    }
+
+    @Nonnull
+    protected Optional<SpongeSubmissions> getSubmissions() {
+        return SpongeServerSaturday.instance().map(ServerSaturday::getSubmissions);
+    }
+
+    @Nonnull
+    protected Optional<SpongeSubmitter> getSubmitter(@Nonnull String playerName) {
+        return Sponge.getServiceManager().getRegistration(UserStorageService.class).map(userStorage -> userStorage.getProvider().get(playerName).map(User::getUniqueId).flatMap(this::getSubmitter)).orElseGet(() -> getSubmissions().map(Submissions::getSubmitters).map(List::stream).flatMap(stream -> stream.filter(s -> playerName.equalsIgnoreCase(s.getName())).findFirst()));
+    }
+
+    @Nonnull
+    protected Optional<SpongeSubmitter> getSubmitter(@Nonnull UUID uuid) {
+        return getSubmissions().map(submissions -> submissions.getSubmitter(uuid));
+    }
+
+    @Nonnull
+    protected Optional<SpongeSubmitter> getSubmitter(@Nonnull Player player) {
+        return getSubmissions().map(submissions -> submissions.getSubmitter(player));
     }
 }

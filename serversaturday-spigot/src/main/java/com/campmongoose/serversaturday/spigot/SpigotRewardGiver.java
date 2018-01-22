@@ -1,11 +1,9 @@
 package com.campmongoose.serversaturday.spigot;
 
-import com.campmongoose.serversaturday.common.AbstractRewardGiver;
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.spigot.uuid.MojangAPIException;
-import com.campmongoose.serversaturday.spigot.uuid.PlayerNotFoundException;
-import com.campmongoose.serversaturday.spigot.uuid.UUIDCacheException;
-import com.campmongoose.serversaturday.spigot.gui.chest.RewardsGUI;
+import com.campmongoose.serversaturday.common.RewardGiver;
+import com.campmongoose.serversaturday.spigot.gui.chest.SpigotRewardsGUI;
+import com.campmongoose.serversaturday.spigot.uuid.UUIDUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
@@ -16,10 +14,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public class SpigotRewardGiver extends AbstractRewardGiver<PlayerJoinEvent, Player> {
+public class SpigotRewardGiver extends RewardGiver<PlayerJoinEvent, Player> {
 
     public SpigotRewardGiver() {
-        super(new File(SpigotServerSaturday.instance().getDataFolder(), "rewards_waiting.yml"));
+        super(new File(((SpigotServerSaturday) SpigotServerSaturday.instance()).getDataFolder(), "rewards_waiting.yml"));
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -42,7 +40,7 @@ public class SpigotRewardGiver extends AbstractRewardGiver<PlayerJoinEvent, Play
         UUID uuid = player.getUniqueId();
         int amount = rewardsWaiting.put(uuid, 0);
         for (int i = 0; i < amount; i++) {
-            Stream.of(RewardsGUI.getRewards()).filter(Objects::nonNull).forEach(itemStack -> player.getWorld().dropItem(player.getLocation(), itemStack));
+            Stream.of(SpigotRewardsGUI.getRewards()).filter(Objects::nonNull).forEach(itemStack -> player.getWorld().dropItem(player.getLocation(), itemStack));
         }
     }
 
@@ -62,10 +60,10 @@ public class SpigotRewardGiver extends AbstractRewardGiver<PlayerJoinEvent, Play
         rewardsWaiting.forEach((uuid, amount) -> {
             yml.set(uuid.toString() + ".amount", amount);
             try {
-                yml.set(uuid.toString() + ".name", SpigotServerSaturday.instance().getUUIDCache().getNameOf(uuid));
+                yml.set(uuid.toString() + ".name", UUIDUtils.getNameOf(uuid));
             }
-            catch (IOException | MojangAPIException | PlayerNotFoundException | UUIDCacheException e) {
-                SpigotServerSaturday.instance().getLogger().warning(e.getMessage().replace(Messages.PREFIX, ""));
+            catch (IOException e) {
+                SpigotServerSaturday.instance().getLogger().warning(e.getMessage());
             }
         });
 

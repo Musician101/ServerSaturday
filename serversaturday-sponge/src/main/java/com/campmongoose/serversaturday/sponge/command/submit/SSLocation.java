@@ -1,10 +1,9 @@
 package com.campmongoose.serversaturday.sponge.command.submit;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.command.SSCommandException;
-import com.campmongoose.serversaturday.sponge.command.AbstractSpongeCommand;
+import com.campmongoose.serversaturday.sponge.command.SSCommandExecutor;
 import com.campmongoose.serversaturday.sponge.command.args.BuildCommandElement;
-import com.campmongoose.serversaturday.sponge.gui.chest.build.EditBuildGUI;
+import com.campmongoose.serversaturday.sponge.gui.chest.SpongeChestGUIs;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import javax.annotation.Nonnull;
 import org.spongepowered.api.command.CommandResult;
@@ -14,7 +13,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class SSLocation extends AbstractSpongeCommand {
+public class SSLocation extends SSCommandExecutor {
 
     @Nonnull
     @Override
@@ -22,16 +21,12 @@ public class SSLocation extends AbstractSpongeCommand {
         return arguments.<SpongeBuild>getOne(BuildCommandElement.KEY).map(build -> {
             if (source instanceof Player) {
                 Player player = (Player) source;
-                build.setLocation(player.getLocation());
-                try {
-                    new EditBuildGUI(build, getSubmitter(player), player, null);
+                return getSubmitter(player).map(submitter -> {
+                    build.setLocation(player.getLocation());
+                    SpongeChestGUIs.INSTANCE.editBuild(build, submitter, player, null);
                     player.sendMessage(Text.builder(Messages.locationChanged(build)).color(TextColors.GREEN).build());
                     return CommandResult.success();
-                }
-                catch (SSCommandException e) {
-                    player.sendMessage(Text.builder(e.getMessage()).color(TextColors.RED).build());
-                    return CommandResult.empty();
-                }
+                }).orElse(CommandResult.empty());
             }
 
             return playerOnly(source);

@@ -2,17 +2,18 @@ package com.campmongoose.serversaturday.spigot.submission;
 
 import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.submission.AbstractSubmitter;
+import com.campmongoose.serversaturday.common.ServerSaturday;
+import com.campmongoose.serversaturday.common.submission.Submitter;
+import com.campmongoose.serversaturday.spigot.SpigotRewardGiver;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
-import com.campmongoose.serversaturday.spigot.uuid.MojangAPIException;
-import com.campmongoose.serversaturday.spigot.uuid.PlayerNotFoundException;
-import com.campmongoose.serversaturday.spigot.uuid.UUIDCacheException;
+import com.campmongoose.serversaturday.spigot.uuid.UUIDUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,16 +21,19 @@ import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, Location> {
+public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location> {
 
     public SpigotSubmitter(Player player) {
         super(player.getName(), player.getUniqueId());
     }
 
+    //TODO going to change this over to JSON
+    @Deprecated
     public SpigotSubmitter(@Nonnull UUID uuid, @Nonnull ConfigurationSection cs) {
         super(getName(uuid, cs.getString(Config.NAME)), uuid);
         //Backwards compat for old save formats
@@ -47,11 +51,14 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
         }
     }
 
+    //TODO update name when player joins the server
+    @Deprecated
     private static String getName(UUID uuid, String name) {
         try {
-            return SpigotServerSaturday.instance().getUUIDCache().getNameOf(uuid);
+            String retrievedName = UUIDUtils.getNameOf(uuid);
+            return retrievedName == null ? name : retrievedName;
         }
-        catch (IOException | MojangAPIException | PlayerNotFoundException | UUIDCacheException e) {
+        catch (IOException e) {
             return name;
         }
     }
@@ -62,7 +69,7 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
         ItemStack itemStack = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
         SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
         skullMeta.setDisplayName(name);
-        skullMeta.setOwner(name);
+        skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
         boolean hasNonFeaturedBuilds = false;
         for (SpigotBuild build : builds.values()) {
             if (build.submitted() && !build.featured()) {
@@ -88,7 +95,7 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
 
     @Override
     public void save(@Nonnull File file) {
-        SpigotServerSaturday plugin = SpigotServerSaturday.instance();
+        ServerSaturday<SpigotBuild, ItemStack, PlayerJoinEvent, Logger, Location, Player, SpigotRewardGiver, SpigotSubmissions, SpigotSubmitter> plugin = SpigotServerSaturday.instance();
         Logger logger = plugin.getLogger();
         try {
             if (file.createNewFile()) {
@@ -102,12 +109,12 @@ public class SpigotSubmitter extends AbstractSubmitter<SpigotBuild, ItemStack, L
 
         YamlConfiguration yaml = new YamlConfiguration();
         try {
-            yaml.set(Config.NAME, plugin.getUUIDCache().getNameOf(uuid));
+            yaml.set(Config.NAME, UUIDUtils.getNameOf(uuid));
         }
-        catch (IOException | MojangAPIException | PlayerNotFoundException | UUIDCacheException e) {
+        catch (IOException e) {
             yaml.set(Config.NAME, name);
         }
-        
+
         yaml.set(Config.BUILDS, builds.values().stream().map(SpigotBuild::serialize).collect(Collectors.toList()));
         try {
             yaml.save(file);

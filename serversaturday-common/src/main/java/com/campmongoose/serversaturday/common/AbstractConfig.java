@@ -9,7 +9,7 @@ public abstract class AbstractConfig {
     protected final File configFile;
     protected int maxBuilds;
 
-    public AbstractConfig(@Nonnull File configFile) {
+    protected AbstractConfig(@Nonnull File configFile) {
         this.configFile = configFile;
     }
 

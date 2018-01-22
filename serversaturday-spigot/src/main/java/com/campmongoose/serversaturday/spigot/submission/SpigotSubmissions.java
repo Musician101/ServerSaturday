@@ -2,7 +2,7 @@ package com.campmongoose.serversaturday.spigot.submission;
 
 import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.submission.AbstractSubmissions;
+import com.campmongoose.serversaturday.common.submission.Submissions;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import java.io.File;
 import java.util.UUID;
@@ -12,10 +12,12 @@ import javax.annotation.Nonnull;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-public class SpigotSubmissions extends AbstractSubmissions<Player, SpigotSubmitter> {
+public class SpigotSubmissions extends Submissions<Player, SpigotSubmitter> {
 
+    //TODO going to change this over to JSON
+    @Deprecated
     public SpigotSubmissions() {
-        super(SpigotServerSaturday.instance().getDataFolder());
+        super(((SpigotServerSaturday) SpigotServerSaturday.instance()).getDataFolder());
     }
 
     @Nonnull
@@ -44,8 +46,6 @@ public class SpigotSubmissions extends AbstractSubmissions<Player, SpigotSubmitt
         else {
             logger.info(Messages.failedToReadFiles(dir));
         }
-
-        super.load();
     }
 
     @Override

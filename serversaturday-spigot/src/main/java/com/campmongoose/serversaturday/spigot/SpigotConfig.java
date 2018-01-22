@@ -8,13 +8,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class SpigotConfig extends AbstractConfig {
 
     public SpigotConfig() {
-        super(new File(SpigotServerSaturday.instance().getDataFolder(), "config.yml"));
+        super(new File(((SpigotServerSaturday) SpigotServerSaturday.instance()).getDataFolder(), "config.yml"));
         reload();
     }
 
     @Override
     public void reload() {
-        SpigotServerSaturday plugin = SpigotServerSaturday.instance();
+        SpigotServerSaturday plugin = (SpigotServerSaturday) SpigotServerSaturday.instance();
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
         FileConfiguration config = plugin.getConfig();
@@ -30,5 +30,6 @@ public class SpigotConfig extends AbstractConfig {
         }
 
         maxBuilds = config.getInt(Config.MAX_BUILDS);
+        plugin.saveConfig();
     }
 }

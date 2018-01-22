@@ -1,7 +1,7 @@
 package com.campmongoose.serversaturday.spigot.submission;
 
 import com.campmongoose.serversaturday.common.Reference.Config;
-import com.campmongoose.serversaturday.common.submission.AbstractBuild;
+import com.campmongoose.serversaturday.common.submission.Build;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +15,10 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SpigotBuild extends AbstractBuild<ItemStack, Location, SpigotSubmitter> {
+public class SpigotBuild extends Build<ItemStack, Location, SpigotSubmitter> {
 
+    //TODO going to change this over to JSON
+    @Deprecated
     public SpigotBuild(@Nonnull ConfigurationSection cs) {
         super(cs.getString(Config.NAME));
         this.featured = cs.getBoolean(Config.FEATURED);
@@ -66,7 +68,6 @@ public class SpigotBuild extends AbstractBuild<ItemStack, Location, SpigotSubmit
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
-        map.put(Config.NAME, name);
         map.put(Config.FEATURED, featured);
         map.put(Config.SUBMITTED, submitted);
         map.put(Config.DESCRIPTION, description);
