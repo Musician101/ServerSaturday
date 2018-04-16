@@ -53,6 +53,7 @@ public class SSView extends AbstractCommand {
                 submitter.openMenu(1, player);
             }
             else {
+                player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "Attempting to open the GUI. This may take a few seconds.");
                 submissions.openMenu(1, player);
             }
         }

@@ -46,7 +46,7 @@ public class Submitter {
         ItemStack itemStack = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
         SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
         skullMeta.setDisplayName(name);
-        skullMeta.setOwner(name);
+        skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(name));
         boolean hasNonFeaturedBuilds = false;
         for (Build build : builds.values()) {
             if (build.submitted() && !build.featured()) {
