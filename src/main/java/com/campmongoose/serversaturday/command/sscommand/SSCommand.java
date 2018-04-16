@@ -16,6 +16,7 @@ import com.campmongoose.serversaturday.command.sscommand.submit.SSSubmit;
 import com.campmongoose.serversaturday.command.sscommand.view.SSGoto;
 import com.campmongoose.serversaturday.command.sscommand.view.SSView;
 import com.campmongoose.serversaturday.command.sscommand.view.SSViewDescription;
+import com.campmongoose.serversaturday.command.sscommand.view.SSViewResourcePack;
 import java.util.Arrays;
 import java.util.Collections;
 import org.bukkit.command.CommandSender;
@@ -23,7 +24,7 @@ import org.bukkit.command.CommandSender;
 public class SSCommand extends AbstractCommand {
 
     public SSCommand() {
-        super("ss", "Plugin based submission form for Potato's Server Saturday.", Collections.singletonList(new CommandArgument(Commands.SS_CMD)), 0, "", false, Arrays.asList(new SSDescription(), new SSEdit(), new SSFeature(), new SSGetRewards(), new SSGiveReward(), new SSGoto(), new SSLocation(), new SSNew(), new SSReload(), new SSRemove(), new SSRename(), new SSResourcePack(), new SSSetRewards(), new SSSubmit(), new SSView(), new SSViewDescription()));
+        super("ss", "Plugin based submission form for Potato's Server Saturday.", Collections.singletonList(new CommandArgument(Commands.SS_CMD)), 0, "", false, Arrays.asList(new SSDescription(), new SSEdit(), new SSFeature(), new SSGetRewards(), new SSGiveReward(), new SSGoto(), new SSLocation(), new SSNew(), new SSReload(), new SSRemove(), new SSRename(), new SSResourcePack(), new SSSetRewards(), new SSSubmit(), new SSView(), new SSViewDescription(), new SSViewResourcePack()));
     }
 
     @Override

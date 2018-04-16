@@ -6,21 +6,19 @@ import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.submission.Build;
-import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.campmongoose.serversaturday.util.MojangAPIException;
 import com.campmongoose.serversaturday.util.PlayerNotFoundException;
-import com.campmongoose.serversaturday.util.UUIDCacheException;
 import java.io.IOException;
 import java.util.Arrays;
-import net.minecraft.server.v1_11_R1.EntityPlayer;
-import net.minecraft.server.v1_11_R1.EnumHand;
+import net.minecraft.server.v1_12_R1.EntityPlayer;
+import net.minecraft.server.v1_12_R1.EnumHand;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -69,7 +67,7 @@ public class SSViewDescription extends AbstractCommand {
             player.getInventory().setItemInMainHand(old);
             return false;
         }
-        catch (SubmissionsNotLoadedException | UUIDCacheException | PlayerNotFoundException | MojangAPIException | IOException e) {
+        catch (PlayerNotFoundException | MojangAPIException | IOException e) {
             player.sendMessage(e.getMessage());
             return false;
         }

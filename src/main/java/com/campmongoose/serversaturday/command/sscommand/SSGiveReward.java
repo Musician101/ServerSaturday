@@ -7,7 +7,7 @@ import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.util.MojangAPIException;
 import com.campmongoose.serversaturday.util.PlayerNotFoundException;
-import com.campmongoose.serversaturday.util.UUIDCacheException;
+import com.campmongoose.serversaturday.util.UUIDUtils;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.UUID;
@@ -32,9 +32,9 @@ public class SSGiveReward extends AbstractCommand {
 
         UUID uuid;
         try {
-            uuid = getUUIDCache().getUUIDOf(args[0]);
+            uuid = UUIDUtils.getUUIDOf(args[0]);
         }
-        catch (UUIDCacheException | PlayerNotFoundException | MojangAPIException | IOException e) {
+        catch (PlayerNotFoundException | MojangAPIException | IOException e) {
             sender.sendMessage(e.getMessage());
             return false;
         }

@@ -3,12 +3,10 @@ package com.campmongoose.serversaturday.command;
 import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Submissions;
-import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.campmongoose.serversaturday.util.MojangAPIException;
 import com.campmongoose.serversaturday.util.PlayerNotFoundException;
-import com.campmongoose.serversaturday.util.UUIDCache;
-import com.campmongoose.serversaturday.util.UUIDCacheException;
+import com.campmongoose.serversaturday.util.UUIDUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,23 +85,18 @@ public abstract class AbstractCommand {
     }
 
     @Nonnull
-    protected Submissions getSubmissions() throws SubmissionsNotLoadedException {
+    protected Submissions getSubmissions() {
         return getPluginInstance().getSubmissions();
     }
 
-    @Nonnull
-    protected Submitter getSubmitter(Player player) throws SubmissionsNotLoadedException {
+    @Nullable
+    protected Submitter getSubmitter(Player player) {
         return getSubmissions().getSubmitter(player.getUniqueId());
     }
 
-    @Nonnull
-    protected UUIDCache getUUIDCache() throws UUIDCacheException {
-        return getPluginInstance().getUUIDCache();
-    }
-
     @Nullable
-    protected Submitter getSubmitter(String playerName) throws SubmissionsNotLoadedException, UUIDCacheException, MojangAPIException, IOException, PlayerNotFoundException {
-        UUID uuid = getUUIDCache().getUUIDOf(name);
+    protected Submitter getSubmitter(String playerName) throws MojangAPIException, IOException, PlayerNotFoundException {
+        UUID uuid = UUIDUtils.getUUIDOf(playerName);
         Submitter submitter = getSubmitter(uuid);
         if (submitter != null) {
             return submitter;
@@ -119,7 +112,7 @@ public abstract class AbstractCommand {
     }
 
     @Nullable
-    protected Submitter getSubmitter(UUID uuid) throws SubmissionsNotLoadedException {
+    protected Submitter getSubmitter(UUID uuid) {
         return getSubmissions().getSubmitter(uuid);
     }
 

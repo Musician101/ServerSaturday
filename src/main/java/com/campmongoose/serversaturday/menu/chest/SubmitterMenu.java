@@ -2,7 +2,6 @@ package com.campmongoose.serversaturday.menu.chest;
 
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
-import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,12 +25,7 @@ public class SubmitterMenu extends ChestMenu {
                 submitter.openMenu(page - 1, player);
             }
             else if (slot == 49) {
-                try {
-                    ServerSaturday.instance().getSubmissions().openMenu(1, player);
-                }
-                catch (SubmissionsNotLoadedException e) {
-                    player.sendMessage(e.getMessage());
-                }
+                ServerSaturday.instance().getSubmissions().openMenu(1, player);
             }
             else if (slot < 45) {
                 String name = itemStack.getItemMeta().getDisplayName();

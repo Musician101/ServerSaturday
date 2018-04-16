@@ -6,7 +6,6 @@ import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.submission.Build;
-import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
@@ -32,21 +31,15 @@ public class SSLocation extends AbstractCommand {
 
         Player player = (Player) sender;
         String name = StringUtils.join(args, " ");
-        try {
-            Submitter submitter = getSubmitter(player);
-            if (submitter.getBuild(name) == null) {
-                player.sendMessage(ChatColor.RED + Reference.PREFIX + "That build does not exist.");
-                return false;
-            }
-
-            Build build = submitter.getBuild(name);
-            build.setLocation(player.getLocation());
-            build.openMenu(submitter, player);
-            return true;
-        }
-        catch (SubmissionsNotLoadedException e) {
-            player.sendMessage(e.getMessage());
+        Submitter submitter = getSubmitter(player);
+        if (submitter.getBuild(name) == null) {
+            player.sendMessage(ChatColor.RED + Reference.PREFIX + "That build does not exist.");
             return false;
         }
+
+        Build build = submitter.getBuild(name);
+        build.setLocation(player.getLocation());
+        build.openMenu(submitter, player);
+        return true;
     }
 }

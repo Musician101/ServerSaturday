@@ -2,15 +2,14 @@ package com.campmongoose.serversaturday.menu.anvil;
 
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
-import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
 import java.util.UUID;
-import net.minecraft.server.v1_11_R1.ChatComponentText;
-import net.minecraft.server.v1_11_R1.EntityPlayer;
-import net.minecraft.server.v1_11_R1.PacketPlayOutOpenWindow;
+import net.minecraft.server.v1_12_R1.ChatComponentText;
+import net.minecraft.server.v1_12_R1.EntityPlayer;
+import net.minecraft.server.v1_12_R1.PacketPlayOutOpenWindow;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -43,20 +42,19 @@ public class NameChangeMenu extends AnvilMenu {
                 }
 
                 String name = itemMeta.getDisplayName();
-                try {
-                    Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(player.getUniqueId());
-                    if (submitter.getBuild(name) != null) {
-                        event.setWillClose(false);
-                        event.setWillDestroy(false);
-                        return;
-                    }
+                Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(player.getUniqueId());
+                if (submitter == null) {
+                    return;
+                }
 
-                    submitter.updateBuildName(build, name);
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () -> build.openMenu(submitter, Bukkit.getPlayer(viewer)));
+                if (submitter.getBuild(name) != null) {
+                    event.setWillClose(false);
+                    event.setWillDestroy(false);
+                    return;
                 }
-                catch (SubmissionsNotLoadedException e) {
-                    player.sendMessage(e.getMessage());
-                }
+
+                submitter.updateBuildName(build, name);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.instance(), () -> build.openMenu(submitter, Bukkit.getPlayer(viewer)));
             }
             else {
                 event.setWillClose(false);

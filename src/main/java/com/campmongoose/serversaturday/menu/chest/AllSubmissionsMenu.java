@@ -2,11 +2,10 @@ package com.campmongoose.serversaturday.menu.chest;
 
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
-import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.campmongoose.serversaturday.util.MojangAPIException;
 import com.campmongoose.serversaturday.util.PlayerNotFoundException;
-import com.campmongoose.serversaturday.util.UUIDCacheException;
+import com.campmongoose.serversaturday.util.UUIDUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +31,7 @@ public class AllSubmissionsMenu extends ChestMenu {
             if (itemStack.getType() == Material.BOOK) {
                 submitterName = itemMeta.getLore().get(0);
                 try {
-                    Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(ServerSaturday.instance().getUUIDCache().getUUIDOf(submitterName));
+                    Submitter submitter = ServerSaturday.instance().getSubmissions().getSubmitter(UUIDUtils.getUUIDOf(submitterName));
                     if (submitter == null) {
                         return;
                     }
@@ -41,7 +40,7 @@ public class AllSubmissionsMenu extends ChestMenu {
                         submitter.getBuild(itemName).openMenu(submitter, player);
                     }
                 }
-                catch (SubmissionsNotLoadedException | UUIDCacheException | PlayerNotFoundException | MojangAPIException | IOException e) {
+                catch (PlayerNotFoundException | MojangAPIException | IOException e) {
                     player.sendMessage(e.getMessage());
                     return;
                 }
@@ -63,37 +62,30 @@ public class AllSubmissionsMenu extends ChestMenu {
 
         ItemStack[] itemStacks = new ItemStack[54];
         List<ItemStack> list = new ArrayList<>();
-        try {
-            for (Submitter submitter : ServerSaturday.instance().getSubmissions().getSubmitters()) {
-                for (Build build : submitter.getBuilds()) {
-                    ItemStack itemStack = new ItemStack(Material.BOOK);
-                    ItemMeta itemMeta = itemStack.getItemMeta();
-                    itemMeta.setDisplayName(build.getName());
-                    itemMeta.setLore(Collections.singletonList(submitter.getName()));
-                    if (build.submitted() && !build.featured()) {
-                        itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
-                        itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    }
-
-                    itemStack.setItemMeta(itemMeta);
-                    list.add(itemStack);
+        for (Submitter submitter : ServerSaturday.instance().getSubmissions().getSubmitters()) {
+            for (Build build : submitter.getBuilds()) {
+                ItemStack itemStack = new ItemStack(Material.BOOK);
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(build.getName());
+                itemMeta.setLore(Collections.singletonList(submitter.getName()));
+                if (build.submitted() && !build.featured()) {
+                    itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
+                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 }
-            }
 
-            for (int x = 0; x < 54; x++) {
-                int subListPosition = x + (page - 1) * 45;
-                if (x < 45 && list.size() > subListPosition) {
-                    itemStacks[x] = list.get(subListPosition);
-                }
+                itemStack.setItemMeta(itemMeta);
+                list.add(itemStack);
             }
-
-            inv.setContents(itemStacks);
-        }
-        catch (SubmissionsNotLoadedException e) {
-            ServerSaturday.instance().getLogger().info("An error occurred while trying to complete this action.");
-            return;
         }
 
+        for (int x = 0; x < 54; x++) {
+            int subListPosition = x + (page - 1) * 45;
+            if (x < 45 && list.size() > subListPosition) {
+                itemStacks[x] = list.get(subListPosition);
+            }
+        }
+
+        inv.setContents(itemStacks);
         setOption(45, new ItemStack(Material.ARROW), "Page " + (page - 1));
         setOption(53, new ItemStack(Material.ARROW), "Page " + (page + 1));
     }

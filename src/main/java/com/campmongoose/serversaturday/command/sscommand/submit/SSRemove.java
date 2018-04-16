@@ -5,7 +5,6 @@ import com.campmongoose.serversaturday.Reference.Commands;
 import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
-import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
@@ -31,20 +30,14 @@ public class SSRemove extends AbstractCommand {
 
         Player player = (Player) sender;
         String name = StringUtils.join(args, " ");
-        try {
-            Submitter submitter = getSubmitter(player);
-            if (submitter.getBuild(name) == null) {
-                player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name doesn't exist.");
-                return false;
-            }
-
-            submitter.removeBuild(name);
-            submitter.openMenu(1, player);
-            return true;
-        }
-        catch (SubmissionsNotLoadedException e) {
-            player.sendMessage(e.getMessage());
+        Submitter submitter = getSubmitter(player);
+        if (submitter.getBuild(name) == null) {
+            player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name doesn't exist.");
             return false;
         }
+
+        submitter.removeBuild(name);
+        submitter.openMenu(1, player);
+        return true;
     }
 }

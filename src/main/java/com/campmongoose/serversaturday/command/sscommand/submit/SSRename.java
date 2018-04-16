@@ -7,7 +7,6 @@ import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
 import com.campmongoose.serversaturday.menu.anvil.NameChangeMenu;
 import com.campmongoose.serversaturday.submission.Build;
-import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
@@ -33,20 +32,14 @@ public class SSRename extends AbstractCommand {
 
         Player player = (Player) sender;
         String name = StringUtils.join(args, " ");
-        try {
-            Submitter submitter = getSubmitter(player);
-            if (submitter.getBuild(name) == null) {
-                player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
-                return false;
-            }
-
-            Build build = submitter.getBuild(name);
-            new NameChangeMenu(build, player.getUniqueId()).open(player);
-            return true;
-        }
-        catch (SubmissionsNotLoadedException e) {
-            player.sendMessage(e.getMessage());
+        Submitter submitter = getSubmitter(player);
+        if (submitter.getBuild(name) == null) {
+            player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
             return false;
         }
+
+        Build build = submitter.getBuild(name);
+        new NameChangeMenu(build, player.getUniqueId()).open(player);
+        return true;
     }
 }

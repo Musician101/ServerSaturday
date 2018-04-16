@@ -3,18 +3,24 @@ package com.campmongoose.serversaturday.submission;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.menu.chest.SubmissionsMenu;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+
+import static com.campmongoose.serversaturday.json.JsonUtils.GSON;
 
 public class Submissions {
 
-    private boolean hasLoaded = false;
     private final File dir;
     private final Map<UUID, Submitter> submitters = new HashMap<>();
 
@@ -23,34 +29,30 @@ public class Submissions {
         load();
     }
 
+    @Nullable
     public Submitter getSubmitter(UUID uuid) {
-        submitters.putIfAbsent(uuid, Submitter.of(Bukkit.getPlayer(uuid)));
         return submitters.get(uuid);
     }
 
     public List<Submitter> getSubmitters() {
-        List<Submitter> list = new ArrayList<>();
-        list.addAll(submitters.values());
-        return list;
-    }
-
-    public boolean hasLoaded() {
-        return hasLoaded;
+        return new ArrayList<>(submitters.values());
     }
 
     public void load() {
         dir.mkdirs();
         for (File file : dir.listFiles()) {
-            if (!file.getName().endsWith(".yml")) {
+            if (!file.getName().endsWith(".json")) {
                 continue;
             }
 
-            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-            UUID uuid = UUID.fromString(file.getName().replace(".yml", ""));
-            submitters.put(uuid, Submitter.of(uuid, yaml));
+            try {
+                Submitter submitter = GSON.fromJson(new FileReader(file), Submitter.class);
+                submitters.put(submitter.getUUID(), submitter);
+            }
+            catch (FileNotFoundException e) {
+                ServerSaturday.instance().getLogger().severe("An error occurred while loading " + file.getName());
+            }
         }
-
-        hasLoaded = true;
     }
 
     public void openMenu(int page, Player player) {
@@ -58,6 +60,33 @@ public class Submissions {
     }
 
     public void save() {
-        submitters.forEach((uuid, submitter) -> submitter.save(new File(dir, uuid.toString() + ".yml")));
+        submitters.forEach((uuid, submitter) -> {
+            File file = new File(dir, uuid.toString() + ".json");
+            if (!file.exists()) {
+                dir.mkdirs();
+                try {
+                    file.createNewFile();
+                }
+                catch (IOException e) {
+                    ServerSaturday.instance().getLogger().severe("An error occurred while saving " + file.getName());
+                    return;
+                }
+            }
+
+            try {
+                OutputStream os = new FileOutputStream(file);
+                os.write(GSON.toJson(submitter).getBytes());
+                os.close();
+            }
+            catch (IOException e) {
+                ServerSaturday.instance().getLogger().severe("An error occurred while saving " + file.getName());
+            }
+        });
+    }
+
+    public void updateSubmitterName(Player player) {
+        Submitter submitter = submitters.getOrDefault(player.getUniqueId(), new Submitter(player));
+        submitter.setName(player.getName());
+        submitters.put(submitter.getUUID(), submitter);
     }
 }

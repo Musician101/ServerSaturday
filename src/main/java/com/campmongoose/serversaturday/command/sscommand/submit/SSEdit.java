@@ -5,7 +5,6 @@ import com.campmongoose.serversaturday.Reference.Commands;
 import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
-import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
@@ -26,25 +25,19 @@ public class SSEdit extends AbstractCommand {
         }
 
         Player player = (Player) sender;
-        try {
-            Submitter submitter = getSubmitter(player);
-            if (args.length > 0) {
-                String name = StringUtils.join(args, " ");
-                if (submitter.getBuild(name) == null) {
-                    player.sendMessage(ChatColor.RED + Reference.PREFIX + "That build does not exist.");
-                    return false;
-                }
-
-                submitter.getBuild(name).openMenu(submitter, player);
-                return true;
+        Submitter submitter = getSubmitter(player);
+        if (args.length > 0) {
+            String name = StringUtils.join(args, " ");
+            if (submitter.getBuild(name) == null) {
+                player.sendMessage(ChatColor.RED + Reference.PREFIX + "That build does not exist.");
+                return false;
             }
 
-            submitter.openMenu(1, player);
+            submitter.getBuild(name).openMenu(submitter, player);
             return true;
         }
-        catch (SubmissionsNotLoadedException e) {
-            player.sendMessage(e.getMessage());
-            return false;
-        }
+
+        submitter.openMenu(1, player);
+        return true;
     }
 }

@@ -11,15 +11,22 @@ import com.campmongoose.serversaturday.util.MojangAPIException;
 import com.campmongoose.serversaturday.util.PlayerNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
+import net.minecraft.server.v1_12_R1.EntityPlayer;
+import net.minecraft.server.v1_12_R1.EnumHand;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 
-public class SSGoto extends AbstractCommand {
+public class SSViewResourcePack extends AbstractCommand {
 
-    public SSGoto() {
-        super("goto", "Teleport to a build.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("goto"), new CommandArgument("player", Syntax.REQUIRED, Syntax.REPLACE), new CommandArgument("build", Syntax.REQUIRED, Syntax.REPLACE)), 2, "ss.view.goto", true);
+    public SSViewResourcePack() {
+        super("viewresourcepack", "View the resource pack of a build.", Arrays.asList(new CommandArgument(Commands.SS_CMD), new CommandArgument("viewresourcepack"), new CommandArgument("player", Syntax.REQUIRED, Syntax.REPLACE), new CommandArgument("build", Syntax.REQUIRED, Syntax.REPLACE)), 2, "ss.view", true);
     }
 
     @Override
@@ -46,9 +53,19 @@ public class SSGoto extends AbstractCommand {
                 return false;
             }
 
-            player.teleport(build.getLocation());
-            player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "You have teleported to " + build.getName());
-            return true;
+            EntityPlayer ep = ((CraftPlayer) player).getHandle();
+            ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+            BookMeta bookMeta = (BookMeta) book.getItemMeta();
+            bookMeta.setAuthor(submitter.getName());
+            bookMeta.setPages(build.getResourcePack());
+            bookMeta.setTitle(build.getName());
+            book.setItemMeta(bookMeta);
+
+            ItemStack old = player.getInventory().getItemInMainHand();
+            player.getInventory().setItemInMainHand(book);
+            ep.a(CraftItemStack.asNMSCopy(book), EnumHand.MAIN_HAND);
+            player.getInventory().setItemInMainHand(old);
+            return false;
         }
         catch (PlayerNotFoundException | MojangAPIException | IOException e) {
             player.sendMessage(e.getMessage());

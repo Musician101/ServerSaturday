@@ -1,13 +1,12 @@
 package com.campmongoose.serversaturday.command.sscommand.submit;
 
-import com.campmongoose.serversaturday.DescriptionChangeHandler;
 import com.campmongoose.serversaturday.Reference;
 import com.campmongoose.serversaturday.Reference.Commands;
 import com.campmongoose.serversaturday.command.AbstractCommand;
 import com.campmongoose.serversaturday.command.CommandArgument;
 import com.campmongoose.serversaturday.command.CommandArgument.Syntax;
+import com.campmongoose.serversaturday.menu.EditBookGUI;
 import com.campmongoose.serversaturday.submission.Build;
-import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
 import com.campmongoose.serversaturday.submission.Submitter;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
@@ -40,29 +39,23 @@ public class SSDescription extends AbstractCommand {
             return false;
         }
 
-        DescriptionChangeHandler dch = getPluginInstance().getDescriptionChangeHandler();
-        if (dch.containsPlayer(player.getUniqueId())) {
+        EditBookGUI gui = getPluginInstance().getDescriptionGUI();
+        if (gui.containsPlayer(player)) {
             player.sendMessage(ChatColor.RED + Reference.PREFIX + "You're in the middle of editing another build.");
             return false;
         }
 
         String name = StringUtils.join(args, " ");
-        try {
-            Submitter submitter = getSubmitter(player);
-            if (submitter.getBuild(name) == null) {
-                player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
-                return false;
-            }
-
-            Build build = submitter.getBuild(name);
-            dch.add(player, build);
-            player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "Open the book to edit the description for your build.");
-            player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "If you change your mind, then just sign the book anyway.");
-            return true;
-        }
-        catch (SubmissionsNotLoadedException e) {
-            player.sendMessage(e.getMessage());
+        Submitter submitter = getSubmitter(player);
+        if (submitter.getBuild(name) == null) {
+            player.sendMessage(ChatColor.RED + Reference.PREFIX + "A build with that name does not exist.");
             return false;
         }
+
+        Build build = submitter.getBuild(name);
+        gui.add(player, build);
+        player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "Open the book to edit the description for your build.");
+        player.sendMessage(ChatColor.GOLD + Reference.PREFIX + "If you change your mind, then just sign the book anyway.");
+        return true;
     }
 }

@@ -29,11 +29,6 @@ public class ChestMenu extends AbstractMenu {
     }
 
     @EventHandler
-    public void onDrag(InventoryDragEvent event) {
-        event.setCancelled(isSameInventory(event.getInventory(), (Player) event.getWhoClicked()));
-    }
-
-    @EventHandler
     @Override
     public void onClick(InventoryClickEvent event) {
         if (event.isCancelled()) {
@@ -77,6 +72,11 @@ public class ChestMenu extends AbstractMenu {
         if (isSameInventory(event.getInventory(), (Player) event.getPlayer())) {
             destroy(this);
         }
+    }
+
+    @EventHandler
+    public void onDrag(InventoryDragEvent event) {
+        event.setCancelled(isSameInventory(event.getInventory(), (Player) event.getWhoClicked()));
     }
 
     @EventHandler

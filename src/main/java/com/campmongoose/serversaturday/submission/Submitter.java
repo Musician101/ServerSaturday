@@ -1,12 +1,6 @@
 package com.campmongoose.serversaturday.submission;
 
-import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.menu.chest.SubmitterMenu;
-import com.campmongoose.serversaturday.util.MojangAPIException;
-import com.campmongoose.serversaturday.util.PlayerNotFoundException;
-import com.campmongoose.serversaturday.util.UUIDCacheException;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +9,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -25,34 +18,20 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 public class Submitter {
 
-    private final Map<String, Build> builds = new HashMap<>();
+    private final Map<String, Build> builds;
     private final UUID uuid;
     private String name;
 
-    private Submitter(Player player) {
-        this.uuid = player.getUniqueId();
-        this.name = player.getName();
-    }
-
-    private Submitter(UUID uuid, ConfigurationSection cs) {
+    public Submitter(Map<String, Build> builds, String name, UUID uuid) {
+        this.builds = builds;
+        this.name = name;
         this.uuid = uuid;
-        try {
-            this.name = ServerSaturday.instance().getUUIDCache().getNameOf(uuid);
-        }
-        catch (UUIDCacheException | IOException | PlayerNotFoundException | MojangAPIException e) {
-            name = cs.getString("name");
-        }
-
-        ConfigurationSection buildsCS = cs.getConfigurationSection("builds");
-        buildsCS.getKeys(false).stream().filter(name -> !name.contains(".")).forEach(name -> builds.put(name, Build.of(name, buildsCS.getConfigurationSection(name))));
     }
 
-    public static Submitter of(Player player) {
-        return new Submitter(player);
-    }
-
-    public static Submitter of(UUID uuid, ConfigurationSection cs) {
-        return new Submitter(uuid, cs);
+    public Submitter(OfflinePlayer player) {
+        this.builds = new HashMap<>();
+        this.name = player.getName();
+        this.uuid = player.getUniqueId();
     }
 
     public Build getBuild(String name) {
@@ -60,9 +39,7 @@ public class Submitter {
     }
 
     public List<Build> getBuilds() {
-        List<Build> list = new ArrayList<>();
-        list.addAll(builds.values());
-        return list;
+        return new ArrayList<>(builds.values());
     }
 
     public ItemStack getMenuRepresentation() {
@@ -90,12 +67,16 @@ public class Submitter {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public UUID getUUID() {
         return uuid;
     }
 
     public Build newBuild(String name, Location location) {
-        builds.put(name, Build.of(name, location));
+        builds.put(name, new Build(name, location));
         return getBuild(name);
     }
 
@@ -107,57 +88,9 @@ public class Submitter {
         builds.remove(name);
     }
 
-    public void save(File file) {
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            }
-            catch (IOException e) {
-                ServerSaturday.instance().getLogger().severe("An error occurred while saving " + file.getName());
-                return;
-            }
-        }
-
-        YamlConfiguration yaml = new YamlConfiguration();
-        String name;
-        try {
-            name = ServerSaturday.instance().getUUIDCache().getNameOf(uuid);
-        }
-        catch (UUIDCacheException | PlayerNotFoundException | MojangAPIException | IOException e) {
-            name = this.name;
-        }
-
-        yaml.set("name", name);
-
-        Map<String, Map<String, Object>> buildsMap = new HashMap<>();
-        for (String buildName : builds.keySet()) {
-            buildsMap.put(buildName, getBuild(buildName).serialize());
-        }
-
-        yaml.set("builds", buildsMap);
-        try {
-            yaml.save(file);
-        }
-        catch (IOException e) {
-            ServerSaturday.instance().getLogger().severe("An error occurred while saving " + file.getName());
-        }
-    }
-
-    public void updateBuildDescription(Build build, List<String> description) {
-        builds.remove(build.getName());
-        build.setDescription(description);
-        builds.put(build.getName(), build);
-    }
-
     public void updateBuildName(Build build, String newName) {
         builds.remove(build.getName());
         build.setName(newName);
-        builds.put(build.getName(), build);
-    }
-
-    public void updateBuildResourcePack(Build build, String resourcePack) {
-        builds.remove(build.getName());
-        build.setResourcePack(resourcePack);
         builds.put(build.getName(), build);
     }
 }

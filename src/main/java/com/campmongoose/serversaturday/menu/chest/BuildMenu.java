@@ -10,6 +10,7 @@ import com.campmongoose.serversaturday.command.sscommand.submit.SSResourcePack;
 import com.campmongoose.serversaturday.command.sscommand.submit.SSSubmit;
 import com.campmongoose.serversaturday.command.sscommand.view.SSGoto;
 import com.campmongoose.serversaturday.command.sscommand.view.SSViewDescription;
+import com.campmongoose.serversaturday.command.sscommand.view.SSViewResourcePack;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
 import java.util.UUID;
@@ -46,6 +47,9 @@ public class BuildMenu extends ChestMenu {
             else if (slot == 2) {
                 if (name.equals("Change Description")) {
                     new SSDescription().onCommand(player, build.getName());
+                }
+                else if (name.equals("Resource Pack")) {
+                    new SSViewResourcePack().onCommand(player, submitter.getName(), build.getName());
                 }
             }
             else if (slot == 3) {
@@ -112,7 +116,7 @@ public class BuildMenu extends ChestMenu {
         else {
             setOption(0, new ItemStack(Material.COMPASS), "Teleport", "Click to teleport.", "- World: " + location.getWorld().getName(), "- X: " + location.getBlockX(), "- Y: " + location.getBlockY(), "- Z: " + location.getBlockZ());
             setOption(1, new ItemStack(Material.BOOK), "Description", "Click to get a book with this build's description.");
-            setOption(2, new ItemStack(Material.PAINTING), "Resource Pack", build.getResourcePack());
+            setOption(2, new ItemStack(Material.PAINTING), "Resource Pack", "Click to get a book that lists this", "build's recommended resource packs.");
             if (Bukkit.getPlayer(viewer).hasPermission("ss.feature")) {
                 if (build.featured()) {
                     setOption(3, new ItemStack(Material.GOLDEN_APPLE, 1, (short) 1), "Feature", build.featured(), "Set whether this build has been covered in", "an episode of Server Saturday.");

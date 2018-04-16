@@ -3,7 +3,7 @@ package com.campmongoose.serversaturday;
 import com.campmongoose.serversaturday.menu.RewardsMenu;
 import com.campmongoose.serversaturday.util.MojangAPIException;
 import com.campmongoose.serversaturday.util.PlayerNotFoundException;
-import com.campmongoose.serversaturday.util.UUIDCacheException;
+import com.campmongoose.serversaturday.util.UUIDUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -22,8 +22,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class RewardGiver implements Listener {
 
     private final File file;
-    private final Map<UUID, Integer> rewardsWaiting = new HashMap<>();
     private final Map<UUID, String> names = new HashMap<>();
+    private final Map<UUID, Integer> rewardsWaiting = new HashMap<>();
 
     public RewardGiver() {
         ServerSaturday plugin = ServerSaturday.instance();
@@ -81,9 +81,9 @@ public class RewardGiver implements Listener {
             String uuidAsString = uuid.toString();
             yml.set(uuidAsString + ".amount", amount);
             try {
-                yml.set(uuidAsString + ".name", ServerSaturday.instance().getUUIDCache().getNameOf(uuid));
+                yml.set(uuidAsString + ".name", UUIDUtils.getNameOf(uuid));
             }
-            catch (UUIDCacheException | PlayerNotFoundException | MojangAPIException | IOException e) {
+            catch (PlayerNotFoundException | MojangAPIException | IOException e) {
                 yml.set(uuidAsString + ".name", names.get(uuid));
             }
         });

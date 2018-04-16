@@ -1,61 +1,48 @@
 package com.campmongoose.serversaturday;
 
 import com.campmongoose.serversaturday.command.sscommand.SSCommand;
+import com.campmongoose.serversaturday.menu.EditBookGUI;
 import com.campmongoose.serversaturday.menu.RewardsMenu;
+import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submissions;
-import com.campmongoose.serversaturday.submission.SubmissionsNotLoadedException;
-import com.campmongoose.serversaturday.util.UUIDCache;
-import com.campmongoose.serversaturday.util.UUIDCacheException;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
-public class ServerSaturday extends JavaPlugin {
+public class ServerSaturday extends JavaPlugin implements Listener {
 
-    private DescriptionChangeHandler dch;
+    private EditBookGUI descriptionGUI;
+    private EditBookGUI resourcePackGUI;
     private RewardGiver rewardGiver;
     private Submissions submissions;
-    private UUIDCache uuidCache;
-    private int uuidCacheTaskId = -1;
 
     public static ServerSaturday instance() {
         return getPlugin(ServerSaturday.class);
     }
 
-    public DescriptionChangeHandler getDescriptionChangeHandler() {
-        return dch;
+    public EditBookGUI getDescriptionGUI() {
+        return descriptionGUI;
+    }
+
+    public EditBookGUI getResourcePackGUI() {
+        return resourcePackGUI;
     }
 
     public RewardGiver getRewardGiver() {
         return rewardGiver;
     }
 
-    public Submissions getSubmissions() throws SubmissionsNotLoadedException {
-        if (submissions == null || !submissions.hasLoaded()) {
-            throw new SubmissionsNotLoadedException();
-        }
-
+    public Submissions getSubmissions() {
         return submissions;
-    }
-
-    public UUIDCache getUUIDCache() throws UUIDCacheException {
-        if (uuidCacheTaskId != -1) {
-            throw new UUIDCacheException();
-        }
-
-        return uuidCache;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if ((command.getName().equalsIgnoreCase("serversaturday") || command.getName().equalsIgnoreCase("ss"))) {
-            if (new SSCommand().onCommand(sender, args)) {
-                return true;
-            }
-        }
+        return (command.getName().equalsIgnoreCase("serversaturday") || command.getName().equalsIgnoreCase("ss")) && new SSCommand().onCommand(sender, args);
 
-        return false;
     }
 
     @Override
@@ -66,20 +53,19 @@ public class ServerSaturday extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        uuidCacheTaskId = new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                uuidCache = new UUIDCache();
-                getLogger().info("Local UUID cache loaded.");
-                uuidCacheTaskId = -1;
-                submissions = new Submissions();
-                submissions.getSubmitters().forEach(submitter -> uuidCache.addIfAbsent(submitter.getUUID(), submitter.getName()));
-                getLogger().info("Submissions loaded.");
-            }
-        }.runTaskAsynchronously(this).getTaskId();
-        dch = new DescriptionChangeHandler();
+        submissions = new Submissions();
+        getServer().getPluginManager().registerEvents(this, this);
+        getLogger().info("Submissions loaded.");
+        descriptionGUI = new EditBookGUI(Build::getDescription, Build::setDescription);
+        resourcePackGUI = new EditBookGUI(Build::getResourcePack, Build::setResourcePack);
         rewardGiver = new RewardGiver();
         RewardsMenu.loadRewards();
+        getLogger().info("Rewards loaded.");
+
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        submissions.updateSubmitterName(event.getPlayer());
     }
 }

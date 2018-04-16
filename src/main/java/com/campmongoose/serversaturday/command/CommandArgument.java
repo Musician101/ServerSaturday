@@ -44,6 +44,10 @@ public class CommandArgument {
     }
 
     public enum Syntax {
-        LITERAL, MULTIPLE, REPLACE, REQUIRED, OPTIONAL
+        LITERAL,
+        MULTIPLE,
+        REPLACE,
+        REQUIRED,
+        OPTIONAL
     }
 }
