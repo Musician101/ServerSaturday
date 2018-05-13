@@ -1,3 +1,1 @@
-rootProject.name = 'ServerSaturday'
-
-include 'serversaturday-common', 'serversaturday-spigot', 'serversaturday-sponge'
+rootProject.name = 'ServerSaturday - Common'
