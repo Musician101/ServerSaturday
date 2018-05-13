@@ -1,0 +1,3 @@
+[submodule "ServerSaturday"]
+	path = ServerSaturday
+	url = https://github.com/Musician101/ServerSaturday.git
