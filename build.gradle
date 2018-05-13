@@ -3,7 +3,6 @@ buildscript {
         mavenCentral()
         mavenLocal()
         jcenter()
-        //TODO separating modules
     }
 
     dependencies {

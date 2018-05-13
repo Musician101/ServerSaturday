@@ -13,7 +13,7 @@ public class Reference {
     public static final String DESCRIPTION = "Plugin based submission form for Potato's Server Saturday.";
     public static final String ID = "server_saturday";
     public static final String NAME = "Server Saturday";
-    public static final String VERSION = "2.0";
+    public static final String VERSION = "2.0.1";
 
     private Reference() {
 
