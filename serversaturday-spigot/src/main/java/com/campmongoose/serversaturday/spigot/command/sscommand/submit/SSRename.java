@@ -34,7 +34,7 @@ public class SSRename extends SpigotCommand {
             }
 
             new SSAnvilGUI(player, (p, s) -> {
-                build.setName(name);
+                submitter.renameBuild(s, build);
                 SpigotChestGUIs.INSTANCE.editBuild(build, submitter, player, null);
                 return null;
             });

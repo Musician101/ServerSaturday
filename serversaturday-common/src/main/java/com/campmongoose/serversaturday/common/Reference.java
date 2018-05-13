@@ -70,15 +70,14 @@ public class Reference {
         public static final String CONFIG_VERSION = "config_version";
         public static final String DESCRIPTION = "description";
         public static final String FEATURED = "featured";
+        @Deprecated
         public static final String HOCON_EXT = ".conf";
-        public static final String ITEMBANK_EXT = ".itembank";
+        public static final String JSON = ".json";
         public static final String LOCATION = "location";
         public static final String MAX_BUILDS = "max_builds";
         public static final String NAME = "name";
-        public static final String RESOURCE_PACKS = "resource_packs";
+        public static final String RESOURCE_PACK = "resource_pack";
         public static final String SUBMITTED = "submitted";
-        public static final String VANILLA = "Vanilla";
-        public static final String YAML_EXT = ".yml";
         public static final String UUID = "uuid";
 
         private Config() {
@@ -92,7 +91,7 @@ public class Reference {
 
         @Nonnull
         public static String getFileName(@Nonnull UUID uuid) {
-            return uuid.toString() + ".itembank";
+            return uuid.toString() + JSON;
         }
     }
 
@@ -147,6 +146,7 @@ public class Reference {
         public static final String LOADING_CONFIG = "Loading config...";
         public static final String LOADING_SUBMISSIONS = "Loading submissions...";
         public static final String PREFIX = "[SS] ";
+        public static final String OPENING_SUBMISSIONS = PREFIX + "Attempting to open the Submissions GUI. This may take a few minutes.";
         public static final String BUILD_ALREADY_EXISTS = PREFIX + "A build with that name already exists.";
         public static final String BUILD_NOT_FOUND = PREFIX + "A build with that name does not exist.";
         public static final String EDIT_IN_PROGRESS = PREFIX + "You're in the middle of editing another build.";
@@ -157,7 +157,6 @@ public class Reference {
         public static final String PLAYER_ONLY = PREFIX + "This is a player only command.";
         public static final String ERROR = PREFIX + "An error occurred while trying to complete this action.";
         public static final String HAND_NOT_EMPTY = PREFIX + "You need an empty in order to run this command.";
-        public static final String REGISTERING_UUIDS = "Registering player UUIDs, this might take a while...";
         public static final String REWARDS_GIVEN = PREFIX + "All rewards have been given to you.";
         public static final String REWARDS_WAITING = PREFIX + "Hey, you! You have rewards waiting for you. Claim them with /ssgetrewards";
         public static final String SAVING_SUBMISSIONS = "Saving submissions to disk...";

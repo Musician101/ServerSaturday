@@ -3,17 +3,18 @@ package com.campmongoose.serversaturday.spigot.gui;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import net.minecraft.server.v1_12_R1.EnumHand;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -55,18 +56,17 @@ public class SpigotBookGUI implements Listener {
         BookMeta bookMeta = (BookMeta) book.getItemMeta();
         bookMeta.setAuthor(player.getName());
         bookMeta.setDisplayName(build.getName());
-        ItemMeta meta = book.getItemMeta();
-        List<String> lore = meta.getLore();
-        lore.add(LORE_IDENTIFIER);
         bookMeta.setPages(originalPages);
-        meta.setLore(lore);
-        book.setItemMeta(meta);
+        List<String> lore = bookMeta.hasLore() ? bookMeta.getLore() : new ArrayList<>();
+        lore.add(LORE_IDENTIFIER);
+        bookMeta.setLore(lore);
+        book.setItemMeta(bookMeta);
         player.getInventory().setItemInMainHand(book);
         Bukkit.getServer().getPluginManager().registerEvents(this, (SpigotServerSaturday) SpigotServerSaturday.instance());
     }
 
     public static boolean isEditing(Player player) {
-        return !Stream.of(player.getInventory().getContents()).filter(BOOK_FILTER).collect(Collectors.toList()).isEmpty();
+        return !Stream.of(player.getInventory().getContents()).filter(Objects::nonNull).filter(BOOK_FILTER).collect(Collectors.toList()).isEmpty();
     }
 
     @EventHandler
@@ -124,7 +124,33 @@ public class SpigotBookGUI implements Listener {
         book.setItemMeta(bookMeta);
         ItemStack old = player.getInventory().getItemInMainHand();
         player.getInventory().setItemInMainHand(book);
-        ((CraftPlayer) player).getHandle().a(CraftItemStack.asNMSCopy(book), EnumHand.MAIN_HAND);
+        try {
+            OPEN_BOOK.invoke(GET_HANDLE.invoke(player), AS_NMS_COPY.invoke(null, book), MAIN_HAND);
+        }
+        catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
         player.getInventory().setItemInMainHand(old);
+    }
+
+    private static final String VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+    private static Method AS_NMS_COPY;
+    private static Method GET_HANDLE;
+    private static Method OPEN_BOOK;
+    private static Object MAIN_HAND;
+
+    static {
+        try {
+            Class<?> nmsItemStack = Class.forName("net.minecraft.server." + VERSION + ".ItemStack");
+            Class<?> enumHand = Class.forName("net.minecraft.server." + VERSION + ".EnumHand");
+            AS_NMS_COPY = Class.forName("org.bukkit.craftbukkit." + VERSION + ".inventory.CraftItemStack").getDeclaredMethod("asNMSCopy", ItemStack.class);
+            OPEN_BOOK = Class.forName("net.minecraft.server." + VERSION + ".EntityPlayer").getDeclaredMethod("a", nmsItemStack, enumHand);
+            GET_HANDLE = Class.forName("org.bukkit.craftbukkit." + VERSION + ".entity.CraftPlayer").getDeclaredMethod("getHandle");
+            MAIN_HAND = enumHand.getEnumConstants()[0];
+        }
+        catch (ClassNotFoundException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
     }
 }

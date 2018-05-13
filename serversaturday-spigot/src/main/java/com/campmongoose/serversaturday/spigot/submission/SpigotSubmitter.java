@@ -15,7 +15,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -41,7 +40,8 @@ public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location,
         ItemStack itemStack = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
         SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
         skullMeta.setDisplayName(name);
-        skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+        skullMeta.setOwner(name);
+        //skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
         boolean hasNonFeaturedBuilds = false;
         for (SpigotBuild build : builds.values()) {
             if (build.submitted() && !build.featured()) {

@@ -37,7 +37,7 @@ public class SpigotSubmissions extends Submissions<Player, SpigotSubmitter> {
         dir.mkdirs();
         File[] files = dir.listFiles();
         if (files != null) {
-            Stream.of(files).filter(file -> file.getName().endsWith(Config.ITEMBANK_EXT))
+            Stream.of(files).filter(file -> file.getName().endsWith(Config.JSON))
                     .forEach(file -> {
                         try {
                             SpigotSubmitter submitter = gson.fromJson(new FileReader(file), SpigotSubmitter.class);

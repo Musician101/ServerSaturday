@@ -59,7 +59,7 @@ public class UUIDData extends AbstractSingleData<UUID, UUIDData, ImmutableUUIDDa
 
     @Nonnull
     @Override
-    public DataContainer toContainer() {
-        return super.toContainer().set(SSKeys.UUID, getValue());
+    protected DataContainer fillContainer(@Nonnull DataContainer dataContainer) {
+        return dataContainer.set(usedKey, getValue());
     }
 }

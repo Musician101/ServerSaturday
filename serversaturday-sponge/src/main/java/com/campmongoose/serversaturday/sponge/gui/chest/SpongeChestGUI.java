@@ -5,6 +5,7 @@ import com.campmongoose.serversaturday.common.gui.chest.ChestGUI;
 import com.campmongoose.serversaturday.common.gui.chest.GUIButton;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
 import com.campmongoose.serversaturday.sponge.data.key.SSKeys;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.spongepowered.api.Sponge;
@@ -27,8 +28,8 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 public final class SpongeChestGUI extends ChestGUI<Class<? extends ClickInventoryEvent>, SpongeChestGUI, Inventory, Player, ItemStack> {
 
-    public SpongeChestGUI(@Nonnull Player player, @Nonnull Text name, int size, int page, @Nullable SpongeChestGUI prevMenu, boolean manualOpen) {
-        super(parseInventory(name, size), player, page, prevMenu, manualOpen);
+    public SpongeChestGUI(@Nonnull Player player, @Nonnull Text name, int size, @Nonnull List<GUIButton<Class<? extends ClickInventoryEvent>, SpongeChestGUI, Player, ItemStack>> buttons, int page, @Nullable SpongeChestGUI prevMenu, boolean manualOpen) {
+        super(parseInventory(name, size), player, buttons, page, prevMenu, manualOpen);
     }
 
     public static SpongeChestGUIBuilder builder() {

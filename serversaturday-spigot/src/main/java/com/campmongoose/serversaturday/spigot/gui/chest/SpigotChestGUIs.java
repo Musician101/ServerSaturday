@@ -11,9 +11,10 @@ import com.campmongoose.serversaturday.spigot.gui.SpigotIconBuilder;
 import com.campmongoose.serversaturday.spigot.gui.anvil.SSAnvilGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.TreeMultimap;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -39,7 +40,7 @@ public class SpigotChestGUIs extends ChestGUIs<SpigotChestGUIBuilder, ClickType,
 
     @Nonnull
     public Optional<SpigotChestGUI> allSubmissions(int page, @Nonnull Player player, @Nullable SpigotChestGUI prevGUI) {
-        Multimap<SpigotBuild, SpigotSubmitter> map = HashMultimap.create();
+        Multimap<SpigotBuild, SpigotSubmitter> map = TreeMultimap.create(Comparator.comparing(SpigotBuild::getName), Comparator.comparing(SpigotSubmitter::getName));
         SpigotServerSaturday.instance().getSubmissions().getSubmitters().forEach(submitter -> submitter.getBuilds().forEach(build -> map.put(build, submitter)));
         return Optional.of(paged(MenuText.ALL_SUBMISSIONS, player, prevGUI, page, ClickType.LEFT, new ArrayList<>(map.keySet()), build -> {
             SpigotSubmitter submitter = new ArrayList<>(map.get(build)).get(0);
@@ -160,12 +161,17 @@ public class SpigotChestGUIs extends ChestGUIs<SpigotChestGUIBuilder, ClickType,
 
     @Nonnull
     public Optional<SpigotChestGUI> submissions(int page, @Nonnull Player player, @Nullable SpigotChestGUI prevGUI) {
-        return Optional.of(paged(MenuText.SUBMISSIONS, player, prevGUI, page, ClickType.LEFT, SpigotServerSaturday.instance().getSubmissions().getSubmitters(), SpigotSubmitter::getMenuRepresentation, (p, submitter) -> (g, ply) -> submitter(1, ply, submitter, g), (p, i) -> submissions(i, p, prevGUI)).build());
+        player.sendMessage(ChatColor.GOLD + Messages.OPENING_SUBMISSIONS);
+        List<SpigotSubmitter> submitters = SpigotServerSaturday.instance().getSubmissions().getSubmitters();
+        submitters.sort(Comparator.comparing(SpigotSubmitter::getName));
+        return Optional.of(paged(MenuText.SUBMISSIONS, player, prevGUI, page, ClickType.LEFT, submitters, SpigotSubmitter::getMenuRepresentation, (p, submitter) -> (g, ply) -> submitter(1, ply, submitter, g), (p, i) -> submissions(i, p, prevGUI)).build());
     }
 
     @Nonnull
     public Optional<SpigotChestGUI> submitter(int page, @Nonnull Player player, @Nonnull SpigotSubmitter submitter, @Nullable SpigotChestGUI prevGUI) {
-        return Optional.of(paged(MenuText.submitterMenu(submitter), player, prevGUI, page, ClickType.LEFT, submitter.getBuilds(), build -> build.getMenuRepresentation(submitter), (p, build) -> (g, ply) -> {
+        List<SpigotBuild> builds = submitter.getBuilds();
+        builds.sort(Comparator.comparing(SpigotBuild::getName));
+        return Optional.of(paged(MenuText.submitterMenu(submitter), player, prevGUI, page, ClickType.LEFT, builds, build -> build.getMenuRepresentation(submitter), (p, build) -> (g, ply) -> {
             if (ply.getUniqueId().equals(submitter.getUUID())) {
                 editBuild(build, submitter, player, g);
             }

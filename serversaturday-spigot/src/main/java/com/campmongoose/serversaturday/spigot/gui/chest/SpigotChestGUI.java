@@ -6,6 +6,7 @@ import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import javax.annotation.Nonnull;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,7 +19,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public final class SpigotChestGUI extends ChestGUI<ClickType, SpigotChestGUI, Inventory, Player, ItemStack> implements Listener {
 
@@ -41,11 +41,11 @@ public final class SpigotChestGUI extends ChestGUI<ClickType, SpigotChestGUI, In
         }
     }
 
-    SpigotChestGUI(Player player, String name, int size, int page, SpigotChestGUI prevMenu, boolean manualOpen) {
-        super(parseInventory(player, name, size), player, page, prevMenu, manualOpen);
+    SpigotChestGUI(@Nonnull Player player, @Nonnull String name, int size, @Nonnull List<GUIButton<ClickType, SpigotChestGUI, Player, ItemStack>> buttons, int page, SpigotChestGUI prevMenu, boolean manualOpen) {
+        super(parseInventory(player, name, size), player, buttons, page, prevMenu, manualOpen);
     }
 
-    public static <J extends JavaPlugin> SpigotChestGUIBuilder builder() {
+    public static SpigotChestGUIBuilder builder() {
         return new SpigotChestGUIBuilder();
     }
 

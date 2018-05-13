@@ -62,7 +62,7 @@ public class SpongeBuild extends Build<SpongeBuild, ItemStack, Location<World>, 
             String name = jsonObject.get(Config.NAME).getAsString();
             Location<World> location = jsonDeserializationContext.deserialize(jsonObject.getAsJsonObject(Config.LOCATION), new TypeToken<Location<World>>(){}.getType());
             List<Text> description = StreamSupport.stream(jsonObject.getAsJsonArray(Config.DESCRIPTION).spliterator(), false).map(json -> TextSerializers.JSON.deserialize(json.toString())).collect(Collectors.toList());
-            List<Text> resourcePacks = StreamSupport.stream(jsonObject.getAsJsonArray(Config.RESOURCE_PACKS).spliterator(), false).map(json -> TextSerializers.JSON.deserialize(json.toString())).collect(Collectors.toList());
+            List<Text> resourcePacks = StreamSupport.stream(jsonObject.getAsJsonArray(Config.RESOURCE_PACK).spliterator(), false).map(json -> TextSerializers.JSON.deserialize(json.toString())).collect(Collectors.toList());
             boolean featured = jsonObject.get(Config.FEATURED).getAsBoolean();
             boolean submitted = jsonObject.get(Config.SUBMITTED).getAsBoolean();
             return new SpongeBuild(name, location, description, resourcePacks, featured, submitted);
@@ -76,7 +76,7 @@ public class SpongeBuild extends Build<SpongeBuild, ItemStack, Location<World>, 
             jsonObject.addProperty(Config.NAME, SpongeBuild.name);
             jsonObject.add(Config.LOCATION, jsonSerializationContext.serialize(SpongeBuild.location));
             jsonObject.add(Config.DESCRIPTION, SpongeBuild.description.stream().map(text -> new Gson().fromJson(TextSerializers.JSON.serialize(text), JsonObject.class)).collect(JsonUtils.jsonArrayElementCollector()));
-            jsonObject.add(Config.RESOURCE_PACKS, SpongeBuild.resourcePacks.stream().map(text -> new Gson().fromJson(TextSerializers.JSON.serialize(text), JsonObject.class)).collect(JsonUtils.jsonArrayElementCollector()));
+            jsonObject.add(Config.RESOURCE_PACK, SpongeBuild.resourcePacks.stream().map(text -> new Gson().fromJson(TextSerializers.JSON.serialize(text), JsonObject.class)).collect(JsonUtils.jsonArrayElementCollector()));
             return jsonObject;
         }
     }

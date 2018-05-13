@@ -71,7 +71,6 @@ public class SpigotServerSaturday extends JavaPlugin implements ServerSaturday<S
         getLogger().info(Messages.LOADING_CONFIG);
         config = new SpigotConfig();
         getLogger().info(Messages.CONFIG_LOADED);
-        getLogger().info(Messages.REGISTERING_UUIDS);
         getLogger().info(Messages.LOADING_SUBMISSIONS);
         submissions = new SpigotSubmissions();
         getLogger().info(Messages.SUBMISSIONS_LOADED);

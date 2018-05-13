@@ -31,8 +31,10 @@ processResources {
 }
 
 shadowJar {
+    classifier = ""
     dependencies {
         include(dependency(':serversaturday-common'))
         include(dependency('net.wesjd:anvilgui:1.1.1-SNAPSHOT'))
     }
+    dependsOn build
 }

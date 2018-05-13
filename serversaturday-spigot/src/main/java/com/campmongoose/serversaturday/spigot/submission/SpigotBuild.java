@@ -59,7 +59,7 @@ public class SpigotBuild extends Build<SpigotBuild, ItemStack, Location, SpigotS
             String name = jsonObject.get(Config.NAME).getAsString();
             Location location = jsonDeserializationContext.deserialize(jsonObject.getAsJsonObject(Config.LOCATION), Location.class);
             List<String> description = StreamSupport.stream(jsonObject.getAsJsonArray(Config.DESCRIPTION).spliterator(), false).map(JsonElement::getAsString).collect(Collectors.toList());
-            List<String> resourcePacks = StreamSupport.stream(jsonObject.getAsJsonArray(Config.RESOURCE_PACKS).spliterator(), false).map(JsonElement::getAsString).collect(Collectors.toList());
+            List<String> resourcePacks = StreamSupport.stream(jsonObject.getAsJsonArray(Config.RESOURCE_PACK).spliterator(), false).map(JsonElement::getAsString).collect(Collectors.toList());
             boolean featured = jsonObject.get(Config.FEATURED).getAsBoolean();
             boolean submitted = jsonObject.get(Config.SUBMITTED).getAsBoolean();
             return new SpigotBuild(name, location, description, resourcePacks, featured, submitted);
@@ -73,7 +73,7 @@ public class SpigotBuild extends Build<SpigotBuild, ItemStack, Location, SpigotS
             jsonObject.addProperty(Config.NAME, spigotBuild.name);
             jsonObject.add(Config.LOCATION, jsonSerializationContext.serialize(spigotBuild.location));
             jsonObject.add(Config.DESCRIPTION, spigotBuild.description.stream().collect(JsonUtils.jsonArrayStringCollector()));
-            jsonObject.add(Config.RESOURCE_PACKS, spigotBuild.resourcePacks.stream().collect(JsonUtils.jsonArrayStringCollector()));
+            jsonObject.add(Config.RESOURCE_PACK, spigotBuild.resourcePacks.stream().collect(JsonUtils.jsonArrayStringCollector()));
             return jsonObject;
         }
     }

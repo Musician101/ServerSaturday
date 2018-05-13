@@ -29,7 +29,7 @@ public class SpigotChestGUIBuilder extends ChestGUIBuilder<SpigotChestGUIBuilder
         checkArgument(page > 0, "Page must be greater than 0");
         checkNotNull(player, "Player cannot be null.");
         checkArgument(size > 0 && size % 9 == 0, "Size must be greater than 0 and be a multiple of 9.");
-        return new SpigotChestGUI(player, name, size, page, prevGUI, manualOpen);
+        return new SpigotChestGUI(player, name, size, buttons, page, prevGUI, manualOpen);
     }
 
     @Nonnull

@@ -58,7 +58,7 @@ public class InventorySlotData extends AbstractSingleData<Integer, InventorySlot
 
     @Nonnull
     @Override
-    public DataContainer toContainer() {
-        return super.toContainer().set(usedKey, getValue());
+    protected DataContainer fillContainer(@Nonnull DataContainer dataContainer) {
+        return dataContainer.set(usedKey, getValue());
     }
 }
