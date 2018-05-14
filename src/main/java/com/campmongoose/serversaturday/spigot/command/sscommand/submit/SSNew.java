@@ -38,6 +38,8 @@ public class SSNew extends SpigotCommand {
                         return MenuText.ALREADY_EXISTS;
                     }
 
+                    SpigotBuild build = submitter.newBuild(name, p.getLocation());
+                    SpigotChestGUIs.INSTANCE.editBuild(build, submitter, p, null);
                     return null;
                 });
 

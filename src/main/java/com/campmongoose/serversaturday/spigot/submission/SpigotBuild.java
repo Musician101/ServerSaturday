@@ -33,6 +33,7 @@ public class SpigotBuild extends Build<SpigotBuild, ItemStack, Location, SpigotS
 
     public SpigotBuild(@Nonnull String name, @Nonnull Location location) {
         super(name, location);
+        description.add("A Server Saturday Build.");
     }
 
     @Nonnull

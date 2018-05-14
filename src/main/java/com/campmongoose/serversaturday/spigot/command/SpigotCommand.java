@@ -83,11 +83,11 @@ public abstract class SpigotCommand implements CommandExecutor {
             if (submitter != null) {
                 return submitter;
             }
+        }
 
-            for (SpigotSubmitter s : getSubmissions().getSubmitters()) {
-                if (s.getName().equalsIgnoreCase(playerName)) {
-                    return s;
-                }
+        for (SpigotSubmitter s : getSubmissions().getSubmitters()) {
+            if (s.getName().equalsIgnoreCase(playerName)) {
+                return s;
             }
         }
 

@@ -136,9 +136,7 @@ public class SpigotChestGUIs extends ChestGUIs<SpigotChestGUIBuilder, ClickType,
             g.open();
         })).setButton(new GUIButton<>(6, ClickType.LEFT, SpigotIconBuilder.builder(Material.ENDER_CHEST).name(MenuText.DELETE_NAME).description(MenuText.DELETE_DESC).build(), (g, p) -> {
             submitter.removeBuild(build.getName());
-            if (prevGUI != null) {
-                prevGUI.open();
-            }
+            submitter(1, p, submitter, null);
         })).build()).filter(gui -> player.getUniqueId().equals(submitter.getUUID()));
     }
 

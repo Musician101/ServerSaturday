@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    compile project(':ServerSaturday')
+    compile(project(':ServerSaturday'))
     compile 'com.google.code.findbugs:jsr305:1.3.9'
     compile 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
     compile 'org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT'
@@ -54,7 +54,7 @@ processResources {
 }
 
 shadowJar {
-    classifier = ""
+    archiveName = 'server-saturday-' + project.version + '.jar'
     dependencies {
         include(dependency(':ServerSaturday'))
         include(dependency('net.wesjd:anvilgui:1.1.1-SNAPSHOT'))
