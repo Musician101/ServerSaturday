@@ -13,7 +13,7 @@ public class Reference {
     public static final String DESCRIPTION = "Plugin based submission form for Potato's Server Saturday.";
     public static final String ID = "server_saturday";
     public static final String NAME = "Server Saturday";
-    public static final String VERSION = "2.0.1";
+    public static final String VERSION = "2.0.2";
 
     private Reference() {
 
@@ -28,7 +28,7 @@ public class Reference {
         public static final String EDIT_NAME = "edit";
         public static final String FEATURE_DESC = "Toggle if a build has been featured.";
         public static final String FEATURE_NAME = "feature";
-        public static final String GET_REWARDS_DESC = "Receive any rewards that are currently waiting.";
+        public static final String GET_REWARDS_DESC = "Receive any pending rewards.";
         public static final String GET_REWARDS_NAME = "getrewards";
         public static final String GIVE_REWARD_DESCRIPTION = "Give a player a reward.";
         public static final String GIVE_REWARD_NAME = "givereward";
