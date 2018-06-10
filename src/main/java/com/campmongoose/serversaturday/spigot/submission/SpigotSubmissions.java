@@ -41,7 +41,9 @@ public class SpigotSubmissions extends Submissions<Player, SpigotSubmitter> {
                     .forEach(file -> {
                         try {
                             SpigotSubmitter submitter = gson.fromJson(new FileReader(file), SpigotSubmitter.class);
-                            submitters.put(submitter.getUUID(), submitter);
+                            if (!submitter.getBuilds().isEmpty()) {
+                                submitters.put(submitter.getUUID(), submitter);
+                            }
                         }
                         catch (FileNotFoundException e) {
                             logger.warning(Messages.failedToReadFile(file));
@@ -57,17 +59,22 @@ public class SpigotSubmissions extends Submissions<Player, SpigotSubmitter> {
     public void save() {
         submitters.forEach((uuid, submitter) -> {
             File file = new File(dir, Config.getFileName(uuid));
-            try {
-                if (!file.exists()) {
-                    file.createNewFile();
-                }
+            if (!submitter.getBuilds().isEmpty()) {
+                try {
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
 
-                OutputStream os = new FileOutputStream(file);
-                os.write(gson.toJson(submitter).getBytes());
-                os.close();
+                    OutputStream os = new FileOutputStream(file);
+                    os.write(gson.toJson(submitter).getBytes());
+                    os.close();
+                }
+                catch (IOException e) {
+                    SpigotServerSaturday.instance().getLogger().warning(Messages.failedToWriteFile(file));
+                }
             }
-            catch (IOException e) {
-                SpigotServerSaturday.instance().getLogger().warning(Messages.failedToWriteFile(file));
+            else {
+                file.delete();
             }
         });
     }

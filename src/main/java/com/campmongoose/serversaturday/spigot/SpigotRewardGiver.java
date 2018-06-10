@@ -3,7 +3,7 @@ package com.campmongoose.serversaturday.spigot;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.RewardGiver;
 import com.campmongoose.serversaturday.spigot.gui.chest.SpigotRewardsGUI;
-import com.campmongoose.serversaturday.spigot.uuid.UUIDUtils;
+import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
@@ -59,11 +59,12 @@ public class SpigotRewardGiver extends RewardGiver<PlayerJoinEvent, Player> {
         YamlConfiguration yml = new YamlConfiguration();
         rewardsWaiting.forEach((uuid, amount) -> {
             yml.set(uuid.toString() + ".amount", amount);
-            try {
-                yml.set(uuid.toString() + ".name", UUIDUtils.getNameOf(uuid));
+            SpigotSubmitter submitter = SpigotServerSaturday.instance().getSubmissions().getSubmitter(uuid);
+            if (submitter != null) {
+                yml.set(uuid.toString() + ".name", submitter.getName());
             }
-            catch (IOException e) {
-                SpigotServerSaturday.instance().getLogger().warning(e.getMessage());
+            else {
+                yml.set(uuid.toString() + ".name", "Invalid UUID?");
             }
         });
 

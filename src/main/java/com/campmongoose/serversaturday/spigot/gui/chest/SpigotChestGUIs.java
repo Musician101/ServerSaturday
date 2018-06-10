@@ -151,7 +151,7 @@ public class SpigotChestGUIs extends ChestGUIs<SpigotChestGUIBuilder, ClickType,
                     }
                 })
                 .setPageNavigation(50, MenuText.NEXT_PAGE, (gui, p) -> {
-                    if (page + 1 > maxPage) {
+                    if (page + 1 <= maxPage) {
                         pageNavigator.accept(p, page + 1);
                     }
                 });

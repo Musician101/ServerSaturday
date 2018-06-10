@@ -3,8 +3,6 @@ package com.campmongoose.serversaturday.spigot.command;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmissions;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
-import com.campmongoose.serversaturday.spigot.uuid.UUIDUtils;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +10,9 @@ import java.util.UUID;
 import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -70,12 +70,10 @@ public abstract class SpigotCommand implements CommandExecutor {
 
     @Nullable
     protected SpigotSubmitter getSubmitter(@Nonnull String playerName) {
-        UUID uuid;
-        try {
-            uuid = UUIDUtils.getUUIDOf(playerName);
-        }
-        catch (IOException e) {
-            return null;
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
+        UUID uuid = null;
+        if (offlinePlayer != null) {
+            uuid = offlinePlayer.getUniqueId();
         }
 
         if (uuid != null) {
@@ -85,13 +83,7 @@ public abstract class SpigotCommand implements CommandExecutor {
             }
         }
 
-        for (SpigotSubmitter s : getSubmissions().getSubmitters()) {
-            if (s.getName().equalsIgnoreCase(playerName)) {
-                return s;
-            }
-        }
-
-        return null;
+        return getSubmissions().getSubmitters().stream().filter(s -> s.getName().equalsIgnoreCase(playerName)).findFirst().orElse(null);
     }
 
     @Nullable

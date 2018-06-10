@@ -15,8 +15,8 @@ public class SSGetRewards extends SpigotCommand {
 
     public SSGetRewards() {
         super(Commands.GET_REWARDS_NAME, Commands.GET_REWARDS_DESC);
-        usage = new SpigotCommandUsage(Collections.singletonList(new SpigotCommandArgument(Commands.SS_CMD + Commands.GOTO_NAME)));
-        permissions = new SpigotCommandPermissions(Permissions.VIEW_GOTO, false);
+        usage = new SpigotCommandUsage(Collections.singletonList(new SpigotCommandArgument(Commands.SS_CMD + Commands.GET_REWARDS_NAME)));
+        permissions = new SpigotCommandPermissions(Permissions.VIEW, false);
         executor = (sender, args) -> {
             getPluginInstance().getRewardGiver().givePlayerReward((Player) sender);
             sender.sendMessage(ChatColor.GOLD + Messages.REWARDS_GIVEN);
