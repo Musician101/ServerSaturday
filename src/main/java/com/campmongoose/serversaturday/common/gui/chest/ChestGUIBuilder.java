@@ -34,7 +34,7 @@ public abstract class ChestGUIBuilder<B extends ChestGUIBuilder<B, C, G, I, P, S
     }
 
     @Nonnull
-    public abstract B setBackButton(int slot, @Nonnull C clickType);
+    public abstract B setBackButton(int slot, @Nonnull C clickType, BiConsumer<G, P> action);
 
     @Nonnull
     public final B setButton(@Nonnull GUIButton<C, G, P, S> button) {
