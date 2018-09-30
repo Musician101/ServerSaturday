@@ -19,7 +19,7 @@ public abstract class ChestGUIs<B extends ChestGUIBuilder<B, C, G, I, P, S, T>, 
     protected abstract B build(int featureSlot, int teleportSlot, @Nonnull L build, @Nonnull P player);
 
     @Nonnull
-    protected abstract B builder(int size, int backButtonSlot, @Nonnull T name, @Nonnull P player);
+    protected abstract B builder(int size, @Nonnull T name, @Nonnull P player);
 
     @Nonnull
     public abstract Optional<G> editBuild(@Nonnull L build, @Nonnull U submitter, @Nonnull P player);
