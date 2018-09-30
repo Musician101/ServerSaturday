@@ -34,7 +34,12 @@ public abstract class ChestGUIBuilder<B extends ChestGUIBuilder<B, C, G, I, P, S
     }
 
     @Nonnull
-    public abstract B setBackButton(int slot, @Nonnull C clickType, BiConsumer<G, P> action);
+    public B setBackButton(int slot, @Nonnull C clickType) {
+        return setBackButton(slot, clickType, (gui, p) -> gui.close());
+    }
+
+    @Nonnull
+    public abstract B setBackButton(int slot, @Nonnull C clickType, @Nonnull BiConsumer<G, P> action);
 
     @Nonnull
     public final B setButton(@Nonnull GUIButton<C, G, P, S> button) {
