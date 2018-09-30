@@ -9,14 +9,12 @@ public abstract class ChestGUI<C, G extends ChestGUI<C, G, I, P, S>, I, P, S> {
     protected final I inventory;
     protected final int page;
     protected final P player;
-    protected final G prevGUI;
 
-    protected ChestGUI(I inventory, P player, List<GUIButton<C, G, P, S>> buttons, int page, G prevGUI, boolean manualOpen) {
+    protected ChestGUI(I inventory, P player, List<GUIButton<C, G, P, S>> buttons, int page, boolean manualOpen) {
         this.inventory = inventory;
         this.player = player;
         this.buttons = buttons;
         this.page = page;
-        this.prevGUI = prevGUI;
         if (!manualOpen) {
             open();
         }

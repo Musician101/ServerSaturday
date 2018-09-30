@@ -17,14 +17,12 @@ public abstract class ChestGUIBuilder<B extends ChestGUIBuilder<B, C, G, I, P, S
     protected T name;
     protected int page = 1;
     protected P player;
-    protected G prevGUI;
     protected int size = 27;
 
     @Nonnull
     @Override
     public B reset() {
         manualOpen = false;
-        prevGUI = null;
         page = -1;
         size = -1;
         buttons.clear();
@@ -32,14 +30,6 @@ public abstract class ChestGUIBuilder<B extends ChestGUIBuilder<B, C, G, I, P, S
         name = null;
         return (B) this;
     }
-
-    @Nonnull
-    public B setBackButton(int slot, @Nonnull C clickType) {
-        return setBackButton(slot, clickType, (gui, p) -> gui.close());
-    }
-
-    @Nonnull
-    public abstract B setBackButton(int slot, @Nonnull C clickType, @Nonnull BiConsumer<G, P> action);
 
     @Nonnull
     public final B setButton(@Nonnull GUIButton<C, G, P, S> button) {
@@ -90,12 +80,6 @@ public abstract class ChestGUIBuilder<B extends ChestGUIBuilder<B, C, G, I, P, S
     @Nonnull
     public final B setPlayer(@Nonnull P player) {
         this.player = player;
-        return (B) this;
-    }
-
-    @Nonnull
-    public final B setPreviousGUI(@Nullable G prevGUI) {
-        this.prevGUI = prevGUI;
         return (B) this;
     }
 
