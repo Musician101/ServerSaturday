@@ -76,7 +76,7 @@ public abstract class ChestGUIBuilder<B extends ChestGUIBuilder<B, C, G, I, P, S
     }
 
     @Nonnull
-    public abstract B setPageNavigation(int slot, @Nonnull T name, @Nonnull BiConsumer<G, P> action);
+    public abstract B setPageNavigation(int slot, @Nonnull T name, @Nonnull Consumer<P> action);
 
     @Nonnull
     public final B setPlayer(@Nonnull P player) {
