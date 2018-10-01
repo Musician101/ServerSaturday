@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @SuppressWarnings("unchecked")
-public abstract class ChestGUIBuilder<B extends ChestGUIBuilder<B, C, G, I, P, S, T>, C, G extends ChestGUI<C, G, I, P, S>, I, P, S, T> implements Builder<B, G> {
+public abstract class ChestGUIBuilder<B extends ChestGUIBuilder<B, C, G, I, P, S, T>, C, G extends ChestGUI<C, I, P, S>, I, P, S, T> implements Builder<B, G> {
 
-    protected final List<GUIButton<C, G, P, S>> buttons = new ArrayList<>();
+    protected final List<GUIButton<C, P, S>> buttons = new ArrayList<>();
     protected boolean manualOpen = false;
     protected T name;
     protected int page = 1;
@@ -32,14 +33,14 @@ public abstract class ChestGUIBuilder<B extends ChestGUIBuilder<B, C, G, I, P, S
     }
 
     @Nonnull
-    public final B setButton(@Nonnull GUIButton<C, G, P, S> button) {
+    public final B setButton(@Nonnull GUIButton<C, P, S> button) {
         buttons.removeIf(b -> button.getSlot() == b.getSlot() && button.getClickType() == b.getClickType());
         buttons.add(button);
         return (B) this;
     }
 
     @Nonnull
-    public final <O> B setContents(@Nonnull C clickType, @Nonnull List<O> contents, @Nonnull Function<O, S> itemStackMapper, @Nullable BiFunction<P, O, BiConsumer<G, P>> actionMapper) {
+    public final <O> B setContents(@Nonnull C clickType, @Nonnull List<O> contents, @Nonnull Function<O, S> itemStackMapper, @Nullable BiFunction<P, O, Consumer<P>> actionMapper) {
         int size = this.size - 9;
         for (int x = 0; x < size; x++) {
             try {

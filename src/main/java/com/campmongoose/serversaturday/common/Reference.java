@@ -85,13 +85,13 @@ public class Reference {
         }
 
         @Nonnull
-        public static String getHOCONFileName(@Nonnull UUID uuid) {
-            return uuid.toString() + HOCON_EXT;
+        public static String getFileName(@Nonnull UUID uuid) {
+            return uuid.toString() + JSON;
         }
 
         @Nonnull
-        public static String getFileName(@Nonnull UUID uuid) {
-            return uuid.toString() + JSON;
+        public static String getHOCONFileName(@Nonnull UUID uuid) {
+            return uuid.toString() + HOCON_EXT;
         }
     }
 
@@ -168,6 +168,11 @@ public class Reference {
         }
 
         @Nonnull
+        public static String failedToReadFile(@Nonnull File file) {
+            return "Failed to read " + file.getName();
+        }
+
+        @Nonnull
         public static String failedToReadFiles(@Nonnull File dir) {
             return "An error occurred whilst attempting to read the files in " + dir.getName();
         }
@@ -175,6 +180,11 @@ public class Reference {
         @Nonnull
         public static String failedToSaveRewardsFile(@Nonnull File file) {
             return PREFIX + failedToWriteFile(file) + " Returning contents just in case.";
+        }
+
+        @Nonnull
+        public static String failedToWriteFile(@Nonnull File file) {
+            return "Failed to write " + file.getName();
         }
 
         @Nonnull
@@ -186,27 +196,17 @@ public class Reference {
         public static <B extends Build> String teleportedToBuild(@Nonnull B build) {
             return PREFIX + "You have teleported to " + build.getName();
         }
-
-        @Nonnull
-        public static String failedToReadFile(@Nonnull File file) {
-            return "Failed to read " + file.getName();
-        }
-
-        @Nonnull
-        public static String failedToWriteFile(@Nonnull File file) {
-            return "Failed to write " + file.getName();
-        }
     }
 
     public static class Permissions {
 
+        //@formatter:off
         private static final String BASE = "ss.";
         public static final String FEATURE = BASE + "feature";
         public static final String RELOAD = BASE + "reload";
         public static final String SUBMIT = BASE + "submit";
         public static final String EXCEED_MAX_BUILDS = SUBMIT + "exceed_max_builds";
         public static final String VIEW = BASE + "view";
-        //@formatter:off
         public static final String VIEW_GOTO = VIEW + ".goto";
         //@formatter:on
 

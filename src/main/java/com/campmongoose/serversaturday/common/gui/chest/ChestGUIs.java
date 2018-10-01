@@ -10,7 +10,7 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class ChestGUIs<B extends ChestGUIBuilder<B, C, G, I, P, S, T>, C, G extends ChestGUI<C, G, I, P, S>, I, L extends Build<L, S, N, U, T>, N, P, S, T, U extends Submitter<L, S, N, U, T>> {
+public abstract class ChestGUIs<B extends ChestGUIBuilder<B, C, G, I, P, S, T>, C, G extends ChestGUI<C, I, P, S>, I, L extends Build<L, S, N, U, T>, N, P, S, T, U extends Submitter<L, S, N, U, T>> {
 
     @Nonnull
     public abstract Optional<G> allSubmissions(int page, @Nonnull P player);

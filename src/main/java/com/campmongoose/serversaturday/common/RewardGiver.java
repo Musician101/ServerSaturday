@@ -15,7 +15,7 @@ public abstract class RewardGiver<J, P> {
     }
 
     public void addReward(UUID uuid) {
-        rewardsWaiting.compute(uuid, (id, amount) -> ++amount);
+        rewardsWaiting.compute(uuid, (id, amount) -> amount == null ? 1 : ++amount);
     }
 
     public abstract void givePlayerReward(P player);

@@ -1,21 +1,21 @@
 package com.campmongoose.serversaturday.common.gui.chest;
 
 import java.util.Optional;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public final class GUIButton<C, G, P, S> {
+public final class GUIButton<C, P, S> {
 
     @Nullable
-    private final BiConsumer<G, P> action;
+    private final Consumer<P> action;
     @Nonnull
     private final C clickType;
     @Nonnull
     private final S itemStack;
     private final int slot;
 
-    public GUIButton(int slot, @Nonnull C clickType, @Nonnull S itemStack, @Nullable BiConsumer<G, P> action) {
+    public GUIButton(int slot, @Nonnull C clickType, @Nonnull S itemStack, @Nullable Consumer<P> action) {
         this.slot = slot;
         this.clickType = clickType;
         this.itemStack = itemStack;
@@ -23,7 +23,7 @@ public final class GUIButton<C, G, P, S> {
     }
 
     @Nonnull
-    public Optional<BiConsumer<G, P>> getAction() {
+    public Optional<Consumer<P>> getAction() {
         return Optional.ofNullable(action);
     }
 
