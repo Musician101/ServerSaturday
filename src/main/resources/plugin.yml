@@ -17,8 +17,8 @@ commands:
     aliases: [ssfeature, ssf]
     description: Toggle if a build has been featured.
     permission: ss.feature
-  serversaturdaygetreward:
-      aliases: [ssgetreward, ssgetr]
+  serversaturdaygetrewards:
+      aliases: [ssgetrewards, ssgetr]
       description: Receive any rewards that are currently waiting.
       permission: ss.submit
   serversaturdaygivereward:

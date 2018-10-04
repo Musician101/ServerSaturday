@@ -15,7 +15,7 @@ import com.campmongoose.serversaturday.spigot.gui.chest.SpigotChestGUIs;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -48,21 +48,21 @@ public class SSFeature extends SpigotCommand {
 
                     build.setFeatured(!build.featured());
                     if (submitter.getUUID().equals(player.getUniqueId())) {
-                        guis.editBuild(build, submitter, player, null);
+                        guis.editBuild(build, submitter, player);
                     }
                     else {
-                        guis.viewBuild(build, submitter, player, null);
+                        guis.viewBuild(build, submitter, player);
                     }
 
                     return true;
                 }
 
 
-                guis.submitter(1, player, submitter, null);
+                guis.submitter(1, player, submitter);
                 return true;
             }
 
-            guis.allSubmissions(1, player, null);
+            guis.allSubmissions(1, player);
             return true;
         };
     }

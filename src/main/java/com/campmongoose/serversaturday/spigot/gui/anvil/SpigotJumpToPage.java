@@ -1,14 +1,14 @@
 package com.campmongoose.serversaturday.spigot.gui.anvil;
 
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class SpigotJumpToPage extends SSAnvilGUI {
 
-    public SpigotJumpToPage(@Nonnull Player player, int maxPage, @Nonnull BiConsumer<Player, Integer> biConsumer) {
+    public SpigotJumpToPage(@Nonnull Player player, int maxPage, @Nonnull Consumer<Integer> consumer) {
         super(player, (p, name) -> {
             int page;
             try {
@@ -22,7 +22,7 @@ public class SpigotJumpToPage extends SSAnvilGUI {
                 return "Page cannot exceed " + maxPage;
             }
 
-            Bukkit.getScheduler().scheduleSyncDelayedTask((SpigotServerSaturday) SpigotServerSaturday.instance(), () -> biConsumer.accept(player, page));
+            Bukkit.getScheduler().scheduleSyncDelayedTask((SpigotServerSaturday) SpigotServerSaturday.instance(), () -> consumer.accept(page));
             return null;
         });
     }

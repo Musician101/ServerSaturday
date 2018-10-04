@@ -20,7 +20,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public final class SpigotChestGUI extends ChestGUI<ClickType, SpigotChestGUI, Inventory, Player, ItemStack> implements Listener {
+public final class SpigotChestGUI extends ChestGUI<ClickType, Inventory, Player, ItemStack> implements Listener {
 
     private static final String SERVER_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
     private static Field activeContainer;
@@ -41,8 +41,8 @@ public final class SpigotChestGUI extends ChestGUI<ClickType, SpigotChestGUI, In
         }
     }
 
-    SpigotChestGUI(@Nonnull Player player, @Nonnull String name, int size, @Nonnull List<GUIButton<ClickType, SpigotChestGUI, Player, ItemStack>> buttons, int page, SpigotChestGUI prevMenu, boolean manualOpen) {
-        super(parseInventory(player, name, size), player, buttons, page, prevMenu, manualOpen);
+    SpigotChestGUI(@Nonnull Player player, @Nonnull String name, int size, @Nonnull List<GUIButton<ClickType, ItemStack>> buttons, int page, boolean manualOpen) {
+        super(parseInventory(player, name, size), player, buttons, page, manualOpen);
     }
 
     public static SpigotChestGUIBuilder builder() {
@@ -55,12 +55,7 @@ public final class SpigotChestGUI extends ChestGUI<ClickType, SpigotChestGUI, In
 
     @Override
     public final void close() {
-        if (prevGUI == null) {
-            player.closeInventory();
-        }
-        else {
-            prevGUI.open();
-        }
+        player.closeInventory();
     }
 
     @Nonnull
@@ -73,7 +68,7 @@ public final class SpigotChestGUI extends ChestGUI<ClickType, SpigotChestGUI, In
     public final void onInventoryClick(InventoryClickEvent event) {
         if (event.getInventory().getName().equals(inventory.getName()) && event.getInventory().getHolder().equals(player)) {
             event.setCancelled(true);
-            buttons.stream().filter(button -> button.getSlot() == event.getRawSlot() && button.getClickType() == event.getClick()).findFirst().flatMap(GUIButton::getAction).ifPresent(consumer -> consumer.accept(this, player));
+            buttons.stream().filter(button -> button.getSlot() == event.getRawSlot() && button.getClickType() == event.getClick()).findFirst().flatMap(GUIButton::getAction).ifPresent(Runnable::run);
         }
     }
 

@@ -43,7 +43,7 @@ public class SpigotBuild extends Build<SpigotBuild, ItemStack, Location, SpigotS
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setLore(Collections.singletonList(submitter.getName()));
         itemMeta.setDisplayName(name);
-        if (featured) {
+        if (submitted && !featured) {
             itemMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }

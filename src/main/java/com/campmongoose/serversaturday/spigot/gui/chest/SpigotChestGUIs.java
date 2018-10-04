@@ -17,8 +17,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,30 +38,32 @@ public class SpigotChestGUIs extends ChestGUIs<SpigotChestGUIBuilder, ClickType,
     }
 
     @Nonnull
-    public Optional<SpigotChestGUI> allSubmissions(int page, @Nonnull Player player, @Nullable SpigotChestGUI prevGUI) {
+    @Override
+    public Optional<SpigotChestGUI> allSubmissions(int page, @Nonnull Player player) {
         Multimap<SpigotBuild, SpigotSubmitter> map = TreeMultimap.create(Comparator.comparing(SpigotBuild::getName), Comparator.comparing(SpigotSubmitter::getName));
         SpigotServerSaturday.instance().getSubmissions().getSubmitters().forEach(submitter -> submitter.getBuilds().forEach(build -> map.put(build, submitter)));
-        return Optional.of(paged(MenuText.ALL_SUBMISSIONS, player, prevGUI, page, ClickType.LEFT, new ArrayList<>(map.keySet()), build -> {
+        return Optional.of(paged(MenuText.ALL_SUBMISSIONS, player, page, ClickType.LEFT, new ArrayList<>(map.keySet()), build -> {
             SpigotSubmitter submitter = new ArrayList<>(map.get(build)).get(0);
             return build.getMenuRepresentation(submitter);
-        }, (p, build) -> {
+        }, build -> {
             SpigotSubmitter submitter = new ArrayList<>(map.get(build)).get(0);
             map.remove(build, submitter);
-            return (g, ply) -> {
-                if (ply.getUniqueId().equals(submitter.getUUID())) {
-                    editBuild(build, submitter, ply, g);
+            return () -> {
+                if (player.getUniqueId().equals(submitter.getUUID())) {
+                    editBuild(build, submitter, player);
                 }
                 else {
-                    viewBuild(build, submitter, ply, g);
+                    viewBuild(build, submitter, player);
                 }
             };
-        }, (p, i) -> allSubmissions(i, p, prevGUI)).build());
+        }, i -> allSubmissions(i, player)).setButton(new GUIButton<>(53, ClickType.LEFT, SpigotIconBuilder.of(Material.BARRIER, "Back"), player::closeInventory)).build());
     }
 
     @Nonnull
-    protected SpigotChestGUIBuilder build(int featureSlot, int teleportSlot, @Nonnull SpigotBuild build, @Nonnull Player player, @Nullable SpigotChestGUI prevGUI) {
+    @Override
+    protected SpigotChestGUIBuilder build(int featureSlot, int teleportSlot, @Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player) {
         Location location = build.getLocation();
-        SpigotChestGUIBuilder builder = builder(9, 8, build.getName(), player, prevGUI).setButton(new GUIButton<>(teleportSlot, ClickType.LEFT, SpigotIconBuilder.builder(Material.COMPASS).name(MenuText.TELEPORT_NAME).description(MenuText.teleportDesc(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ())).build(), (g, p) -> {
+        SpigotChestGUIBuilder builder = builder(9, build.getName(), player).setButton(new GUIButton<>(teleportSlot, ClickType.LEFT, SpigotIconBuilder.builder(Material.COMPASS).name(MenuText.TELEPORT_NAME).description(MenuText.teleportDesc(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ())).build(), () -> {
             if (player.hasPermission(Permissions.VIEW_GOTO)) {
                 player.teleport(location);
                 player.sendMessage(ChatColor.GREEN + Messages.teleportedToBuild(build));
@@ -73,9 +74,14 @@ public class SpigotChestGUIs extends ChestGUIs<SpigotChestGUIBuilder, ClickType,
         }));
 
         if (player.hasPermission(Permissions.FEATURE)) {
-            builder.setButton(new GUIButton<>(featureSlot, ClickType.LEFT, SpigotIconBuilder.builder(Material.GOLDEN_APPLE).name(MenuText.FEATURE_NAME).description(MenuText.FEATURE_DESC).addGlow(build.featured()).build(), (g, p) -> {
+            builder.setButton(new GUIButton<>(featureSlot, ClickType.LEFT, SpigotIconBuilder.builder(Material.GOLDEN_APPLE).name(MenuText.FEATURE_NAME).description(MenuText.FEATURE_DESC).addGlow(build.featured()).build(), () -> {
                 build.setFeatured(!build.featured());
-                g.open();
+                if (featureSlot == 7) {
+                    editBuild(build, submitter, player);
+                    return;
+                }
+
+                viewBuild(build, submitter, player);
             }));
         }
 
@@ -83,104 +89,109 @@ public class SpigotChestGUIs extends ChestGUIs<SpigotChestGUIBuilder, ClickType,
     }
 
     @Nonnull
-    protected SpigotChestGUIBuilder builder(int size, int backButtonSlot, @Nonnull String name, @Nonnull Player player, @Nullable SpigotChestGUI prevGUI) {
-        return SpigotChestGUI.builder().setSize(size).setName(name).setPlayer(player).setPreviousGUI(prevGUI).setBackButton(backButtonSlot, ClickType.LEFT);
+    @Override
+    protected SpigotChestGUIBuilder builder(int size, @Nonnull String name, @Nonnull Player player) {
+        return SpigotChestGUI.builder().setSize(size).setName(name).setPlayer(player);
     }
 
     @Nonnull
-    public Optional<SpigotChestGUI> editBuild(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player, @Nullable SpigotChestGUI prevGUI) {
-        return Optional.of(build(7, 5, build, player, prevGUI).setButton(new GUIButton<>(0, ClickType.LEFT, SpigotIconBuilder.builder(Material.PAPER).name(MenuText.RENAME_NAME).description(MenuText.RENAME_DESC).build(), (g, p) -> new SSAnvilGUI(player, (ply, s) -> {
+    @Override
+    public Optional<SpigotChestGUI> editBuild(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player) {
+        return Optional.of(build(7, 5, build, submitter, player).setButton(new GUIButton<>(0, ClickType.LEFT, SpigotIconBuilder.builder(Material.PAPER).name(MenuText.RENAME_NAME).description(MenuText.RENAME_DESC).build(), () -> new SSAnvilGUI(player, (ply, s) -> {
             submitter.renameBuild(s, build);
-            editBuild(build, submitter, ply, prevGUI);
+            editBuild(build, submitter, ply);
             return null;
-        }))).setButton(new GUIButton<>(1, ClickType.LEFT, SpigotIconBuilder.builder(Material.COMPASS).name(MenuText.CHANGE_LOCATION_NAME).description(MenuText.CHANGE_LOCATION_DESC).build(), (g, p) -> {
+        }))).setButton(new GUIButton<>(1, ClickType.LEFT, SpigotIconBuilder.builder(Material.COMPASS).name(MenuText.CHANGE_LOCATION_NAME).description(MenuText.CHANGE_LOCATION_DESC).build(), () -> {
             build.setLocation(player.getLocation());
-            g.open();
+            editBuild(build, submitter, player);
             player.sendMessage(ChatColor.GREEN + Messages.locationChanged(build));
-        })).setButton(new GUIButton<>(2, ClickType.LEFT, SpigotIconBuilder.builder(Material.BOOK).name(MenuText.CHANGE_DESCRIPTION_NAME).description(MenuText.CHANGE_DESCRIPTION_DESC).build(), (g, p) -> {
-            ItemStack itemStack = p.getInventory().getItemInMainHand();
+        })).setButton(new GUIButton<>(2, ClickType.LEFT, SpigotIconBuilder.builder(Material.BOOK).name(MenuText.CHANGE_DESCRIPTION_NAME).description(MenuText.CHANGE_DESCRIPTION_DESC).build(), () -> {
+            ItemStack itemStack = player.getInventory().getItemInMainHand();
             if (itemStack != null && itemStack.getType() != Material.AIR) {
                 player.sendMessage(ChatColor.RED + Messages.HAND_NOT_EMPTY);
                 return;
             }
 
-            if (SpigotBookGUI.isEditing(p)) {
+            if (SpigotBookGUI.isEditing(player)) {
                 player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
                 return;
             }
 
-            p.closeInventory();
-            new SpigotBookGUI(p, build, build.getDescription(), pages -> {
+            player.closeInventory();
+            new SpigotBookGUI(player, build, build.getDescription(), pages -> {
                 build.setDescription(pages);
-                g.open();
+                editBuild(build, submitter, player);
             });
-        })).setButton(new GUIButton<>(3, ClickType.LEFT, SpigotIconBuilder.builder(Material.PAINTING).name(MenuText.CHANGE_RESOURCE_PACKS_NAME).description(MenuText.CHANGE_RESOURCES_PACK_DESC).build(), (g, p) -> {
-            ItemStack itemStack = p.getInventory().getItemInMainHand();
+        })).setButton(new GUIButton<>(3, ClickType.LEFT, SpigotIconBuilder.builder(Material.PAINTING).name(MenuText.CHANGE_RESOURCE_PACKS_NAME).description(MenuText.CHANGE_RESOURCES_PACK_DESC).build(), () -> {
+            ItemStack itemStack = player.getInventory().getItemInMainHand();
             if (itemStack != null && itemStack.getType() != Material.AIR) {
                 player.sendMessage(ChatColor.RED + Messages.HAND_NOT_EMPTY);
                 return;
             }
 
-            if (SpigotBookGUI.isEditing(p)) {
+            if (SpigotBookGUI.isEditing(player)) {
                 player.sendMessage(ChatColor.RED + Messages.EDIT_IN_PROGRESS);
                 return;
             }
 
-            p.closeInventory();
-            new SpigotBookGUI(p, build, build.getResourcePacks(), pages -> {
+            player.closeInventory();
+            new SpigotBookGUI(player, build, build.getResourcePacks(), pages -> {
                 build.setResourcePacks(pages);
-                g.open();
+                editBuild(build, submitter, player);
             });
-        })).setButton(new GUIButton<>(4, ClickType.LEFT, SpigotIconBuilder.builder(Material.FLINT_AND_STEEL).name(MenuText.SUBMIT_UNREADY_NAME).description(MenuText.SUBMIT_UNREADY_DESC).addGlow(build.submitted()).build(), (g, p) -> {
+        })).setButton(new GUIButton<>(4, ClickType.LEFT, SpigotIconBuilder.builder(Material.FLINT_AND_STEEL).name(MenuText.SUBMIT_UNREADY_NAME).description(MenuText.SUBMIT_UNREADY_DESC).addGlow(build.submitted()).build(), () -> {
             build.setSubmitted(!build.submitted());
-            g.open();
-        })).setButton(new GUIButton<>(6, ClickType.LEFT, SpigotIconBuilder.builder(Material.ENDER_CHEST).name(MenuText.DELETE_NAME).description(MenuText.DELETE_DESC).build(), (g, p) -> {
+            editBuild(build, submitter, player);
+        })).setButton(new GUIButton<>(6, ClickType.LEFT, SpigotIconBuilder.builder(Material.ENDER_CHEST).name(MenuText.DELETE_NAME).description(MenuText.DELETE_DESC).build(), () -> {
             submitter.removeBuild(build.getName());
-            submitter(1, p, submitter, null);
-        })).build()).filter(gui -> player.getUniqueId().equals(submitter.getUUID()));
+            submitter(1, player, submitter);
+        })).setButton(new GUIButton<>(8, ClickType.LEFT, SpigotIconBuilder.of(Material.BARRIER, "Back"), () -> submitter(1, player, submitter))).build()).filter(gui -> player.getUniqueId().equals(submitter.getUUID()));
     }
 
     @Nonnull
-    protected <O> SpigotChestGUIBuilder paged(@Nonnull String name, @Nonnull Player player, @Nullable SpigotChestGUI prevGUI, int page, @Nonnull ClickType clickType, @Nonnull List<O> contents, @Nonnull Function<O, ItemStack> itemStackMapper, @Nullable BiFunction<Player, O, BiConsumer<SpigotChestGUI, Player>> actionMapper, @Nonnull BiConsumer<Player, Integer> pageNavigator) {
-        int maxPage = new Double(Math.ceil(contents.size() / 45)).intValue();
-        return builder(54, 53, name, player, prevGUI).setPage(page).setContents(clickType, contents, itemStackMapper, actionMapper)
+    @Override
+    protected <O> SpigotChestGUIBuilder paged(@Nonnull String name, @Nonnull Player player, int page, @Nonnull ClickType clickType, @Nonnull List<O> contents, @Nonnull Function<O, ItemStack> itemStackMapper, @Nullable Function<O, Runnable> actionMapper, @Nonnull Consumer<Integer> pageNavigator) {
+        int maxPage = new Double(Math.ceil(contents.size() / 45D)).intValue();
+        return builder(54, name, player).setPage(page).setContents(clickType, contents, itemStackMapper, actionMapper)
                 .setJumpToPage(45, maxPage, pageNavigator)
-                .setPageNavigation(48, MenuText.PREVIOUS_PAGE, (gui, p) -> {
+                .setPageNavigation(48, MenuText.PREVIOUS_PAGE, () -> {
                     if (page > 1) {
-                        pageNavigator.accept(p, page - 1);
+                        pageNavigator.accept(page - 1);
                     }
                 })
-                .setPageNavigation(50, MenuText.NEXT_PAGE, (gui, p) -> {
+                .setPageNavigation(50, MenuText.NEXT_PAGE, () -> {
                     if (page + 1 <= maxPage) {
-                        pageNavigator.accept(p, page + 1);
+                        pageNavigator.accept(page + 1);
                     }
                 });
     }
 
     @Nonnull
-    public Optional<SpigotChestGUI> submissions(int page, @Nonnull Player player, @Nullable SpigotChestGUI prevGUI) {
-        player.sendMessage(ChatColor.GOLD + Messages.OPENING_SUBMISSIONS);
+    @Override
+    public Optional<SpigotChestGUI> submissions(int page, @Nonnull Player player) {
         List<SpigotSubmitter> submitters = SpigotServerSaturday.instance().getSubmissions().getSubmitters();
         submitters.sort(Comparator.comparing(SpigotSubmitter::getName));
-        return Optional.of(paged(MenuText.SUBMISSIONS, player, prevGUI, page, ClickType.LEFT, submitters, SpigotSubmitter::getMenuRepresentation, (p, submitter) -> (g, ply) -> submitter(1, ply, submitter, g), (p, i) -> submissions(i, p, prevGUI)).build());
+        return Optional.of(paged(MenuText.SUBMISSIONS, player, page, ClickType.LEFT, submitters, SpigotSubmitter::getMenuRepresentation, submitter -> () -> submitter(1, player, submitter), i -> submissions(i, player)).setButton(new GUIButton<>(53, ClickType.LEFT, SpigotIconBuilder.of(Material.BARRIER, "Back"), player::closeInventory)).build());
     }
 
     @Nonnull
-    public Optional<SpigotChestGUI> submitter(int page, @Nonnull Player player, @Nonnull SpigotSubmitter submitter, @Nullable SpigotChestGUI prevGUI) {
+    @Override
+    public Optional<SpigotChestGUI> submitter(int page, @Nonnull Player player, @Nonnull SpigotSubmitter submitter) {
         List<SpigotBuild> builds = submitter.getBuilds();
         builds.sort(Comparator.comparing(SpigotBuild::getName));
-        return Optional.of(paged(MenuText.submitterMenu(submitter), player, prevGUI, page, ClickType.LEFT, builds, build -> build.getMenuRepresentation(submitter), (p, build) -> (g, ply) -> {
-            if (ply.getUniqueId().equals(submitter.getUUID())) {
-                editBuild(build, submitter, player, g);
+        return Optional.of(paged(MenuText.submitterMenu(submitter), player, page, ClickType.LEFT, builds, build -> build.getMenuRepresentation(submitter), build -> () -> {
+            if (player.getUniqueId().equals(submitter.getUUID())) {
+                editBuild(build, submitter, player);
             }
             else {
-                viewBuild(build, submitter, player, g);
+                viewBuild(build, submitter, player);
             }
-        }, (p, i) -> submitter(i, p, submitter, prevGUI)).build());
+        }, i -> submitter(i, player, submitter)).setButton(new GUIButton<>(53, ClickType.LEFT, SpigotIconBuilder.of(Material.BARRIER, "Back"), () -> submissions(1, player))).build());
     }
 
     @Nonnull
-    public Optional<SpigotChestGUI> viewBuild(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player, @Nullable SpigotChestGUI prevGUI) {
-        return Optional.of(build(3, 0, build, player, prevGUI).setButton(new GUIButton<>(1, ClickType.LEFT, SpigotIconBuilder.builder(Material.BOOK).name(MenuText.DESCRIPTION_NAME).description(MenuText.DESCRIPTION_DESC).build(), (g, p) -> SpigotBookGUI.openWrittenBook(player, build, submitter))).setButton(new GUIButton<>(2, ClickType.LEFT, SpigotIconBuilder.builder(Material.PAINTING).name(MenuText.RESOURCE_PACK_NAME).description(MenuText.RESOURCE_PACK_DESC).build(), (g, p) -> SpigotBookGUI.openWrittenBook(player, build, submitter))).build()).filter(gui -> !player.getUniqueId().equals(submitter.getUUID()));
+    @Override
+    public Optional<SpigotChestGUI> viewBuild(@Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter, @Nonnull Player player) {
+        return Optional.of(build(3, 0, build, submitter, player).setButton(new GUIButton<>(1, ClickType.LEFT, SpigotIconBuilder.builder(Material.BOOK).name(MenuText.DESCRIPTION_NAME).description(MenuText.DESCRIPTION_DESC).build(), () -> SpigotBookGUI.openWrittenBook(player, build, submitter))).setButton(new GUIButton<>(2, ClickType.LEFT, SpigotIconBuilder.builder(Material.PAINTING).name(MenuText.RESOURCE_PACK_NAME).description(MenuText.RESOURCE_PACK_DESC).build(), () -> SpigotBookGUI.openWrittenBook(player, build, submitter))).setButton(new GUIButton<>(8, ClickType.LEFT, SpigotIconBuilder.of(Material.BARRIER, "Back"), () -> submitter(1, player, submitter))).build()).filter(gui -> !player.getUniqueId().equals(submitter.getUUID()));
     }
 }

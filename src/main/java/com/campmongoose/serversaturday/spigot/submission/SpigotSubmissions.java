@@ -7,7 +7,6 @@ import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter.SpigotSerializer;
 import com.google.gson.GsonBuilder;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -39,13 +38,13 @@ public class SpigotSubmissions extends Submissions<Player, SpigotSubmitter> {
         if (files != null) {
             Stream.of(files).filter(file -> file.getName().endsWith(Config.JSON))
                     .forEach(file -> {
-                        try {
-                            SpigotSubmitter submitter = gson.fromJson(new FileReader(file), SpigotSubmitter.class);
+                        try(FileReader fr = new FileReader(file)) {
+                            SpigotSubmitter submitter = gson.fromJson(fr, SpigotSubmitter.class);
                             if (!submitter.getBuilds().isEmpty()) {
                                 submitters.put(submitter.getUUID(), submitter);
                             }
                         }
-                        catch (FileNotFoundException e) {
+                        catch (IOException e) {
                             logger.warning(Messages.failedToReadFile(file));
                         }
                     });

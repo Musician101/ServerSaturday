@@ -13,7 +13,7 @@ import com.campmongoose.serversaturday.spigot.gui.chest.SpigotChestGUIs;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -48,7 +48,7 @@ public class SSResourcePack extends SpigotCommand {
 
             new SpigotBookGUI(player, build, build.getResourcePacks(), pages -> {
                 build.setResourcePacks(pages);
-                SpigotChestGUIs.INSTANCE.editBuild(build, submitter, player, null);
+                SpigotChestGUIs.INSTANCE.editBuild(build, submitter, player);
             });
             return true;
         };

@@ -17,11 +17,9 @@ import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location, SpigotSubmitter, String> {
 
@@ -37,11 +35,6 @@ public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location,
     @Nonnull
     @Override
     public ItemStack getMenuRepresentation() {
-        ItemStack itemStack = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-        SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
-        skullMeta.setDisplayName(name);
-        skullMeta.setOwner(name);
-        //skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
         boolean hasNonFeaturedBuilds = false;
         for (SpigotBuild build : builds.values()) {
             if (build.submitted() && !build.featured()) {
@@ -49,12 +42,10 @@ public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location,
             }
         }
 
-        if (hasNonFeaturedBuilds) {
-            skullMeta.addEnchant(Enchantment.ARROW_DAMAGE, 1, true);
-            skullMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        }
-
-        itemStack.setItemMeta(skullMeta);
+        ItemStack itemStack = new ItemStack(hasNonFeaturedBuilds ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK, 1, (short) 3);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(name);
+        itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
 

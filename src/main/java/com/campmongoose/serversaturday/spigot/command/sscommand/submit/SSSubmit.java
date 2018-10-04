@@ -12,7 +12,7 @@ import com.campmongoose.serversaturday.spigot.gui.chest.SpigotChestGUIs;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.util.Arrays;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -33,7 +33,7 @@ public class SSSubmit extends SpigotCommand {
             }
 
             build.setSubmitted(!build.submitted());
-            SpigotChestGUIs.INSTANCE.editBuild(build, submitter, player, null);
+            SpigotChestGUIs.INSTANCE.editBuild(build, submitter, player);
             return true;
         };
     }
