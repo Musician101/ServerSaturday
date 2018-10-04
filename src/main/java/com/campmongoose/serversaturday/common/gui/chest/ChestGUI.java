@@ -5,12 +5,12 @@ import javax.annotation.Nonnull;
 
 public abstract class ChestGUI<C, I, P, S> {
 
-    protected final List<GUIButton<C, P, S>> buttons;
+    protected final List<GUIButton<C, S>> buttons;
     protected final I inventory;
     protected final int page;
     protected final P player;
 
-    protected ChestGUI(I inventory, P player, List<GUIButton<C, P, S>> buttons, int page, boolean manualOpen) {
+    protected ChestGUI(I inventory, P player, List<GUIButton<C, S>> buttons, int page, boolean manualOpen) {
         this.inventory = inventory;
         this.player = player;
         this.buttons = buttons;
