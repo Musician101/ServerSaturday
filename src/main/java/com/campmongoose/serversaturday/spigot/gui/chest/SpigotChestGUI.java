@@ -41,7 +41,7 @@ public final class SpigotChestGUI extends ChestGUI<ClickType, Inventory, Player,
         }
     }
 
-    SpigotChestGUI(@Nonnull Player player, @Nonnull String name, int size, @Nonnull List<GUIButton<ClickType, ItemStack>> buttons, int page, boolean manualOpen) {
+    SpigotChestGUI(@Nonnull Player player, @Nonnull String name, int size, @Nonnull List<GUIButton<ClickType, Player, ItemStack>> buttons, int page, boolean manualOpen) {
         super(parseInventory(player, name, size), player, buttons, page, manualOpen);
     }
 
@@ -68,7 +68,7 @@ public final class SpigotChestGUI extends ChestGUI<ClickType, Inventory, Player,
     public final void onInventoryClick(InventoryClickEvent event) {
         if (event.getInventory().getName().equals(inventory.getName()) && event.getInventory().getHolder().equals(player)) {
             event.setCancelled(true);
-            buttons.stream().filter(button -> button.getSlot() == event.getRawSlot() && button.getClickType() == event.getClick()).findFirst().flatMap(GUIButton::getAction).ifPresent(Runnable::run);
+            buttons.stream().filter(button -> button.getSlot() == event.getRawSlot() && button.getClickType() == event.getClick()).findFirst().flatMap(GUIButton::getAction).ifPresent(action -> action.accept((Player) event.getWhoClicked()));
         }
     }
 

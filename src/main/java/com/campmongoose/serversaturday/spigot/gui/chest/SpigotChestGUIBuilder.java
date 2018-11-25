@@ -34,12 +34,19 @@ public class SpigotChestGUIBuilder extends ChestGUIBuilder<SpigotChestGUIBuilder
     @Nonnull
     @Override
     public SpigotChestGUIBuilder setJumpToPage(int slot, int maxPage, @Nonnull Consumer<Integer> action) {
-        return setButton(new GUIButton<>(slot, ClickType.LEFT, SpigotIconBuilder.builder(Material.BOOK).name("Jump To Page").amount(page).build(), () -> new SpigotJumpToPage(player, maxPage, action)));
+        return setButton(new GUIButton<>(slot, ClickType.LEFT, SpigotIconBuilder.builder(Material.BOOK).name("Jump To Page").amount(page).build(), p -> new SpigotJumpToPage(p, maxPage, action)));
     }
 
     @Nonnull
     @Override
-    public SpigotChestGUIBuilder setPageNavigation(int slot, @Nonnull String name, @Nonnull Runnable action) {
+    public SpigotChestGUIBuilder setPageNavigation(int slot, @Nonnull String name, @Nonnull Consumer<Player> action) {
         return setButton(new GUIButton<>(slot, ClickType.LEFT, SpigotIconBuilder.of(Material.ARROW, name), action));
+    }
+
+    @Nonnull
+    @Override
+    public SpigotChestGUIBuilder setPlayer(@Nonnull Player player) {
+        this.player = player.getUniqueId();
+        return this;
     }
 }
