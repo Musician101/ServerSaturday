@@ -2,10 +2,7 @@ package com.campmongoose.serversaturday.sponge.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference;
 import com.campmongoose.serversaturday.common.gui.chest.ChestGUI;
-import com.campmongoose.serversaturday.common.gui.chest.GUIButton;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
-import com.campmongoose.serversaturday.sponge.data.key.SSKeys;
-import java.util.List;
 import javax.annotation.Nonnull;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -25,14 +22,10 @@ import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-public final class SpongeChestGUI extends ChestGUI<Class<? extends ClickInventoryEvent>, Inventory, Player, ItemStack, Text> {
+public abstract class SpongeChestGUI extends ChestGUI<Class<? extends ClickInventoryEvent>, Inventory, Player, ItemStack, Text, Container> {
 
-    public SpongeChestGUI(@Nonnull Player player, @Nonnull Text name, int size, @Nonnull List<GUIButton<Class<? extends ClickInventoryEvent>, Player, ItemStack>> buttons, int page, boolean manualOpen) {
-        super(parseInventory(name, size), name, player, buttons, page, manualOpen);
-    }
-
-    public static SpongeChestGUIBuilder builder() {
-        return new SpongeChestGUIBuilder();
+    public SpongeChestGUI(@Nonnull Player player, @Nonnull Text name, int size) {
+        super(parseInventory(name, size), name, player);
     }
 
     private static Inventory parseInventory(@Nonnull Text name, int size) {
@@ -42,12 +35,17 @@ public final class SpongeChestGUI extends ChestGUI<Class<? extends ClickInventor
         }
 
         String plainName = TextSerializers.PLAIN.serialize(name);
-        return Inventory.builder().of(builder.build(Reference.ID + ":" + plainName.replace("\\s", "_").toLowerCase(), plainName)).build(SpongeServerSaturday.instance().get());
+        return Inventory.builder().of(builder.build(Reference.ID + ":" + plainName.replace("\\s", "_").toLowerCase(), plainName)).build(SpongeServerSaturday.instance());
     }
 
     @Override
-    public final void close() {
-        player.closeInventory();
+    protected void addItem(int slot, @Nonnull ItemStack itemStack) {
+        inventory.query(QueryOperationTypes.INVENTORY_PROPERTY.of(new SlotIndex(slot))).set(itemStack);
+    }
+
+    @Override
+    protected boolean isCorrectInventory(@Nonnull Container inventories) {
+        return false;
     }
 
     private boolean isSameInventory(@Nonnull Inventory inventory, @Nonnull Player player) {
@@ -58,9 +56,10 @@ public final class SpongeChestGUI extends ChestGUI<Class<? extends ClickInventor
     public void onInventoryClick(ClickInventoryEvent event, @First Player player) {
         Container container = event.getTargetInventory();
         if (isSameInventory(container, player)) {
-            event.setCancelled(true);
-            int slot = event.getCursorTransaction().getFinal().createStack().get(SSKeys.SLOT).orElse(-1);
-            buttons.stream().filter(button -> button.getSlot() == slot && button.getClickType() == event.getClass()).findFirst().flatMap(GUIButton::getAction).ifPresent(action -> action.accept(player));
+            event.getSlot().flatMap(slot -> slot.getInventoryProperty(SlotIndex.class).map(SlotIndex::getValue).filter(index -> buttons.stream().anyMatch(button -> button.getSlot() == index))).ifPresent(index -> {
+                event.setCancelled(true);
+                buttons.stream().filter(button -> button.getSlot() == index).findFirst().ifPresent(button -> button.handle(event.getClass(), player));
+            });
         }
     }
 
@@ -73,11 +72,17 @@ public final class SpongeChestGUI extends ChestGUI<Class<? extends ClickInventor
 
     @Override
     public void open() {
-        SpongeServerSaturday.instance().ifPresent(plugin -> Task.builder().execute(() -> {
+        SpongeServerSaturday plugin = SpongeServerSaturday.instance();
+        Task.builder().execute(() -> {
             inventory.clear();
             buttons.forEach(button -> inventory.query(QueryOperationTypes.INVENTORY_PROPERTY.of(SlotIndex.of(button.getSlot()))).set(button.getItemStack()));
             player.openInventory(inventory);
             Sponge.getEventManager().registerListeners(plugin, this);
-        }).delayTicks(1L).submit(plugin));
+        }).delayTicks(1L).submit(plugin);
+    }
+
+    @Override
+    protected void removeItem(int slot) {
+        inventory.query(QueryOperationTypes.INVENTORY_PROPERTY.of(new SlotIndex(slot))).set(ItemStack.empty());
     }
 }

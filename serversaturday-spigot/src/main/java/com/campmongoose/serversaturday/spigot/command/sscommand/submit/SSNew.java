@@ -9,13 +9,18 @@ import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
 import com.campmongoose.serversaturday.spigot.command.Syntax;
-import com.campmongoose.serversaturday.spigot.gui.chest.SpigotChestGUIs;
+import com.campmongoose.serversaturday.spigot.gui.chest.EditBuildGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotBuild;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import com.campmongoose.serversaturday.spigot.textinput.SpigotTextInput;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nonnull;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SSNew extends SpigotCommand {
@@ -41,7 +46,7 @@ public class SSNew extends SpigotCommand {
                     }
 
                     SpigotBuild build = submitter.newBuild(s, p.getLocation());
-                    SpigotChestGUIs.INSTANCE.editBuild(build, submitter, p);
+                    new EditBuildGUI(build, submitter, p);
                 });
 
                 return true;
@@ -54,8 +59,13 @@ public class SSNew extends SpigotCommand {
             }
 
             SpigotBuild build = submitter.newBuild(name, player.getLocation());
-            SpigotChestGUIs.INSTANCE.editBuild(build, submitter, player);
+            new EditBuildGUI(build, submitter, player);
             return true;
         };
+    }
+
+    @Override
+    public List<String> onTabComplete(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String alias, @Nonnull String[] args) {
+        return Collections.emptyList();
     }
 }

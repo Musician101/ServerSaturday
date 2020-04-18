@@ -10,7 +10,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class Submissions<P, S extends Submitter> {
+public abstract class Submissions<P, S extends Submitter<?, ?, ?>> {
 
     @Nonnull
     protected final File dir;

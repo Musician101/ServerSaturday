@@ -30,7 +30,7 @@ public class Reference {
         public static final String FEATURE_NAME = "feature";
         public static final String GET_REWARDS_DESC = "Receive any pending rewards.";
         public static final String GET_REWARDS_NAME = "getrewards";
-        public static final String GIVE_REWARD_DESCRIPTION = "Give a player a reward.";
+        public static final String GIVE_REWARD_DESC = "Give a player a reward.";
         public static final String GIVE_REWARD_NAME = "givereward";
         public static final String GOTO_DESC = "Teleport to a build.";
         public static final String GOTO_NAME = "goto";
@@ -67,7 +67,6 @@ public class Reference {
     public static class Config {
 
         public static final String BUILDS = "builds";
-        public static final String CONFIG_VERSION = "config_version";
         public static final String DESCRIPTION = "description";
         public static final String FEATURED = "featured";
         public static final String JSON = ".json";
@@ -75,6 +74,7 @@ public class Reference {
         public static final String MAX_BUILDS = "max_builds";
         public static final String NAME = "name";
         public static final String RESOURCE_PACK = "resource_pack";
+        public static final String REWARDS = "rewards";
         public static final String SUBMITTED = "submitted";
         public static final String UUID = "uuid";
 
@@ -98,12 +98,11 @@ public class Reference {
         public static final String CHANGE_LOCATION_NAME = "Change Location";
         public static final List<String> CHANGE_RESOURCES_PACK_DESC = Arrays.asList("Change the recommended resource", "packs for this build.");
         public static final String CHANGE_RESOURCE_PACKS_NAME = "Change Resource Packs";
-        public static final List<String> DELETE_DESC = Arrays.asList("THIS WILL DELETE THIS BUILD", "FROM THE SUBMISSION LIST!!!");
-        public static final String DELETE_NAME = "Delete";
         public static final String DESCRIPTION_DESC = "View this build's description.";
         public static final String DESCRIPTION_NAME = "Description";
         public static final List<String> FEATURE_DESC = Arrays.asList("Set whether this build has been covered in", "an episode of Server Saturday.");
         public static final String FEATURE_NAME = "Feature";
+        public static final String NEW_BUILD = "New Build";
         public static final String NEXT_PAGE = "Next Page";
         public static final String PREVIOUS_PAGE = "Previous Page";
         public static final String RENAME_DESC = "Rename this build.";
@@ -121,7 +120,7 @@ public class Reference {
         }
 
         @Nonnull
-        public static <S extends Submitter> String submitterMenu(@Nonnull S submitter) {
+        public static String submitterMenu(@Nonnull Submitter<?, ?, ?> submitter) {
             return submitter.getName() + "'s Builds";
         }
 
@@ -140,15 +139,13 @@ public class Reference {
         public static final String BUILD_ALREADY_EXISTS = PREFIX + "A build with that name already exists.";
         public static final String BUILD_NOT_FOUND = PREFIX + "A build with that name does not exist.";
         public static final String EDIT_IN_PROGRESS = PREFIX + "You're in the middle of editing another build.";
-        public static final String NOT_A_NUMBER = PREFIX + "That is not a number!";
         public static final String NOT_ENOUGH_ARGS = PREFIX + "Not enough arguments.";
         public static final String NO_PERMISSION = PREFIX + "You don't have permission to run this command.";
         public static final String PLUGIN_RELOADED = PREFIX + "Submissions reloaded. Check console for errors.";
         public static final String PLAYER_NOT_FOUND = PREFIX + "Could not find a player with that name.";
         public static final String PLAYER_ONLY = PREFIX + "This is a player only command.";
-        public static final String ERROR = PREFIX + "An error occurred while trying to complete this action.";
         public static final String HAND_NOT_EMPTY = PREFIX + "You need an empty in order to run this command.";
-        public static final String REWARDS_GIVEN = PREFIX + "All rewards have been given to you.";
+        public static final String REWARDS_RECEIVED = PREFIX + "All rewards have been given to you.";
         public static final String REWARDS_WAITING = PREFIX + "Hey, you! You have rewards waiting for you. Claim them with /ssgetrewards";
         public static final String SAVING_SUBMISSIONS = "Saving submissions to disk...";
         public static final String SET_BUILD_NAME = PREFIX + "Set the name of your build.";
@@ -157,11 +154,6 @@ public class Reference {
 
         private Messages() {
 
-        }
-
-        @Nonnull
-        public static String enterPage(int maxPage) {
-            return PREFIX + "Please enter a page number between 1 and " + maxPage + ".";
         }
 
         @Nonnull
@@ -185,17 +177,17 @@ public class Reference {
         }
 
         @Nonnull
-        public static <B extends Build> String locationChanged(@Nonnull B build) {
+        public static String locationChanged(@Nonnull Build<?, ?, ?, ?> build) {
             return PREFIX + "Warp location for " + build.getName() + " updated.";
         }
 
         @Nonnull
-        public static String maxPageExceeded(int maxPage) {
-            return PREFIX + "Page cannot exceed " + maxPage;
+        public static String rewardsGiven(String name) {
+            return PREFIX + "Rewards given to " + name;
         }
 
         @Nonnull
-        public static <B extends Build> String teleportedToBuild(@Nonnull B build) {
+        public static String teleportedToBuild(@Nonnull Build<?, ?, ?, ?> build) {
             return PREFIX + "You have teleported to " + build.getName();
         }
     }

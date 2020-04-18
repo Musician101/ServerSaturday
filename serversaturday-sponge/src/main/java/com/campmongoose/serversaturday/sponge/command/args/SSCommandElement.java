@@ -1,11 +1,8 @@
 package com.campmongoose.serversaturday.sponge.command.args;
 
-import com.campmongoose.serversaturday.common.ServerSaturday;
-import com.campmongoose.serversaturday.common.submission.Submissions;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -21,7 +18,7 @@ import org.spongepowered.api.text.Text;
 
 public abstract class SSCommandElement extends CommandElement {
 
-    public SSCommandElement(@Nullable Text key) {
+    protected SSCommandElement(@Nullable Text key) {
         super(key);
     }
 
@@ -36,22 +33,22 @@ public abstract class SSCommandElement extends CommandElement {
     }
 
     @Nonnull
-    protected Optional<SpongeSubmissions> getSubmissions() {
-        return SpongeServerSaturday.instance().map(ServerSaturday::getSubmissions);
+    protected SpongeSubmissions getSubmissions() {
+        return SpongeServerSaturday.instance().getSubmissions();
     }
 
     @Nonnull
     protected Optional<SpongeSubmitter> getSubmitter(@Nonnull String playerName) {
-        return Sponge.getServiceManager().getRegistration(UserStorageService.class).map(userStorage -> userStorage.getProvider().get(playerName).map(User::getUniqueId).flatMap(this::getSubmitter)).orElseGet(() -> getSubmissions().map(Submissions::getSubmitters).map(List::stream).flatMap(stream -> stream.filter(s -> playerName.equalsIgnoreCase(s.getName())).findFirst()));
+        return Sponge.getServiceManager().getRegistration(UserStorageService.class).map(userStorage -> userStorage.getProvider().get(playerName).map(User::getUniqueId).flatMap(this::getSubmitter)).orElseGet(() -> getSubmissions().getSubmitters().stream().filter(s -> playerName.equalsIgnoreCase(s.getName())).findFirst());
     }
 
     @Nonnull
     protected Optional<SpongeSubmitter> getSubmitter(@Nonnull UUID uuid) {
-        return getSubmissions().map(submissions -> submissions.getSubmitter(uuid));
+        return Optional.ofNullable(getSubmissions().getSubmitter(uuid));
     }
 
     @Nonnull
-    protected Optional<SpongeSubmitter> getSubmitter(@Nonnull Player player) {
-        return getSubmissions().map(submissions -> submissions.getSubmitter(player));
+    protected SpongeSubmitter getSubmitter(@Nonnull Player player) {
+        return getSubmissions().getSubmitter(player);
     }
 }

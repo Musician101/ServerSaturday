@@ -14,11 +14,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-public abstract class SpigotCommand implements CommandExecutor {
+public abstract class SpigotCommand implements TabExecutor {
 
     @Nonnull
     private final String description;
@@ -31,11 +31,6 @@ public abstract class SpigotCommand implements CommandExecutor {
     protected SpigotCommand(@Nonnull String name, @Nonnull String description) {
         this.name = name;
         this.description = description;
-    }
-
-    @Nonnull
-    public String getDescription() {
-        return description;
     }
 
     @Nonnull
@@ -83,11 +78,6 @@ public abstract class SpigotCommand implements CommandExecutor {
     @Nullable
     private SpigotSubmitter getSubmitter(@Nonnull UUID uuid) {
         return getSubmissions().getSubmitter(uuid);
-    }
-
-    @Nonnull
-    public SpigotCommandUsage getUsage() {
-        return usage;
     }
 
     protected List<String> moveArguments(List<String> args) {

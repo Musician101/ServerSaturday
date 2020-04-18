@@ -4,8 +4,9 @@ import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.sponge.command.SSCommandExecutor;
 import com.campmongoose.serversaturday.sponge.command.args.BuildCommandElement;
 import com.campmongoose.serversaturday.sponge.gui.SpongeBookGUI;
-import com.campmongoose.serversaturday.sponge.gui.chest.SpongeChestGUIs;
+import com.campmongoose.serversaturday.sponge.gui.chest.EditBuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
+import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import org.spongepowered.api.command.CommandResult;
@@ -37,13 +38,12 @@ public class SSDescription extends SSCommandExecutor {
                     return CommandResult.empty();
                 }
 
-                return getSubmitter(player).map(submitter -> {
-                    new SpongeBookGUI(player, build, build.getDescription().stream().map(Text::of).collect(Collectors.toList()), pages -> {
-                        build.setDescription(pages);
-                        SpongeChestGUIs.INSTANCE.editBuild(build, submitter, player);
-                    });
-                    return CommandResult.success();
-                }).orElse(CommandResult.empty());
+                SpongeSubmitter submitter = getSubmitter(player);
+                new SpongeBookGUI(player, build, build.getDescription().stream().map(Text::of).collect(Collectors.toList()), (p, pages) -> {
+                    build.setDescription(pages);
+                    new EditBuildGUI(build, submitter, p);
+                });
+                return CommandResult.success();
             }
 
             return playerOnly(source);

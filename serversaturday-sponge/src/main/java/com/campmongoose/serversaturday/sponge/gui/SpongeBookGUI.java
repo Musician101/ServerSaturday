@@ -4,13 +4,15 @@ import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
 import com.campmongoose.serversaturday.sponge.data.manipulator.mutable.UUIDData;
 import com.campmongoose.serversaturday.sponge.event.AffectBookEvent;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
+import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import javax.annotation.Nonnull;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.data.key.Keys;
@@ -28,6 +30,7 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
+import org.spongepowered.api.text.BookView;
 import org.spongepowered.api.text.Text;
 
 public class SpongeBookGUI {
@@ -36,28 +39,27 @@ public class SpongeBookGUI {
     private static final Predicate<ItemStack> BOOK_FILTER = itemStack -> {
         ItemType itemType = itemStack.getType();
         return (itemType == ItemTypes.WRITABLE_BOOK || itemType == ItemTypes.WRITTEN_BOOK) && itemStack.get(Keys.ITEM_LORE).map(lore -> lore.stream().map(Text::toPlain).collect(Collectors.toList())).filter(lore -> lore.contains(LORE_IDENTIFIER)).isPresent();
-
     };
-    private final Consumer<List<Text>> action;
+    private final BiConsumer<Player, List<Text>> action;
     private final int bookSlot;
     private final Player player;
 
-    public SpongeBookGUI(Player player, SpongeBuild build, List<Text> originalPages, Consumer<List<Text>> action) {
+    public SpongeBookGUI(Player player, SpongeBuild build, List<Text> originalPages, BiConsumer<Player, List<Text>> action) {
         this.player = player;
         Hotbar hotbar = player.getInventory().query(QueryOperationTypes.TYPE.of(Hotbar.class));
         this.bookSlot = hotbar.getSelectedSlotIndex();
         this.action = action;
-        ItemStack book = ItemStack.builder().itemType(ItemTypes.WRITABLE_BOOK).quantity(1)
-                .add(Keys.BOOK_AUTHOR, Text.of(player.getName()))
-                .add(Keys.DISPLAY_NAME, Text.of(build.getName()))
-                .add(Keys.BOOK_PAGES, originalPages.stream().map(Text::of).collect(Collectors.toList()))
-                .add(Keys.ITEM_LORE, Collections.singletonList(Text.of(LORE_IDENTIFIER))).build();
+        ItemStack book = ItemStack.builder().itemType(ItemTypes.WRITABLE_BOOK).quantity(1).add(Keys.BOOK_AUTHOR, Text.of(player.getName())).add(Keys.DISPLAY_NAME, Text.of(build.getName())).add(Keys.BOOK_PAGES, originalPages.stream().map(Text::of).collect(Collectors.toList())).add(Keys.ITEM_LORE, Collections.singletonList(Text.of(LORE_IDENTIFIER))).build();
         hotbar.set(new SlotIndex(bookSlot), book);
-        Sponge.getEventManager().registerListeners(SpongeServerSaturday.instance().get(), this);
+        Sponge.getEventManager().registerListeners(SpongeServerSaturday.instance(), this);
     }
 
     public static boolean isEditing(Player player) {
         return !(StreamSupport.stream(player.getInventory().spliterator(), false).map(Inventory::peek).filter(optional -> optional.filter(BOOK_FILTER).isPresent()).map(Optional::get).count() == 0);
+    }
+
+    public static void openWrittenBook(@Nonnull Player player, @Nonnull SpongeBuild build, @Nonnull SpongeSubmitter submitter) {
+        player.sendBookView(BookView.builder().author(Text.of(submitter.getName())).title(Text.of(build.getName())).addPages(build.getDescription()).build());
     }
 
     @Listener
@@ -70,7 +72,7 @@ public class SpongeBookGUI {
         ItemStack finalStack = transaction.getFinal().createStack();
         if (finalStack.get(UUIDData.class).isPresent()) {
             if (isEditing(player)) {
-                action.accept(finalStack.get(Keys.BOOK_PAGES).orElse(Collections.emptyList()));
+                action.accept(player, finalStack.get(Keys.BOOK_PAGES).orElse(Collections.emptyList()));
                 remove();
             }
         }

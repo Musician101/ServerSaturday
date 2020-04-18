@@ -1,37 +1,50 @@
 package com.campmongoose.serversaturday.common.gui.chest;
 
+import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 
-public abstract class ChestGUI<C, I, P, S, T> {
+public abstract class ChestGUI<ClickType, Inventory, Player, ItemStack, Text, InventoryView> {
 
     @Nonnull
-    protected final List<GUIButton<C, P, S>> buttons;
+    protected final List<GUIButton<ClickType, Player, ItemStack>> buttons = new ArrayList<>();
     @Nonnull
-    protected final I inventory;
+    protected final Inventory inventory;
     @Nonnull
-    protected final T name;
-    protected final int page;
+    protected final Text name;
     @Nonnull
-    protected final P player;
+    protected final Player player;
 
-    protected ChestGUI(@Nonnull I inventory, @Nonnull T name, @Nonnull P player, @Nonnull List<GUIButton<C, P, S>> buttons, int page, boolean manualOpen) {
+    protected ChestGUI(@Nonnull Inventory inventory, @Nonnull Text name, @Nonnull Player player) {
         this.inventory = inventory;
         this.name = name;
         this.player = player;
-        this.buttons = buttons;
-        this.page = page;
-        if (!manualOpen) {
-            open();
-        }
+        open();
     }
 
-    public abstract void close();
+    protected abstract void addItem(int slot, @Nonnull ItemStack itemStack);
 
-    @Nonnull
-    public T getName() {
-        return name;
+    protected abstract boolean isCorrectInventory(@Nonnull InventoryView view);
+
+    protected abstract void open();
+
+    public final void removeButton(int slot) {
+        buttons.removeIf(g -> g.getSlot() == slot);
+        removeItem(slot);
     }
 
-    public abstract void open();
+    protected abstract void removeItem(int slot);
+
+    public final void setButton(int slot, @Nonnull ItemStack itemStack, Map<ClickType, Consumer<Player>> actions) {
+        buttons.removeIf(g -> g.getSlot() == slot);
+        buttons.add(new GUIButton<>(slot, itemStack, actions));
+        addItem(slot, itemStack);
+    }
+
+    public final void setButton(int slot, @Nonnull ItemStack itemStack) {
+        setButton(slot, itemStack, ImmutableMap.of());
+    }
 }

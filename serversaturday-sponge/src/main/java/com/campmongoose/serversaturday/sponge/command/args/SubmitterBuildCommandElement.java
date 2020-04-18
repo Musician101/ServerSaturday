@@ -2,7 +2,6 @@ package com.campmongoose.serversaturday.sponge.command.args;
 
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.submission.Submissions;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import java.util.AbstractMap.SimpleEntry;
@@ -34,7 +33,7 @@ public class SubmitterBuildCommandElement extends SSCommandElement {
     public List<String> complete(@Nonnull CommandSource src, @Nonnull CommandArgs args, @Nonnull CommandContext context) {
         if (src instanceof Player) {
             List<String> argsList = args.getAll();
-            List<String> names = getSubmissions().map(Submissions::getSubmitters).map(List::stream).map(stream -> stream.map(SpongeSubmitter::getName).collect(Collectors.toList())).orElse(Collections.emptyList());
+            List<String> names = getSubmissions().getSubmitters().stream().map(SpongeSubmitter::getName).collect(Collectors.toList());
             if (argsList.isEmpty()) {
                 return names;
             }
@@ -56,7 +55,7 @@ public class SubmitterBuildCommandElement extends SSCommandElement {
 
     @Nonnull
     @Override
-    public Text getUsage(CommandSource src) {
+    public Text getUsage(@Nonnull CommandSource src) {
         return Text.of("[" + Commands.PLAYER + "] [" + Commands.BUILD + "...]");
     }
 

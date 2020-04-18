@@ -8,7 +8,11 @@ import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
 import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SSGetRewards extends SpigotCommand {
@@ -19,8 +23,13 @@ public class SSGetRewards extends SpigotCommand {
         permissions = new SpigotCommandPermissions(Permissions.VIEW, false);
         executor = (sender, args) -> {
             getPluginInstance().getRewardGiver().givePlayerReward((Player) sender);
-            sender.sendMessage(ChatColor.GOLD + Messages.REWARDS_GIVEN);
+            sender.sendMessage(ChatColor.GOLD + Messages.REWARDS_RECEIVED);
             return true;
         };
+    }
+
+    @Override
+    public List<String> onTabComplete(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String alias, @Nonnull String[] args) {
+        return Collections.emptyList();
     }
 }

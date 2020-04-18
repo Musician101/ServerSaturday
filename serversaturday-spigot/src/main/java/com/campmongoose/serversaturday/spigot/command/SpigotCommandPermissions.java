@@ -22,10 +22,6 @@ public class SpigotCommandPermissions {
         return permissionNode;
     }
 
-    public boolean isPlayerOnly() {
-        return isPlayerOnly;
-    }
-
     public boolean testPermission(CommandSender sender) {
         if (isPlayerOnly && !(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + Messages.PLAYER_ONLY);

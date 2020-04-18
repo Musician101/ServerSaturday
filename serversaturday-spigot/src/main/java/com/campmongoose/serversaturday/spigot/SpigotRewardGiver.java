@@ -2,20 +2,22 @@ package com.campmongoose.serversaturday.spigot;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.RewardGiver;
-import com.campmongoose.serversaturday.spigot.gui.chest.SpigotRewardsGUI;
 import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter;
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public class SpigotRewardGiver extends RewardGiver<PlayerJoinEvent, Player> {
+public class SpigotRewardGiver extends RewardGiver<PlayerJoinEvent, Player> implements Listener {
 
     public SpigotRewardGiver() {
         super(new File(SpigotServerSaturday.instance().getDataFolder(), "rewards_waiting.yml"));
@@ -34,6 +36,7 @@ public class SpigotRewardGiver extends RewardGiver<PlayerJoinEvent, Player> {
             UUID uuid = UUID.fromString(key);
             rewardsWaiting.put(uuid, yml.getInt(key + ".amount", 0));
         });
+        Bukkit.getPluginManager().registerEvents(this, SpigotServerSaturday.instance());
     }
 
     @Override
@@ -41,18 +44,18 @@ public class SpigotRewardGiver extends RewardGiver<PlayerJoinEvent, Player> {
         UUID uuid = player.getUniqueId();
         int amount = rewardsWaiting.getOrDefault(uuid, 0);
         rewardsWaiting.put(uuid, 0);
-        for (int i = 0; i < amount; i++) {
-            Stream.of(SpigotRewardsGUI.getRewards()).filter(Objects::nonNull).forEach(itemStack -> player.getWorld().dropItem(player.getLocation(), itemStack));
-        }
+        SpigotServerSaturday plugin = SpigotServerSaturday.instance();
+        Server server = plugin.getServer();
+        IntStream.range(0, amount).forEach(i -> plugin.getPluginConfig().getRewards().forEach(command -> server.dispatchCommand(server.getConsoleSender(), command.replace("@p", player.getName()))));
     }
 
+    @EventHandler
     @Override
     public void onJoin(@Nonnull PlayerJoinEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
-        rewardsWaiting.putIfAbsent(uuid, 0);
         if (rewardsWaiting.getOrDefault(uuid, 0) > 0) {
-            player.sendMessage(ChatColor.GOLD + Messages.REWARDS_WAITING);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.instance(), () -> player.sendMessage(ChatColor.GOLD + Messages.REWARDS_WAITING), 20L);
         }
     }
 

@@ -2,10 +2,8 @@ package com.campmongoose.serversaturday.sponge.command.args;
 
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.common.submission.Submissions;
 import com.campmongoose.serversaturday.common.submission.Submitter;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +28,7 @@ public class SubmitterCommandElement extends SSCommandElement {
     @Nonnull
     @Override
     public List<String> complete(@Nonnull CommandSource src, @Nonnull CommandArgs args, @Nonnull CommandContext context) {
-        return getSubmissions().map(Submissions::getSubmitters).map(List::stream).map(stream -> stream.map(Submitter::getName).filter(name -> name.startsWith(args.nextIfPresent().orElse(""))).collect(Collectors.toList())).orElse(Collections.emptyList());
+        return getSubmissions().getSubmitters().stream().map(Submitter::getName).filter(name -> name.startsWith(args.nextIfPresent().orElse(""))).collect(Collectors.toList());
     }
 
     @Nullable

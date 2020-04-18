@@ -1,7 +1,7 @@
 name: ServerSaturday
 main: com.campmongoose.serversaturday.spigot.SpigotServerSaturday
 version: ${version}
-api-version: "1.14"
+api-version: '1.15'
 commands:
   serversaturday:
     aliases: [ss]
@@ -19,9 +19,9 @@ commands:
     description: Toggle if a build has been featured.
     permission: ss.feature
   serversaturdaygetrewards:
-      aliases: [ssgetrewards, ssgetr]
-      description: Receive any rewards that are currently waiting.
-      permission: ss.submit
+    aliases: [ssgetrewards, ssgetr]
+    description: Receive any rewards that are currently waiting.
+    permission: ss.submit
   serversaturdaygivereward:
     aliases: [ssgivereward, ssgr]
     description: Give a player a reward.
@@ -58,6 +58,10 @@ commands:
     aliases: [sssubmit, sss]
     description: Toggle whether you build is ready to be featured or not.
     permission: ss.submit
+  serversaturdaysetrewards:
+    aliases: [sssetrewards, sssr]
+    description: Set the rewards a player gets from having their build featured.
+    permission: ss.feature
   serversaturdayview:
     aliases: [ssview, ssv]
     description: View Server Saturday submissions.
@@ -67,9 +71,9 @@ commands:
     description: View the description of a build.
     permission: ss.view
   serversaturdayviewresourcepack:
-      aliases: [ssviewresourcepack, ssvrp]
-      description: View the build's recommended resource pack.
-      permission: ss.view
+    aliases: [ssviewresourcepack, ssvrp]
+    description: View the build's recommended resource pack.
+    permission: ss.view
 
 permissions:
   ss.*:

@@ -5,6 +5,7 @@ import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import javax.annotation.Nonnull;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -21,35 +22,37 @@ public class SpongeConfig extends AbstractConfig {
 
     @Override
     public void reload() {
-        SpongeServerSaturday.instance().ifPresent(plugin -> {
-            ConfigurationNode config;
-            Logger logger = plugin.getLogger();
-            try {
-                ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(configFile).build();
-                if (!configFile.exists()) {
-                    logger.info("Generating default config file...");
-                    configFile.createNewFile();
-                    config = loader.load();
-                    config.getNode(Config.CONFIG_VERSION).setValue(1);
-                    config.getNode(Config.MAX_BUILDS).setValue(0);
-                    loader.save(config);
-                    logger.info("Default file created.");
-                }
-
+        SpongeServerSaturday plugin = SpongeServerSaturday.instance();
+        ConfigurationNode config;
+        Logger logger = plugin.getLogger();
+        try {
+            ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder().setFile(configFile).build();
+            if (!configFile.exists()) {
+                logger.info("Generating default config file...");
+                configFile.createNewFile();
                 config = loader.load();
-                if (config.getNode(Config.CONFIG_VERSION).isVirtual()) {
-                    config.getNode(Config.CONFIG_VERSION).setValue(1);
-                }
-
-                if (config.getNode(Config.MAX_BUILDS).isVirtual()) {
-                    config.getNode(Config.MAX_BUILDS).setValue(0);
-                }
-                maxBuilds = config.getNode(Config.MAX_BUILDS).getInt(0);
+                config.getNode(Config.MAX_BUILDS).setValue(0);
+                config.getNode(Config.REWARDS).setValue(Collections.singletonList("tell @p Quack \\_o<"));
                 loader.save(config);
+                logger.info("Default file created.");
             }
-            catch (IOException e) {
-                logger.info(Messages.failedToReadFile(configFile));
+
+            config = loader.load();
+            if (config.getNode(Config.MAX_BUILDS).isVirtual()) {
+                config.getNode(Config.MAX_BUILDS).setValue(0);
             }
-        });
+
+            if (config.getNode(Config.REWARDS).isVirtual()) {
+                config.getNode(Config.REWARDS).setValue(Collections.singletonList("tell @p Quack \\_o<"));
+            }
+
+            maxBuilds = config.getNode(Config.MAX_BUILDS).getInt(0);
+            rewards.clear();
+            rewards.addAll(config.getNode(Config.REWARDS).getList(Object::toString));
+            loader.save(config);
+        }
+        catch (IOException e) {
+            logger.info(Messages.failedToReadFile(configFile));
+        }
     }
 }

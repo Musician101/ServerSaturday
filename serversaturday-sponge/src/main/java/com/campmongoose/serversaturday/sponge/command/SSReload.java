@@ -1,8 +1,7 @@
 package com.campmongoose.serversaturday.sponge.command;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
-import com.campmongoose.serversaturday.sponge.SpongeConfig;
-import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
+import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
 import javax.annotation.Nonnull;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -15,11 +14,10 @@ public class SSReload extends SSCommandExecutor {
     @Nonnull
     @Override
     public CommandResult execute(@Nonnull CommandSource source, @Nonnull CommandContext arguments) {
-        getSubmissions().ifPresent(submissions -> {
-            submissions.save();
-            submissions.load();
-        });
-        SpongeServerSaturday.instance().map(SpongeServerSaturday.class::cast).map(SpongeServerSaturday::getConfig).ifPresent(SpongeConfig::reload);
+        SpongeSubmissions submissions = getSubmissions();
+        submissions.save();
+        submissions.load();
+        getPlugin().getConfig().reload();
         source.sendMessage(Text.of(TextColors.GOLD, Messages.PLUGIN_RELOADED));
         return CommandResult.success();
     }

@@ -1,7 +1,5 @@
 package com.campmongoose.serversaturday.common.submission;
 
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonSerializer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +8,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class Submitter<B extends Build<B, I, L, S, T>, I, L, S extends Submitter<B, I, L, S, T>, T> {
+public abstract class Submitter<B extends Build<?, ?, ?, ?>, ItemStack, Location> {
 
     @Nonnull
     protected final Map<String, B> builds = new HashMap<>();
@@ -35,7 +33,7 @@ public abstract class Submitter<B extends Build<B, I, L, S, T>, I, L, S extends 
     }
 
     @Nonnull
-    public abstract I getMenuRepresentation();
+    public abstract ItemStack getMenuRepresentation();
 
     @Nonnull
     public String getName() {
@@ -52,7 +50,7 @@ public abstract class Submitter<B extends Build<B, I, L, S, T>, I, L, S extends 
     }
 
     @Nonnull
-    public abstract B newBuild(@Nonnull String name, @Nonnull L location);
+    public abstract B newBuild(@Nonnull String name, @Nonnull Location location);
 
     public boolean removeBuild(@Nonnull String name) {
         return builds.remove(name) != null;
@@ -62,9 +60,5 @@ public abstract class Submitter<B extends Build<B, I, L, S, T>, I, L, S extends 
         builds.remove(build.getName());
         build.setName(newName);
         builds.put(newName, build);
-    }
-
-    public interface Serializer<B extends Build<B, I, L, S, T>, I, L, S extends Submitter<B, I, L, S, T>, T> extends JsonDeserializer<S>, JsonSerializer<S> {
-
     }
 }

@@ -4,10 +4,12 @@ import com.campmongoose.serversaturday.common.JsonUtils;
 import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.submission.Build;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +23,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SpigotBuild extends Build<SpigotBuild, ItemStack, Location, SpigotSubmitter, String> {
+public class SpigotBuild extends Build<ItemStack, Location, SpigotSubmitter, String> {
 
     public SpigotBuild(@Nonnull String name, @Nonnull Location location, @Nonnull List<String> description, @Nonnull List<String> resourcePacks, boolean featured, boolean submitted) {
         this(name, location);
@@ -52,7 +54,7 @@ public class SpigotBuild extends Build<SpigotBuild, ItemStack, Location, SpigotS
         return itemStack;
     }
 
-    public static class SpigotSerializer implements Serializer<SpigotBuild, ItemStack, Location, SpigotSubmitter, String> {
+    public static class SpigotSerializer implements JsonDeserializer<SpigotBuild>, JsonSerializer<SpigotBuild> {
 
         @Override
         public SpigotBuild deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {

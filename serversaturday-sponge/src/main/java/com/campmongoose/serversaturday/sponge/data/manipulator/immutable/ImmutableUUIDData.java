@@ -14,7 +14,7 @@ import org.spongepowered.api.data.value.mutable.Value;
 public class ImmutableUUIDData extends AbstractImmutableSingleData<UUID, ImmutableUUIDData, UUIDData> {
 
     public ImmutableUUIDData(@Nonnull UUID uuid) {
-        super(uuid, SSKeys.UUID);
+        super(SSKeys.UUID, uuid);
     }
 
     @Nonnull

@@ -3,8 +3,9 @@ package com.campmongoose.serversaturday.sponge.command.submit;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.sponge.command.SSCommandExecutor;
 import com.campmongoose.serversaturday.sponge.command.args.BuildCommandElement;
-import com.campmongoose.serversaturday.sponge.gui.chest.SpongeChestGUIs;
+import com.campmongoose.serversaturday.sponge.gui.chest.EditBuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
+import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import javax.annotation.Nonnull;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -21,12 +22,11 @@ public class SSLocation extends SSCommandExecutor {
         return arguments.<SpongeBuild>getOne(BuildCommandElement.KEY).map(build -> {
             if (source instanceof Player) {
                 Player player = (Player) source;
-                return getSubmitter(player).map(submitter -> {
-                    build.setLocation(player.getLocation());
-                    SpongeChestGUIs.INSTANCE.editBuild(build, submitter, player);
-                    player.sendMessage(Text.of(TextColors.GREEN, Messages.locationChanged(build)));
-                    return CommandResult.success();
-                }).orElse(CommandResult.empty());
+                SpongeSubmitter submitter = getSubmitter(player);
+                build.setLocation(player.getLocation());
+                new EditBuildGUI(build, submitter, player);
+                player.sendMessage(Text.of(TextColors.GREEN, Messages.locationChanged(build)));
+                return CommandResult.success();
             }
 
             return playerOnly(source);

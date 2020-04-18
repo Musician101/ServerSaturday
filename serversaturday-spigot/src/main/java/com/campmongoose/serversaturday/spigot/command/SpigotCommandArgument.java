@@ -41,9 +41,4 @@ public class SpigotCommandArgument {
 
         return name;
     }
-
-    @Nonnull
-    public String getName() {
-        return name;
-    }
 }

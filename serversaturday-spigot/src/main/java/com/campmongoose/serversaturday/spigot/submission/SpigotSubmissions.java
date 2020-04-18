@@ -36,18 +36,17 @@ public class SpigotSubmissions extends Submissions<Player, SpigotSubmitter> {
         dir.mkdirs();
         File[] files = dir.listFiles();
         if (files != null) {
-            Stream.of(files).filter(file -> file.getName().endsWith(Config.JSON))
-                    .forEach(file -> {
-                        try(FileReader fr = new FileReader(file)) {
-                            SpigotSubmitter submitter = gson.fromJson(fr, SpigotSubmitter.class);
-                            if (!submitter.getBuilds().isEmpty()) {
-                                submitters.put(submitter.getUUID(), submitter);
-                            }
-                        }
-                        catch (IOException e) {
-                            logger.warning(Messages.failedToReadFile(file));
-                        }
-                    });
+            Stream.of(files).filter(file -> file.getName().endsWith(Config.JSON)).forEach(file -> {
+                try (FileReader fr = new FileReader(file)) {
+                    SpigotSubmitter submitter = gson.fromJson(fr, SpigotSubmitter.class);
+                    if (!submitter.getBuilds().isEmpty()) {
+                        submitters.put(submitter.getUUID(), submitter);
+                    }
+                }
+                catch (IOException e) {
+                    logger.warning(Messages.failedToReadFile(file));
+                }
+            });
         }
         else {
             logger.info(Messages.failedToReadFiles(dir));

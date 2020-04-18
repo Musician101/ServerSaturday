@@ -9,6 +9,7 @@ import com.google.gson.JsonParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.Slot;
@@ -44,7 +45,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
     @Shadow
     public EntityPlayerMP player;
 
-    private ItemStackSnapshot getSnapshot(net.minecraft.item.ItemStack itemStack) {
+    private ItemStackSnapshot getSnapshot(@Nonnull net.minecraft.item.ItemStack itemStack) {
         return org.spongepowered.api.item.inventory.ItemStack.class.cast(itemStack).createSnapshot();
     }
 

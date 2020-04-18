@@ -1,11 +1,10 @@
 package com.campmongoose.serversaturday.common.gui;
 
-import com.campmongoose.serversaturday.common.Builder;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 
-public abstract class AbstractIconBuilder<B extends AbstractIconBuilder<B, I, P, T>, I, P, T> implements Builder<B, I> {
+public abstract class AbstractIconBuilder<B extends AbstractIconBuilder<B, I, P, T>, I, P, T> {
 
     @Nonnull
     protected I itemStack;
@@ -15,19 +14,7 @@ public abstract class AbstractIconBuilder<B extends AbstractIconBuilder<B, I, P,
     }
 
     @Nonnull
-    public final B addGlow() {
-        return addGlow(true);
-    }
-
-    @Nonnull
-    public abstract B addGlow(boolean addGlow);
-
-    @Nonnull
-    public abstract B amount(int amount);
-
-    @Nonnull
-    @Override
-    public I build() {
+    public final I build() {
         return itemStack;
     }
 
@@ -44,5 +31,5 @@ public abstract class AbstractIconBuilder<B extends AbstractIconBuilder<B, I, P,
     public abstract B name(@Nonnull T name);
 
     @Nonnull
-    public abstract B potionEffect(@Nonnull P potionType);
+    public abstract B reset();
 }

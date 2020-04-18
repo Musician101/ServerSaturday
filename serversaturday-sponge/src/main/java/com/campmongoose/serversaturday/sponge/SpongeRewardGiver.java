@@ -2,28 +2,25 @@ package com.campmongoose.serversaturday.sponge;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.RewardGiver;
-import com.campmongoose.serversaturday.sponge.gui.chest.SpongeRewardsGUI;
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent.Join;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.World;
 
 public class SpongeRewardGiver extends RewardGiver<ClientConnectionEvent.Join, Player> {
 
@@ -44,7 +41,7 @@ public class SpongeRewardGiver extends RewardGiver<ClientConnectionEvent.Join, P
             });
         }
         catch (IOException e) {
-            SpongeServerSaturday.instance().map(SpongeServerSaturday::getLogger).ifPresent(logger -> logger.error(Messages.failedToReadFile(this.file)));
+            SpongeServerSaturday.instance().getLogger().error(Messages.failedToReadFile(this.file));
         }
     }
 
@@ -53,14 +50,8 @@ public class SpongeRewardGiver extends RewardGiver<ClientConnectionEvent.Join, P
         UUID uuid = player.getUniqueId();
         int amount = rewardsWaiting.getOrDefault(uuid, 0);
         rewardsWaiting.put(uuid, 0);
-        for (int i = 0; i < amount; i++) {
-            SpongeRewardsGUI.getRewards().stream().filter(Objects::nonNull).forEach(itemStack -> {
-                World world = player.getWorld();
-                Entity entity = world.createEntity(EntityTypes.ITEM, player.getLocation().getPosition());
-                entity.offer(Keys.REPRESENTED_ITEM, itemStack.createSnapshot());
-                world.spawnEntity(entity);
-            });
-        }
+        SpongeServerSaturday plugin = SpongeServerSaturday.instance();
+        IntStream.range(0, amount).forEach(i -> plugin.getConfig().getRewards().forEach(command -> Sponge.getCommandManager().process(Sponge.getServer().getConsole(), command.replace("@p", player.getName()))));
     }
 
     @Override
@@ -69,7 +60,7 @@ public class SpongeRewardGiver extends RewardGiver<ClientConnectionEvent.Join, P
         UUID uuid = player.getUniqueId();
         rewardsWaiting.putIfAbsent(uuid, 0);
         if (rewardsWaiting.getOrDefault(uuid, 0) > 0) {
-            player.sendMessage(Text.of(TextColors.GOLD, Messages.REWARDS_WAITING));
+            Task.builder().execute(() -> player.sendMessage(Text.of(TextColors.GOLD, Messages.REWARDS_WAITING))).delay(1, TimeUnit.SECONDS).submit(SpongeServerSaturday.instance());
         }
     }
 
@@ -85,7 +76,7 @@ public class SpongeRewardGiver extends RewardGiver<ClientConnectionEvent.Join, P
             loader.save(node);
         }
         catch (IOException e) {
-            SpongeServerSaturday.instance().map(SpongeServerSaturday::getLogger).ifPresent(logger -> logger.error(Messages.failedToWriteFile(file)));
+            SpongeServerSaturday.instance().getLogger().error(Messages.failedToWriteFile(file));
         }
     }
 }

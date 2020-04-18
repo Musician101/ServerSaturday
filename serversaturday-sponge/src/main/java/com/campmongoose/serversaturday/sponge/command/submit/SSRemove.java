@@ -3,8 +3,9 @@ package com.campmongoose.serversaturday.sponge.command.submit;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.sponge.command.SSCommandExecutor;
 import com.campmongoose.serversaturday.sponge.command.args.BuildCommandElement;
-import com.campmongoose.serversaturday.sponge.gui.chest.SpongeChestGUIs;
+import com.campmongoose.serversaturday.sponge.gui.chest.SubmitterGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
+import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import javax.annotation.Nonnull;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -21,15 +22,14 @@ public class SSRemove extends SSCommandExecutor {
         return arguments.<SpongeBuild>getOne(BuildCommandElement.KEY).map(build -> {
             if (source instanceof Player) {
                 Player player = (Player) source;
-                return getSubmitter(player).map(submitter -> {
-                    if (!submitter.removeBuild(build.getName())) {
-                        player.sendMessage(Text.of(TextColors.RED, Messages.BUILD_NOT_FOUND));
-                        return CommandResult.empty();
-                    }
+                SpongeSubmitter submitter = getSubmitter(player);
+                if (!submitter.removeBuild(build.getName())) {
+                    player.sendMessage(Text.of(TextColors.RED, Messages.BUILD_NOT_FOUND));
+                    return CommandResult.empty();
+                }
 
-                    SpongeChestGUIs.INSTANCE.submitter(1, player, submitter);
-                    return CommandResult.success();
-                }).orElse(CommandResult.empty());
+                new SubmitterGUI(submitter, player);
+                return CommandResult.success();
             }
 
             return playerOnly(source);

@@ -1,25 +1,23 @@
 package com.campmongoose.serversaturday.common.submission;
 
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonSerializer;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 
-public abstract class Build<B extends Build<B, I, L, S, T>, I, L, S extends Submitter<B, I, L, S, T>, T> {
+public abstract class Build<ItemStack, Location, S extends Submitter<?, ?, ?>, Description> {
 
     @Nonnull
-    protected List<T> description = new ArrayList<>();
+    protected List<Description> description = new ArrayList<>();
     protected boolean featured = false;
     @Nonnull
-    protected L location;
+    protected Location location;
     @Nonnull
     protected String name;
     @Nonnull
-    protected List<T> resourcePacks = new ArrayList<>();
+    protected List<Description> resourcePacks = new ArrayList<>();
     protected boolean submitted = false;
 
-    protected Build(@Nonnull String name, @Nonnull L location) {
+    protected Build(@Nonnull String name, @Nonnull Location location) {
         this.name = name;
         this.location = location;
     }
@@ -29,25 +27,25 @@ public abstract class Build<B extends Build<B, I, L, S, T>, I, L, S extends Subm
     }
 
     @Nonnull
-    public List<T> getDescription() {
+    public List<Description> getDescription() {
         return description;
     }
 
-    public void setDescription(@Nonnull List<T> description) {
+    public void setDescription(@Nonnull List<Description> description) {
         this.description = description;
     }
 
     @Nonnull
-    public L getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(@Nonnull L location) {
+    public void setLocation(@Nonnull Location location) {
         this.location = location;
     }
 
     @Nonnull
-    public abstract I getMenuRepresentation(@Nonnull S submitter);
+    public abstract ItemStack getMenuRepresentation(@Nonnull S submitter);
 
     @Nonnull
     public String getName() {
@@ -59,11 +57,11 @@ public abstract class Build<B extends Build<B, I, L, S, T>, I, L, S extends Subm
     }
 
     @Nonnull
-    public List<T> getResourcePacks() {
+    public List<Description> getResourcePacks() {
         return resourcePacks;
     }
 
-    public void setResourcePacks(@Nonnull List<T> resourcePacks) {
+    public void setResourcePacks(@Nonnull List<Description> resourcePacks) {
         this.resourcePacks = resourcePacks;
     }
 
@@ -77,9 +75,5 @@ public abstract class Build<B extends Build<B, I, L, S, T>, I, L, S extends Subm
 
     public boolean submitted() {
         return submitted;
-    }
-
-    public interface Serializer<B extends Build<B, I, L, S, T>, I, L, S extends Submitter<B, I, L, S, T>, T> extends JsonDeserializer<B>, JsonSerializer<B> {
-
     }
 }

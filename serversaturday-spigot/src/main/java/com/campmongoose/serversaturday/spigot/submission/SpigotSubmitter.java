@@ -5,10 +5,12 @@ import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.submission.Build;
 import com.campmongoose.serversaturday.common.submission.Submitter;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.UUID;
@@ -21,7 +23,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location, SpigotSubmitter, String> {
+public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location> {
 
     public SpigotSubmitter(Player player) {
         super(player.getName(), player.getUniqueId());
@@ -42,7 +44,7 @@ public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location,
             }
         }
 
-        ItemStack itemStack =  new ItemStack(hasNonFeaturedBuilds ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK, 1);
+        ItemStack itemStack = new ItemStack(hasNonFeaturedBuilds ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK, 1);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(name);
         itemStack.setItemMeta(itemMeta);
@@ -56,7 +58,7 @@ public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location,
         return builds.get(name);
     }
 
-    public static class SpigotSerializer implements Serializer<SpigotBuild, ItemStack, Location, SpigotSubmitter, String> {
+    public static class SpigotSerializer implements JsonDeserializer<SpigotSubmitter>, JsonSerializer<SpigotSubmitter> {
 
         @Override
         public SpigotSubmitter deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {

@@ -4,7 +4,7 @@ import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.submission.Submissions;
 import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
-import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter.SpongeSerializer;
+import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter.Serializer;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import org.slf4j.Logger;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -21,7 +22,9 @@ import org.spongepowered.api.world.World;
 public class SpongeSubmissions extends Submissions<Player, SpongeSubmitter> {
 
     public SpongeSubmissions(@Nonnull File storageDir) {
-        super(storageDir, new GsonBuilder().setPrettyPrinting().registerTypeAdapter(SpongeBuild.class, new SpongeBuild.SpongeSerializer()).registerTypeAdapter(SpongeSubmitter.class, new SpongeSerializer()).registerTypeAdapter(new TypeToken<Location<World>>(){}.getType(), new LocationSerializer()).create());
+        super(storageDir, new GsonBuilder().setPrettyPrinting().registerTypeAdapter(SpongeBuild.class, new SpongeBuild.Serializer()).registerTypeAdapter(SpongeSubmitter.class, new Serializer()).registerTypeAdapter(new TypeToken<Location<World>>() {
+
+        }.getType(), new LocationSerializer()).create());
     }
 
     @Nonnull
@@ -33,25 +36,23 @@ public class SpongeSubmissions extends Submissions<Player, SpongeSubmitter> {
 
     @Override
     public void load() {
-        SpongeServerSaturday.instance().map(SpongeServerSaturday::getLogger).ifPresent(logger -> {
-            dir.mkdirs();
-            File[] files = dir.listFiles();
-            if (files != null) {
-                Stream.of(files).filter(file -> file.getName().endsWith(Config.JSON))
-                        .forEach(file -> {
-                            try {
-                                SpongeSubmitter submitter = gson.fromJson(new FileReader(file), SpongeSubmitter.class);
-                                submitters.put(submitter.getUUID(), submitter);
-                            }
-                            catch (IOException e) {
-                                logger.error(Messages.failedToReadFile(file));
-                            }
-                        });
-            }
-            else {
-                logger.info(Messages.failedToReadFiles(dir));
-            }
-        });
+        Logger logger = SpongeServerSaturday.instance().getLogger();
+        dir.mkdirs();
+        File[] files = dir.listFiles();
+        if (files != null) {
+            Stream.of(files).filter(file -> file.getName().endsWith(Config.JSON)).forEach(file -> {
+                try {
+                    SpongeSubmitter submitter = gson.fromJson(new FileReader(file), SpongeSubmitter.class);
+                    submitters.put(submitter.getUUID(), submitter);
+                }
+                catch (IOException e) {
+                    logger.error(Messages.failedToReadFile(file));
+                }
+            });
+        }
+        else {
+            logger.info(Messages.failedToReadFiles(dir));
+        }
     }
 
     @Override
@@ -68,7 +69,7 @@ public class SpongeSubmissions extends Submissions<Player, SpongeSubmitter> {
                 os.close();
             }
             catch (IOException e) {
-                SpongeServerSaturday.instance().map(SpongeServerSaturday::getLogger).ifPresent(logger -> logger.error(Messages.failedToWriteFile(file)));
+                SpongeServerSaturday.instance().getLogger().error(Messages.failedToWriteFile(file));
             }
         });
     }

@@ -1,10 +1,10 @@
 {
-  "required": true,
-  "package": "com.campmongoose.serversaturday.sponge.mixin",
-  "refmap": "mixin.sponge_server_saturday.refmap.json",
-  "target": "@env(DEFAULT)",
-  "compatibilityLevel": "JAVA_8",
-  "mixins": [
-    "MixinNetHandlerPlayServer"
-  ]
+    "required": true,
+    "package": "com.campmongoose.serversaturday.sponge.mixin",
+    "refmap": "mixin.sponge_server_saturday.refmap.json",
+    "target": "@env(DEFAULT)",
+    "compatibilityLevel": "JAVA_8",
+    "mixins": [
+        "MixinNetHandlerPlayServer"
+    ]
 }

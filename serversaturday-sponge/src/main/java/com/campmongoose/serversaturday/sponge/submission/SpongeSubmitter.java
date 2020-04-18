@@ -5,10 +5,12 @@ import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.submission.Build;
 import com.campmongoose.serversaturday.common.submission.Submitter;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Map;
@@ -30,7 +32,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class SpongeSubmitter extends Submitter<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter, Text> {
+public class SpongeSubmitter extends Submitter<SpongeBuild, ItemStack, Location<World>> {
 
     public SpongeSubmitter(@Nonnull Player player) {
         super(player.getName(), player.getUniqueId());
@@ -72,7 +74,7 @@ public class SpongeSubmitter extends Submitter<SpongeBuild, ItemStack, Location<
         return builds.get(name);
     }
 
-    public static class SpongeSerializer implements Serializer<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter, Text> {
+    public static class Serializer implements JsonDeserializer<SpongeSubmitter>, JsonSerializer<SpongeSubmitter> {
 
         @Override
         public SpongeSubmitter deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {

@@ -2,9 +2,10 @@ package com.campmongoose.serversaturday.sponge.command.submit;
 
 import com.campmongoose.serversaturday.sponge.command.SSCommandExecutor;
 import com.campmongoose.serversaturday.sponge.command.args.BuildCommandElement;
-import com.campmongoose.serversaturday.sponge.gui.anvil.AnvilGUI;
-import com.campmongoose.serversaturday.sponge.gui.chest.SpongeChestGUIs;
+import com.campmongoose.serversaturday.sponge.gui.chest.EditBuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
+import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
+import com.campmongoose.serversaturday.sponge.textinput.SpongeTextInput;
 import javax.annotation.Nonnull;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -19,14 +20,13 @@ public class SSRename extends SSCommandExecutor {
         return arguments.<SpongeBuild>getOne(BuildCommandElement.KEY).map(build -> {
             if (source instanceof Player) {
                 Player player = (Player) source;
-                return getSubmitter(player).map(submitter -> {
-                    new AnvilGUI(player, (ep, s) -> {
-                        build.setName(s);
-                        SpongeChestGUIs.INSTANCE.editBuild(build, submitter, player);
-                        return null;
-                    });
-                    return CommandResult.success();
-                }).orElse(CommandResult.empty());
+                SpongeSubmitter submitter = getSubmitter(player);
+                SpongeTextInput.addPlayer(player, (p, s) -> {
+                    build.setName(s);
+                    new EditBuildGUI(build, submitter, p);
+                });
+
+                return CommandResult.success();
             }
 
             return playerOnly(source);

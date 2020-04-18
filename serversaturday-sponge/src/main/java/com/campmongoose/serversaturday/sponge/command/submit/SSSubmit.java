@@ -2,8 +2,9 @@ package com.campmongoose.serversaturday.sponge.command.submit;
 
 import com.campmongoose.serversaturday.sponge.command.SSCommandExecutor;
 import com.campmongoose.serversaturday.sponge.command.args.BuildCommandElement;
-import com.campmongoose.serversaturday.sponge.gui.chest.SpongeChestGUIs;
+import com.campmongoose.serversaturday.sponge.gui.chest.EditBuildGUI;
 import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
+import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import javax.annotation.Nonnull;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -19,10 +20,9 @@ public class SSSubmit extends SSCommandExecutor {
             if (source instanceof Player) {
                 Player player = (Player) source;
                 build.setSubmitted(!build.submitted());
-                return getSubmitter(player).map(submitter -> {
-                    SpongeChestGUIs.INSTANCE.editBuild(build, submitter, player);
-                    return CommandResult.success();
-                }).orElse(CommandResult.empty());
+                SpongeSubmitter submitter = getSubmitter(player);
+                new EditBuildGUI(build, submitter, player);
+                return CommandResult.success();
             }
 
             return playerOnly(source);

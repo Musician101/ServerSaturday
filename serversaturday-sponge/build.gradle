@@ -32,9 +32,6 @@ apply plugin: 'org.spongepowered.plugin'
 group project.pluginGroup
 version project.pluginVersion
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
-
 deobfMcMCP { failOnAtError = false }
 deobfMcSRG { failOnAtError = false }
 
@@ -59,7 +56,7 @@ dependencies {
     shade(project(':serversaturday-common')) {
         transitive = false
     }
-    compile('org.spongepowered:spongeapi:7.1.0')
+    compile('org.spongepowered:spongeapi:7.3.0-SNAPSHOT')
     compile('org.spongepowered:mixin:0.7.1-SNAPSHOT') {
         exclude module: 'launchwrapper'
     }

@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
@@ -48,11 +48,31 @@ public class SpigotBookGUI implements Listener {
 
         return false;
     };
+    private static final String VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+    private static Method AS_NMS_COPY;
+    private static Method GET_HANDLE;
+    private static Object MAIN_HAND;
+    private static Method OPEN_BOOK;
+
+    static {
+        try {
+            Class<?> nmsItemStack = Class.forName("net.minecraft.server." + VERSION + ".ItemStack");
+            Class<?> enumHand = Class.forName("net.minecraft.server." + VERSION + ".EnumHand");
+            AS_NMS_COPY = Class.forName("org.bukkit.craftbukkit." + VERSION + ".inventory.CraftItemStack").getDeclaredMethod("asNMSCopy", ItemStack.class);
+            OPEN_BOOK = Class.forName("net.minecraft.server." + VERSION + ".EntityPlayer").getDeclaredMethod("openBook", nmsItemStack, enumHand);
+            GET_HANDLE = Class.forName("org.bukkit.craftbukkit." + VERSION + ".entity.CraftPlayer").getDeclaredMethod("getHandle");
+            MAIN_HAND = enumHand.getEnumConstants()[0];
+        }
+        catch (ClassNotFoundException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+
     private final int bookSlot;
-    private final Consumer<List<String>> consumer;
+    private final BiConsumer<Player, List<String>> consumer;
     private final Player player;
 
-    public SpigotBookGUI(Player player, SpigotBuild build, List<String> originalPages, Consumer<List<String>> action) {
+    public SpigotBookGUI(Player player, SpigotBuild build, List<String> originalPages, BiConsumer<Player, List<String>> action) {
         this.player = player;
         this.bookSlot = player.getInventory().getHeldItemSlot();
         this.consumer = action;
@@ -70,6 +90,25 @@ public class SpigotBookGUI implements Listener {
 
     public static boolean isEditing(Player player) {
         return Stream.of(player.getInventory().getContents()).filter(Objects::nonNull).anyMatch(BOOK_FILTER);
+    }
+
+    public static void openWrittenBook(@Nonnull Player player, @Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter) {
+        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+        BookMeta bookMeta = (BookMeta) book.getItemMeta();
+        bookMeta.setAuthor(submitter.getName());
+        bookMeta.setPages(build.getDescription());
+        bookMeta.setTitle(build.getName());
+        book.setItemMeta(bookMeta);
+        ItemStack old = player.getInventory().getItemInMainHand();
+        player.getInventory().setItemInMainHand(book);
+        try {
+            OPEN_BOOK.invoke(GET_HANDLE.invoke(player), AS_NMS_COPY.invoke(null, book), MAIN_HAND);
+        }
+        catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        player.getInventory().setItemInMainHand(old);
     }
 
     @EventHandler
@@ -97,7 +136,8 @@ public class SpigotBookGUI implements Listener {
             itemStack.setItemMeta(meta);
             Player player = event.getPlayer();
             if (isEditing(player, itemStack)) {
-                consumer.accept(meta.getPages());
+                consumer.accept(player, meta.getPages());
+                event.setCancelled(true);
                 remove();
             }
         }
@@ -117,46 +157,9 @@ public class SpigotBookGUI implements Listener {
     }
 
     private void remove() {
-        player.getInventory().setItem(bookSlot, null);
-        HandlerList.unregisterAll(this);
-    }
-
-    public static void openWrittenBook(@Nonnull Player player, @Nonnull SpigotBuild build, @Nonnull SpigotSubmitter submitter) {
-        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        BookMeta bookMeta = (BookMeta) book.getItemMeta();
-        bookMeta.setAuthor(submitter.getName());
-        bookMeta.setPages(build.getDescription());
-        bookMeta.setTitle(build.getName());
-        book.setItemMeta(bookMeta);
-        ItemStack old = player.getInventory().getItemInMainHand();
-        player.getInventory().setItemInMainHand(book);
-        try {
-            OPEN_BOOK.invoke(GET_HANDLE.invoke(player), AS_NMS_COPY.invoke(null, book), MAIN_HAND);
-        }
-        catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
-        player.getInventory().setItemInMainHand(old);
-    }
-
-    private static final String VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-    private static Method AS_NMS_COPY;
-    private static Method GET_HANDLE;
-    private static Method OPEN_BOOK;
-    private static Object MAIN_HAND;
-
-    static {
-        try {
-            Class<?> nmsItemStack = Class.forName("net.minecraft.server." + VERSION + ".ItemStack");
-            Class<?> enumHand = Class.forName("net.minecraft.server." + VERSION + ".EnumHand");
-            AS_NMS_COPY = Class.forName("org.bukkit.craftbukkit." + VERSION + ".inventory.CraftItemStack").getDeclaredMethod("asNMSCopy", ItemStack.class);
-            OPEN_BOOK = Class.forName("net.minecraft.server." + VERSION + ".EntityPlayer").getDeclaredMethod("a", nmsItemStack, enumHand);
-            GET_HANDLE = Class.forName("org.bukkit.craftbukkit." + VERSION + ".entity.CraftPlayer").getDeclaredMethod("getHandle");
-            MAIN_HAND = enumHand.getEnumConstants()[0];
-        }
-        catch (ClassNotFoundException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.instance(), () -> {
+            player.getInventory().setItem(bookSlot, null);
+            HandlerList.unregisterAll(this);
+        });
     }
 }

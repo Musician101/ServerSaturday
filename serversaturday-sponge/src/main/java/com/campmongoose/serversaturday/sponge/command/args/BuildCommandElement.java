@@ -6,11 +6,9 @@ import com.campmongoose.serversaturday.sponge.submission.SpongeBuild;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmitter;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;
@@ -27,15 +25,11 @@ public class BuildCommandElement extends SSCommandElement {
         super(KEY);
     }
 
-    public BuildCommandElement(Text key) {
-        super(key);
-    }
-
     @Nonnull
     @Override
     public List<String> complete(@Nonnull CommandSource src, @Nonnull CommandArgs args, @Nonnull CommandContext context) {
         if (src instanceof Player) {
-            return getSubmitter((Player) src).map(SpongeSubmitter::getBuilds).map(List::stream).map(stream -> stream.map(SpongeBuild::getName).filter(name -> name.startsWith(args.nextIfPresent().orElse(""))).collect(Collectors.toList())).orElse(Collections.emptyList());
+            return getSubmitter((Player) src).getBuilds().stream().map(SpongeBuild::getName).filter(name -> name.startsWith(args.nextIfPresent().orElse(""))).collect(Collectors.toList());
         }
 
         return Collections.emptyList();
@@ -45,12 +39,8 @@ public class BuildCommandElement extends SSCommandElement {
     @Override
     protected Object parseValue(@Nonnull CommandSource source, @Nonnull CommandArgs args) throws ArgumentParseException {
         if (source instanceof Player) {
-            Optional<SpongeSubmitter> submitter = getSubmitter((Player) source);
-            if (!submitter.isPresent()) {
-                throw args.createError(Text.of(TextColors.RED, Messages.PLAYER_NOT_FOUND));
-            }
-
-            SpongeBuild build = submitter.get().getBuild(StringUtils.join(args.getAll(), " "));
+            SpongeSubmitter submitter = getSubmitter((Player) source);
+            SpongeBuild build = submitter.getBuild(getBuild(args));
             if (build == null) {
                 throw args.createError(Text.of(TextColors.RED, Messages.BUILD_NOT_FOUND));
             }

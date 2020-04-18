@@ -18,7 +18,12 @@ public abstract class RewardGiver<J, P> {
     }
 
     public void addReward(@Nonnull UUID uuid) {
-        rewardsWaiting.compute(uuid, (id, amount) -> amount == null ? 1 : ++amount);
+        if (rewardsWaiting.containsKey(uuid)) {
+            rewardsWaiting.compute(uuid, (id, amount) -> amount == null ? 1 : ++amount);
+            return;
+        }
+
+        rewardsWaiting.put(uuid, 1);
     }
 
     public abstract void givePlayerReward(@Nonnull P player);

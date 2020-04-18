@@ -7,6 +7,7 @@ import com.campmongoose.serversaturday.spigot.command.SpigotCommand;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandArgument;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandPermissions;
 import com.campmongoose.serversaturday.spigot.command.SpigotCommandUsage;
+import com.campmongoose.serversaturday.spigot.command.sscommand.feature.SSFeature;
 import com.campmongoose.serversaturday.spigot.command.sscommand.submit.SSDescription;
 import com.campmongoose.serversaturday.spigot.command.sscommand.submit.SSEdit;
 import com.campmongoose.serversaturday.spigot.command.sscommand.submit.SSGetRewards;
@@ -21,8 +22,12 @@ import com.campmongoose.serversaturday.spigot.command.sscommand.view.SSView;
 import com.campmongoose.serversaturday.spigot.command.sscommand.view.SSViewDescription;
 import com.campmongoose.serversaturday.spigot.command.sscommand.view.SSViewResourcePack;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
+import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 
 public class SSCommand extends SpigotCommand {
 
@@ -33,10 +38,14 @@ public class SSCommand extends SpigotCommand {
         executor = (sender, args) -> {
             sender.sendMessage(ChatColor.GREEN + "===== " + ChatColor.RESET + Reference.NAME + " v" + SpigotServerSaturday.instance().getDescription().getVersion() + ChatColor.GREEN + " by " + ChatColor.RESET + "Musician101" + ChatColor.GREEN + " =====");
             sender.sendMessage(getHelp());
-            Stream.of(new SSDescription(), new SSEdit(), new SSFeature(), new SSGetRewards(), new SSGoto(), new SSLocation(), new SSNew(), new SSReload(), new SSRemove(), new SSRename(), new SSResourcePack(), new SSSubmit(), new SSView(), new SSViewDescription(), new SSViewResourcePack())
-                    .filter(command -> sender.hasPermission(command.getPermissions().getPermissionNode())).forEach(command -> sender.sendMessage(command.getHelp()));
+            Stream.of(new SSDescription(), new SSEdit(), new SSFeature(), new SSGetRewards(), new SSGoto(), new SSLocation(), new SSNew(), new SSReload(), new SSRemove(), new SSRename(), new SSResourcePack(), new SSSubmit(), new SSView(), new SSViewDescription(), new SSViewResourcePack()).filter(command -> sender.hasPermission(command.getPermissions().getPermissionNode())).forEach(command -> sender.sendMessage(command.getHelp()));
 
             return true;
         };
+    }
+
+    @Override
+    public List<String> onTabComplete(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String alias, @Nonnull String[] args) {
+        return Collections.emptyList();
     }
 }

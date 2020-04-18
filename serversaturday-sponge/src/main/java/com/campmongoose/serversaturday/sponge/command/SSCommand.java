@@ -19,8 +19,7 @@ public class SSCommand extends SSCommandExecutor {
         source.sendMessage(Text.of(TextColors.GREEN, "===== ", TextColors.RESET, Reference.NAME + " v" + Reference.VERSION, TextColors.GREEN, " by ", TextColors.RESET, "Musician101", TextColors.GREEN, " ====="));
         Sponge.getCommandManager().getOwnedBy(SpongeServerSaturday.instance()).forEach(commandMapping -> {
             CommandCallable command = commandMapping.getCallable();
-            command.getShortDescription(source).ifPresent(description ->
-                    source.sendMessage(Text.of(TextColors.GRAY, "/" + commandMapping.getPrimaryAlias() + " ", command.getUsage(source), " ", TextColors.AQUA, description)));
+            command.getShortDescription(source).ifPresent(description -> source.sendMessage(Text.of(TextColors.GRAY, "/" + commandMapping.getPrimaryAlias() + " ", command.getUsage(source), " ", TextColors.AQUA, description)));
         });
 
         return CommandResult.success();

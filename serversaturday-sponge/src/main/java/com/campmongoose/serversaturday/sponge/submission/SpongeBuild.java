@@ -5,10 +5,12 @@ import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.submission.Build;
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -26,7 +28,7 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class SpongeBuild extends Build<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter, Text> {
+public class SpongeBuild extends Build<ItemStack, Location<World>, SpongeSubmitter, Text> {
 
     public SpongeBuild(@Nonnull String name, @Nonnull Location<World> location, @Nonnull List<Text> description, @Nonnull List<Text> resourcePacks, boolean featured, boolean submitted) {
         this(name, location);
@@ -54,13 +56,15 @@ public class SpongeBuild extends Build<SpongeBuild, ItemStack, Location<World>, 
         return itemStack;
     }
 
-    public static class SpongeSerializer implements Serializer<SpongeBuild, ItemStack, Location<World>, SpongeSubmitter, Text> {
+    public static class Serializer implements JsonDeserializer<SpongeBuild>, JsonSerializer<SpongeBuild> {
 
         @Override
         public SpongeBuild deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             String name = jsonObject.get(Config.NAME).getAsString();
-            Location<World> location = jsonDeserializationContext.deserialize(jsonObject.getAsJsonObject(Config.LOCATION), new TypeToken<Location<World>>(){}.getType());
+            Location<World> location = jsonDeserializationContext.deserialize(jsonObject.getAsJsonObject(Config.LOCATION), new TypeToken<Location<World>>() {
+
+            }.getType());
             List<Text> description = StreamSupport.stream(jsonObject.getAsJsonArray(Config.DESCRIPTION).spliterator(), false).map(json -> TextSerializers.JSON.deserialize(json.toString())).collect(Collectors.toList());
             List<Text> resourcePacks = StreamSupport.stream(jsonObject.getAsJsonArray(Config.RESOURCE_PACK).spliterator(), false).map(json -> TextSerializers.JSON.deserialize(json.toString())).collect(Collectors.toList());
             boolean featured = jsonObject.get(Config.FEATURED).getAsBoolean();
