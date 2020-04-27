@@ -4,7 +4,7 @@ import com.campmongoose.serversaturday.common.Reference.Config;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.submission.Submissions;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
-import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter.SpigotSerializer;
+import com.campmongoose.serversaturday.spigot.submission.SpigotSubmitter.Serializer;
 import com.google.gson.GsonBuilder;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
 public class SpigotSubmissions extends Submissions<Player, SpigotSubmitter> {
 
     public SpigotSubmissions() {
-        super(SpigotServerSaturday.instance().getDataFolder(), new GsonBuilder().setPrettyPrinting().registerTypeAdapter(SpigotBuild.class, new SpigotBuild.SpigotSerializer()).registerTypeAdapter(SpigotSubmitter.class, new SpigotSerializer()).registerTypeAdapter(Location.class, new LocationSerializer()).create());
+        super(SpigotServerSaturday.instance().getDataFolder(), new GsonBuilder().setPrettyPrinting().registerTypeAdapter(SpigotBuild.class, new SpigotBuild.Serializer()).registerTypeAdapter(SpigotSubmitter.class, new Serializer()).registerTypeAdapter(Location.class, new LocationSerializer()).create());
     }
 
     @Nonnull

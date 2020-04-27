@@ -58,7 +58,7 @@ public class SpigotSubmitter extends Submitter<SpigotBuild, ItemStack, Location>
         return builds.get(name);
     }
 
-    public static class SpigotSerializer implements JsonDeserializer<SpigotSubmitter>, JsonSerializer<SpigotSubmitter> {
+    public static class Serializer implements JsonDeserializer<SpigotSubmitter>, JsonSerializer<SpigotSubmitter> {
 
         @Override
         public SpigotSubmitter deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {

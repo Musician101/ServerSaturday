@@ -69,9 +69,9 @@ public class SpigotServerSaturday extends JavaPlugin implements ServerSaturday<S
         getLogger().info(Messages.LOADING_SUBMISSIONS);
         submissions = new SpigotSubmissions();
         getLogger().info(Messages.SUBMISSIONS_LOADED);
-        getServer().getPluginManager().registerEvents(new SpigotTextInput(), this);
-        rewardGiver = new SpigotRewardGiver();
         Server server = getServer();
+        server.getPluginManager().registerEvents(new SpigotTextInput(), this);
+        rewardGiver = new SpigotRewardGiver();
         String commandPrefix = Reference.NAME.replace(" ", "").toLowerCase();
         server.getPluginCommand(commandPrefix).setExecutor(new SSCommand());
         Stream.of(new SSDescription(), new SSEdit(), new SSFeature(), new SSGiveReward(), new SSGetRewards(), new SSGoto(), new SSLocation(), new SSNew(), new SSReload(), new SSRemove(), new SSRename(), new SSResourcePack(), new SSSubmit(), new SSView(), new SSViewDescription()).forEach(command -> server.getPluginCommand(commandPrefix + command.getName()).setExecutor(command));
