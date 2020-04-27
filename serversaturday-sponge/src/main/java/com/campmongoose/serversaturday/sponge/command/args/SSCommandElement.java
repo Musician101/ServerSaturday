@@ -39,7 +39,11 @@ public abstract class SSCommandElement extends CommandElement {
 
     @Nonnull
     protected Optional<SpongeSubmitter> getSubmitter(@Nonnull String playerName) {
-        return Sponge.getServiceManager().getRegistration(UserStorageService.class).map(userStorage -> userStorage.getProvider().get(playerName).map(User::getUniqueId).flatMap(this::getSubmitter)).orElseGet(() -> getSubmissions().getSubmitters().stream().filter(s -> playerName.equalsIgnoreCase(s.getName())).findFirst());
+        return Sponge.getServiceManager().getRegistration(UserStorageService.class)
+                .map(userStorage -> userStorage.getProvider().get(playerName)
+                        .map(User::getUniqueId).flatMap(this::getSubmitter)).orElseGet(() ->
+                        getSubmissions().getSubmitters().stream().filter(s ->
+                                playerName.equalsIgnoreCase(s.getName())).findFirst());
     }
 
     @Nonnull

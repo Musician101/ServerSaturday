@@ -1,5 +1,6 @@
-package com.campmongoose.serversaturday.sponge.command;
+package com.campmongoose.serversaturday.sponge.command.feature;
 
+import com.campmongoose.serversaturday.sponge.command.SSCommandExecutor;
 import com.campmongoose.serversaturday.sponge.command.args.SubmitterBuildCommandElement;
 import com.campmongoose.serversaturday.sponge.gui.chest.AllSubmissionsGUI;
 import com.campmongoose.serversaturday.sponge.gui.chest.EditBuildGUI;

@@ -7,8 +7,11 @@ import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
 import com.campmongoose.serversaturday.sponge.command.args.BuildCommandElement;
 import com.campmongoose.serversaturday.sponge.command.args.SubmitterBuildCommandElement;
 import com.campmongoose.serversaturday.sponge.command.args.SubmitterCommandElement;
+import com.campmongoose.serversaturday.sponge.command.feature.SSFeature;
+import com.campmongoose.serversaturday.sponge.command.feature.SSGiveReward;
 import com.campmongoose.serversaturday.sponge.command.submit.SSDescription;
 import com.campmongoose.serversaturday.sponge.command.submit.SSEdit;
+import com.campmongoose.serversaturday.sponge.command.submit.SSGetRewards;
 import com.campmongoose.serversaturday.sponge.command.submit.SSLocation;
 import com.campmongoose.serversaturday.sponge.command.submit.SSNew;
 import com.campmongoose.serversaturday.sponge.command.submit.SSRemove;
@@ -20,7 +23,9 @@ import com.campmongoose.serversaturday.sponge.command.view.SSView;
 import com.campmongoose.serversaturday.sponge.command.view.SSViewDescription;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandManager;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.text.Text;
 
 import static org.spongepowered.api.command.args.GenericArguments.optional;
 import static org.spongepowered.api.command.args.GenericArguments.string;
@@ -49,6 +54,8 @@ public class SpongeCommands {
         cm.register(plugin, CommandSpec.builder().description(of(Commands.VIEW_DESC)).arguments(new SubmitterCommandElement()).arguments(new SubmitterBuildCommandElement()).executor(new SSView()).permission(Permissions.VIEW).build(), fullPrefix + Commands.VIEW_NAME, shortPrefix + Commands.VIEW_NAME, shortPrefix + "v");
         cm.register(plugin, CommandSpec.builder().description(of(Commands.VIEW_DESCRIPTION_DESC)).arguments(new SubmitterBuildCommandElement()).executor(new SSViewDescription()).permission(Permissions.VIEW).build(), fullPrefix + Commands.VIEW_DESCRIPTION_NAME, shortPrefix + Commands.VIEW_DESCRIPTION_NAME, shortPrefix + "vd");
         cm.register(plugin, CommandSpec.builder().description(of(Commands.FEATURE_DESC)).arguments(optional(new SubmitterBuildCommandElement())).executor(new SSFeature()).permission(Permissions.FEATURE).build(), fullPrefix + Commands.FEATURE_NAME, shortPrefix + Commands.FEATURE_NAME, shortPrefix + "f");
+        cm.register(plugin, CommandSpec.builder().description(of(Commands.GIVE_REWARD_DESC)).arguments(GenericArguments.user(Text.of(Commands.PLAYER))).executor(new SSGiveReward()).permission(Permissions.FEATURE).build(), fullPrefix + Commands.GIVE_REWARD_NAME, shortPrefix + Commands.GIVE_REWARD_NAME, shortPrefix + "gr");
+        cm.register(plugin, CommandSpec.builder().description(of(Commands.GET_REWARDS_DESC)).executor(new SSGetRewards()).permission(Permissions.FEATURE).build(), fullPrefix + Commands.GET_REWARDS_NAME, shortPrefix + Commands.GET_REWARDS_NAME, shortPrefix + "getr");
         cm.register(plugin, CommandSpec.builder().description(of(Commands.RELOAD_DESC)).executor(new SSReload()).permission(Permissions.RELOAD).build(), fullPrefix + Commands.RELOAD_NAME, shortPrefix + Commands.RELOAD_NAME, shortPrefix + "r");
     }
 }
