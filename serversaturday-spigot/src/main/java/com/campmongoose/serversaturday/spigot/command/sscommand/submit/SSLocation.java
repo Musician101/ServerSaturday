@@ -32,11 +32,6 @@ public class SSLocation extends SpigotCommand {
             Player player = (Player) sender;
             String name = StringUtils.join(args, " ");
             SpigotSubmitter submitter = getSubmitter(player);
-            if (submitter.getBuild(name) == null) {
-                player.sendMessage(ChatColor.RED + Messages.BUILD_NOT_FOUND);
-                return false;
-            }
-
             SpigotBuild build = submitter.getBuild(name);
             if (build == null) {
                 player.sendMessage(ChatColor.RED + Messages.BUILD_NOT_FOUND);
