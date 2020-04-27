@@ -37,12 +37,6 @@ public class SpigotServerSaturday extends JavaPlugin implements ServerSaturday<S
     }
 
     @Nonnull
-    @Override
-    public String getId() {
-        return Reference.ID;
-    }
-
-    @Nonnull
     public SpigotConfig getPluginConfig() {
         return config;
     }

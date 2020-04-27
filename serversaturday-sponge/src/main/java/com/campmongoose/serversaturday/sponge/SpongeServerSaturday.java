@@ -47,12 +47,6 @@ public class SpongeServerSaturday implements ServerSaturday<SpongeRewardGiver, S
     }
 
     @Nonnull
-    @Override
-    public String getId() {
-        return pluginContainer.getId();
-    }
-
-    @Nonnull
     public Logger getLogger() {
         return logger;
     }

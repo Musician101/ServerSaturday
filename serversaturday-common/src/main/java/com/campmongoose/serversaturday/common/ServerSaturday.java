@@ -6,9 +6,6 @@ import javax.annotation.Nonnull;
 public interface ServerSaturday<R extends RewardGiver<?, ?>, S extends Submissions<?, ?>> {
 
     @Nonnull
-    String getId();
-
-    @Nonnull
     R getRewardGiver();
 
     @Nonnull
