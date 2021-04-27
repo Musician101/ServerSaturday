@@ -1,0 +1,18 @@
+# The number of maximum builds allowed per player. Setting this to 0 means near infinite builds. (default: 0)
+max_builds: 0
+
+# Storage Format
+# Supported types: MySQL, MongoDB, SQLite, JSON, HOCON, YAML
+format: YAML
+
+# Database options
+database:
+  address: localhost
+  database: database
+  user: user
+  pass: password
+  mongo_uri: ''
+
+# A list of commands that are run when a player claims a reward.
+rewards:
+  - tell @p Quack \\_o<

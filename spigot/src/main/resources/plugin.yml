@@ -1,0 +1,65 @@
+name: ServerSaturday
+main: com.campmongoose.serversaturday.spigot.SpigotServerSaturday
+version: ${version}
+api-version: '1.16'
+commands:
+  serversaturday:
+    aliases: [ss]
+    description: Displays help and plugin info.
+  serversaturdayedit:
+    aliases: [ssedit]
+    description: Edit a submitted build.
+    permission: ss.submit
+  serversaturdaygetrewards:
+    aliases: [ssgetrewards]
+    description: Receive any rewards that are currently waiting.
+    permission: ss.submit
+  serversaturdaygivereward:
+    aliases: [ssgivereward]
+    description: Give a player a reward.
+    permission: ss.feature
+  serversaturdayreload:
+    aliases: [ssreload]
+    description: Reload the plugin.
+    permission: ss.reload
+  serversaturdayview:
+    aliases: [ssview]
+    description: View Server Saturday submissions.
+    permission: ss.view
+  serversaturdayviewall:
+    aliases: [ssviewall]
+    description: View all submissions.
+    permission: ss.feature
+
+permissions:
+  ss.*:
+    default: op
+    description: Gives access to all ServerSaturday permissions.
+    children:
+      ss.exceed_max_builds: true
+      ss.feature: true
+      ss.max_builds: true
+      ss.reload: true
+      ss.submit: true
+      ss.view: true
+      ss.view.goto: true
+  ss.exceed_max_builds:
+    default: op
+    description: Gives access to exceed the build submission limit.
+  ss.feature:
+    default: op
+    description: Gives access to all feature related commands.
+  ss.reload:
+    default: op
+    description: Gives access to the SSReload command.
+  ss.submit:
+    default: true
+    description: Gives access to all submit related commands.
+  ss.view:
+    default: true
+    description: Gives access to the SSView and SSViewDescription commands.
+  ss.view.goto:
+    default: true
+    description: Gives access to all view related commands.
+    children:
+      ss.view: true

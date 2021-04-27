@@ -1,6 +1,0 @@
-# The number of maximum builds allowed per player. Setting this to 0 means near infinite builds. (default: 0)
-max_builds: 0
-
-# A list of commands that are run when a player claims a reward.
-rewards:
-  - tell @p Quack \\_o<

@@ -1,0 +1,32 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+group project.pluginGroup
+version project.pluginVersion
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+dependencies {
+    compile(project(':common'))
+    compile 'io.musician101.musicianlibrary:spigot:4.1'
+    compile 'io.musician101:bukkitier:1.0'
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        expand 'version': project.version
+    }
+}
+
+shadowJar {
+    archiveFileName = "server-saturday-${project.version}.jar"
+    dependencies {
+        include(dependency(':common'))
+    }
+
+    relocate('io.musician101.bukkitier', 'com.campmongoose.serversaturday.lib.io.musician101.bukkitier')
+    dependsOn build
+}

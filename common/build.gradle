@@ -1,0 +1,27 @@
+dependencies {
+    dependencies {
+        compile 'io.musician101.musicianlibrary:common:4.1'
+    }
+}
+
+compileJava {
+    def referenceName = 'Reference.java'
+    def referencePath = "src/main/java/com/campmongoose/serversaturday/common/${referenceName}"
+    def tempDir = 'build/tmp/sourcesCache'
+    doFirst {
+        copy {
+            from(referencePath)
+            into(tempDir)
+        }
+
+        ant.replace(file: referencePath, token: '@VERSION@', value: project.version)
+    }
+
+    doLast {
+        copy {
+            from ("${tempDir}/${referenceName}")
+            into(project.file(referencePath).parent)
+        }
+    }
+}
+
