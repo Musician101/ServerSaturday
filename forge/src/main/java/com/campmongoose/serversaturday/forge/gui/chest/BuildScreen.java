@@ -10,9 +10,9 @@ import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Items;
 import org.bukkit.event.inventory.ClickType;
+
 //TODO replace with Forge GUIs
 @Deprecated
 public abstract class BuildScreen extends SSForgeScreen {

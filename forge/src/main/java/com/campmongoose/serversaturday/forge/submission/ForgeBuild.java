@@ -43,14 +43,14 @@ public class ForgeBuild extends Build<Location, String> {
     }
 
     @Nonnull
-    @Override
-    public ItemStack getMenuRepresentation(@Nonnull ForgeSubmitter submitter) {
-        return ItemStack.EMPTY;
+    public UUID getId() {
+        return uuid;
     }
 
     @Nonnull
-    public UUID getId() {
-        return uuid;
+    @Override
+    public ItemStack getMenuRepresentation(@Nonnull ForgeSubmitter submitter) {
+        return ItemStack.EMPTY;
     }
 
     public static class Serializer implements JsonDeserializer<ForgeBuild>, JsonSerializer<ForgeBuild> {

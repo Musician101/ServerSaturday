@@ -50,8 +50,17 @@ public class ForgeServerSaturday implements ServerSaturday<ForgeRewardGiver, For
         return ModList.get().<ForgeServerSaturday>getModObjectById(Reference.ID).orElseThrow(() -> new IllegalStateException("ServerSaturday is not enabled!"));
     }
 
-    private void preInit(FMLCommonSetupEvent event) {
-        SSNetwork.init();
+    @SubscribeEvent
+    public void commands(RegisterCommandsEvent event) {
+        String fullPrefix = Reference.ID;
+        String shortPrefix = Commands.SS_CMD.replace("/", "");
+        registerCommand(event, fullPrefix, shortPrefix, 0, false, new SSCommand());
+        registerCommand(event, fullPrefix + Commands.EDIT_NAME, shortPrefix + Commands.EDIT_NAME, 0, true, new SSEdit());
+        registerCommand(event, fullPrefix + Commands.VIEW_NAME, shortPrefix + Commands.VIEW_NAME, 0, true, new SSView());
+        registerCommand(event, fullPrefix + Commands.VIEW_ALL_NAME, shortPrefix + Commands.VIEW_ALL_NAME, 3, true, new SSViewAll());
+        registerCommand(event, fullPrefix + Commands.GIVE_REWARD_NAME, shortPrefix + Commands.GIVE_REWARD_NAME, 3, false, new SSGiveReward(), net.minecraft.command.Commands.argument(Commands.PLAYER, GameProfileArgument.gameProfile()));
+        registerCommand(event, fullPrefix + Commands.GET_REWARDS_NAME, shortPrefix + Commands.GET_REWARDS_NAME, 0, true, new SSGetRewards());
+        registerCommand(event, fullPrefix + Commands.RELOAD_NAME, shortPrefix + Commands.RELOAD_NAME, 3, false, new SSReload());
     }
 
     @Nonnull
@@ -71,6 +80,10 @@ public class ForgeServerSaturday implements ServerSaturday<ForgeRewardGiver, For
         return submissions;
     }
 
+    private LiteralArgumentBuilder<CommandSource> literal(String name) {
+        return LiteralArgumentBuilder.literal(name);
+    }
+
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
         LOGGER.info(Messages.LOADING_CONFIG);
@@ -82,21 +95,8 @@ public class ForgeServerSaturday implements ServerSaturday<ForgeRewardGiver, For
         rewardGiver = new ForgeRewardGiver();
     }
 
-    @SubscribeEvent
-    public void commands(RegisterCommandsEvent event) {
-        String fullPrefix = Reference.ID;
-        String shortPrefix = Commands.SS_CMD.replace("/", "");
-        registerCommand(event, fullPrefix, shortPrefix, 0, false, new SSCommand());
-        registerCommand(event, fullPrefix + Commands.EDIT_NAME, shortPrefix + Commands.EDIT_NAME, 0, true, new SSEdit());
-        registerCommand(event, fullPrefix + Commands.VIEW_NAME, shortPrefix + Commands.VIEW_NAME, 0, true, new SSView());
-        registerCommand(event, fullPrefix + Commands.VIEW_ALL_NAME, shortPrefix + Commands.VIEW_ALL_NAME, 3, true, new SSViewAll());
-        registerCommand(event, fullPrefix + Commands.GIVE_REWARD_NAME, shortPrefix + Commands.GIVE_REWARD_NAME, 3, false, new SSGiveReward(), net.minecraft.command.Commands.argument(Commands.PLAYER, GameProfileArgument.gameProfile()));
-        registerCommand(event, fullPrefix + Commands.GET_REWARDS_NAME, shortPrefix + Commands.GET_REWARDS_NAME, 0, true, new SSGetRewards());
-        registerCommand(event, fullPrefix + Commands.RELOAD_NAME, shortPrefix + Commands.RELOAD_NAME, 3, false, new SSReload());
-    }
-
-    private void registerCommand(RegisterCommandsEvent event, String name, String alias, int permissionLevel, boolean playerOnly, Command<CommandSource> command) {
-        registerCommand(event, name, alias, permissionLevel, playerOnly, command, null);
+    private void preInit(FMLCommonSetupEvent event) {
+        SSNetwork.init();
     }
 
     private void registerCommand(RegisterCommandsEvent event, String name, String alias, int permissionLevel, boolean playerOnly, Command<CommandSource> command, RequiredArgumentBuilder<CommandSource, IProfileProvider> argument) {
@@ -122,7 +122,7 @@ public class ForgeServerSaturday implements ServerSaturday<ForgeRewardGiver, For
         event.getDispatcher().register(literal(name).redirect(cmd.build()));
     }
 
-    private LiteralArgumentBuilder<CommandSource> literal(String name) {
-        return LiteralArgumentBuilder.literal(name);
+    private void registerCommand(RegisterCommandsEvent event, String name, String alias, int permissionLevel, boolean playerOnly, Command<CommandSource> command) {
+        registerCommand(event, name, alias, permissionLevel, playerOnly, command, null);
     }
 }

@@ -23,11 +23,6 @@ public class SpigotRewardGiver extends RewardGiver<PlayerJoinEvent, Player> impl
     }
 
     @Override
-    protected void reportError() {
-        SpigotServerSaturday.instance().getLogger().warning(Messages.CONFIG_READ_ERROR);
-    }
-
-    @Override
     public void givePlayerReward(@Nonnull Player player) {
         UUID uuid = player.getUniqueId();
         int amount = rewardsWaiting.getOrDefault(uuid, 0);
@@ -45,5 +40,10 @@ public class SpigotRewardGiver extends RewardGiver<PlayerJoinEvent, Player> impl
         if (rewardsWaiting.getOrDefault(uuid, 0) > 0) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(SpigotServerSaturday.instance(), () -> player.sendMessage(ChatColor.GOLD + Messages.REWARDS_WAITING), 20L);
         }
+    }
+
+    @Override
+    protected void reportError() {
+        SpigotServerSaturday.instance().getLogger().warning(Messages.failedToReadFile(file));
     }
 }

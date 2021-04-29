@@ -18,11 +18,12 @@ public abstract class RewardGiver<J, P> {
 
     @Nonnull
     protected final File file;
-    @Nullable
-    private ConfigurationLoader<? extends ConfigurationNode> loader;
     @Nonnull
     protected final Map<UUID, Integer> rewardsWaiting = new HashMap<>();
+    @Nullable
+    private ConfigurationLoader<? extends ConfigurationNode> loader;
 
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     protected RewardGiver(@Nonnull File file, @Nonnull ConfigurateLoader configurateLoader) {
         this.file = file;
         try {
@@ -32,7 +33,7 @@ public abstract class RewardGiver<J, P> {
 
             loader = configurateLoader.loader(file.toPath());
             ConfigurationNode node = loader.load();
-            rewardsWaiting.putAll(node.get(new TypeToken<Map<UUID, Integer>>(){
+            rewardsWaiting.putAll(node.get(new TypeToken<Map<UUID, Integer>>() {
 
             }));
         }
@@ -40,8 +41,6 @@ public abstract class RewardGiver<J, P> {
             reportError();
         }
     }
-
-    protected abstract void reportError();
 
     public void addReward(@Nonnull UUID uuid) {
         if (rewardsWaiting.containsKey(uuid)) {
@@ -55,6 +54,8 @@ public abstract class RewardGiver<J, P> {
     public abstract void givePlayerReward(@Nonnull P player);
 
     public abstract void onJoin(@Nonnull J event);
+
+    protected abstract void reportError();
 
     public void save() {
         try {

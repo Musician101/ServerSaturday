@@ -19,7 +19,7 @@ compileJava {
 
     doLast {
         copy {
-            from ("${tempDir}/${referenceName}")
+            from("${tempDir}/${referenceName}")
             into(project.file(referencePath).parent)
         }
     }

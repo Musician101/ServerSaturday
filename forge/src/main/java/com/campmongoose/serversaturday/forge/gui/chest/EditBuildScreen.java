@@ -28,11 +28,11 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 @Deprecated
 public class EditBuildScreen extends BuildScreen {
 
-    private CheckboxButton submitted;
+    private TextFieldWidget description;
     private Location location;
     private TextFieldWidget name;
-    private TextFieldWidget description;
     private TextFieldWidget resourcePacks;
+    private CheckboxButton submitted;
 
     public EditBuildScreen(@Nonnull ForgeBuild build) {
         super(build, 7, 5);
@@ -91,18 +91,18 @@ public class EditBuildScreen extends BuildScreen {
     }
 
     @Override
-    public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
-        renderBackground();
-        drawCenteredString(font, title.getFormattedText(), width / 2, 20, Color.WHITE.getRGB());
-        super.render(p_render_1_, p_render_2_, p_render_3_);
-    }
-
-    @Override
     public void onClose() {
         ClientPlayerEntity player = minecraft.player;
         NetworkManager networkManager = player.connection.getNetworkManager();
         SimpleChannel network = SSNetwork.INSTANCE;
         NetworkDirection direction = NetworkDirection.PLAY_TO_SERVER;
         network.sendTo(build, networkManager, direction);
+    }
+
+    @Override
+    public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
+        renderBackground();
+        drawCenteredString(font, title.getFormattedText(), width / 2, 20, Color.WHITE.getRGB());
+        super.render(p_render_1_, p_render_2_, p_render_3_);
     }
 }

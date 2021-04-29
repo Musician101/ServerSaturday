@@ -28,7 +28,7 @@ public class EditBuildGUI extends BuildGUI {
 
     public EditBuildGUI(@Nonnull Build<Component> build, @Nonnull Submitter<Component> submitter, @Nonnull ServerPlayer player) {
         super(build, 7, 5, player);
-        setButton(0, SpongeIconBuilder.builder(ItemTypes.PAPER).name(Component.text(MenuText.RENAME_NAME)).description(Component.text(MenuText.RENAME_DESC)).build(), ImmutableMap.of(ClickTypes.CLICK_LEFT.get(),p -> {
+        setButton(0, SpongeIconBuilder.builder(ItemTypes.PAPER).name(Component.text(MenuText.RENAME_NAME)).description(Component.text(MenuText.RENAME_DESC)).build(), ImmutableMap.of(ClickTypes.CLICK_LEFT.get(), p -> {
             p.closeInventory();
             p.sendMessage(Component.text(Messages.SET_BUILD_NAME).color(NamedTextColor.GREEN));
             new SpongeTextInput(SpongeServerSaturday.instance().getPluginContainer(), p) {

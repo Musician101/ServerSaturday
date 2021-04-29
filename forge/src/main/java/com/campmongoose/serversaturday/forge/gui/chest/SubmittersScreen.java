@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Items;
 import org.bukkit.event.inventory.ClickType;
+
 //TODO replace with Forge GUIs
 @Deprecated
 public class SubmittersScreen extends SSForgeScreen {

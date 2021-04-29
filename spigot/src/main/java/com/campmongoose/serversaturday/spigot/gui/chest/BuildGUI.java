@@ -34,12 +34,12 @@ public abstract class BuildGUI extends SpigotServerSaturdayChestGUI {
         updateFeatured(build, featureSlot);
     }
 
-    private Location toSpigotLocation(io.musician101.musicianlibrary.java.minecraft.common.Location location) {
-        return new Location(Bukkit.getWorld(location.getWorldName()), location.getX(), location.getY(), location.getZ());
-    }
-
     protected io.musician101.musicianlibrary.java.minecraft.common.Location toLibLocation(Location location) {
         return new io.musician101.musicianlibrary.java.minecraft.common.Location(location.getWorld().getName(), location.getX(), location.getY(), location.getZ());
+    }
+
+    private Location toSpigotLocation(io.musician101.musicianlibrary.java.minecraft.common.Location location) {
+        return new Location(Bukkit.getWorld(location.getWorldName()), location.getX(), location.getY(), location.getZ());
     }
 
     private void updateFeatured(@Nonnull Build<String> build, int featureSlot) {

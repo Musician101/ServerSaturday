@@ -1,9 +1,13 @@
 package com.campmongoose.serversaturday.spigot.gui.chest;
 
 import com.campmongoose.serversaturday.common.Reference.MenuText;
+import com.campmongoose.serversaturday.common.Reference.Messages;
+import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.common.submission.Build;
 import com.campmongoose.serversaturday.common.submission.Submitter;
+import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
 import com.google.common.collect.ImmutableMap;
+import io.musician101.musicianlibrary.java.minecraft.spigot.SpigotTextInput;
 import io.musician101.musicianlibrary.java.minecraft.spigot.gui.chest.SpigotIconBuilder;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,6 +15,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -23,12 +28,6 @@ public class SubmitterGUI extends SpigotServerSaturdayChestGUI {
     public SubmitterGUI(@Nonnull Submitter<String> submitter, @Nonnull Player player) {
         super(player, MenuText.submitterMenu(submitter), 54);
         updateSlots(submitter);
-        if (player.getUniqueId().equals(submitter.getUUID())) {
-            setButton(51, SpigotIconBuilder.of(Material.EMERALD_BLOCK, MenuText.NEW_BUILD), ImmutableMap.of(ClickType.LEFT, p -> {
-
-            }));
-        }
-        setButton(50, SpigotIconBuilder.of(Material.BARRIER, "Back"), ImmutableMap.of(ClickType.LEFT, SubmittersGUI::new));
     }
 
     private void updateSlots(@Nonnull Submitter<String> submitter) {
@@ -57,6 +56,34 @@ public class SubmitterGUI extends SpigotServerSaturdayChestGUI {
 
             }
         });
+
+        if (player.getUniqueId().equals(submitter.getUUID()) && (builds.size() <= SpigotServerSaturday.instance().getPluginConfig().getMaxBuilds() || player.hasPermission(Permissions.EXCEED_MAX_BUILDS))) {
+            setButton(48, SpigotIconBuilder.of(Material.EMERALD_BLOCK, MenuText.NEW_BUILD), ImmutableMap.of(ClickType.LEFT, p -> {
+                p.closeInventory();
+                p.sendMessage(ChatColor.GREEN + Messages.SET_BUILD_NAME);
+                new SpigotTextInput(SpigotServerSaturday.instance(), p) {
+
+                    @Override
+                    protected void process(Player player, String s) {
+                        if (submitter.getBuild(s) != null) {
+                            player.sendMessage(ChatColor.RED + Messages.BUILD_ALREADY_EXISTS);
+                            return;
+                        }
+
+                        Location location = player.getLocation();
+                        Build<String> build = submitter.newBuild(s, new io.musician101.musicianlibrary.java.minecraft.common.Location(location.getWorld().getName(), location.getX(), location.getY(), location.getZ()));
+                        new EditBuildGUI(build, submitter, player);
+                    }
+                };
+            }));
+
+            setButton(50, SpigotIconBuilder.of(Material.BARRIER, "Back"), ImmutableMap.of(ClickType.LEFT, SubmittersGUI::new));
+        }
+        else {
+            removeButton(48);
+            removeButton(50);
+            setButton(49, SpigotIconBuilder.of(Material.BARRIER, "Back"), ImmutableMap.of(ClickType.LEFT, SubmittersGUI::new));
+        }
 
         if (page == 1) {
             removeButton(45);

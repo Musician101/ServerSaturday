@@ -1,6 +1,7 @@
 package com.campmongoose.serversaturday.common.submission;
 
 import com.campmongoose.serversaturday.common.Reference.Config;
+import io.leangen.geantyref.TypeToken;
 import io.musician101.musicianlibrary.java.minecraft.common.Location;
 import io.musician101.musicianlibrary.java.storage.database.mongo.MongoSerializable;
 import java.lang.reflect.Type;
@@ -93,6 +94,12 @@ public final class Build<T> {
 
         @Override
         public Build<T> deserialize(Type type, ConfigurationNode node) throws SerializationException {
+            if (!type.equals(new TypeToken<Submitter<T>>() {
+
+            }.getType())) {
+                return null;
+            }
+
             String name = node.node(Config.NAME).getString();
             if (name == null) {
                 throw new SerializationException("Build name can not be null.");
@@ -150,7 +157,9 @@ public final class Build<T> {
 
         @Override
         public void serialize(Type type, @Nullable Build<T> obj, ConfigurationNode node) throws SerializationException {
-            if (obj == null) {
+            if (obj == null || !type.equals(new TypeToken<Submitter<T>>() {
+
+            }.getType())) {
                 return;
             }
 

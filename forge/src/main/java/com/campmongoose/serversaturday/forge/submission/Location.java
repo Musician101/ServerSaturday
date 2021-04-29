@@ -20,9 +20,9 @@ import net.minecraft.world.World;
 
 public class Location {
 
+    private float pitch;
     @Nonnull
     private RegistryKey<World> worldKey;
-    private float pitch;
     private double x;
     private double y;
     private float yaw;
@@ -41,13 +41,13 @@ public class Location {
         this.yaw = yaw;
     }
 
+    public float getPitch() {
+        return pitch;
+    }
+
     @Nonnull
     public RegistryKey<World> getWorldKey() {
         return worldKey;
-    }
-
-    public float getPitch() {
-        return pitch;
     }
 
     public double getX() {

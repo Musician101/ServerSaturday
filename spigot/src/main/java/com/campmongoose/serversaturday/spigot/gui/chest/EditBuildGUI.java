@@ -5,10 +5,10 @@ import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.submission.Build;
 import com.campmongoose.serversaturday.common.submission.Submitter;
 import com.campmongoose.serversaturday.spigot.SpigotServerSaturday;
-import com.campmongoose.serversaturday.spigot.textinput.SpigotTextInput;
 import com.google.common.collect.ImmutableMap;
 import io.musician101.musicianlibrary.java.minecraft.common.gui.book.BookGUI.BookGUIAlreadyOpenException;
 import io.musician101.musicianlibrary.java.minecraft.common.gui.book.BookGUI.PlayerHandNotEmptyException;
+import io.musician101.musicianlibrary.java.minecraft.spigot.SpigotTextInput;
 import io.musician101.musicianlibrary.java.minecraft.spigot.gui.book.SpigotBookGUI;
 import io.musician101.musicianlibrary.java.minecraft.spigot.gui.chest.SpigotIconBuilder;
 import java.util.List;
@@ -30,10 +30,19 @@ public class EditBuildGUI extends BuildGUI {
         setButton(0, SpigotIconBuilder.builder(Material.PAPER).name(MenuText.RENAME_NAME).description(MenuText.RENAME_DESC).build(), ImmutableMap.of(ClickType.LEFT, p -> {
             p.closeInventory();
             p.sendMessage(ChatColor.GREEN + Messages.SET_BUILD_NAME);
-            SpigotTextInput.addPlayer(p, (ply, s) -> {
-                submitter.renameBuild(s, build);
-                new EditBuildGUI(build, submitter, ply);
-            });
+            new SpigotTextInput(SpigotServerSaturday.instance(), p) {
+
+                @Override
+                protected void process(Player player, String s) {
+                    if (submitter.getBuild(s) != null) {
+                        player.sendMessage(Messages.BUILD_ALREADY_EXISTS);
+                        return;
+                    }
+
+                    submitter.renameBuild(s, build);
+                    new EditBuildGUI(build, submitter, player);
+                }
+            };
         }));
         updateLocation(build);
         setButton(2, SpigotIconBuilder.builder(Material.BOOK).name(MenuText.CHANGE_DESCRIPTION_NAME).description(MenuText.CHANGE_DESCRIPTION_DESC).build(), ImmutableMap.of(ClickType.LEFT, p -> {

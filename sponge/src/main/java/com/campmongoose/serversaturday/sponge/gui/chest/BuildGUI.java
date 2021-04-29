@@ -37,12 +37,13 @@ public abstract class BuildGUI extends SpongeServerSaturdayChestGUI {
         updateFeatured(build, featureSlot);
     }
 
-    private ServerLocation toSpongeLocation(io.musician101.musicianlibrary.java.minecraft.common.Location location) {
-        return ServerLocation.of(Sponge.server().worldManager().world(ResourceKey.resolve(location.getWorldName())).get(), location.getX(), location.getY(), location.getZ());
-    }
-
     protected io.musician101.musicianlibrary.java.minecraft.common.Location toLibLocation(ServerLocation location) {
         return new io.musician101.musicianlibrary.java.minecraft.common.Location(location.worldKey().asString(), location.x(), location.y(), location.z());
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    private ServerLocation toSpongeLocation(io.musician101.musicianlibrary.java.minecraft.common.Location location) {
+        return ServerLocation.of(Sponge.server().worldManager().world(ResourceKey.resolve(location.getWorldName())).get(), location.getX(), location.getY(), location.getZ());
     }
 
     private void updateFeatured(@Nonnull Build<Component> build, int featureSlot) {

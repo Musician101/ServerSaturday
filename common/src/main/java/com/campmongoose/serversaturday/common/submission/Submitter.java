@@ -1,10 +1,16 @@
 package com.campmongoose.serversaturday.common.submission;
 
 import com.campmongoose.serversaturday.common.Reference.Config;
+import com.campmongoose.serversaturday.common.Reference.Database;
+import com.campmongoose.serversaturday.common.SQLTextSerializer;
 import io.leangen.geantyref.TypeToken;
 import io.musician101.musicianlibrary.java.minecraft.common.Location;
 import io.musician101.musicianlibrary.java.storage.database.mongo.MongoSerializable;
+import io.musician101.musicianlibrary.java.storage.database.sql.SQLStatementSerializable;
 import java.lang.reflect.Type;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,26 +68,30 @@ public final class Submitter<T> {
         return builds.get(name);
     }
 
-    public boolean removeBuild(@Nonnull String name) {
-        return builds.remove(name) != null;
-    }
-
     public void renameBuild(@Nonnull String newName, @Nonnull Build<T> build) {
         builds.remove(build.getName());
         build.setName(newName);
         builds.put(newName, build);
     }
 
-    public static final class Serializer<T> implements MongoSerializable<Submitter<T>>, TypeSerializer<Submitter<T>> {
+    public static final class Serializer<T> implements MongoSerializable<Submitter<T>>, SQLStatementSerializable<Submitter<T>>, TypeSerializer<Submitter<T>> {
 
         private final Class<T> clazz;
+        private final SQLTextSerializer<T> sqlTextSerializer;
 
-        public Serializer(Class<T> clazz) {
+        public Serializer(@Nonnull Class<T> clazz, @Nonnull SQLTextSerializer<T> sqlTextSerializer) {
             this.clazz = clazz;
+            this.sqlTextSerializer = sqlTextSerializer;
         }
 
         @Override
         public Submitter<T> deserialize(Type type, ConfigurationNode node) throws SerializationException {
+            if (!type.equals(new TypeToken<Submitter<T>>() {
+
+            }.getType())) {
+                return null;
+            }
+
             String name = node.node(Config.NAME).getString();
             if (name == null) {
                 throw new SerializationException("Submitter name cannot be null.");
@@ -120,6 +130,40 @@ public final class Submitter<T> {
             return submitter;
         }
 
+        @Nonnull
+        @Override
+        public List<Submitter<T>> fromStatement(@Nonnull Statement statement) throws SQLException {
+            List<Submitter<T>> submitters = new ArrayList<>();
+            statement.addBatch(Database.CREATE_TABLE);
+            statement.addBatch(Database.SELECT_TABLE);
+            statement.executeBatch();
+            ResultSet rs = statement.getResultSet();
+            while (rs.next()) {
+                UUID uuid = UUID.fromString(rs.getString(Database.UUID));
+                String name = rs.getString(Database.USERNAME);
+                Submitter<T> submitter = submitters.stream().filter(s -> uuid.equals(s.getUUID())).findFirst().orElseGet(() -> {
+                    Submitter<T> s = new Submitter<>(name, uuid);
+                    submitters.add(s);
+                    return s;
+                });
+
+                String buildName = rs.getString(Database.BUILD_NAME);
+                String world = rs.getString(Database.WORLD_NAME);
+                double x = rs.getDouble(Database.X);
+                double y = rs.getDouble(Database.Y);
+                double z = rs.getDouble(Database.Z);
+                Location location = new Location(world, x, y, z);
+                Build<T> build = submitter.newBuild(buildName, location);
+                build.setFeatured(rs.getBoolean(Database.FEATURED));
+                build.setSubmitted(rs.getBoolean(Database.SUBMITTED));
+                build.setDescription(sqlTextSerializer.deserialize(rs.getString(Database.DESCRIPTION)));
+                build.setResourcePacks(sqlTextSerializer.deserialize(rs.getString(Database.RESOURCE_PACKS)));
+            }
+
+            rs.close();
+            return submitters;
+        }
+
         @Override
         public Document serialize(@Nonnull Submitter<T> obj) {
             Document document = new Document();
@@ -131,7 +175,9 @@ public final class Submitter<T> {
 
         @Override
         public void serialize(Type type, @Nullable Submitter<T> obj, ConfigurationNode node) throws SerializationException {
-            if (obj == null) {
+            if (obj == null || !type.equals(new TypeToken<Submitter<T>>() {
+
+            }.getType())) {
                 return;
             }
 
@@ -140,6 +186,18 @@ public final class Submitter<T> {
             node.node(Config.BUILDS).setList(new TypeToken<Build<T>>() {
 
             }, obj.getBuilds());
+        }
+
+        @Override
+        public void toStatement(@Nonnull Statement statement, @Nonnull List<Submitter<T>> list) throws SQLException {
+            statement.addBatch(Database.CLEAR_TABLE);
+            statement.addBatch(Database.CREATE_TABLE);
+            for (Submitter<T> entry : list) {
+                for (Build<T> build : entry.getBuilds()) {
+                    statement.addBatch(Database.addBuild(entry, build, sqlTextSerializer::serialize));
+                }
+            }
+
         }
     }
 }

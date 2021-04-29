@@ -30,6 +30,7 @@ public class SubmittersGUI extends SpongeServerSaturdayChestGUI {
         setButton(50, SpongeIconBuilder.of(ItemTypes.BARRIER, Component.text("Back")), ImmutableMap.of(ClickTypes.CLICK_LEFT.get(), SubmittersGUI::new));
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     private void updateSlots() {
         List<Submitter<Component>> submitters = SpongeServerSaturday.instance().getSubmissions().getData();
         submitters.sort(Comparator.comparing(Submitter::getName));
@@ -40,7 +41,7 @@ public class SubmittersGUI extends SpongeServerSaturdayChestGUI {
                 GameProfileManager gpm = Sponge.server().gameProfileManager();
                 GameProfile gameProfile = gpm.cache().findById(submitter.getUUID()).orElse(GameProfile.of(submitter.getUUID(), submitter.getName()));
                 boolean hasNonFeaturedBuilds = submitter.getBuilds().stream().anyMatch(build -> build.submitted() && !build.featured());
-                ItemStack icon =  SpongeIconBuilder.builder(ItemTypes.PLAYER_HEAD).offer(Keys.GAME_PROFILE, gameProfile).offer(Keys.DISPLAY_NAME, Component.text(gameProfile.name().orElse(gameProfile.name().get())).color(hasNonFeaturedBuilds ? NamedTextColor.GREEN : NamedTextColor.RED)).build();
+                ItemStack icon = SpongeIconBuilder.builder(ItemTypes.PLAYER_HEAD).offer(Keys.GAME_PROFILE, gameProfile).offer(Keys.DISPLAY_NAME, Component.text(gameProfile.name().orElse(gameProfile.name().get())).color(hasNonFeaturedBuilds ? NamedTextColor.GREEN : NamedTextColor.RED)).build();
                 setButton(x, icon, ImmutableMap.of(ClickTypes.CLICK_LEFT.get(), p -> new SubmitterGUI(submitter, p)));
             }
             catch (IndexOutOfBoundsException ignored) {

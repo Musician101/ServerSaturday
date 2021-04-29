@@ -26,11 +26,6 @@ public class SpongeRewardGiver extends RewardGiver<Join, ServerPlayer> {
     }
 
     @Override
-    protected void reportError() {
-        SpongeServerSaturday.instance().getLogger().error(Messages.failedToReadFile(file));
-    }
-
-    @Override
     public void givePlayerReward(@Nonnull ServerPlayer player) {
         UUID uuid = player.uniqueId();
         int amount = rewardsWaiting.getOrDefault(uuid, 0);
@@ -58,5 +53,10 @@ public class SpongeRewardGiver extends RewardGiver<Join, ServerPlayer> {
             Task task = Task.builder().execute(() -> player.sendMessage(Component.text(Messages.REWARDS_WAITING).color(NamedTextColor.GOLD))).delay(1, TimeUnit.SECONDS).plugin(SpongeServerSaturday.instance().getPluginContainer()).build();
             Sponge.asyncScheduler().submit(task);
         }
+    }
+
+    @Override
+    protected void reportError() {
+        SpongeServerSaturday.instance().getLogger().error(Messages.failedToReadFile(file));
     }
 }

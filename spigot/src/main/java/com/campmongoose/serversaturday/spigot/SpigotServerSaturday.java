@@ -3,17 +3,16 @@ package com.campmongoose.serversaturday.spigot;
 import com.campmongoose.serversaturday.common.Reference;
 import com.campmongoose.serversaturday.common.Reference.Commands;
 import com.campmongoose.serversaturday.common.Reference.Config;
-import com.campmongoose.serversaturday.common.Reference.Database;
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.common.ServerSaturday;
 import com.campmongoose.serversaturday.common.submission.Build;
 import com.campmongoose.serversaturday.common.submission.SubmissionsFileStorage;
 import com.campmongoose.serversaturday.common.submission.Submitter;
+import com.campmongoose.serversaturday.common.submission.Submitter.Serializer;
 import com.campmongoose.serversaturday.spigot.gui.chest.AllSubmissionsGUI;
 import com.campmongoose.serversaturday.spigot.gui.chest.SubmitterGUI;
 import com.campmongoose.serversaturday.spigot.gui.chest.SubmittersGUI;
-import com.campmongoose.serversaturday.spigot.textinput.SpigotTextInput;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -35,17 +34,9 @@ import io.musician101.musicianlibrary.java.storage.database.mongo.MongoDataStora
 import io.musician101.musicianlibrary.java.storage.database.sql.MySQLDataStorage;
 import io.musician101.musicianlibrary.java.storage.database.sql.SQLiteDataStorage;
 import java.io.File;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -68,6 +59,10 @@ public class SpigotServerSaturday extends JavaPlugin implements ServerSaturday<S
 
     public static SpigotServerSaturday instance() {
         return JavaPlugin.getPlugin(SpigotServerSaturday.class);
+    }
+
+    private List<String> getList(String string) {
+        return StreamSupport.stream(new Gson().fromJson(string, JsonArray.class).spliterator(), false).map(JsonElement::getAsString).collect(Collectors.toList());
     }
 
     @Nonnull
@@ -105,61 +100,10 @@ public class SpigotServerSaturday extends JavaPlugin implements ServerSaturday<S
         TypeToken<Submitter<String>> typeToken = new TypeToken<Submitter<String>>() {
 
         };
-        TypeSerializerCollection tsc = TypeSerializerCollection.builder().register(typeToken, new Submitter.Serializer<>(String.class)).register(new TypeToken<Build<String>>() {
+        Serializer<String> submitterSerializer = new Submitter.Serializer<>(String.class, new SQLStringSerializer());
+        TypeSerializerCollection tsc = TypeSerializerCollection.builder().register(typeToken, submitterSerializer).register(new TypeToken<Build<String>>() {
 
         }, new Build.Serializer<>(String.class)).register(Location.class, new Location.Serializer()).build();
-        Function<Statement, List<Submitter<String>>> deserializer = statement -> {
-            List<Submitter<String>> submitters = new ArrayList<>();
-            try {
-                statement.addBatch(Database.CREATE_TABLE);
-                statement.addBatch(Database.SELECT_TABLE);
-                statement.executeBatch();
-                ResultSet rs = statement.getResultSet();
-                while (rs.next()) {
-                    UUID uuid = UUID.fromString(rs.getString(Database.UUID));
-                    String name = rs.getString(Database.USERNAME);
-                    Optional<Submitter<String>> submitterOptional = submissions.getEntry(s -> uuid.equals(s.getUUID()));
-                    Submitter<String> submitter;
-                    if (submitterOptional.isPresent()) {
-                        submitter = submitterOptional.get();
-                    }
-                    else {
-                        submitter = new Submitter<>(name, uuid);
-                        submissions.addEntry(submitter);
-                    }
-
-                    String buildName = rs.getString(Database.BUILD_NAME);
-                    String world = rs.getString(Database.WORLD_NAME);
-                    double x = rs.getDouble(Database.X);
-                    double y = rs.getDouble(Database.Y);
-                    double z = rs.getDouble(Database.Z);
-                    Location location = new Location(world, x, y, z);
-                    Build<String> build = submitter.newBuild(buildName, location);
-                    build.setFeatured(rs.getBoolean(Database.FEATURED));
-                    build.setSubmitted(rs.getBoolean(Database.SUBMITTED));
-                    build.setDescription(getList(rs.getString(Database.DESCRIPTION)));
-                    build.setResourcePacks(getList(rs.getString(Database.RESOURCE_PACKS)));
-                }
-
-                rs.close();
-            }
-            catch (SQLException e) {
-                getLogger().log(Level.WARNING, Messages.SQL_EXCEPTION, e);
-            }
-
-            return submitters;
-        };
-        Function<List<Submitter<String>>, List<String>> serializer = data -> {
-            List<String> queries = new ArrayList<>();
-            queries.add(Database.CLEAR_TABLE);
-            queries.add(Database.CREATE_TABLE);
-            data.stream().flatMap(entry -> entry.getBuilds().stream().map(build -> Database.addBuild(entry, build, strings -> {
-                JsonArray jsonArray = new JsonArray();
-                strings.forEach(jsonArray::add);
-                return new Gson().toJson(jsonArray);
-            }))).forEach(queries::add);
-            return queries;
-        };
         switch (config.getFormat()) {
             case Config.HOCON:
                 submissions = new SubmissionsFileStorage<>(submittersDir, ConfigurateLoader.HOCON, ".conf", typeToken, tsc);
@@ -168,26 +112,22 @@ public class SpigotServerSaturday extends JavaPlugin implements ServerSaturday<S
                 submissions = new SubmissionsFileStorage<>(submittersDir, ConfigurateLoader.JSON, ".json", typeToken, tsc);
                 break;
             case Config.MONGO_DB:
-                submissions = new MongoDataStorage<>(config.getDatabaseOptions(), new Submitter.Serializer<>(String.class), submitter -> Filters.eq(Config.UUID, submitter.getUUID()));
+                submissions = new MongoDataStorage<>(config.getDatabaseOptions(), submitterSerializer, submitter -> Filters.eq(Config.UUID, submitter.getUUID()));
                 break;
             case Config.MYSQL:
-                submissions = new MySQLDataStorage<>(config.getDatabaseOptions(), deserializer, serializer);
+                submissions = new MySQLDataStorage<>(config.getDatabaseOptions(), submitterSerializer);
                 break;
             case Config.SQLITE:
-                submissions = new SQLiteDataStorage<>(getDataFolder(), deserializer, serializer);
+                submissions = new SQLiteDataStorage<>(getDataFolder(), submitterSerializer);
                 break;
             case Config.YAML:
             default:
                 submissions = new SubmissionsFileStorage<>(submittersDir, ConfigurateLoader.YAML, ".yml", typeToken, tsc);
         }
+
         getLogger().info(Messages.SUBMISSIONS_LOADED);
-        getServer().getPluginManager().registerEvents(new SpigotTextInput(), this);
         rewardGiver = new SpigotRewardGiver();
         registerCommands();
-    }
-
-    private List<String> getList(String string) {
-        return StreamSupport.stream(new Gson().fromJson(string, JsonArray.class).spliterator(), false).map(JsonElement::getAsString).collect(Collectors.toList());
     }
 
     private void registerCommand(LiteralArgumentBuilder<CommandSender> argumentBuilder) {
@@ -221,17 +161,17 @@ public class SpigotServerSaturday extends JavaPlugin implements ServerSaturday<S
         }));
         registerCommand(literal(Reference.ID + Commands.GIVE_REWARD_NAME).requires(sender -> sender.hasPermission(Permissions.FEATURE)).then(argument(Commands.PLAYER, new ArgumentType<OfflinePlayer>() {
 
-            @SuppressWarnings("deprecation")
-            @Override
-            public OfflinePlayer parse(StringReader stringReader) throws CommandSyntaxException {
-                return getServer().getOfflinePlayer(stringReader.readString());
-            }
-
             @Override
             public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
                 String input = builder.getRemaining();
                 Stream.of(getServer().getOfflinePlayers()).map(OfflinePlayer::getName).filter(Objects::nonNull).filter(s -> s.startsWith(input)).forEach(builder::suggest);
                 return builder.buildFuture();
+            }
+
+            @SuppressWarnings("deprecation")
+            @Override
+            public OfflinePlayer parse(StringReader stringReader) throws CommandSyntaxException {
+                return getServer().getOfflinePlayer(stringReader.readString());
             }
         }).executes(context -> {
             OfflinePlayer offlinePlayer = context.getArgument(Commands.PLAYER, OfflinePlayer.class);

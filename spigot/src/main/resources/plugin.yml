@@ -4,30 +4,30 @@ version: ${version}
 api-version: '1.16'
 commands:
   serversaturday:
-    aliases: [ss]
+    aliases: [ ss ]
     description: Displays help and plugin info.
   serversaturdayedit:
-    aliases: [ssedit]
+    aliases: [ ssedit ]
     description: Edit a submitted build.
     permission: ss.submit
   serversaturdaygetrewards:
-    aliases: [ssgetrewards]
+    aliases: [ ssgetrewards ]
     description: Receive any rewards that are currently waiting.
     permission: ss.submit
   serversaturdaygivereward:
-    aliases: [ssgivereward]
+    aliases: [ ssgivereward ]
     description: Give a player a reward.
     permission: ss.feature
   serversaturdayreload:
-    aliases: [ssreload]
+    aliases: [ ssreload ]
     description: Reload the plugin.
     permission: ss.reload
   serversaturdayview:
-    aliases: [ssview]
+    aliases: [ ssview ]
     description: View Server Saturday submissions.
     permission: ss.view
   serversaturdayviewall:
-    aliases: [ssviewall]
+    aliases: [ ssviewall ]
     description: View all submissions.
     permission: ss.feature
 

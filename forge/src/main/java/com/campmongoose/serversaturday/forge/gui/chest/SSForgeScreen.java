@@ -1,6 +1,5 @@
 package com.campmongoose.serversaturday.forge.gui.chest;
 
-import com.campmongoose.serversaturday.common.gui.chest.ChestGUI;
 import com.campmongoose.serversaturday.forge.ForgeServerSaturday;
 import javax.annotation.Nonnull;
 import net.minecraft.client.gui.screen.Screen;
@@ -9,12 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 
 //TODO replace with Forge GUIs

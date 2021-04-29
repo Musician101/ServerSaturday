@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import net.minecraft.item.Items;
 import org.bukkit.event.inventory.ClickType;
+
 //TODO replace with Forge GUIs
 @Deprecated
 public class ViewBuildScreen extends BuildScreen {
