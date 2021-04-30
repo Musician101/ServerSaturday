@@ -14,7 +14,7 @@ public interface Reference {
 
     String ID = "serversaturday";
     String NAME = "Server Saturday";
-    String VERSION = "3.2.2";
+    String VERSION = "@VERSION@";
 
     interface Commands {
 

@@ -19,7 +19,7 @@ subprojects {
 
     shadowJar {
         dependencies {
-            include(dependency { it.moduleGroup == 'io.musician101' })
+            include dependency('io.musician101.musicianlibrary:')
         }
 
         archiveFileName = "serversaturday-${project.version}.jar"
