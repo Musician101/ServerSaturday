@@ -1,22 +1,30 @@
+repositories {
+    maven {
+        name = 'sponge'
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
+    }
+}
+
 dependencies {
-    compile(project(':common'))
-    compile 'io.musician101.musicianlibrary:spigot:4.1'
-    compile 'io.musician101:bukkitier:1.0'
+    api project(':common')
+    api 'io.musician101.musicianlibrary:spigot:4.2'
+    api 'io.musician101:bukkitier:1.0'
 }
 
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from(sourceSets.main.resources.srcDirs) {
         expand 'version': project.version
     }
 }
 
 shadowJar {
-    archiveFileName = "server-saturday-${project.version}.jar"
     dependencies {
         include dependency(':common')
-        include dependency(':mongo-java-driver:')
-        include dependency('org.spongepowered:')
+        include dependency('io.leangen.geantyref:')
         include dependency('io.musician101:')
+        include dependency('org.mongodb:')
+        include dependency('org.spongepowered:')
     }
 
     relocate 'io.musician101.bukkitier', 'com.campmongoose.serversaturday.lib.io.musician101.bukkitier'

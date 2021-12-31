@@ -19,7 +19,7 @@ public class SSCommand extends SSCommandExecutor {
         CommandCause cause = context.cause();
         cause.sendMessage(Identity.nil(), Component.join(Component.text(" "), Component.text("=====").color(NamedTextColor.GREEN), Component.text(Reference.NAME + " v" + Reference.VERSION).color(NamedTextColor.WHITE), Component.text("by").color(NamedTextColor.GREEN), Component.text("Musician101").color(NamedTextColor.WHITE), Component.text("=====").color(NamedTextColor.GREEN)));
         String shortPrefix = "ss";
-        Stream.of(shortPrefix, shortPrefix + "e", shortPrefix + "v", shortPrefix + "gr", shortPrefix + "getr", shortPrefix + "r").forEach(s -> Sponge.server().commandManager().commandMapping(s).filter(cm -> cm.plugin().getMetadata().getId().equals(Reference.ID) && cm.registrar().canExecute(cause, cm)).flatMap(cm -> cm.registrar().help(cause, cm)).ifPresent(component -> cause.sendMessage(Identity.nil(), component)));
+        Stream.of(shortPrefix, shortPrefix + "e", shortPrefix + "v", shortPrefix + "gr", shortPrefix + "getr", shortPrefix + "r").forEach(s -> Sponge.server().commandManager().commandMapping(s).filter(cm -> cm.plugin().metadata().id().equals(Reference.ID) && cm.registrar().canExecute(cause, cm)).flatMap(cm -> cm.registrar().help(cause, cm)).ifPresent(component -> cause.sendMessage(Identity.nil(), component)));
         return CommandResult.success();
     }
 }

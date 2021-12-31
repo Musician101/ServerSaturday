@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -21,17 +22,17 @@ public class SubmittersGUI extends SpigotServerSaturdayChestGUI {
     public SubmittersGUI(@Nonnull Player player) {
         super(player, MenuText.SUBMISSIONS, 54);
         updateSlots();
-        setButton(50, SpigotIconBuilder.of(Material.BARRIER, "Back"), ImmutableMap.of(ClickType.LEFT, SubmittersGUI::new));
+        setButton(50, SpigotIconBuilder.of(Material.BARRIER, "Back"), ImmutableMap.of(ClickType.LEFT, HumanEntity::closeInventory));
     }
 
     private void updateSlots() {
-        List<Submitter<String>> submitters = SpigotServerSaturday.instance().getSubmissions().getData();
+        List<Submitter> submitters = SpigotServerSaturday.instance().getSubmissions().getData();
         submitters.sort(Comparator.comparing(Submitter::getName));
         IntStream.of(0, 45).forEach(x -> {
             try {
                 int index = x + (page - 1) * 45;
-                Submitter<String> submitter = submitters.get(index);
-                ItemStack itemStack = SpigotIconBuilder.of(submitter.getBuilds().stream().anyMatch(b -> b.submitted() && !b.featured()) ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK, name);
+                Submitter submitter = submitters.get(index);
+                ItemStack itemStack = SpigotIconBuilder.of(submitter.getBuilds().stream().anyMatch(b -> b.submitted() && !b.featured()) ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK, submitter.getName());
                 setButton(x, itemStack, ImmutableMap.of(ClickType.LEFT, p -> new SubmitterGUI(submitter, p)));
             }
             catch (IndexOutOfBoundsException ignored) {
@@ -50,7 +51,7 @@ public class SubmittersGUI extends SpigotServerSaturdayChestGUI {
         }
 
         int maxPage = Double.valueOf(Math.ceil(submitters.size() / 45d)).intValue();
-        if (page < maxPage) {
+        if (page > maxPage) {
             removeButton(53);
         }
         else {

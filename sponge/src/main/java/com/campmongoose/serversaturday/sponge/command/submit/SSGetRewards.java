@@ -16,13 +16,12 @@ public class SSGetRewards extends SSCommandExecutor {
     @Override
     public CommandResult execute(@Nonnull CommandContext context) {
         Subject subject = context.subject();
-        if (subject instanceof ServerPlayer) {
-            ServerPlayer player = (ServerPlayer) subject;
+        if (subject instanceof ServerPlayer player) {
             getPlugin().getRewardGiver().givePlayerReward(player);
             player.sendMessage(Component.text(Messages.REWARDS_RECEIVED).color(NamedTextColor.AQUA));
             return CommandResult.success();
         }
 
-        return playerOnly(context.cause());
+        return playerOnly();
     }
 }

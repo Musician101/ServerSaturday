@@ -18,6 +18,6 @@ public class SSViewAll extends SSCommandExecutor {
             return CommandResult.success();
         }
 
-        return playerOnly(context.cause());
+        return playerOnly();
     }
 }

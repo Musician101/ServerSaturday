@@ -1,12 +1,12 @@
 plugins {
-    id 'java'
-    id 'com.github.johnrengelman.shadow' version '6.1.0' apply false
+    id 'java-library'
+    id 'com.github.johnrengelman.shadow' version '7.1.0' apply false
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 subprojects {
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'com.github.johnrengelman.shadow'
 
     group project.pluginGroup

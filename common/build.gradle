@@ -1,6 +1,6 @@
 dependencies {
     dependencies {
-        compile 'io.musician101.musicianlibrary:common:4.1'
+        api('io.musician101.musicianlibrary:common:4.2')
     }
 }
 

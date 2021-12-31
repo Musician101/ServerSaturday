@@ -25,19 +25,19 @@ public class SubmitterGUI extends SpigotServerSaturdayChestGUI {
 
     private int page = 1;
 
-    public SubmitterGUI(@Nonnull Submitter<String> submitter, @Nonnull Player player) {
+    public SubmitterGUI(@Nonnull Submitter submitter, @Nonnull Player player) {
         super(player, MenuText.submitterMenu(submitter), 54);
         updateSlots(submitter);
     }
 
-    private void updateSlots(@Nonnull Submitter<String> submitter) {
-        List<Build<String>> builds = submitter.getBuilds();
+    private void updateSlots(@Nonnull Submitter submitter) {
+        List<Build> builds = submitter.getBuilds();
         builds.sort(Comparator.comparing(Build::getName));
         IntStream.of(0, 45).forEach(x -> {
             try {
                 int index = x + (page - 1) * 45;
-                Build<String> build = builds.get(index);
-                ItemStack itemStack = SpigotIconBuilder.builder(Material.BOOK).name((build.submitted() && !build.featured() ? ChatColor.GREEN : ChatColor.RED) + submitter.getName()).description(Collections.singletonList("By " + submitter.getName())).build();
+                Build build = builds.get(index);
+                ItemStack itemStack = SpigotIconBuilder.builder(Material.BOOK).name((build.submitted() && !build.featured() ? ChatColor.GREEN : ChatColor.RED) + build.getName()).description(Collections.singletonList("By " + submitter.getName())).build();
                 setButton(x, itemStack, ImmutableMap.of(ClickType.LEFT, p -> {
                     if (submitter.getUUID().equals(p.getUniqueId())) {
                         new EditBuildGUI(build, submitter, p);
@@ -57,12 +57,14 @@ public class SubmitterGUI extends SpigotServerSaturdayChestGUI {
             }
         });
 
-        if (player.getUniqueId().equals(submitter.getUUID()) && (builds.size() <= SpigotServerSaturday.instance().getPluginConfig().getMaxBuilds() || player.hasPermission(Permissions.EXCEED_MAX_BUILDS))) {
+        int maxBuilds = SpigotServerSaturday.instance().getPluginConfig().getMaxBuilds();
+        if (player.getUniqueId().equals(submitter.getUUID()) && player.hasPermission(Permissions.SUBMIT) && (maxBuilds == 0 || builds.size() <= maxBuilds || player.hasPermission(Permissions.EXCEED_MAX_BUILDS))) {
             setButton(48, SpigotIconBuilder.of(Material.EMERALD_BLOCK, MenuText.NEW_BUILD), ImmutableMap.of(ClickType.LEFT, p -> {
                 p.closeInventory();
                 p.sendMessage(ChatColor.GREEN + Messages.SET_BUILD_NAME);
                 new SpigotTextInput(SpigotServerSaturday.instance(), p) {
 
+                    @SuppressWarnings("ConstantConditions")
                     @Override
                     protected void process(Player player, String s) {
                         if (submitter.getBuild(s) != null) {
@@ -71,7 +73,7 @@ public class SubmitterGUI extends SpigotServerSaturdayChestGUI {
                         }
 
                         Location location = player.getLocation();
-                        Build<String> build = submitter.newBuild(s, new io.musician101.musicianlibrary.java.minecraft.common.Location(location.getWorld().getName(), location.getX(), location.getY(), location.getZ()));
+                        Build build = submitter.newBuild(s, new io.musician101.musicianlibrary.java.minecraft.common.Location(location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getPitch(), location.getYaw()));
                         new EditBuildGUI(build, submitter, player);
                     }
                 };
@@ -96,7 +98,7 @@ public class SubmitterGUI extends SpigotServerSaturdayChestGUI {
         }
 
         int maxPage = Double.valueOf(Math.ceil(builds.size() / 45d)).intValue();
-        if (page < maxPage) {
+        if (page > maxPage) {
             removeButton(53);
         }
         else {

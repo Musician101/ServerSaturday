@@ -31,14 +31,14 @@ public class AllSubmissionsGUI extends SpigotServerSaturdayChestGUI {
     }
 
     private void updateSlots() {
-        Multimap<Build<String>, Submitter<String>> map = TreeMultimap.create(Comparator.comparing(Build::getName), Comparator.comparing(Submitter::getName));
+        Multimap<Build, Submitter> map = TreeMultimap.create(Comparator.comparing(Build::getName), Comparator.comparing(Submitter::getName));
         SpigotServerSaturday.instance().getSubmissions().getData().forEach(submitter -> submitter.getBuilds().stream().filter(build -> !build.featured() && build.submitted()).forEach(build -> map.put(build, submitter)));
-        List<Build<String>> builds = new ArrayList<>(map.keys());
+        List<Build> builds = new ArrayList<>(map.keys());
         IntStream.of(0, 45).forEach(x -> {
             try {
                 int index = x + (page - 1) * 45;
-                Build<String> build = builds.get(index);
-                Submitter<String> submitter = map.get(build).iterator().next();
+                Build build = builds.get(index);
+                Submitter submitter = map.get(build).iterator().next();
                 map.remove(build, submitter);
                 ItemStack itemStack = SpigotIconBuilder.builder(Material.BOOK).name((build.submitted() && !build.featured() ? ChatColor.GREEN : ChatColor.RED) + submitter.getName()).description(Collections.singletonList("By " + submitter.getName())).build();
                 setButton(x, itemStack, ImmutableMap.of(ClickType.LEFT, p -> {

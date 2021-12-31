@@ -6,10 +6,8 @@ import com.campmongoose.serversaturday.sponge.SpongeServerSaturday;
 import io.musician101.musicianlibrary.java.storage.DataStorage;
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.spongepowered.api.command.CommandCause;
 import org.spongepowered.api.command.CommandExecutor;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
@@ -40,8 +38,7 @@ public abstract class SSCommandExecutor implements CommandExecutor {
     }
 
     @Nonnull
-    protected CommandResult playerOnly(CommandCause cause) {
-        cause.sendMessage(Identity.nil(), Component.text(Messages.PLAYER_ONLY).color(NamedTextColor.RED));
-        return CommandResult.empty();
+    protected CommandResult playerOnly() {
+        return CommandResult.error(Component.text(Messages.PLAYER_ONLY).color(NamedTextColor.RED));
     }
 }

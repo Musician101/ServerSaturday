@@ -16,13 +16,12 @@ public class SSEdit extends SSCommandExecutor {
     @Override
     public CommandResult execute(@Nonnull CommandContext context) {
         Subject subject = context.subject();
-        if (subject instanceof ServerPlayer) {
-            ServerPlayer player = (ServerPlayer) subject;
+        if (subject instanceof ServerPlayer player) {
             Submitter<Component> submitter = getSubmitter(player);
             new SubmitterGUI(submitter, player);
             return CommandResult.success();
         }
 
-        return playerOnly(context.cause());
+        return playerOnly();
     }
 }

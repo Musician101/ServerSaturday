@@ -6,14 +6,13 @@ repositories {
 }
 
 dependencies {
-    compile(project(':common'))
-    compile 'io.musician101.musicianlibrary:sponge:4.1'
+    implementation(project(':common'))
+    implementation 'io.musician101.musicianlibrary:sponge:4.1'
 }
 
 shadowJar {
-    archiveFileName = "server-saturday-${project.version}.jar"
     dependencies {
-        include(dependency(':common'))
+        include dependency(':common')
         include dependency(':mongo-java-driver:')
     }
 }

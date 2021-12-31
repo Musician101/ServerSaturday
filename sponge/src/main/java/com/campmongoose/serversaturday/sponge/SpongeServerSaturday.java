@@ -64,11 +64,13 @@ public class SpongeServerSaturday implements ServerSaturday<SpongeRewardGiver, C
     @Inject
     public SpongeServerSaturday(@Nonnull PluginContainer pluginContainer, @DefaultConfig(sharedRoot = false) ConfigurationReference<ConfigurationNode> configReference) {
         this.pluginContainer = pluginContainer;
+        getLogger().info(Messages.LOADING_CONFIG);
         config = new SpongeConfig(configReference);
+        getLogger().info(Messages.CONFIG_LOADED);
     }
 
     public static SpongeServerSaturday instance() {
-        return Sponge.pluginManager().plugin(Reference.ID).map(PluginContainer::getInstance).filter(SpongeServerSaturday.class::isInstance).map(SpongeServerSaturday.class::cast).orElseThrow(() -> new IllegalStateException("ServerSaturday is not enabled!"));
+        return Sponge.pluginManager().plugin(Reference.ID).map(PluginContainer::instance).filter(SpongeServerSaturday.class::isInstance).map(SpongeServerSaturday.class::cast).orElseThrow(() -> new IllegalStateException("ServerSaturday is not enabled!"));
     }
 
     @Listener
@@ -97,7 +99,7 @@ public class SpongeServerSaturday implements ServerSaturday<SpongeRewardGiver, C
 
     @Nonnull
     public Logger getLogger() {
-        return pluginContainer.getLogger();
+        return pluginContainer.logger();
     }
 
     @Nonnull
@@ -119,38 +121,23 @@ public class SpongeServerSaturday implements ServerSaturday<SpongeRewardGiver, C
 
     @Listener
     public void starting(StartingEngineEvent<Server> event) {
-        getLogger().info(Messages.LOADING_CONFIG);
-        getLogger().info(Messages.CONFIG_LOADED);
         getLogger().info(Messages.LOADING_SUBMISSIONS);
-        pluginContainer.getPath();
-        File configDir = new File(Sponge.game().gameDirectory().toFile(), Reference.ID);
+        File configDir = new File("config", Reference.ID);
         File submittersDir = new File(configDir, "submitters");
-        TypeToken<Submitter<Component>> typeToken = new TypeToken<Submitter<Component>>() {
+        TypeToken<Submitter<Component>> typeToken = new TypeToken<>() {
 
         };
         Serializer<Component> submitterSerializer = new Submitter.Serializer<>(Component.class, new SQLComponentSerializer());
-        TypeSerializerCollection tsc = TypeSerializerCollection.builder().register(typeToken, submitterSerializer).register(new TypeToken<Build<Component>>() {
+        TypeSerializerCollection tsc = TypeSerializerCollection.builder().register(typeToken, submitterSerializer).register(new TypeToken<>() {
 
         }, new Build.Serializer<>(Component.class)).register(Location.class, new Location.Serializer()).build();
         switch (config.getFormat()) {
-            case Config.HOCON:
-                submissions = new SubmissionsFileStorage<>(submittersDir, ConfigurateLoader.HOCON, ".conf", typeToken, tsc);
-                break;
-            case Config.JSON:
-                submissions = new SubmissionsFileStorage<>(submittersDir, ConfigurateLoader.JSON, ".json", typeToken, tsc);
-                break;
-            case Config.MONGO_DB:
-                submissions = new MongoDataStorage<>(config.getDatabaseOptions(), submitterSerializer, submitter -> Filters.eq(Config.UUID, submitter.getUUID()));
-                break;
-            case Config.MYSQL:
-                submissions = new MySQLDataStorage<>(config.getDatabaseOptions(), submitterSerializer);
-                break;
-            case Config.SQLITE:
-                submissions = new SQLiteDataStorage<>(configDir, submitterSerializer);
-                break;
-            case Config.YAML:
-            default:
-                submissions = new SubmissionsFileStorage<>(submittersDir, ConfigurateLoader.YAML, ".yml", typeToken, tsc);
+            case Config.HOCON -> submissions = new SubmissionsFileStorage<>(submittersDir, ConfigurateLoader.HOCON, ".conf", typeToken, tsc);
+            case Config.JSON -> submissions = new SubmissionsFileStorage<>(submittersDir, ConfigurateLoader.JSON, ".json", typeToken, tsc);
+            case Config.MONGO_DB -> submissions = new MongoDataStorage<>(config.getDatabaseOptions(), submitterSerializer, submitter -> Filters.eq(Config.UUID, submitter.getUUID()));
+            case Config.MYSQL -> submissions = new MySQLDataStorage<>(config.getDatabaseOptions(), submitterSerializer);
+            case Config.SQLITE -> submissions = new SQLiteDataStorage<>(configDir, submitterSerializer);
+            default -> submissions = new SubmissionsFileStorage<>(submittersDir, ConfigurateLoader.YAML, ".yml", typeToken, tsc);
         }
 
         getLogger().info(Messages.SUBMISSIONS_LOADED);

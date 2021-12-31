@@ -5,8 +5,6 @@ import io.leangen.geantyref.TypeToken;
 import io.musician101.musicianlibrary.java.minecraft.common.Location;
 import io.musician101.musicianlibrary.java.storage.database.mongo.MongoSerializable;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.bson.Document;
@@ -14,18 +12,18 @@ import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
-public final class Build<T> {
+public final class Build {
 
     @Nonnull
-    protected List<T> description = new ArrayList<>();
-    protected boolean featured = false;
+    private String description = "";
+    private boolean featured = false;
     @Nonnull
-    protected Location location;
+    private Location location;
     @Nonnull
-    protected String name;
+    private String name;
     @Nonnull
-    protected List<T> resourcePacks = new ArrayList<>();
-    protected boolean submitted = false;
+    private String resourcePack = "";
+    private boolean submitted = false;
 
     public Build(@Nonnull String name, @Nonnull Location location) {
         this.name = name;
@@ -37,11 +35,11 @@ public final class Build<T> {
     }
 
     @Nonnull
-    public List<T> getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(@Nonnull List<T> description) {
+    public void setDescription(@Nonnull String description) {
         this.description = description;
     }
 
@@ -64,12 +62,12 @@ public final class Build<T> {
     }
 
     @Nonnull
-    public List<T> getResourcePacks() {
-        return resourcePacks;
+    public String getResourcePack() {
+        return resourcePack;
     }
 
-    public void setResourcePacks(@Nonnull List<T> resourcePacks) {
-        this.resourcePacks = resourcePacks;
+    public void setResourcePack(@Nonnull String resourcePack) {
+        this.resourcePack = resourcePack;
     }
 
     public void setFeatured(boolean featured) {
@@ -84,17 +82,11 @@ public final class Build<T> {
         return submitted;
     }
 
-    public static final class Serializer<T> implements MongoSerializable<Build<T>>, TypeSerializer<Build<T>> {
-
-        private final Class<T> clazz;
-
-        public Serializer(@Nonnull Class<T> clazz) {
-            this.clazz = clazz;
-        }
+    public record Serializer() implements MongoSerializable<Build>, TypeSerializer<Build> {
 
         @Override
-        public Build<T> deserialize(Type type, ConfigurationNode node) throws SerializationException {
-            if (!type.equals(new TypeToken<Submitter<T>>() {
+        public Build deserialize(Type type, ConfigurationNode node) throws SerializationException {
+            if (!type.equals(new TypeToken<Submitter>() {
 
             }.getType())) {
                 return null;
@@ -110,16 +102,16 @@ public final class Build<T> {
                 throw new SerializationException("Location can not be null.");
             }
 
-            Build<T> build = new Build<>(name, location);
+            Build build = new Build(name, location);
             build.featured = node.node(Config.FEATURED).getBoolean();
             build.submitted = node.node(Config.SUBMITTED).getBoolean();
-            build.resourcePacks = node.node(Config.RESOURCE_PACK).getList(clazz, new ArrayList<>());
-            build.description = node.node(Config.DESCRIPTION).getList(clazz, new ArrayList<>());
+            build.resourcePack = node.node(Config.RESOURCE_PACK).getString("");
+            build.description = node.node(Config.DESCRIPTION).getString("");
             return build;
         }
 
         @Override
-        public Build<T> deserialize(@Nullable Document document) {
+        public Build deserialize(@Nullable Document document) {
             if (document == null) {
                 return null;
             }
@@ -135,29 +127,29 @@ public final class Build<T> {
             }
 
             Location location = new Location.Serializer().deserialize(locationDocument);
-            Build<T> build = new Build<>(name, location);
+            Build build = new Build(name, location);
             build.featured = document.getBoolean(Config.FEATURED);
             build.submitted = document.getBoolean(Config.SUBMITTED);
-            build.resourcePacks = document.getList(Config.RESOURCE_PACK, clazz, new ArrayList<>());
-            build.description = document.getList(Config.DESCRIPTION, clazz, new ArrayList<>());
+            build.resourcePack = document.getString(Config.RESOURCE_PACK);
+            build.description = document.getString(Config.DESCRIPTION);
             return build;
         }
 
         @Override
-        public Document serialize(@Nonnull Build<T> obj) {
+        public Document serialize(@Nonnull Build obj) {
             Document document = new Document();
             document.put(Config.NAME, obj.name);
             document.put(Config.LOCATION, new Location.Serializer().serialize(obj.location));
             document.put(Config.FEATURED, obj.featured);
             document.put(Config.SUBMITTED, obj.submitted);
             document.put(Config.DESCRIPTION, obj.description);
-            document.put(Config.RESOURCE_PACK, obj.resourcePacks);
+            document.put(Config.RESOURCE_PACK, obj.resourcePack);
             return document;
         }
 
         @Override
-        public void serialize(Type type, @Nullable Build<T> obj, ConfigurationNode node) throws SerializationException {
-            if (obj == null || !type.equals(new TypeToken<Submitter<T>>() {
+        public void serialize(Type type, @Nullable Build obj, ConfigurationNode node) throws SerializationException {
+            if (obj == null || !type.equals(new TypeToken<Submitter>() {
 
             }.getType())) {
                 return;
@@ -167,8 +159,8 @@ public final class Build<T> {
             node.node(Config.LOCATION).set(Location.class, obj.location);
             node.node(Config.FEATURED).set(obj.featured);
             node.node(Config.SUBMITTED).set(obj.submitted);
-            node.node(Config.DESCRIPTION).setList(clazz, obj.description);
-            node.node(Config.RESOURCE_PACK).setList(clazz, obj.resourcePacks);
+            node.node(Config.DESCRIPTION).set(obj.description);
+            node.node(Config.RESOURCE_PACK).set(obj.resourcePack);
         }
     }
 }

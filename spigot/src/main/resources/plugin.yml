@@ -1,7 +1,7 @@
 name: ServerSaturday
 main: com.campmongoose.serversaturday.spigot.SpigotServerSaturday
 version: ${version}
-api-version: '1.16'
+api-version: '1.18'
 commands:
   serversaturday:
     aliases: [ ss ]

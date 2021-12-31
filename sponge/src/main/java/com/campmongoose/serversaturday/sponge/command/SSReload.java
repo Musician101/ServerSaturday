@@ -25,8 +25,7 @@ public class SSReload extends SSCommandExecutor {
             return CommandResult.success();
         }
         catch (IOException e) {
-            context.sendMessage(Identity.nil(), Component.text("").color(NamedTextColor.RED));
-            return CommandResult.empty();
+            return CommandResult.error(Component.text(e.getMessage()).color(NamedTextColor.RED));
         }
     }
 }

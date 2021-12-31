@@ -7,14 +7,13 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 import javax.annotation.Nonnull;
 
 public interface Reference {
 
     String ID = "serversaturday";
     String NAME = "Server Saturday";
-    String VERSION = "@VERSION@";
+    String VERSION = "3.3";
 
     interface Commands {
 
@@ -28,11 +27,12 @@ public interface Reference {
         String PLAYER = "player";
         String RELOAD_DESC = "Reload the plugin.";
         String RELOAD_NAME = "reload";
-        String SS_CMD = "/ss";
+        String SS_CMD = "ss";
         String VIEW_ALL_DESC = "View all builds that have been submitted.";
         String VIEW_ALL_NAME = "viewall";
         String VIEW_DESC = "View Server Saturday submissions.";
         String VIEW_NAME = "view";
+        String BUILD = "build";
     }
 
     interface Config {
@@ -77,11 +77,13 @@ public interface Reference {
         String X = "X";
         String Y = "Y";
         String Z = "Z";
-        String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" + UUID + " TEXT, " + USERNAME + " TEXT, " + BUILD_NAME + " TEXT, " + FEATURED + " BOOLEAN, " + SUBMITTED + " BOOLEAN, " + WORLD_NAME + " TEXT, " + X + " DECIMAL, " + Y + " DECIMAL, " + Z + " DECIMAL, " + DESCRIPTION + " TEXT, " + RESOURCE_PACKS + " TEXT";
+        String PITCH = "Pitch";
+        String YAW = "Yaw";
+        String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" + UUID + " TEXT, " + USERNAME + " TEXT, " + BUILD_NAME + " TEXT, " + FEATURED + " BOOLEAN, " + SUBMITTED + " BOOLEAN, " + WORLD_NAME + " TEXT, " + X + " DECIMAL, " + Y + " DECIMAL, " + Z + " DECIMAL, " + PITCH + " FLOAT, " + YAW + " FLOAT, " + DESCRIPTION + " TEXT, " + RESOURCE_PACKS + " TEXT";
 
-        static <T> String addBuild(@Nonnull Submitter<T> submitter, @Nonnull Build<T> build, @Nonnull Function<List<T>, String> textToString) {
+        static String addBuild(@Nonnull Submitter submitter, @Nonnull Build build) {
             Location location = build.getLocation();
-            return "INSERT FROM " + TABLE_NAME + "(" + UUID + ", " + USERNAME + ", " + BUILD_NAME + ", " + FEATURED + ", " + SUBMITTED + ", " + WORLD_NAME + ", " + X + ", " + Y + ", " + Z + ", " + DESCRIPTION + ", " + RESOURCE_PACKS + ") VALUES (\"" + submitter.getUUID() + "\", \"" + submitter.getName() + "\", \"" + build.getName() + "\", \"" + location.getWorldName() + "\", \"" + location.getX() + "\", \"" + location.getY() + "\", \"" + location.getZ() + "\", \"" + textToString.apply(build.getDescription()) + "\", \"" + textToString.apply(build.getResourcePacks()) + ")";
+            return "INSERT FROM " + TABLE_NAME + "(" + UUID + ", " + USERNAME + ", " + BUILD_NAME + ", " + FEATURED + ", " + SUBMITTED + ", " + WORLD_NAME + ", " + X + ", " + Y + ", " + Z + ", " + DESCRIPTION + ", " + RESOURCE_PACKS + ") VALUES (\"" + submitter.getUUID() + "\", \"" + submitter.getName() + "\", \"" + build.getName() + "\", \"" + location.getWorldName() + "\", \"" + location.getX() + "\", \"" + location.getY() + "\", \"" + location.getZ() + "\", \"" + build.getDescription() + "\", \"" + build.getResourcePack() + ")";
         }
     }
 
@@ -111,7 +113,7 @@ public interface Reference {
         String TELEPORT_NAME = "Teleport";
 
         @Nonnull
-        static String submitterMenu(@Nonnull Submitter<?> submitter) {
+        static String submitterMenu(@Nonnull Submitter submitter) {
             return submitter.getName() + "'s Builds";
         }
 
@@ -139,9 +141,9 @@ public interface Reference {
         String REWARDS_WAITING = PREFIX + "Hey, you! You have rewards waiting for you. Claim them with /ssgetrewards";
         String SAVING_SUBMISSIONS = "Saving submissions to disk...";
         String SET_BUILD_NAME = PREFIX + "Set the name of your build.";
-        String SQL_EXCEPTION = "An error occurred while executing queries.";
         String SUBMISSIONS_LOADED = "Submissions loaded.";
         String SUBMISSIONS_SAVED = "Save complete.";
+        String BUILD_DOES_NOT_EXIST = PREFIX + "A build with that name does not exist.";
 
         @Nonnull
         static String failedToReadFile(@Nonnull File file) {
@@ -159,7 +161,7 @@ public interface Reference {
         }
 
         @Nonnull
-        static String locationChanged(@Nonnull Build<?> build) {
+        static String locationChanged(@Nonnull Build build) {
             return PREFIX + "Warp location for " + build.getName() + " updated.";
         }
 
@@ -169,7 +171,7 @@ public interface Reference {
         }
 
         @Nonnull
-        static String teleportedToBuild(@Nonnull Build<?> build) {
+        static String teleportedToBuild(@Nonnull Build build) {
             return PREFIX + "You have teleported to " + build.getName();
         }
     }

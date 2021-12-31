@@ -1,3 +1,4 @@
 rootProject.name = 'ServerSaturday'
 
-include 'common', 'forge', 'spigot', 'sponge'
+//include 'common', 'forge', 'spigot', 'sponge'
+include 'common', 'spigot'

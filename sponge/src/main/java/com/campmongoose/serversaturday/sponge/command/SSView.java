@@ -18,6 +18,6 @@ public class SSView extends SSCommandExecutor {
             return CommandResult.success();
         }
 
-        return playerOnly(context.cause());
+        return playerOnly();
     }
 }

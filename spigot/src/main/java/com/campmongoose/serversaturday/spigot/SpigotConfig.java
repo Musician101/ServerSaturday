@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class SpigotConfig extends AbstractConfig {
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void reload() {
         SpigotServerSaturday plugin = SpigotServerSaturday.instance();
