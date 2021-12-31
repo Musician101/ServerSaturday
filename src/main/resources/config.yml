@@ -1,0 +1,3 @@
+# A list of commands that are run when a player claims a reward.
+rewards:
+  - tell @p Quack \\_o<
