@@ -33,6 +33,7 @@ public interface Reference {
         String VIEW_DESC = "View Server Saturday submissions.";
         String VIEW_NAME = "view";
         String SUBMIT_NAME = "submit";
+        String SUBMIT_DESC = "Submit your build to be featured.";
     }
 
     interface Config {

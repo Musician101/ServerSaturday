@@ -85,12 +85,13 @@ public final class SSCommand {
             String baseCMD = "/" + Commands.SS_CMD + " ";
             sender.sendMessage(baseCMD + ChatColor.AQUA + Commands.HELP_DESC);
             if (sender.hasPermission(Permissions.SUBMIT)) {
-                sender.sendMessage(baseCMD + Commands.EDIT_NAME + " " + ChatColor.AQUA + Commands.EDIT_DESC);
+                sender.sendMessage(baseCMD + Commands.EDIT_NAME + " [build] " + ChatColor.AQUA + Commands.EDIT_DESC);
                 sender.sendMessage(baseCMD + Commands.CLAIM_NAME + " " + ChatColor.AQUA + Commands.CLAIM_DESC);
+                sender.sendMessage(baseCMD + Commands.SUBMIT_NAME + " <build> " + ChatColor.AQUA + Commands.SUBMIT_DESC);
             }
 
             if (sender.hasPermission(Permissions.FEATURE)) {
-                sender.sendMessage(baseCMD + Commands.REWARD_NAME + " " + ChatColor.AQUA + Commands.REWARD_DESC);
+                sender.sendMessage(baseCMD + Commands.REWARD_NAME + " <player> " + ChatColor.AQUA + Commands.REWARD_DESC);
                 sender.sendMessage(baseCMD + Commands.VIEW_ALL_NAME + " " + ChatColor.AQUA + Commands.VIEW_ALL_DESC);
             }
 
@@ -99,7 +100,7 @@ public final class SSCommand {
             }
 
             if (sender.hasPermission(Permissions.VIEW)) {
-                sender.sendMessage(baseCMD + Commands.VIEW_NAME + " " + ChatColor.AQUA + Commands.VIEW_DESC);
+                sender.sendMessage(baseCMD + Commands.VIEW_NAME + " [player] [build]" + ChatColor.AQUA + Commands.VIEW_DESC);
             }
 
             return 1;
