@@ -32,7 +32,7 @@ public class SubmitterGUI extends ServerSaturdayChestGUI {
     private void updateSlots(@Nonnull Submitter submitter) {
         List<Build> builds = submitter.getBuilds();
         builds.sort(Comparator.comparing(Build::getName));
-        IntStream.of(0, 45).forEach(x -> {
+        IntStream.range(0, 45).forEach(x -> {
             try {
                 int index = x + (page - 1) * 45;
                 Build build = builds.get(index);

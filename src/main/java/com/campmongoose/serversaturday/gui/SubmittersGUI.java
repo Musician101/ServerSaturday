@@ -28,7 +28,7 @@ public class SubmittersGUI extends ServerSaturdayChestGUI {
     private void updateSlots() {
         List<Submitter> submitters = ServerSaturday.getInstance().getSubmissions().getSubmitters();
         submitters.sort(Comparator.comparing(Submitter::getName));
-        IntStream.of(0, 45).forEach(x -> {
+        IntStream.range(0, 45).forEach(x -> {
             try {
                 int index = x + (page - 1) * 45;
                 Submitter submitter = submitters.get(index);

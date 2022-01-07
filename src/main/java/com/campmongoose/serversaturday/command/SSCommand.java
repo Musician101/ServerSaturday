@@ -28,11 +28,7 @@ import org.bukkit.entity.Player;
 import static io.musician101.bukkitier.Bukkitier.argument;
 import static io.musician101.bukkitier.Bukkitier.literal;
 
-public final class SSCommand {
-
-    private SSCommand() {
-
-    }
+public interface SSCommand {
 
     private static LiteralArgumentBuilder<CommandSender> claim() {
         return literal(Commands.CLAIM_NAME).requires(sender -> sender instanceof Player && sender.hasPermission(Permissions.SUBMIT)).executes(context -> {
@@ -78,7 +74,7 @@ public final class SSCommand {
         return getSubmissions().getSubmitter(player);
     }
 
-    public static void registerCommand() {
+    static void registerCommand() {
         Bukkitier.registerCommand(getPlugin(), literal(Reference.ID).executes(context -> {
             CommandSender sender = context.getSource();
             sender.sendMessage(ChatColor.GREEN + "===== " + ChatColor.RESET + Reference.NAME + " v" + Reference.VERSION + ChatColor.GREEN + " by " + ChatColor.RESET + "Musician101" + ChatColor.GREEN + " =====");
@@ -153,10 +149,10 @@ public final class SSCommand {
             Submitter submitter = context.getArgument(Commands.PLAYER, Submitter.class);
             new SubmitterGUI(submitter, (Player) context.getSource());
             return 1;
-        }).then(argument(Commands.BUILD, new BuildFromSubmitterArgumentType()).executes(context -> {
+        }).then(argument(Commands.BUILD, new BuildArgumentType()).executes(context -> {
             Player player = (Player) context.getSource();
             Submitter submitter = context.getArgument(Commands.PLAYER, Submitter.class);
-            Build build = context.getArgument(Commands.BUILD, Build.class);
+            Build build = (Build) context.getArgument(Commands.BUILD, Map.class).get(submitter.getUUID());
             if (build == null) {
                 player.sendMessage(ChatColor.RED + Messages.BUILD_DOES_NOT_EXIST);
                 return 0;

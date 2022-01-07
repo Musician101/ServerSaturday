@@ -29,7 +29,8 @@ public class BuildArgumentType implements ArgumentType<Map<UUID, Build>> {
     @Override
     public Map<UUID, Build> parse(StringReader stringReader) {
         Map<UUID, Build> builds = new HashMap<>();
-        getSubmissions().getSubmitters().forEach(submitter -> submitter.getBuild(stringReader.readUnquotedString()).ifPresent(build -> builds.put(submitter.getUUID(), build)));
+        getSubmissions().getSubmitters().forEach(submitter -> submitter.getBuild(stringReader.getRemaining()).ifPresent(build -> builds.put(submitter.getUUID(), build)));
+        stringReader.setCursor(stringReader.getTotalLength());
         return builds;
     }
 }

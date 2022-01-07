@@ -34,7 +34,7 @@ public class AllSubmissionsGUI extends ServerSaturdayChestGUI {
         Multimap<Build, Submitter> map = TreeMultimap.create(Comparator.comparing(Build::getName), Comparator.comparing(Submitter::getName));
         ServerSaturday.getInstance().getSubmissions().getSubmitters().forEach(submitter -> submitter.getBuilds().stream().filter(build -> !build.featured() && build.submitted()).forEach(build -> map.put(build, submitter)));
         List<Build> builds = new ArrayList<>(map.keys());
-        IntStream.of(0, 45).forEach(x -> {
+        IntStream.range(0, 45).forEach(x -> {
             try {
                 int index = x + (page - 1) * 45;
                 Build build = builds.get(index);

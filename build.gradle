@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.1.1'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 group = 'com.campmongoose'
-version = '4.1.1'
+version = '4.1.2'
 
 repositories {
     mavenCentral()
@@ -25,11 +25,13 @@ repositories {
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT'
+    compileOnly 'com.mojang:brigadier:1.0.18'
+
     implementation('io.musician101.musicianlibrary:spigot:4.2') {
         exclude group: 'org.spigotmc'
     }
-    implementation 'io.musician101:bukkitier:1.0'
-    implementation 'com.mojang:brigadier:1.0.18'
+    
+    implementation 'io.musician101:bukkitier:1.1'
 }
 
 def targetJavaVersion = 17
