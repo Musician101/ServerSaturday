@@ -3,17 +3,16 @@ package com.campmongoose.serversaturday.gui;
 import com.campmongoose.serversaturday.Reference.MenuText;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Submitter;
-import com.google.common.collect.ImmutableMap;
-import io.musician101.musicianlibrary.java.minecraft.spigot.gui.chest.SpigotIconBuilder;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+
+import static io.musician101.musigui.spigot.chest.SpigotIconUtil.customName;
 
 public class SubmittersGUI extends ServerSaturdayChestGUI {
 
@@ -22,7 +21,7 @@ public class SubmittersGUI extends ServerSaturdayChestGUI {
     public SubmittersGUI(@Nonnull Player player) {
         super(player, MenuText.SUBMISSIONS, 54);
         updateSlots();
-        setButton(50, SpigotIconBuilder.of(Material.BARRIER, "Back"), ImmutableMap.of(ClickType.LEFT, HumanEntity::closeInventory));
+        setButton(50, customName(new ItemStack(Material.BARRIER), "Back"), ClickType.LEFT, Player::closeInventory);
     }
 
     private void updateSlots() {
@@ -32,8 +31,9 @@ public class SubmittersGUI extends ServerSaturdayChestGUI {
             try {
                 int index = x + (page - 1) * 45;
                 Submitter submitter = submitters.get(index);
-                ItemStack itemStack = SpigotIconBuilder.of(submitter.getBuilds().stream().anyMatch(b -> b.submitted() && !b.featured()) ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK, submitter.getName());
-                setButton(x, itemStack, ImmutableMap.of(ClickType.LEFT, p -> new SubmitterGUI(submitter, p)));
+                Material material = submitter.getBuilds().stream().anyMatch(b -> b.submitted() && !b.featured()) ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK;
+                ItemStack itemStack = customName(new ItemStack(material), submitter.getName());
+                setButton(x, itemStack, ClickType.LEFT, p -> new SubmitterGUI(submitter, p));
             }
             catch (IndexOutOfBoundsException ignored) {
 
@@ -44,21 +44,21 @@ public class SubmittersGUI extends ServerSaturdayChestGUI {
             removeButton(45);
         }
         else {
-            setButton(45, SpigotIconBuilder.of(Material.ARROW, MenuText.PREVIOUS_PAGE), ImmutableMap.of(ClickType.LEFT, p -> {
+            setButton(45, customName(new ItemStack(Material.ARROW), MenuText.PREVIOUS_PAGE), ClickType.LEFT, p -> {
                 page--;
                 updateSlots();
-            }));
+            });
         }
 
         int maxPage = Double.valueOf(Math.ceil(submitters.size() / 45d)).intValue();
-        if (page > maxPage) {
+        if (page >= maxPage) {
             removeButton(53);
         }
         else {
-            setButton(53, SpigotIconBuilder.of(Material.ARROW, MenuText.NEXT_PAGE), ImmutableMap.of(ClickType.LEFT, p -> {
+            setButton(53, customName(new ItemStack(Material.ARROW), MenuText.NEXT_PAGE), ClickType.LEFT, p -> {
                 page++;
                 updateSlots();
-            }));
+            });
         }
     }
 }

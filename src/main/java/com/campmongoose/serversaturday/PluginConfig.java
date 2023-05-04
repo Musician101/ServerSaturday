@@ -6,13 +6,13 @@ import javax.annotation.Nonnull;
 
 public final class PluginConfig {
 
+    private ServerSaturday getPlugin() {
+        return ServerSaturday.getInstance();
+    }
+
     @Nonnull
     public List<String> getRewards() {
         return getPlugin().getConfig().getStringList(Config.REWARDS);
-    }
-
-    private ServerSaturday getPlugin() {
-        return ServerSaturday.getInstance();
     }
 
     public void reload() {

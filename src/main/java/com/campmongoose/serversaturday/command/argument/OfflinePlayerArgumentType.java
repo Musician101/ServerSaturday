@@ -1,4 +1,4 @@
-package com.campmongoose.serversaturday.command;
+package com.campmongoose.serversaturday.command.argument;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-public class OfflinePlayerArgument implements ArgumentType<OfflinePlayer> {
+public class OfflinePlayerArgumentType implements ArgumentType<OfflinePlayer> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
@@ -19,7 +19,6 @@ public class OfflinePlayerArgument implements ArgumentType<OfflinePlayer> {
         return builder.buildFuture();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public OfflinePlayer parse(StringReader stringReader) throws CommandSyntaxException {
         return Bukkit.getOfflinePlayer(stringReader.readString());

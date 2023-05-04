@@ -6,34 +6,20 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 public interface Reference {
-
-    String ID = "serversaturday";
-    String NAME = "Server Saturday";
-    String VERSION = "@VERSION@";
 
     interface Commands {
 
         String BUILD = "build";
-        String CLAIM_DESC = "Claim any pending rewards.";
-        String CLAIM_NAME = "claim";
-        String EDIT_DESC = "Edit a submitted build.";
-        String EDIT_NAME = "edit";
-        String HELP_DESC = "Displays help and plugin info.";
         String PLAYER = "player";
-        String RELOAD_DESC = "Reload the plugin.";
-        String RELOAD_NAME = "reload";
-        String REWARD_DESC = "Give a player a reward.";
-        String REWARD_NAME = "reward";
-        String SS_CMD = "ss";
-        String SUBMISSIONS = "submissions";
-        String VIEW_ALL_DESC = "View all builds that have been submitted.";
-        String VIEW_ALL_NAME = "viewall";
-        String VIEW_DESC = "View Server Saturday submissions.";
-        String VIEW_NAME = "view";
-        String SUBMIT_NAME = "submit";
-        String SUBMIT_DESC = "Submit your build to be featured.";
     }
 
     interface Config {
@@ -88,34 +74,19 @@ public interface Reference {
 
     interface Messages {
 
-        String CONFIG_LOADED = "Config loaded.";
-        String CONFIG_READ_ERROR = "Failed to read the config.";
-        String LOADING_CONFIG = "Loading config...";
-        String LOADING_SUBMISSIONS = "Loading submissions...";
         String PREFIX = "[SS] ";
-        String BUILD_ALREADY_EXISTS = PREFIX + "A build with that name already exists.";
-        String EDIT_IN_PROGRESS = PREFIX + "You're in the middle of editing another build.";
-        String NO_PERMISSION = PREFIX + "You don't have permission to run this command.";
-        String PLUGIN_RELOADED = PREFIX + "Submissions reloaded. Check console for errors.";
+        Component BUILD_ALREADY_EXISTS = text(PREFIX + "A build with that name already exists.", RED);
+        Component NO_PERMISSION = text(PREFIX + "You don't have permission to run this command.", RED);
+        Component PLUGIN_RELOADED = text(PREFIX + "Submissions reloaded. Check console for errors.", GOLD);
         String PLAYER_NOT_FOUND = PREFIX + "Could not find a player with that name.";
-        String PLAYER_ONLY = PREFIX + "This is a player only command.";
-        String HAND_NOT_EMPTY = PREFIX + "You need an empty in order to run this command.";
-        String BUILD_DOES_NOT_EXIST = PREFIX + "A build with that name does not exist.";
-        String REWARDS_RECEIVED = PREFIX + "All rewards have been given to you.";
-        String REWARDS_WAITING = PREFIX + "Hey, you! You have rewards waiting for you. Click this message to claim them!";
-        String SAVING_SUBMISSIONS = "Saving submissions to disk...";
-        String SET_BUILD_NAME = PREFIX + "Set the name of your build.";
-        String SUBMISSIONS_LOADED = "Submissions loaded.";
-        String SUBMISSIONS_SAVED = "Save complete.";
+        Component BUILD_DOES_NOT_EXIST = text(PREFIX + "A build with that name does not exist.", RED);
+        Component REWARDS_RECEIVED = text(PREFIX + "All rewards have been given to you.", GOLD);
+        Component REWARDS_WAITING = text(PREFIX + "Hey, you! You have rewards waiting for you. Click this message to claim them!", GOLD).clickEvent(ClickEvent.runCommand("/ss claim"));
+        Component SET_BUILD_NAME = text(PREFIX + "Set the name of your build.", GREEN);
 
         @Nonnull
         static String failedToReadFile(@Nonnull File file) {
             return "Failed to read " + file.getName();
-        }
-
-        @Nonnull
-        static String failedToReadFiles(@Nonnull File dir) {
-            return "An error occurred whilst attempting to read the files in " + dir.getName();
         }
 
         @Nonnull
@@ -124,13 +95,13 @@ public interface Reference {
         }
 
         @Nonnull
-        static String locationChanged(@Nonnull Build build) {
-            return PREFIX + "Warp location for " + build.getName() + " updated.";
+        static Component locationChanged(@Nonnull Build build) {
+            return text(PREFIX + "Warp location for " + build.getName() + " updated.", GREEN);
         }
 
         @Nonnull
-        static String rewardsGiven(String name) {
-            return PREFIX + "Rewards given to " + name;
+        static Component rewardsGiven(String name) {
+            return text(PREFIX + "Rewards given to " + name, GOLD);
         }
 
         @Nonnull

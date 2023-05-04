@@ -7,9 +7,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -49,7 +46,7 @@ public final class RewardHandler implements Listener {
             rewards.getKeys(false).forEach(key -> this.rewards.put(UUID.fromString(key), rewards.getInt(key)));
         }
         catch (Exception e) {
-            plugin.getLog4JLogger().error(Messages.failedToReadFile(file), e);
+            plugin.getSLF4JLogger().error(Messages.failedToReadFile(file), e);
         }
     }
 
@@ -58,7 +55,7 @@ public final class RewardHandler implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         if (rewards.getOrDefault(uuid, 0) > 0) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.getInstance(), () -> player.sendMessage(Component.text(Messages.REWARDS_WAITING).color(NamedTextColor.GOLD).clickEvent(ClickEvent.runCommand("/ss claim"))), 20L);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.getInstance(), () -> player.sendMessage(Messages.REWARDS_WAITING), 20L);
         }
     }
 
@@ -75,7 +72,7 @@ public final class RewardHandler implements Listener {
             rewards.save(file);
         }
         catch (Exception e) {
-            plugin.getLog4JLogger().error(Messages.failedToWriteFile(file), e);
+            plugin.getSLF4JLogger().error(Messages.failedToWriteFile(file), e);
         }
     }
 }

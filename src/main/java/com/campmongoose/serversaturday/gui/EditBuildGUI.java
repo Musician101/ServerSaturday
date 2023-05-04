@@ -5,9 +5,7 @@ import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
-import com.google.common.collect.ImmutableMap;
-import io.musician101.musicianlibrary.java.minecraft.spigot.SpigotTextInput;
-import io.musician101.musicianlibrary.java.minecraft.spigot.gui.chest.SpigotIconBuilder;
+import io.musician101.musigui.spigot.SpigotTextInput;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -20,14 +18,18 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+
+import static io.musician101.musigui.spigot.chest.SpigotIconUtil.customName;
+import static io.musician101.musigui.spigot.chest.SpigotIconUtil.setLore;
 
 public class EditBuildGUI extends BuildGUI {
 
     public EditBuildGUI(@Nonnull Build build, @Nonnull Submitter submitter, @Nonnull Player player) {
         super(build, submitter, 7, 5, player);
-        setButton(0, SpigotIconBuilder.builder(Material.PAPER).name(MenuText.RENAME_NAME).description(MenuText.RENAME_DESC).build(), ImmutableMap.of(ClickType.LEFT, p -> {
+        setButton(0, setLore(customName(new ItemStack(Material.PAPER), MenuText.RENAME_NAME), MenuText.RENAME_DESC), ClickType.LEFT, p -> {
             p.closeInventory();
-            p.sendMessage(ChatColor.GREEN + Messages.SET_BUILD_NAME);
+            p.sendMessage(Messages.SET_BUILD_NAME);
             new SpigotTextInput(ServerSaturday.getInstance(), p) {
 
                 @Override
@@ -41,18 +43,18 @@ public class EditBuildGUI extends BuildGUI {
                     new EditBuildGUI(build, submitter, player);
                 }
             };
-        }));
+        });
         updateLocation(build);
-        setButton(2, SpigotIconBuilder.builder(Material.BOOK).name(MenuText.CHANGE_DESCRIPTION_NAME).description(MenuText.CHANGE_DESCRIPTION_DESC).build(), ImmutableMap.of(ClickType.LEFT, p -> handleTextInput(player, build.getDescription(), (ply, s) -> {
+        setButton(2, setLore(customName(new ItemStack(Material.BOOK), MenuText.CHANGE_DESCRIPTION_NAME), MenuText.CHANGE_DESCRIPTION_DESC), ClickType.LEFT, p -> handleTextInput(player, build.getDescription(), (ply, s) -> {
             build.setDescription(s);
             new EditBuildGUI(build, submitter, ply);
-        })));
-        setButton(3, SpigotIconBuilder.builder(Material.PAINTING).name(MenuText.CHANGE_RESOURCE_PACKS_NAME).description(MenuText.CHANGE_RESOURCES_PACK_DESC).build(), ImmutableMap.of(ClickType.LEFT, p -> handleTextInput(p, build.getResourcePack(), (ply, s) -> {
+        }));
+        setButton(3, setLore(customName(new ItemStack(Material.PAINTING), MenuText.CHANGE_RESOURCE_PACKS_NAME), MenuText.CHANGE_RESOURCES_PACK_DESC), ClickType.LEFT, p -> handleTextInput(p, build.getResourcePack(), (ply, s) -> {
             build.setResourcePack(s);
             new EditBuildGUI(build, submitter, ply);
-        })));
+        }));
         updateSubmitted(build);
-        setButton(8, SpigotIconBuilder.of(Material.BARRIER, "Back"), ImmutableMap.of(ClickType.LEFT, p -> new SubmitterGUI(submitter, p)));
+        setButton(8, customName(new ItemStack(Material.BARRIER), "Back"), ClickType.LEFT, p -> new SubmitterGUI(submitter, p));
     }
 
     private void handleTextInput(Player player, String original, BiConsumer<Player, String> action) {
@@ -68,18 +70,18 @@ public class EditBuildGUI extends BuildGUI {
     }
 
     private void updateLocation(@Nonnull Build build) {
-        setButton(1, SpigotIconBuilder.builder(Material.COMPASS).name(MenuText.CHANGE_LOCATION_NAME).description(MenuText.CHANGE_LOCATION_DESC).build(), ImmutableMap.of(ClickType.LEFT, p -> {
+        setButton(1, setLore(customName(new ItemStack(Material.COMPASS), MenuText.CHANGE_LOCATION_NAME), MenuText.CHANGE_LOCATION_DESC), ClickType.LEFT, p -> {
             build.setLocation(p.getLocation());
             updateLocation(build);
-            p.sendMessage(ChatColor.GREEN + Messages.locationChanged(build));
-        }));
+            p.sendMessage(Messages.locationChanged(build));
+        });
     }
 
     private void updateSubmitted(@Nonnull Build build) {
         List<String> submittedDescription = Stream.concat(Stream.of(ChatColor.GOLD + "Has been submitted? " + (build.submitted() ? ChatColor.GREEN + "Yes" : ChatColor.RED + "No")), MenuText.SUBMIT_UNREADY_DESC.stream()).collect(Collectors.toList());
-        setButton(4, SpigotIconBuilder.builder(Material.FLINT_AND_STEEL).name(MenuText.SUBMIT_UNREADY_NAME).description(submittedDescription).build(), ImmutableMap.of(ClickType.LEFT, p -> {
+        setButton(4, setLore(customName(new ItemStack(Material.FLINT_AND_STEEL), MenuText.SUBMIT_UNREADY_NAME), submittedDescription), ClickType.LEFT, p -> {
             build.setSubmitted(!build.submitted());
             updateSubmitted(build);
-        }));
+        });
     }
 }

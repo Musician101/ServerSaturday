@@ -1,4 +1,4 @@
-package com.campmongoose.serversaturday.command;
+package com.campmongoose.serversaturday.command.argument;
 
 import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.ServerSaturday;

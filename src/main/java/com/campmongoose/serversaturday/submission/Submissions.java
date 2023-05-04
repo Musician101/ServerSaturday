@@ -48,7 +48,7 @@ public final class Submissions {
                     submitters.add(new Submitter(YamlConfiguration.loadConfiguration(file)));
                 }
                 catch (Exception e) {
-                    plugin.getLog4JLogger().error(Messages.failedToReadFile(file), e);
+                    plugin.getSLF4JLogger().error(Messages.failedToReadFile(file), e);
                 }
             });
         }
@@ -68,7 +68,7 @@ public final class Submissions {
                 submitter.save().save(file);
             }
             catch (Exception e) {
-                plugin.getLog4JLogger().error(Messages.failedToWriteFile(file), e);
+                plugin.getSLF4JLogger().error(Messages.failedToWriteFile(file), e);
             }
         });
     }
