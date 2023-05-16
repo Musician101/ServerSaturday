@@ -49,7 +49,10 @@ public abstract class BuildGUI extends ServerSaturdayChestGUI {
             lore.addAll(MenuText.FEATURE_DESC);
             setButton(featureSlot, setLore(customName(new ItemStack(Material.GOLDEN_APPLE), ChatColor.RESET + MenuText.FEATURE_NAME), lore), ClickType.LEFT, p -> {
                 build.setFeatured(!build.featured());
-                ServerSaturday.getInstance().getRewardHandler().giveReward(Bukkit.getOfflinePlayer(submitter.getUUID()));
+                if (build.featured()) {
+                    ServerSaturday.getInstance().getRewardHandler().giveReward(Bukkit.getOfflinePlayer(submitter.getUUID()));
+                }
+
                 updateFeatured(build, submitter, featureSlot);
             });
         }

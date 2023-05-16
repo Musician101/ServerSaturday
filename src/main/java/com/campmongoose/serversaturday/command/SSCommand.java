@@ -17,7 +17,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 
 public class SSCommand {
 
-    private static final List<ServerSaturdayCommand> COMMANDS = List.of(new SSClaim(), new SSEdit(), new SSReload(), new SSReward(), new SSSubmit(), new SSView(), new SSViewAll());
+    private static final List<ServerSaturdayCommand> COMMANDS = List.of(new SSClaim(), new SSEdit(), new SSMyBuilds(), new SSReload(), new SSReward(), new SSSubmit(), new SSView(), new SSViewAll());
 
     private SSCommand() {
 
@@ -39,7 +39,7 @@ public class SSCommand {
             sender.sendMessage(joinText(text("===== ", GREEN), text("ServerSaturday v" + meta.getVersion()), text(" by ", GREEN), text("Musician101"), text(" =====", GREEN)));
             String baseCMD = "/ss ";
             sender.sendMessage(joinText(text(baseCMD), text("Displays help and plugin info.", AQUA)));
-            COMMANDS.stream().filter(cmd -> sender.hasPermission("ss." + cmd.getPermission())).forEach(cmd -> sender.sendMessage(joinText(text(baseCMD + cmd.getName() + " " + cmd.getUsage() + " "), text(cmd.getDescription(), AQUA))));
+            COMMANDS.stream().filter(cmd -> sender.hasPermission(cmd.getPermission())).forEach(cmd -> sender.sendMessage(joinText(text(baseCMD + cmd.getName() + " " + cmd.getUsage() + " "), text(cmd.getDescription(), AQUA))));
             return 1;
         });
         COMMANDS.forEach(command -> builder.then(command.toBukkitier()));

@@ -5,7 +5,6 @@ import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.Reference.Permissions;
 import com.campmongoose.serversaturday.command.argument.BuildArgumentType;
 import com.campmongoose.serversaturday.gui.EditBuildGUI;
-import com.campmongoose.serversaturday.gui.SubmitterGUI;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -20,11 +19,7 @@ public class SSEdit extends ServerSaturdayCommand {
 
     @Override
     protected void addToBuilder(LiteralArgumentBuilder<CommandSender> builder) {
-        builder.executes(context -> {
-            Player player = (Player) context.getSource();
-            new SubmitterGUI(getSubmitter(player), player);
-            return 1;
-        }).then(argument(Commands.BUILD, new BuildArgumentType()).executes(context -> {
+        builder.then(argument(Commands.BUILD, new BuildArgumentType()).executes(context -> {
             Player player = (Player) context.getSource();
             Submitter submitter = getSubmitter(player);
             Build build = (Build) context.getArgument(Commands.BUILD, Map.class).get(submitter.getUUID());
@@ -59,7 +54,7 @@ public class SSEdit extends ServerSaturdayCommand {
     @Nonnull
     @Override
     public String getUsage() {
-        return "[build]";
+        return "<build>";
     }
 
     @Override
