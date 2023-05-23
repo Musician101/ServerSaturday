@@ -1,7 +1,6 @@
 package com.campmongoose.serversaturday.command.argument;
 
 import com.campmongoose.serversaturday.Reference.Messages;
-import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Submissions;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.mojang.brigadier.StringReader;
@@ -13,10 +12,12 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import java.util.concurrent.CompletableFuture;
 
+import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
+
 public class SubmitterArgumentType implements ArgumentType<Submitter> {
 
     private Submissions getSubmissions() {
-        return ServerSaturday.getInstance().getSubmissions();
+        return getPlugin().getSubmissions();
     }
 
     @Override

@@ -55,11 +55,8 @@ public final class Submitter {
         return uuid;
     }
 
-    @Nonnull
-    public Build newBuild(@Nonnull String name, @Nonnull Location location) {
-        Build build = new Build(name, location);
-        builds.add(build);
-        return build;
+    public void newBuild(@Nonnull String name, @Nonnull Location location) {
+        builds.add(new Build(name, location));
     }
 
     @Nonnull

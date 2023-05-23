@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.campmongoose"
-version = "4.2.0"
+version = "4.3.0"
 
 repositories {
     mavenCentral()
@@ -15,13 +15,12 @@ repositories {
 }
 
 dependencies {
-    api("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
-    //TODO work around since Jitpack can't build the 1.1.0 release for some reason
-    api("com.github.musician101.musigui:spigot:e292d9c8e2") {
+    compileOnlyApi("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+    api("com.github.musician101.musigui:paper:1.2.1") {
         exclude("com.google.code.findbugs")
-        exclude("org.spigotmc")
+        exclude("io.papermc.paper")
     }
-    api("com.github.musician101:bukkitier:1.2.2") {
+    api("com.github.Musician101:Bukkitier:1.3.1") {
         exclude("org.spigotmc")
     }
 }
@@ -41,7 +40,7 @@ tasks {
     shadowJar {
         dependencies {
             include(dependency("com.github.musician101:"))
-            include(dependency("com.github.musician101.musigui:"))
+            include(dependency("io.musician101.musigui:"))
         }
 
         archiveClassifier.set("")

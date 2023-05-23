@@ -1,32 +1,16 @@
 package com.campmongoose.serversaturday.command;
 
+import com.campmongoose.serversaturday.Reference.Permissions;
 import com.campmongoose.serversaturday.RewardHandler;
-import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Submissions;
 import com.campmongoose.serversaturday.submission.Submitter;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import javax.annotation.Nonnull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static io.musician101.bukkitier.Bukkitier.literal;
+import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 
 public abstract class ServerSaturdayCommand {
-
-    protected abstract void addToBuilder(LiteralArgumentBuilder<CommandSender> builder);
-
-    @Nonnull
-    public abstract String getDescription();
-
-    @Nonnull
-    public abstract String getName();
-
-    @Nonnull
-    public abstract String getPermission();
-
-    protected final ServerSaturday getPlugin() {
-        return ServerSaturday.getInstance();
-    }
 
     protected final RewardHandler getRewardHandler() {
         return getPlugin().getRewardHandler();
@@ -40,25 +24,7 @@ public abstract class ServerSaturdayCommand {
         return getSubmissions().getSubmitter(player);
     }
 
-    @Nonnull
-    public String getUsage() {
-        return "";
-    }
-
-    protected boolean isPlayerOnly() {
-        return false;
-    }
-
-    @Nonnull
-    public final LiteralArgumentBuilder<CommandSender> toBukkitier() {
-        LiteralArgumentBuilder<CommandSender> builder = literal(getName()).requires(sender -> {
-            if (isPlayerOnly()) {
-                return sender instanceof Player;
-            }
-
-            return sender.hasPermission(getPermission());
-        });
-        addToBuilder(builder);
-        return builder;
+    protected final boolean canUseSubmit(@Nonnull CommandSender sender) {
+        return sender instanceof Player && sender.hasPermission(Permissions.SUBMIT);
     }
 }

@@ -4,11 +4,9 @@ import com.campmongoose.serversaturday.Reference.Config;
 import java.util.List;
 import javax.annotation.Nonnull;
 
-public final class PluginConfig {
+import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 
-    private ServerSaturday getPlugin() {
-        return ServerSaturday.getInstance();
-    }
+public final class PluginConfig {
 
     @Nonnull
     public List<String> getRewards() {

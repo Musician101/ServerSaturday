@@ -1,44 +1,42 @@
 package com.campmongoose.serversaturday.command;
 
 import com.campmongoose.serversaturday.Reference.Messages;
-import com.campmongoose.serversaturday.Reference.Permissions;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import io.musician101.bukkitier.command.LiteralCommand;
 import javax.annotation.Nonnull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class SSClaim extends ServerSaturdayCommand {
+public class SSClaim extends ServerSaturdayCommand implements LiteralCommand{
 
     @Override
-    protected void addToBuilder(LiteralArgumentBuilder<CommandSender> builder) {
-        builder.executes(context -> {
-            Player player = (Player) context.getSource();
-            getRewardHandler().claimReward(player);
-            player.sendMessage(Messages.REWARDS_RECEIVED);
-            return 1;
-        });
+    public int execute(@Nonnull CommandContext<CommandSender> context) {
+        Player player = (Player) context.getSource();
+        getRewardHandler().claimReward(player);
+        player.sendMessage(Messages.REWARDS_RECEIVED);
+        return 1;
     }
 
     @Nonnull
     @Override
-    public String getDescription() {
+    public String description() {
         return "Claim any pending rewards.";
     }
 
     @Nonnull
     @Override
-    public String getName() {
+    public String name() {
         return "claim";
     }
 
     @Nonnull
     @Override
-    public String getPermission() {
-        return Permissions.SUBMIT;
+    public String usage(@Nonnull CommandSender sender) {
+        return "/ss claim";
     }
 
     @Override
-    protected boolean isPlayerOnly() {
-        return true;
+    public boolean canUse(@Nonnull CommandSender sender) {
+        return canUseSubmit(sender);
     }
 }

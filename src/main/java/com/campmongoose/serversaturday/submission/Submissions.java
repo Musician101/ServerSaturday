@@ -1,17 +1,21 @@
 package com.campmongoose.serversaturday.submission;
 
 import com.campmongoose.serversaturday.Reference.Messages;
-import com.campmongoose.serversaturday.ServerSaturday;
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
+
+@SuppressWarnings("BlockingMethodInNonBlockingContext")
 public final class Submissions {
 
     @Nonnull
@@ -38,37 +42,32 @@ public final class Submissions {
     }
 
     public void load() {
-        ServerSaturday plugin = ServerSaturday.getInstance();
-        File storageDir = new File(plugin.getDataFolder(), "submissions");
-        storageDir.mkdirs();
-        File[] files = storageDir.listFiles();
-        if (files != null) {
-            Arrays.stream(files).forEach(file -> {
+        Path storageDir = getPlugin().getDataFolder().toPath().resolve("submissions");
+        try(Stream<Path> stream = Files.list(storageDir)) {
+            stream.map(Path::toFile).forEach(f -> {
                 try {
-                    submitters.add(new Submitter(YamlConfiguration.loadConfiguration(file)));
+                    submitters.add(new Submitter(YamlConfiguration.loadConfiguration(f)));
                 }
                 catch (Exception e) {
-                    plugin.getSLF4JLogger().error(Messages.failedToReadFile(file), e);
+                    getPlugin().getSLF4JLogger().error(Messages.failedToReadFile(f), e);
                 }
             });
+        }
+        catch (IOException e) {
+            getPlugin().getSLF4JLogger().error("Failed to read submitters directory!", e);
         }
     }
 
     public void save() {
-        ServerSaturday plugin = ServerSaturday.getInstance();
-        File storageDir = new File(plugin.getDataFolder(), "submissions");
-        storageDir.mkdirs();
+        Path storageDir = getPlugin().getDataFolder().toPath().resolve("submissions");
         submitters.forEach(submitter -> {
-            File file = new File(storageDir, submitter.getUUID() + ".yml");
+            Path path = storageDir.resolve(submitter.getUUID() + ".yml");
             try {
-                if (!file.exists()) {
-                    file.createNewFile();
-                }
-
-                submitter.save().save(file);
+                Files.createFile(path);
+                submitter.save().save(path.toFile());
             }
             catch (Exception e) {
-                plugin.getSLF4JLogger().error(Messages.failedToWriteFile(file), e);
+                getPlugin().getSLF4JLogger().error(Messages.failedToWriteFile(path), e);
             }
         });
     }

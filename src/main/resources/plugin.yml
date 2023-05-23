@@ -2,6 +2,7 @@ name: ServerSaturday
 version: '${version}'
 main: com.campmongoose.serversaturday.ServerSaturday
 api-version: 1.19
+author: Musician101
 commands:
   serversaturday:
     aliases: [ ss ]

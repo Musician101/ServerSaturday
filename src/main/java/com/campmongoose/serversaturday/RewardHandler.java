@@ -1,7 +1,8 @@
 package com.campmongoose.serversaturday;
 
 import com.campmongoose.serversaturday.Reference.Messages;
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -16,6 +17,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
+
+@SuppressWarnings("BlockingMethodInNonBlockingContext")
 public final class RewardHandler implements Listener {
 
     @Nonnull
@@ -25,9 +29,8 @@ public final class RewardHandler implements Listener {
         UUID uuid = player.getUniqueId();
         int amount = rewards.getOrDefault(uuid, 0);
         rewards.put(uuid, 0);
-        ServerSaturday plugin = ServerSaturday.getInstance();
-        Server server = plugin.getServer();
-        IntStream.range(0, amount).forEach(i -> plugin.getPluginConfig().getRewards().forEach(command -> server.dispatchCommand(server.getConsoleSender(), command.replace("@p", player.getName()))));
+        Server server = Bukkit.getServer();
+        IntStream.range(0, amount).forEach(i -> getPlugin().getPluginConfig().getRewards().forEach(command -> server.dispatchCommand(server.getConsoleSender(), command.replace("@p", player.getName()))));
     }
 
     public void giveReward(@Nonnull OfflinePlayer player) {
@@ -35,18 +38,15 @@ public final class RewardHandler implements Listener {
     }
 
     public void load() {
-        ServerSaturday plugin = ServerSaturday.getInstance();
-        File file = new File(plugin.getDataFolder(), "rewards.yml");
+        ServerSaturday plugin = getPlugin();
+        Path path = plugin.getDataFolder().toPath().resolve("rewards.yml");
         try {
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            YamlConfiguration rewards = YamlConfiguration.loadConfiguration(file);
+            Files.createFile(path);
+            YamlConfiguration rewards = YamlConfiguration.loadConfiguration(path.toFile());
             rewards.getKeys(false).forEach(key -> this.rewards.put(UUID.fromString(key), rewards.getInt(key)));
         }
         catch (Exception e) {
-            plugin.getSLF4JLogger().error(Messages.failedToReadFile(file), e);
+            plugin.getSLF4JLogger().error(Messages.failedToReadFile(path.toFile()), e);
         }
     }
 
@@ -55,24 +55,21 @@ public final class RewardHandler implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         if (rewards.getOrDefault(uuid, 0) > 0) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(ServerSaturday.getInstance(), () -> player.sendMessage(Messages.REWARDS_WAITING), 20L);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(getPlugin(), () -> player.sendMessage(Messages.REWARDS_WAITING), 20L);
         }
     }
 
     public void save() {
-        ServerSaturday plugin = ServerSaturday.getInstance();
-        File file = new File(plugin.getDataFolder(), "rewards.yml");
+        ServerSaturday plugin = getPlugin();
+        Path path = plugin.getDataFolder().toPath().resolve("rewards.yml");
         try {
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
+            Files.createFile(path);
             YamlConfiguration rewards = new YamlConfiguration();
             this.rewards.forEach((uuid, i) -> rewards.set(uuid.toString(), i));
-            rewards.save(file);
+            rewards.save(path.toFile());
         }
         catch (Exception e) {
-            plugin.getSLF4JLogger().error(Messages.failedToWriteFile(file), e);
+            plugin.getSLF4JLogger().error(Messages.failedToWriteFile(path), e);
         }
     }
 }

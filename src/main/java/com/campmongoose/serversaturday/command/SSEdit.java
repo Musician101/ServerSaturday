@@ -2,24 +2,54 @@ package com.campmongoose.serversaturday.command;
 
 import com.campmongoose.serversaturday.Reference.Commands;
 import com.campmongoose.serversaturday.Reference.Messages;
-import com.campmongoose.serversaturday.Reference.Permissions;
-import com.campmongoose.serversaturday.command.argument.BuildArgumentType;
 import com.campmongoose.serversaturday.gui.EditBuildGUI;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import io.musician101.bukkitier.command.Command;
+import io.musician101.bukkitier.command.LiteralCommand;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static io.musician101.bukkitier.Bukkitier.argument;
+public class SSEdit extends ServerSaturdayCommand implements LiteralCommand {
 
-public class SSEdit extends ServerSaturdayCommand {
+    @Nonnull
+    @Override
+    public String name() {
+        return "edit";
+    }
 
     @Override
-    protected void addToBuilder(LiteralArgumentBuilder<CommandSender> builder) {
-        builder.then(argument(Commands.BUILD, new BuildArgumentType()).executes(context -> {
+    public boolean canUse(@Nonnull CommandSender sender) {
+        return canUseSubmit(sender);
+    }
+
+    @Nonnull
+    @Override
+    public String usage(@Nonnull CommandSender sender) {
+        return "/ss edit <build>";
+    }
+
+    @Nonnull
+    @Override
+    public String description() {
+        return "Edit a submitted build.";
+    }
+
+    @Nonnull
+    @Override
+    public List<Command<? extends ArgumentBuilder<CommandSender, ?>>> arguments() {
+        return List.of(new SSBuild());
+    }
+
+    static class SSBuild extends com.campmongoose.serversaturday.command.SSBuild {
+
+        @Override
+        public int execute(@Nonnull CommandContext<CommandSender> context) {
             Player player = (Player) context.getSource();
             Submitter submitter = getSubmitter(player);
             Build build = (Build) context.getArgument(Commands.BUILD, Map.class).get(submitter.getUUID());
@@ -30,35 +60,6 @@ public class SSEdit extends ServerSaturdayCommand {
 
             new EditBuildGUI(build, submitter, player);
             return 1;
-        }));
-    }
-
-    @Nonnull
-    @Override
-    public String getDescription() {
-        return "Edit a submitted build.";
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return "edit";
-    }
-
-    @Nonnull
-    @Override
-    public String getPermission() {
-        return Permissions.SUBMIT;
-    }
-
-    @Nonnull
-    @Override
-    public String getUsage() {
-        return "<build>";
-    }
-
-    @Override
-    protected boolean isPlayerOnly() {
-        return true;
+        }
     }
 }

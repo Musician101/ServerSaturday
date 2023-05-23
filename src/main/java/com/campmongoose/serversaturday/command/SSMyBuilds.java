@@ -1,38 +1,42 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.Reference.Permissions;
-import com.campmongoose.serversaturday.gui.SubmitterGUI;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.campmongoose.serversaturday.gui.TextGUI;
+import com.mojang.brigadier.context.CommandContext;
+import io.musician101.bukkitier.command.LiteralCommand;
+import javax.annotation.Nonnull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
-public class SSMyBuilds extends ServerSaturdayCommand {
+public class SSMyBuilds extends ServerSaturdayCommand implements LiteralCommand {
 
     @Override
-    protected void addToBuilder(LiteralArgumentBuilder<CommandSender> builder) {
-        builder.executes(context -> {
-            Player player = (Player) context.getSource();
-            new SubmitterGUI(getSubmitter(player), player);
-            return 1;
-        });
+    public int execute(@Nonnull CommandContext<CommandSender> context) {
+        Player player = (Player) context.getSource();
+        //new SubmitterGUI(getSubmitter(player), player);
+        TextGUI.displaySubmitter(player, getSubmitter(player), 1);
+        return 1;
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public String getDescription() {
+    public String usage(@Nonnull CommandSender sender) {
+        return "/ss myBuilds";
+    }
+
+    @Nonnull
+    @Override
+    public String description() {
         return "View your builds.";
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public String getName() {
+    public String name() {
         return "myBuilds";
     }
 
-    @NotNull
     @Override
-    public String getPermission() {
-        return Permissions.SUBMIT;
+    public boolean canUse(@Nonnull CommandSender sender) {
+        return canUseSubmit(sender);
     }
 }

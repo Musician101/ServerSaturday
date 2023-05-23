@@ -15,7 +15,7 @@ public final class ServerSaturday extends JavaPlugin {
     private final Submissions submissions = new Submissions();
 
     @Nonnull
-    public static ServerSaturday getInstance() {
+    public static ServerSaturday getPlugin() {
         return getPlugin(ServerSaturday.class);
     }
 

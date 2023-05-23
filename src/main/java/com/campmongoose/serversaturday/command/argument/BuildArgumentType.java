@@ -1,6 +1,5 @@
 package com.campmongoose.serversaturday.command.argument;
 
-import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submissions;
 import com.mojang.brigadier.StringReader;
@@ -14,10 +13,12 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import org.bukkit.entity.Player;
 
+import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
+
 public class BuildArgumentType implements ArgumentType<Map<UUID, Build>> {
 
     public Submissions getSubmissions() {
-        return ServerSaturday.getInstance().getSubmissions();
+        return getPlugin().getSubmissions();
     }
 
     @Override

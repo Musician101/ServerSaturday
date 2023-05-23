@@ -1,18 +1,20 @@
 package com.campmongoose.serversaturday;
 
 import com.campmongoose.serversaturday.submission.Build;
-import com.campmongoose.serversaturday.submission.Submitter;
 import java.io.File;
-import java.util.Arrays;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.ComponentLike.asComponents;
 import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 
 public interface Reference {
 
@@ -38,37 +40,32 @@ public interface Reference {
 
     interface MenuText {
 
-        String ALL_SUBMISSIONS = "All S.S. Submissions";
-        String CHANGE_DESCRIPTION_DESC = "Add or change the description to this build.";
-        String CHANGE_DESCRIPTION_NAME = "Change Description";
-        List<String> CHANGE_LOCATION_DESC = Arrays.asList("Change the warp location for this build", "to where you are currently standing.", "WARNING: This will affect which direction", "people face when they teleport to your build.");
-        String CHANGE_LOCATION_NAME = "Change Location";
-        List<String> CHANGE_RESOURCES_PACK_DESC = Arrays.asList("Change the recommended resource", "packs for this build.");
-        String CHANGE_RESOURCE_PACKS_NAME = "Change Resource Packs";
-        String DESCRIPTION_DESC = "View this build's description.";
-        String DESCRIPTION_NAME = "Description";
-        List<String> FEATURE_DESC = Arrays.asList("Set whether this build has been covered in", "an episode of Server Saturday.");
-        String FEATURE_NAME = "Feature";
-        String NEW_BUILD = "New Build";
-        String NEXT_PAGE = "Next Page";
-        String PREVIOUS_PAGE = "Previous Page";
-        String RENAME_DESC = "Rename this build.";
-        String RENAME_NAME = "Rename";
-        String RESOURCE_PACK_DESC = "View this build's recommended resource packs.";
-        String RESOURCE_PACK_NAME = "Resource Pack";
-        String SUBMISSIONS = "S. S. Submissions";
-        List<String> SUBMIT_UNREADY_DESC = Arrays.asList("Add or remove your build from", "the list of ready builds.");
-        String SUBMIT_UNREADY_NAME = "Submit/Unready";
-        String TELEPORT_NAME = "Teleport";
+        Component BACK = text("Back", WHITE);
+        Component CHANGE_DESCRIPTION_DESC = text("Add or change the description to this build.");
+        Component CHANGE_DESCRIPTION_NAME = text("Change Description");
+        List<Component> CHANGE_LOCATION_DESC = toComponents("Change the warp location for this build", "to where you are currently standing.", "WARNING: This will affect which direction", "people face when they teleport to your build.");
+        Component CHANGE_LOCATION_NAME = text("Change Location");
+        List<Component> CHANGE_RESOURCES_PACK_DESC = toComponents("Change the recommended resource", "packs for this build.");
+        Component CHANGE_RESOURCE_PACKS_NAME = text("Change Resource Packs");
+        Component DESCRIPTION_DESC = text("View this build's description.");
+        Component DESCRIPTION_NAME = text("Description");
+        List<Component> FEATURE_DESC = toComponents("Set whether this build has been covered in", "an episode of Server Saturday.");
+        Component FEATURE_NAME = text("Feature");
+        Component RENAME_DESC = text("Rename this build.");
+        Component RENAME_NAME = text("Rename");
+        Component RESOURCE_PACK_DESC = text("View this build's recommended resource packs.");
+        Component RESOURCE_PACK_NAME = text("Resource Pack");
+        List<Component> SUBMIT_UNREADY_DESC = toComponents("Add or remove your build from", "the list of ready builds.");
+        Component SUBMIT_UNREADY_NAME = text("Submit/Unready");
+        Component TELEPORT_NAME = text("Teleport");
 
         @Nonnull
-        static String submitterMenu(@Nonnull Submitter submitter) {
-            return submitter.getName() + "'s Builds";
+        static List<Component> teleportDesc(@Nonnull String name, int x, int y, int z) {
+            return toComponents("Click to teleport.", "- World: " + name, "- X: " + x, "- Y: " + y, "- Z: " + z);
         }
 
-        @Nonnull
-        static List<String> teleportDesc(@Nonnull String name, int x, int y, int z) {
-            return Arrays.asList("Click to teleport.", "- World: " + name, "- X: " + x, "- Y: " + y, "- Z: " + z);
+        private static List<Component> toComponents(String... s) {
+            return asComponents(Stream.of(s).map(Component::text).toList());
         }
     }
 
@@ -90,8 +87,8 @@ public interface Reference {
         }
 
         @Nonnull
-        static String failedToWriteFile(@Nonnull File file) {
-            return "Failed to write " + file.getName();
+        static String failedToWriteFile(@Nonnull Path path) {
+            return "Failed to write " + path.getFileName();
         }
 
         @Nonnull
