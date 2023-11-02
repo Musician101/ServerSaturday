@@ -9,7 +9,7 @@ import io.musician101.musigui.paper.PaperTextInput;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -28,7 +28,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 public class EditBuildGUI extends BuildGUI {
 
-    public EditBuildGUI(@Nonnull Build build, @Nonnull Submitter submitter, @Nonnull Player player) {
+    public EditBuildGUI(@NotNull Build build, @NotNull Submitter submitter, @NotNull Player player) {
         super(build, submitter, 7, 5, player);
         setLeftClickButton(0, setLore(customName(new ItemStack(Material.PAPER), MenuText.RENAME_NAME), MenuText.RENAME_DESC), p -> {
             p.sendMessage(Messages.SET_BUILD_NAME);
@@ -72,7 +72,7 @@ public class EditBuildGUI extends BuildGUI {
         };
     }
 
-    private void updateLocation(@Nonnull Build build) {
+    private void updateLocation(@NotNull Build build) {
         setLeftClickButton(1, setLore(customName(new ItemStack(Material.COMPASS), MenuText.CHANGE_LOCATION_NAME), MenuText.CHANGE_LOCATION_DESC), p -> {
             build.setLocation(p.getLocation());
             updateLocation(build);
@@ -80,7 +80,7 @@ public class EditBuildGUI extends BuildGUI {
         });
     }
 
-    private void updateSubmitted(@Nonnull Build build) {
+    private void updateSubmitted(@NotNull Build build) {
         Stream<Component> submitted = Stream.of(join(noSeparators(), text("Has been submitted? ", GOLD), (build.submitted() ? text("Yes", GREEN) : text("No", RED))));
         List<Component> submittedDescription = Stream.concat(submitted, MenuText.SUBMIT_UNREADY_DESC.stream()).toList();
         setLeftClickButton(4, setLore(customName(new ItemStack(Material.FLINT_AND_STEEL), MenuText.SUBMIT_UNREADY_NAME), submittedDescription), p -> {

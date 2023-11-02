@@ -9,7 +9,7 @@ import io.musician101.bukkitier.command.ArgumentCommand;
 import io.musician101.bukkitier.command.Command;
 import io.musician101.bukkitier.command.LiteralCommand;
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,52 +18,52 @@ import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 
 public class SSNew extends ServerSaturdayCommand implements LiteralCommand {
 
-    @Nonnull
+    @NotNull
     @Override
     public List<Command<? extends ArgumentBuilder<CommandSender, ?>>> arguments() {
         return List.of(new SSName());
     }
 
     @Override
-    public boolean canUse(@Nonnull CommandSender sender) {
+    public boolean canUse(@NotNull CommandSender sender) {
         return canUseSubmit(sender);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public String description() {
+    public String description(@NotNull CommandSender sender) {
         return "Create a new build to be submitted.";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String name() {
         return "new";
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public String usage(@Nonnull CommandSender sender) {
+    public String usage(@NotNull CommandSender sender) {
         return "/ss new <name>";
     }
 
     static class SSName extends ServerSaturdayCommand implements ArgumentCommand<String> {
 
         @Override
-        public int execute(@Nonnull CommandContext<CommandSender> context) {
+        public int execute(@NotNull CommandContext<CommandSender> context) {
             Player player = (Player) context.getSource();
             getSubmitter(player).newBuild(StringArgumentType.getString(context, name()), player.getLocation());
             player.sendMessage(text(Messages.PREFIX + "New build created successfully.", GREEN));
             return 1;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public String name() {
             return "name";
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ArgumentType<String> type() {
             return StringArgumentType.greedyString();

@@ -3,40 +3,40 @@ package com.campmongoose.serversaturday.command;
 import com.campmongoose.serversaturday.Reference.Messages;
 import com.mojang.brigadier.context.CommandContext;
 import io.musician101.bukkitier.command.LiteralCommand;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SSClaim extends ServerSaturdayCommand implements LiteralCommand{
 
     @Override
-    public int execute(@Nonnull CommandContext<CommandSender> context) {
+    public int execute(@NotNull CommandContext<CommandSender> context) {
         Player player = (Player) context.getSource();
         getRewardHandler().claimReward(player);
         player.sendMessage(Messages.REWARDS_RECEIVED);
         return 1;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public String description() {
+    public String description(@NotNull CommandSender sender) {
         return "Claim any pending rewards.";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String name() {
         return "claim";
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public String usage(@Nonnull CommandSender sender) {
+    public String usage(@NotNull CommandSender sender) {
         return "/ss claim";
     }
 
     @Override
-    public boolean canUse(@Nonnull CommandSender sender) {
+    public boolean canUse(@NotNull CommandSender sender) {
         return canUseSubmit(sender);
     }
 }

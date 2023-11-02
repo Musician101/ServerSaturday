@@ -4,7 +4,7 @@ import com.campmongoose.serversaturday.Reference.MenuText;
 import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,7 +18,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 
 public class ViewBuildGUI extends BuildGUI {
 
-    public ViewBuildGUI(@Nonnull Build build, @Nonnull Submitter submitter, @Nonnull Player player) {
+    public ViewBuildGUI(@NotNull Build build, @NotNull Submitter submitter, @NotNull Player player) {
         super(build, submitter, 3, 0, player);
         setLeftClickButton(1, setLore(customName(new ItemStack(Material.BOOK), MenuText.DESCRIPTION_NAME), MenuText.DESCRIPTION_DESC), p -> handleText(p, build.getDescription(), submitter, build));
         setLeftClickButton(2, setLore(customName(new ItemStack(Material.PAINTING), MenuText.RESOURCE_PACK_NAME), MenuText.RESOURCE_PACK_DESC), p -> handleText(p, build.getResourcePack(), submitter, build));

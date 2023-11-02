@@ -6,7 +6,7 @@ import io.musician101.bukkitier.command.Command;
 import io.musician101.bukkitier.command.help.HelpMainCommand;
 import io.papermc.paper.plugin.configuration.PluginMeta;
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -30,7 +30,7 @@ public class SSCommand extends HelpMainCommand {
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    @Nonnull
+    @NotNull
     @Override
     protected TextComponent header() {
         PluginMeta pdf = plugin.getPluginMeta();
@@ -56,13 +56,13 @@ public class SSCommand extends HelpMainCommand {
         return begin;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    protected TextComponent commandInfo(@Nonnull Command<? extends ArgumentBuilder<CommandSender, ?>> command, @Nonnull CommandSender sender) {
+    protected TextComponent commandInfo(@NotNull Command<? extends ArgumentBuilder<CommandSender, ?>> command, @NotNull CommandSender sender) {
         TextComponent cmd = new TextComponent(command.usage(sender));
         TextComponent dash = new TextComponent(" - ");
         dash.setColor(ChatColor.DARK_GRAY);
-        TextComponent description = new TextComponent(command.description());
+        TextComponent description = new TextComponent(command.description(sender));
         description.setColor(ChatColor.GRAY);
         cmd.addExtra(dash);
         cmd.addExtra(description);
@@ -73,13 +73,13 @@ public class SSCommand extends HelpMainCommand {
         Bukkitier.registerCommand(getPlugin(), new SSCommand());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<Command<? extends ArgumentBuilder<CommandSender, ?>>> arguments() {
         return List.of(new SSClaim(), new SSDelete(), new SSEdit(), new SSMyBuilds(), new SSNew(), new SSReload(), new SSReward(), new SSSubmit(), new SSView(), new SSViewAll());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String name() {
         return "serversaturday";

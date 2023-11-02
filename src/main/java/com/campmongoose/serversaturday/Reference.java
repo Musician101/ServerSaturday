@@ -5,7 +5,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 
@@ -59,8 +59,8 @@ public interface Reference {
         Component SUBMIT_UNREADY_NAME = text("Submit/Unready");
         Component TELEPORT_NAME = text("Teleport");
 
-        @Nonnull
-        static List<Component> teleportDesc(@Nonnull String name, int x, int y, int z) {
+        @NotNull
+        static List<Component> teleportDesc(@NotNull String name, int x, int y, int z) {
             return toComponents("Click to teleport.", "- World: " + name, "- X: " + x, "- Y: " + y, "- Z: " + z);
         }
 
@@ -81,28 +81,28 @@ public interface Reference {
         Component REWARDS_WAITING = text(PREFIX + "Hey, you! You have rewards waiting for you. Click this message to claim them!", GOLD).clickEvent(ClickEvent.runCommand("/ss claim"));
         Component SET_BUILD_NAME = text(PREFIX + "Set the name of your build.", GREEN);
 
-        @Nonnull
-        static String failedToReadFile(@Nonnull File file) {
+        @NotNull
+        static String failedToReadFile(@NotNull File file) {
             return "Failed to read " + file.getName();
         }
 
-        @Nonnull
-        static String failedToWriteFile(@Nonnull Path path) {
+        @NotNull
+        static String failedToWriteFile(@NotNull Path path) {
             return "Failed to write " + path.getFileName();
         }
 
-        @Nonnull
-        static Component locationChanged(@Nonnull Build build) {
+        @NotNull
+        static Component locationChanged(@NotNull Build build) {
             return text(PREFIX + "Warp location for " + build.getName() + " updated.", GREEN);
         }
 
-        @Nonnull
+        @NotNull
         static Component rewardsGiven(String name) {
             return text(PREFIX + "Rewards given to " + name, GOLD);
         }
 
-        @Nonnull
-        static String teleportedToBuild(@Nonnull Build build) {
+        @NotNull
+        static String teleportedToBuild(@NotNull Build build) {
             return PREFIX + "You have teleported to " + build.getName();
         }
     }

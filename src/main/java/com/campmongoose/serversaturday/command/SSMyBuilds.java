@@ -3,40 +3,40 @@ package com.campmongoose.serversaturday.command;
 import com.campmongoose.serversaturday.gui.TextGUI;
 import com.mojang.brigadier.context.CommandContext;
 import io.musician101.bukkitier.command.LiteralCommand;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SSMyBuilds extends ServerSaturdayCommand implements LiteralCommand {
 
     @Override
-    public int execute(@Nonnull CommandContext<CommandSender> context) {
+    public int execute(@NotNull CommandContext<CommandSender> context) {
         Player player = (Player) context.getSource();
         //new SubmitterGUI(getSubmitter(player), player);
         TextGUI.displaySubmitter(player, getSubmitter(player), 1);
         return 1;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public String usage(@Nonnull CommandSender sender) {
+    public String usage(@NotNull CommandSender sender) {
         return "/ss myBuilds";
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public String description() {
+    public String description(@NotNull CommandSender sender) {
         return "View your builds.";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String name() {
         return "myBuilds";
     }
 
     @Override
-    public boolean canUse(@Nonnull CommandSender sender) {
+    public boolean canUse(@NotNull CommandSender sender) {
         return canUseSubmit(sender);
     }
 }

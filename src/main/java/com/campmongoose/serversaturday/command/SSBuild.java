@@ -7,17 +7,17 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import io.musician101.bukkitier.command.ArgumentCommand;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 abstract class SSBuild extends ServerSaturdayCommand implements ArgumentCommand<Map<UUID, Build>> {
 
-    @Nonnull
+    @NotNull
     @Override
     public String name() {
         return Commands.BUILD;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ArgumentType<Map<UUID, Build>> type() {
         return new BuildArgumentType();

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -22,10 +22,10 @@ import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 @SuppressWarnings("BlockingMethodInNonBlockingContext")
 public final class RewardHandler implements Listener {
 
-    @Nonnull
+    @NotNull
     private final Map<UUID, Integer> rewards = new HashMap<>();
 
-    public void claimReward(@Nonnull Player player) {
+    public void claimReward(@NotNull Player player) {
         UUID uuid = player.getUniqueId();
         int amount = rewards.getOrDefault(uuid, 0);
         rewards.put(uuid, 0);
@@ -33,7 +33,7 @@ public final class RewardHandler implements Listener {
         IntStream.range(0, amount).forEach(i -> getPlugin().getPluginConfig().getRewards().forEach(command -> server.dispatchCommand(server.getConsoleSender(), command.replace("@p", player.getName()))));
     }
 
-    public void giveReward(@Nonnull OfflinePlayer player) {
+    public void giveReward(@NotNull OfflinePlayer player) {
         rewards.compute(player.getUniqueId(), (uuid, i) -> i == null ? 1 : ++i);
     }
 
@@ -51,7 +51,7 @@ public final class RewardHandler implements Listener {
     }
 
     @EventHandler
-    public void onJoin(@Nonnull PlayerJoinEvent event) {
+    public void onJoin(@NotNull PlayerJoinEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         if (rewards.getOrDefault(uuid, 0) > 0) {

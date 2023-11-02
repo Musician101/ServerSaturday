@@ -11,52 +11,52 @@ import io.musician101.bukkitier.command.ArgumentCommand;
 import io.musician101.bukkitier.command.Command;
 import io.musician101.bukkitier.command.LiteralCommand;
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SSReward extends ServerSaturdayCommand implements LiteralCommand {
 
-    @Nonnull
+    @NotNull
     @Override
     public List<Command<? extends ArgumentBuilder<CommandSender, ?>>> arguments() {
         return List.of(new SSPlayer());
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public String usage(@Nonnull CommandSender sender) {
+    public String usage(@NotNull CommandSender sender) {
         return "/ss reward <player>";
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public String description() {
+    public String description(@NotNull CommandSender sender) {
         return "Give a player a reward.";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String name() {
         return "reward";
     }
 
     @Override
-    public boolean canUse(@Nonnull CommandSender sender) {
+    public boolean canUse(@NotNull CommandSender sender) {
         return sender.hasPermission(Permissions.FEATURE);
     }
 
     static class SSPlayer extends ServerSaturdayCommand implements ArgumentCommand<OfflinePlayer> {
 
-        @Nonnull
+        @NotNull
         @Override
         public String name() {
             return Commands.PLAYER;
         }
 
         @Override
-        public int execute(@Nonnull CommandContext<CommandSender> context) {
+        public int execute(@NotNull CommandContext<CommandSender> context) {
             OfflinePlayer offlinePlayer = context.getArgument(Commands.PLAYER, OfflinePlayer.class);
             getRewardHandler().giveReward(offlinePlayer);
             context.getSource().sendMessage(Messages.rewardsGiven(offlinePlayer.getName()));
@@ -68,7 +68,7 @@ public class SSReward extends ServerSaturdayCommand implements LiteralCommand {
             return 1;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ArgumentType<OfflinePlayer> type() {
             return new OfflinePlayerArgumentType();

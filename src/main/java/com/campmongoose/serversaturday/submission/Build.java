@@ -1,27 +1,27 @@
 package com.campmongoose.serversaturday.submission;
 
 import com.campmongoose.serversaturday.Reference.Config;
-import javax.annotation.Nonnull;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class Build {
 
-    @Nonnull
+    @NotNull
     private String description = "";
     private boolean featured = false;
-    @Nonnull
+    @NotNull
     private Location location;
-    @Nonnull
+    @NotNull
     private String name;
-    @Nonnull
+    @NotNull
     private String resourcePack = "";
     private boolean submitted = false;
 
-    public Build(@Nonnull ConfigurationSection build) {
+    public Build(@NotNull ConfigurationSection build) {
         this.description = build.getString(Config.DESCRIPTION, "");
         this.featured = build.getBoolean(Config.FEATURED, false);
         this.location = checkNotNull(build.getLocation(Config.LOCATION));
@@ -30,7 +30,7 @@ public final class Build {
         this.submitted = build.getBoolean(Config.SUBMITTED, false);
     }
 
-    public Build(@Nonnull String name, @Nonnull Location location) {
+    public Build(@NotNull String name, @NotNull Location location) {
         this.name = name;
         this.location = location;
     }
@@ -39,43 +39,43 @@ public final class Build {
         return featured;
     }
 
-    @Nonnull
+    @NotNull
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(@Nonnull String description) {
+    public void setDescription(@NotNull String description) {
         this.description = description;
     }
 
-    @Nonnull
+    @NotNull
     public Location getLocation() {
         return location;
     }
 
-    public void setLocation(@Nonnull Location location) {
+    public void setLocation(@NotNull Location location) {
         this.location = location;
     }
 
-    @Nonnull
+    @NotNull
     public String getName() {
         return name;
     }
 
-    public void setName(@Nonnull String name) {
+    public void setName(@NotNull String name) {
         this.name = name;
     }
 
-    @Nonnull
+    @NotNull
     public String getResourcePack() {
         return resourcePack;
     }
 
-    public void setResourcePack(@Nonnull String resourcePack) {
+    public void setResourcePack(@NotNull String resourcePack) {
         this.resourcePack = resourcePack;
     }
 
-    @Nonnull
+    @NotNull
     public ConfigurationSection save() {
         ConfigurationSection build = new YamlConfiguration();
         build.set(Config.NAME, name);

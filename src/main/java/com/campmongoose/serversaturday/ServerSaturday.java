@@ -2,34 +2,34 @@ package com.campmongoose.serversaturday;
 
 import com.campmongoose.serversaturday.command.SSCommand;
 import com.campmongoose.serversaturday.submission.Submissions;
-import javax.annotation.Nonnull;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 public final class ServerSaturday extends JavaPlugin {
 
-    @Nonnull
+    @NotNull
     private final PluginConfig config = new PluginConfig();
-    @Nonnull
+    @NotNull
     private final RewardHandler rewardHandler = new RewardHandler();
-    @Nonnull
+    @NotNull
     private final Submissions submissions = new Submissions();
 
-    @Nonnull
+    @NotNull
     public static ServerSaturday getPlugin() {
         return getPlugin(ServerSaturday.class);
     }
 
-    @Nonnull
+    @NotNull
     public PluginConfig getPluginConfig() {
         return config;
     }
 
-    @Nonnull
+    @NotNull
     public RewardHandler getRewardHandler() {
         return rewardHandler;
     }
 
-    @Nonnull
+    @NotNull
     public Submissions getSubmissions() {
         return submissions;
     }

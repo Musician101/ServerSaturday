@@ -5,7 +5,7 @@ import com.campmongoose.serversaturday.submission.Submitter;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.entity.Player;
@@ -26,7 +26,7 @@ public class TextGUI {
 
     }
 
-    public static void displayAllSubmissions(@Nonnull Player player, int page) {
+    public static void displayAllSubmissions(@NotNull Player player, int page) {
         display("All S. S. Submissions", player, page, getPlugin().getSubmissions().getSubmitters().stream().flatMap(submitter -> submitter.getBuilds().stream().filter(build -> !build.featured() && build.submitted()).map(build -> getAllComponent(submitter, build))).toList(), TextGUI::displayAllSubmissions);
     }
 
@@ -34,7 +34,7 @@ public class TextGUI {
         return text(build.getName(), GOLD).hoverEvent(HoverEvent.showText(text("by " + submitter.getName(), fromHexString("#BDB76B")))).clickEvent(callback(a -> BuildGUI.open(build, submitter, (Player) a)));
     }
 
-    private static void display(@Nonnull String headerString, @Nonnull Player player, int page, @Nonnull List<Component> content, @Nonnull BiConsumer<Player, Integer> pageAction) {
+    private static void display(@NotNull String headerString, @NotNull Player player, int page, @NotNull List<Component> content, @NotNull BiConsumer<Player, Integer> pageAction) {
         Component header = textOfChildren(text("> ===== ", DARK_GREEN), text(headerString, GREEN), text(" ===== <", DARK_GREEN));
         player.sendMessage(header);
         Component leftArrow = text((page == 1 ? "" : "<- ")).clickEvent(callback(audience -> pageAction.accept((Player) audience, page - 1))).hoverEvent(HoverEvent.showText(text("Previous Page")));
@@ -51,7 +51,7 @@ public class TextGUI {
         return text(submitter.getName(), GOLD).hoverEvent(HoverEvent.showText(text(submitter.getBuilds().size() + " builds.", fromHexString("#BDB76B")))).clickEvent(callback(a -> displaySubmitter((Player) a, submitter, 1)));
     }
 
-    public static void displaySubmitters(@Nonnull Player player, int page) {
+    public static void displaySubmitters(@NotNull Player player, int page) {
         display("S. S. Submitters", player, page, getPlugin().getSubmissions().getSubmitters().stream().map(TextGUI::getAllComponent).collect(Collectors.toList()), TextGUI::displaySubmitters);
     }
 
@@ -59,7 +59,7 @@ public class TextGUI {
         return text(build.getName(), build.submitted() && !build.featured() ? GREEN : RED).clickEvent(callback(a -> BuildGUI.open(build, submitter, (Player) a)));
     }
 
-    public static void displaySubmitter(@Nonnull Player player, @Nonnull Submitter submitter, int page) {
+    public static void displaySubmitter(@NotNull Player player, @NotNull Submitter submitter, int page) {
         display(submitter.getName() + "'s Builds", player, page, submitter.getBuilds().stream().map(b -> getViewComponent(submitter, b)).collect(Collectors.toList()), (p, i) -> displaySubmitter(p, submitter, i));
     }
 }

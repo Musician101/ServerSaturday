@@ -4,7 +4,7 @@ import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.Reference.Permissions;
 import com.mojang.brigadier.context.CommandContext;
 import io.musician101.bukkitier.command.LiteralCommand;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandSender;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
@@ -12,7 +12,7 @@ import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 public class SSReload extends ServerSaturdayCommand implements LiteralCommand {
 
     @Override
-    public int execute(@Nonnull CommandContext<CommandSender> context) {
+    public int execute(@NotNull CommandContext<CommandSender> context) {
         getSubmissions().save();
         getSubmissions().load();
         getPlugin().getPluginConfig().reload();
@@ -20,19 +20,19 @@ public class SSReload extends ServerSaturdayCommand implements LiteralCommand {
         return 1;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public String usage(@Nonnull CommandSender sender) {
+    public String usage(@NotNull CommandSender sender) {
         return "/ss reload";
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public String description() {
+    public String description(@NotNull CommandSender sender) {
         return "Reload the plugin.";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String name() {
         return "reload";

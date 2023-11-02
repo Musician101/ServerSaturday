@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -18,15 +18,15 @@ import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 @SuppressWarnings("BlockingMethodInNonBlockingContext")
 public final class Submissions {
 
-    @Nonnull
+    @NotNull
     private final List<Submitter> submitters = new ArrayList<>();
 
-    @Nonnull
-    public Optional<Submitter> getSubmitter(@Nonnull String name) {
+    @NotNull
+    public Optional<Submitter> getSubmitter(@NotNull String name) {
         return submitters.stream().filter(s -> name.equalsIgnoreCase(s.getName())).findFirst();
     }
 
-    @Nonnull
+    @NotNull
     public Submitter getSubmitter(Player player) {
         UUID uuid = player.getUniqueId();
         return submitters.stream().filter(s -> uuid.equals(s.getUUID())).findFirst().orElseGet(() -> {
@@ -36,7 +36,7 @@ public final class Submissions {
         });
     }
 
-    @Nonnull
+    @NotNull
     public List<Submitter> getSubmitters() {
         return submitters;
     }

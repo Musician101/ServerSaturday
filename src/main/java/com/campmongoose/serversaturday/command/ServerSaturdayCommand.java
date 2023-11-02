@@ -4,7 +4,7 @@ import com.campmongoose.serversaturday.Reference.Permissions;
 import com.campmongoose.serversaturday.RewardHandler;
 import com.campmongoose.serversaturday.submission.Submissions;
 import com.campmongoose.serversaturday.submission.Submitter;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -24,7 +24,7 @@ public abstract class ServerSaturdayCommand {
         return getSubmissions().getSubmitter(player);
     }
 
-    protected final boolean canUseSubmit(@Nonnull CommandSender sender) {
+    protected final boolean canUseSubmit(@NotNull CommandSender sender) {
         return sender instanceof Player && sender.hasPermission(Permissions.SUBMIT);
     }
 }

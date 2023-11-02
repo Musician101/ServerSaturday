@@ -9,7 +9,7 @@ import io.musician101.bukkitier.command.Command;
 import io.musician101.bukkitier.command.LiteralCommand;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,39 +18,39 @@ import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 
 public class SSDelete extends ServerSaturdayCommand implements LiteralCommand {
 
-    @Nonnull
+    @NotNull
     @Override
     public List<Command<? extends ArgumentBuilder<CommandSender, ?>>> arguments() {
         return List.of(new SSBuild());
     }
 
     @Override
-    public boolean canUse(@Nonnull CommandSender sender) {
+    public boolean canUse(@NotNull CommandSender sender) {
         return canUseSubmit(sender);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public String description() {
+    public String description(@NotNull CommandSender sender) {
         return "Delete a submission.";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String name() {
         return "delete";
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public String usage(@Nonnull CommandSender sender) {
+    public String usage(@NotNull CommandSender sender) {
         return "/ss delete <player>";
     }
 
     static class SSBuild extends com.campmongoose.serversaturday.command.SSBuild {
 
         @Override
-        public int execute(@Nonnull CommandContext<CommandSender> context) {
+        public int execute(@NotNull CommandContext<CommandSender> context) {
             Player player = (Player) context.getSource();
             Submitter submitter = getSubmitter(player);
             submitter.getBuilds().remove((Build) context.getArgument(name(), Map.class).get(player.getUniqueId()));
