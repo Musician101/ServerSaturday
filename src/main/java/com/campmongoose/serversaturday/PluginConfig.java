@@ -2,13 +2,13 @@ package com.campmongoose.serversaturday;
 
 import com.campmongoose.serversaturday.Reference.Config;
 import java.util.List;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 
 public final class PluginConfig {
 
-    @Nonnull
+    @NotNull
     public List<String> getRewards() {
         return getPlugin().getConfig().getStringList(Config.REWARDS);
     }
