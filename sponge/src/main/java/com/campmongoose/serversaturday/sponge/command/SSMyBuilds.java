@@ -2,51 +2,52 @@ package com.campmongoose.serversaturday.sponge.command;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
+import com.campmongoose.serversaturday.sponge.gui.TextGUI;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.command.Command;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.parameter.CommandContext;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
-import static com.campmongoose.serversaturday.sponge.SpongeServerSaturday.getPlugin;
-
-public class SSReload extends ServerSaturdayCommand {
+public class SSMyBuilds extends ServerSaturdayCommand {
 
     @Override
     public CommandResult execute(@NotNull CommandContext context) {
-        getSubmissions().save();
-        getSubmissions().load();
-        getPlugin().reloadPluginConfig();
-        context.sendMessage(Messages.PLUGIN_RELOADED);
-        return CommandResult.success();
+        if (context.subject() instanceof ServerPlayer player) {
+            TextGUI.displaySubmitter(player, getSubmitter(player), 1);
+            return CommandResult.success();
+        }
+
+        return CommandResult.error(Messages.PLAYER_ONLY_COMMAND);
     }
 
     @NotNull
     @Override
     public String usage() {
-        return "/ss reload";
+        return "/ss myBuilds";
     }
 
     @NotNull
     @Override
     public String description() {
-        return "Reload the plugin.";
+        return "View your builds.";
     }
 
     @NotNull
     @Override
     public String name() {
-        return "reload";
+        return "myBuilds";
     }
 
     @Override
     public boolean canUse(@NotNull CommandContext context) {
-        return context.hasPermission(Permissions.ADMIN);
+        return canUseSubmit(context);
     }
 
     @NotNull
     @Override
     public Command.Parameterized toCommand() {
-        return Command.builder().shortDescription(Component.text(description())).permission(Permissions.ADMIN).executor(this).build();
+        return Command.builder().permission(Permissions.SUBMIT).shortDescription(Component.text(description())).executor(this).build();
     }
 }

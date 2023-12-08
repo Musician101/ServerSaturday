@@ -9,3 +9,5 @@
 
 *.class
 spigot/out/
+paper/build/
+paper/out/

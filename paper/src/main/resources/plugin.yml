@@ -1,0 +1,35 @@
+name: ServerSaturday
+version: '${version}'
+main: com.campmongoose.serversaturday.ServerSaturday
+api-version: 1.19
+commands:
+  serversaturday:
+    aliases: [ ss ]
+    description: Displays help and plugin info.
+permissions:
+  ss.*:
+    default: op
+    description: Gives access to all ServerSaturday permissions.
+    children:
+      ss.feature: true
+      ss.reload: true
+      ss.submit: true
+      ss.view: true
+      ss.view.goto: true
+  ss.feature:
+    default: op
+    description: Gives access to all feature related commands.
+  ss.admin:
+    default: op
+    description: Gives access to the reload, loadBuilds, and saveBuilds arguments.
+  ss.submit:
+    default: true
+    description: Gives access to all submit related commands.
+  ss.view:
+    default: true
+    description: Gives access to the /ss view command.
+  ss.view.goto:
+    default: true
+    description: Allows players to teleport to builds.
+    children:
+      ss.view: true

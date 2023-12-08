@@ -1,177 +1,109 @@
 package com.campmongoose.serversaturday.common;
 
 import com.campmongoose.serversaturday.common.submission.Build;
-import com.campmongoose.serversaturday.common.submission.Submitter;
-import io.musician101.musicianlibrary.java.minecraft.common.Location;
-import java.io.File;
-import java.util.Arrays;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.UUID;
-import javax.annotation.Nonnull;
+import java.util.stream.Stream;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import org.jetbrains.annotations.NotNull;
+
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.ComponentLike.asComponents;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 
 public interface Reference {
 
-    String ID = "serversaturday";
-    String NAME = "Server Saturday";
-    String VERSION = "3.3";
-
     interface Commands {
 
-        String EDIT_DESC = "Edit a submitted build.";
-        String EDIT_NAME = "edit";
-        String GET_REWARDS_DESC = "Receive any pending rewards.";
-        String GET_REWARDS_NAME = "getrewards";
-        String GIVE_REWARD_DESC = "Give a player a reward.";
-        String GIVE_REWARD_NAME = "givereward";
-        String HELP_DESC = "Displays help and plugin info.";
-        String PLAYER = "player";
-        String RELOAD_DESC = "Reload the plugin.";
-        String RELOAD_NAME = "reload";
-        String SS_CMD = "ss";
-        String VIEW_ALL_DESC = "View all builds that have been submitted.";
-        String VIEW_ALL_NAME = "viewall";
-        String VIEW_DESC = "View Server Saturday submissions.";
-        String VIEW_NAME = "view";
         String BUILD = "build";
+        String PLAYER = "player";
     }
 
     interface Config {
 
         String BUILDS = "builds";
-        String DATABASE = "database";
         String DESCRIPTION = "description";
         String FEATURED = "featured";
-        String HOCON = "HOCON";
-        String JSON = "JSON";
         String LOCATION = "location";
-        String MAX_BUILDS = "max_builds";
-        String MONGO_DB = "MongoDB";
-        String MYSQL = "MYSQL";
         String NAME = "name";
         String RESOURCE_PACK = "resource_pack";
         String REWARDS = "rewards";
-        String SQLITE = "SQLite";
         String SUBMITTED = "submitted";
         String UUID = "uuid";
-        String YAML = "YAML";
 
-        @Nonnull
-        static String getFileName(@Nonnull UUID uuid) {
-            return uuid + JSON;
-        }
-    }
-
-    interface Database {
-
-        String BUILD_NAME = "BuildName";
-        String DESCRIPTION = "Description";
-        String FEATURED = "Featured";
-        String RESOURCE_PACKS = "ResourcePacks";
-        String SUBMITTED = "Submitted";
-        String TABLE_NAME = "ss_builds";
-        String SELECT_TABLE = "SELECT * FROM " + TABLE_NAME;
-        String CLEAR_TABLE = "DELETE FROM " + TABLE_NAME;
-        String USERNAME = "Username";
-        String UUID = "UUID";
-        String WORLD_NAME = "WorldName";
-        String X = "X";
-        String Y = "Y";
-        String Z = "Z";
-        String PITCH = "Pitch";
-        String YAW = "Yaw";
-        String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" + UUID + " TEXT, " + USERNAME + " TEXT, " + BUILD_NAME + " TEXT, " + FEATURED + " BOOLEAN, " + SUBMITTED + " BOOLEAN, " + WORLD_NAME + " TEXT, " + X + " DECIMAL, " + Y + " DECIMAL, " + Z + " DECIMAL, " + PITCH + " FLOAT, " + YAW + " FLOAT, " + DESCRIPTION + " TEXT, " + RESOURCE_PACKS + " TEXT";
-
-        static String addBuild(@Nonnull Submitter submitter, @Nonnull Build build) {
-            Location location = build.getLocation();
-            return "INSERT FROM " + TABLE_NAME + "(" + UUID + ", " + USERNAME + ", " + BUILD_NAME + ", " + FEATURED + ", " + SUBMITTED + ", " + WORLD_NAME + ", " + X + ", " + Y + ", " + Z + ", " + DESCRIPTION + ", " + RESOURCE_PACKS + ") VALUES (\"" + submitter.getUUID() + "\", \"" + submitter.getName() + "\", \"" + build.getName() + "\", \"" + location.getWorldName() + "\", \"" + location.getX() + "\", \"" + location.getY() + "\", \"" + location.getZ() + "\", \"" + build.getDescription() + "\", \"" + build.getResourcePack() + ")";
-        }
     }
 
     interface MenuText {
 
-        String ALL_SUBMISSIONS = "All S.S. Submissions";
-        String CHANGE_DESCRIPTION_DESC = "Add or change the description to this build.";
-        String CHANGE_DESCRIPTION_NAME = "Change Description";
-        List<String> CHANGE_LOCATION_DESC = Arrays.asList("Change the warp location for this build", "to where you are currently standing.", "WARNING: This will affect which direction", "people face when they teleport to your build.");
-        String CHANGE_LOCATION_NAME = "Change Location";
-        List<String> CHANGE_RESOURCES_PACK_DESC = Arrays.asList("Change the recommended resource", "packs for this build.");
-        String CHANGE_RESOURCE_PACKS_NAME = "Change Resource Packs";
-        String DESCRIPTION_DESC = "View this build's description.";
-        String DESCRIPTION_NAME = "Description";
-        List<String> FEATURE_DESC = Arrays.asList("Set whether this build has been covered in", "an episode of Server Saturday.");
-        String FEATURE_NAME = "Feature";
-        String NEW_BUILD = "New Build";
-        String NEXT_PAGE = "Next Page";
-        String PREVIOUS_PAGE = "Previous Page";
-        String RENAME_DESC = "Rename this build.";
-        String RENAME_NAME = "Rename";
-        String RESOURCE_PACK_DESC = "View this build's recommended resource packs.";
-        String RESOURCE_PACK_NAME = "Resource Pack";
-        String SUBMISSIONS = "S. S. Submissions";
-        List<String> SUBMIT_UNREADY_DESC = Arrays.asList("Add or remove your build from", "the list of ready builds.");
-        String SUBMIT_UNREADY_NAME = "Submit/Unready";
-        String TELEPORT_NAME = "Teleport";
+        Component BACK = text("Back", WHITE);
+        Component CHANGE_DESCRIPTION_DESC = text("Add or change the description to this build.");
+        Component CHANGE_DESCRIPTION_NAME = text("Change Description");
+        List<Component> CHANGE_LOCATION_DESC = toComponents("Change the warp location for this build", "to where you are currently standing.", "WARNING: This will affect which direction", "people face when they teleport to your build.");
+        Component CHANGE_LOCATION_NAME = text("Change Location");
+        List<Component> CHANGE_RESOURCES_PACK_DESC = toComponents("Change the recommended resource", "packs for this build.");
+        Component CHANGE_RESOURCE_PACKS_NAME = text("Change Resource Packs");
+        Component DESCRIPTION_DESC = text("View this build's description.");
+        Component DESCRIPTION_NAME = text("Description");
+        List<Component> FEATURE_DESC = toComponents("Set whether this build has been covered in", "an episode of Server Saturday.");
+        Component FEATURE_NAME = text("Feature");
+        Component RENAME_DESC = text("Rename this build.");
+        Component RENAME_NAME = text("Rename");
+        Component RESOURCE_PACK_DESC = text("View this build's recommended resource packs.");
+        Component RESOURCE_PACK_NAME = text("Resource Pack");
+        List<Component> SUBMIT_UNREADY_DESC = toComponents("Add or remove your build from", "the list of ready builds.");
+        Component SUBMIT_UNREADY_NAME = text("Submit/Unready");
+        Component TELEPORT_NAME = text("Teleport");
 
-        @Nonnull
-        static String submitterMenu(@Nonnull Submitter submitter) {
-            return submitter.getName() + "'s Builds";
+        @NotNull
+        static List<Component> teleportDesc(@NotNull String name, int x, int y, int z) {
+            return toComponents("Click to teleport.", "- World: " + name, "- X: " + x, "- Y: " + y, "- Z: " + z);
         }
 
-        @Nonnull
-        static List<String> teleportDesc(@Nonnull String name, int x, int y, int z) {
-            return Arrays.asList("Click to teleport.", "- World: " + name, "- X: " + x, "- Y: " + y, "- Z: " + z);
+        private static List<Component> toComponents(String... s) {
+            return asComponents(Stream.of(s).map(Component::text).toList());
         }
     }
 
     interface Messages {
 
-        String CONFIG_LOADED = "Config loaded.";
-        String CONFIG_READ_ERROR = "Failed to read the config.";
-        String LOADING_CONFIG = "Loading config...";
-        String LOADING_SUBMISSIONS = "Loading submissions...";
         String PREFIX = "[SS] ";
-        String BUILD_ALREADY_EXISTS = PREFIX + "A build with that name already exists.";
-        String EDIT_IN_PROGRESS = PREFIX + "You're in the middle of editing another build.";
-        String NO_PERMISSION = PREFIX + "You don't have permission to run this command.";
-        String PLUGIN_RELOADED = PREFIX + "Submissions reloaded. Check console for errors.";
+        Component BUILD_ALREADY_EXISTS = text(PREFIX + "A build with that name already exists.", RED);
+        Component NO_PERMISSION = text(PREFIX + "You don't have permission to run this command.", RED);
+        Component PLUGIN_RELOADED = text(PREFIX + "Submissions reloaded. Check console for errors.", GOLD);
         String PLAYER_NOT_FOUND = PREFIX + "Could not find a player with that name.";
-        String PLAYER_ONLY = PREFIX + "This is a player only command.";
-        String HAND_NOT_EMPTY = PREFIX + "You need an empty in order to run this command.";
-        String REWARDS_RECEIVED = PREFIX + "All rewards have been given to you.";
-        String REWARDS_WAITING = PREFIX + "Hey, you! You have rewards waiting for you. Claim them with /ssgetrewards";
-        String SAVING_SUBMISSIONS = "Saving submissions to disk...";
-        String SET_BUILD_NAME = PREFIX + "Set the name of your build.";
-        String SUBMISSIONS_LOADED = "Submissions loaded.";
-        String SUBMISSIONS_SAVED = "Save complete.";
-        String BUILD_DOES_NOT_EXIST = PREFIX + "A build with that name does not exist.";
+        Component BUILD_DOES_NOT_EXIST = text(PREFIX + "A build with that name does not exist.", RED);
+        Component REWARDS_RECEIVED = text(PREFIX + "All rewards have been given to you.", GOLD);
+        Component REWARDS_WAITING = text(PREFIX + "Hey, you! You have rewards waiting for you. Click this message to claim them!", GOLD).clickEvent(ClickEvent.runCommand("/ss claim"));
+        Component SET_BUILD_NAME = text(PREFIX + "Set the name of your build.", GREEN);
+        String FAILED_TO_READ_SUBMITTERS = "Failed to read submitters directory!";
+        Component PLAYER_ONLY_COMMAND = text(PREFIX + "This is a player only command.", RED);
 
-        @Nonnull
-        static String failedToReadFile(@Nonnull File file) {
-            return "Failed to read " + file.getName();
+        @NotNull
+        static String failedToReadFile(@NotNull Path file) {
+            return "Failed to read " + file.getFileName().toString();
         }
 
-        @Nonnull
-        static String failedToReadFiles(@Nonnull File dir) {
-            return "An error occurred whilst attempting to read the files in " + dir.getName();
+        @NotNull
+        static String failedToWriteFile(@NotNull Path path) {
+            return "Failed to write " + path.getFileName();
         }
 
-        @Nonnull
-        static String failedToWriteFile(@Nonnull File file) {
-            return "Failed to write " + file.getName();
+        @NotNull
+        static Component locationChanged(@NotNull Build build) {
+            return text(PREFIX + "Warp location for " + build.getName() + " updated.", GREEN);
         }
 
-        @Nonnull
-        static String locationChanged(@Nonnull Build build) {
-            return PREFIX + "Warp location for " + build.getName() + " updated.";
+        @NotNull
+        static Component rewardsGiven(String name) {
+            return text(PREFIX + "Rewards given to " + name, GOLD);
         }
 
-        @Nonnull
-        static String rewardsGiven(String name) {
-            return PREFIX + "Rewards given to " + name;
-        }
-
-        @Nonnull
-        static String teleportedToBuild(@Nonnull Build build) {
+        @NotNull
+        static String teleportedToBuild(@NotNull Build build) {
             return PREFIX + "You have teleported to " + build.getName();
         }
     }
@@ -180,10 +112,9 @@ public interface Reference {
 
         //@formatter:off
         String BASE = "ss.";
+        String ADMIN = BASE + "admin";
         String FEATURE = BASE + "feature";
-        String RELOAD = BASE + "reload";
         String SUBMIT = BASE + "submit";
-        String EXCEED_MAX_BUILDS = SUBMIT + "exceed_max_builds";
         String VIEW = BASE + "view";
         String VIEW_GOTO = VIEW + ".goto";
         //@formatter:on

@@ -52,7 +52,7 @@ public abstract class ForgeCommand implements Command<CommandSource> {
             return optional.get();
         }
 
-        Submitter<TextComponent> submitter = new Submitter<>(player.getName().getUnformattedComponentText(), player.getUniqueID());
+        Submitter<TextComponent> submitter = new Submitter(player.getName().getUnformattedComponentText(), player.getUniqueID());
         submissions.addEntry(submitter);
         return submitter;
     }
