@@ -30,7 +30,7 @@ public class SSViewAll extends ServerSaturdayCommand implements LiteralCommand {
 
     @NotNull
     @Override
-    public String getName() {
+    public String name() {
         return "viewAll";
     }
 

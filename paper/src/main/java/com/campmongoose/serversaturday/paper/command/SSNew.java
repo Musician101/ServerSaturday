@@ -38,7 +38,7 @@ public class SSNew extends ServerSaturdayCommand implements LiteralCommand {
 
     @NotNull
     @Override
-    public String getName() {
+    public String name() {
         return "new";
     }
 
@@ -60,7 +60,7 @@ public class SSNew extends ServerSaturdayCommand implements LiteralCommand {
 
         @NotNull
         @Override
-        public String getName() {
+        public String name() {
             return "name";
         }
 

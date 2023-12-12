@@ -20,7 +20,7 @@ public class SSSubmit extends ServerSaturdayCommand implements LiteralCommand {
 
     @NotNull
     @Override
-    public String getName() {
+    public String name() {
         return "submit";
     }
 
