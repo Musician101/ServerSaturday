@@ -1,65 +1,64 @@
 package com.campmongoose.serversaturday.sponge.command;
 
-import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
 import com.campmongoose.serversaturday.common.submission.Build;
 import com.campmongoose.serversaturday.common.submission.Submitter;
-import com.campmongoose.serversaturday.sponge.command.argument.BuildValueParser;
 import com.campmongoose.serversaturday.sponge.gui.EditBuildGUI;
+import java.util.List;
+import java.util.Optional;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.api.command.Command;
+import org.spongepowered.api.command.CommandCause;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.exception.CommandException;
 import org.spongepowered.api.command.parameter.CommandContext;
+import org.spongepowered.api.command.parameter.Parameter;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
+
+import static com.campmongoose.serversaturday.sponge.command.argument.SubmitterBuildValueParser.VALUE;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 
 public class SSEdit extends ServerSaturdayCommand {
 
     @NotNull
     @Override
-    public String name() {
+    public String getName() {
         return "edit";
     }
 
     @Override
-    public boolean canUse(@NotNull CommandContext context) {
-        return canUseSubmit(context);
+    public boolean canUse(@NotNull CommandCause cause) {
+        return cause instanceof ServerPlayer;
     }
 
     @NotNull
     @Override
-    public String usage() {
-        return "/ss edit <build>";
+    public Component getUsage(@NotNull CommandCause cause) {
+        return text("/ss edit " + VALUE.usage(cause));
     }
 
     @NotNull
     @Override
-    public String description() {
-        return "Edit a submitted build.";
+    public Component getDescription(@NotNull CommandCause cause) {
+        return text("Edit a submitted build.", GRAY);
     }
 
     @Override
-    public CommandResult execute(CommandContext context) throws CommandException {
-        if (context.subject() instanceof ServerPlayer player) {
-            Submitter submitter = getSubmitter(player);
-            return context.one(BuildValueParser.VALUE).map(map -> {
-                Build build = map.get(submitter.getUUID());
-                if (build == null) {
-                    return CommandResult.error(Messages.BUILD_DOES_NOT_EXIST);
-                }
-
-                new EditBuildGUI(build, submitter, player);
-                return CommandResult.success();
-            }).orElse(CommandResult.error(Messages.BUILD_DOES_NOT_EXIST));
-        }
-
-        return CommandResult.error(Messages.PLAYER_ONLY_COMMAND);
+    public @NotNull List<Parameter> getParameters() {
+        return List.of(VALUE);
     }
 
-    @NotNull
     @Override
-    public Command.Parameterized toCommand() {
-        return Command.builder().executor(this).permission(Permissions.SUBMIT).shortDescription(Component.text(description())).addParameter(BuildValueParser.VALUE).build();
+    public @NotNull Optional<String> getPermission() {
+        return Optional.of(Permissions.SUBMIT);
+    }
+
+    @Override
+    public CommandResult execute(CommandContext context) {
+        ServerPlayer player = (ServerPlayer) context.cause();
+        Submitter submitter = getSubmitter(player);
+        Build build = context.requireOne(VALUE);
+        new EditBuildGUI(build, submitter, player);
+        return CommandResult.success();
     }
 }

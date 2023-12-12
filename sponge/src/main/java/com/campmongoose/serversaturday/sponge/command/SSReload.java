@@ -2,13 +2,16 @@ package com.campmongoose.serversaturday.sponge.command;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
+import java.util.Optional;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.api.command.Command;
+import org.spongepowered.api.command.CommandCause;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.parameter.CommandContext;
 
 import static com.campmongoose.serversaturday.sponge.SpongeServerSaturday.getPlugin;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 
 public class SSReload extends ServerSaturdayCommand {
 
@@ -23,30 +26,24 @@ public class SSReload extends ServerSaturdayCommand {
 
     @NotNull
     @Override
-    public String usage() {
-        return "/ss reload";
+    public Component getUsage(@NotNull CommandCause cause) {
+        return text("/ss reload");
     }
 
     @NotNull
     @Override
-    public String description() {
-        return "Reload the plugin.";
+    public Component getDescription(@NotNull CommandCause cause) {
+        return text("Reload the plugin.", GRAY);
     }
 
     @NotNull
     @Override
-    public String name() {
+    public String getName() {
         return "reload";
     }
 
     @Override
-    public boolean canUse(@NotNull CommandContext context) {
-        return context.hasPermission(Permissions.ADMIN);
-    }
-
-    @NotNull
-    @Override
-    public Command.Parameterized toCommand() {
-        return Command.builder().shortDescription(Component.text(description())).permission(Permissions.ADMIN).executor(this).build();
+    public @NotNull Optional<String> getPermission() {
+        return Optional.of(Permissions.ADMIN);
     }
 }

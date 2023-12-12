@@ -5,12 +5,18 @@ plugins {
     id("org.spongepowered.gradle.plugin") version "2.1.1"
 }
 
+repositories {
+    //TODO temp due to new project
+    mavenLocal()
+}
+
 dependencies {
     api(project(":common"))
-    //api("io.musician101.musigui:sponge:1.2.2")
     api("com.github.musician101.musigui:sponge:1.2.2") {
         exclude("org.spongepowered:spongeapi")
     }
+    //TODO temp dependency due to new project
+    api("io.musician101:spongecmd:1.0-SNAPSHOT")
 }
 
 sponge {
@@ -42,6 +48,6 @@ tasks {
             include(dependency("io.musician101:"))
         }
 
-        relocate("io.musician101.bukkitier", "com.campmongoose.serversaturday.lib.io.musician101.bukkitier")
+        relocate("io.musician101.spongecmd", "com.campmongoose.serversaturday.lib.io.musician101.spongecmd")
     }
 }

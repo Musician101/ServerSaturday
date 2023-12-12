@@ -2,12 +2,16 @@ package com.campmongoose.serversaturday.sponge.command;
 
 import com.campmongoose.serversaturday.common.Reference.Messages;
 import com.campmongoose.serversaturday.common.Reference.Permissions;
+import java.util.Optional;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.api.command.Command;
+import org.spongepowered.api.command.CommandCause;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.parameter.CommandContext;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
+
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 
 class SSClaim extends ServerSaturdayCommand {
 
@@ -22,32 +26,29 @@ class SSClaim extends ServerSaturdayCommand {
         return CommandResult.error(Messages.PLAYER_ONLY_COMMAND);
     }
 
-    @NotNull
     @Override
-    public String description() {
-        return "Claim any pending rewards.";
+    public @NotNull Optional<String> getPermission() {
+        return Optional.of(Permissions.SUBMIT);
+    }
+
+    @NotNull
+    public Component getDescription(@NotNull CommandCause cause) {
+        return text("Claim any pending rewards.", GRAY);
     }
 
     @NotNull
     @Override
-    public String name() {
+    public String getName() {
         return "claim";
     }
 
     @NotNull
-    @Override
-    public String usage() {
-        return "/ss claim";
+    public Component getUsage(@NotNull CommandCause cause) {
+        return text("/ss claim");
     }
 
     @Override
-    public boolean canUse(@NotNull CommandContext context) {
-        return canUseSubmit(context);
-    }
-
-    @NotNull
-    @Override
-    public Command.Parameterized toCommand() {
-        return Command.builder().permission(Permissions.SUBMIT).executor(this).shortDescription(Component.text(description())).build();
+    public boolean canUse(@NotNull CommandCause cause) {
+        return cause instanceof ServerPlayer;
     }
 }

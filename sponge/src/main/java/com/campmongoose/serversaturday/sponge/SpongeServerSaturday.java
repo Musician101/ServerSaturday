@@ -5,6 +5,7 @@ import com.campmongoose.serversaturday.common.ServerSaturday;
 import com.campmongoose.serversaturday.sponge.command.SSCommand;
 import com.campmongoose.serversaturday.sponge.submission.SpongeSubmissions;
 import com.google.inject.Inject;
+import io.musician101.spongecmd.CMDExecutor;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -14,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.Command;
+import org.spongepowered.api.command.Command.Parameterized;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.lifecycle.RegisterCommandEvent;
@@ -102,7 +103,7 @@ public class SpongeServerSaturday extends ServerSaturday<SpongeRewardHandler, Sp
     }
 
     @Listener
-    public void registerCommands(RegisterCommandEvent<Command> event) {
-        SSCommand.registerCommand(event);
+    public void registerCommands(RegisterCommandEvent<Parameterized> event) {
+        CMDExecutor.register(event, pluginContainer, new SSCommand());
     }
 }
