@@ -49,7 +49,7 @@ public class SSView extends ServerSaturdayCommand implements LiteralCommand {
 
     @NotNull
     @Override
-    public String name() {
+    public String getName() {
         return "view";
     }
 
@@ -62,7 +62,7 @@ public class SSView extends ServerSaturdayCommand implements LiteralCommand {
 
         @NotNull
         @Override
-        public String name() {
+        public String getName() {
             return Commands.PLAYER;
         }
 

@@ -13,7 +13,7 @@ abstract class SSBuild extends ServerSaturdayCommand implements ArgumentCommand<
 
     @NotNull
     @Override
-    public String name() {
+    public String getName() {
         return Commands.BUILD;
     }
 

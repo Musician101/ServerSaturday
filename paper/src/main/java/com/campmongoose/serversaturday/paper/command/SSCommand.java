@@ -81,7 +81,7 @@ public class SSCommand extends HelpMainCommand {
 
     @NotNull
     @Override
-    public String name() {
+    public String getName() {
         return "serversaturday";
     }
 }
