@@ -12,7 +12,7 @@ dependencies {
     api("com.github.musician101.musigui:paper:1.2.2") {
         exclude("io.papermc.paper")
     }
-    compileOnlyApi("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
+    compileOnlyApi("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 }
 
 tasks {
