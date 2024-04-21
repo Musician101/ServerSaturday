@@ -38,12 +38,13 @@ tasks {
 
     shadowJar {
         dependencies {
-            include(dependency("com.github.musician101:"))
-            include(dependency("io.musician101.musigui:"))
+            include(dependency("com.github.Musician101:"))
+            include(dependency("com.github.musician101.musigui:"))
         }
 
         archiveClassifier.set("")
-        relocate("io.musician101", "com.campmongoose.serversaturday.lib.io.musician101")
+        relocate("io.musician101.bukkitier", "com.campmongoose.serversaturday.lib.io.musician101.bukkitier")
+        relocate("io.musician101.musigui", "com.campmongoose.serversaturday.lib.io.musician101.musigui")
         dependsOn("build")
     }
 
