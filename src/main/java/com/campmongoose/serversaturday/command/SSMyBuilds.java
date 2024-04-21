@@ -3,9 +3,9 @@ package com.campmongoose.serversaturday.command;
 import com.campmongoose.serversaturday.gui.TextGUI;
 import com.mojang.brigadier.context.CommandContext;
 import io.musician101.bukkitier.command.LiteralCommand;
-import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class SSMyBuilds extends ServerSaturdayCommand implements LiteralCommand {
 

@@ -6,10 +6,11 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 
 public class OfflinePlayerArgumentType implements ArgumentType<OfflinePlayer> {
 

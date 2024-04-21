@@ -3,11 +3,11 @@ package com.campmongoose.serversaturday.command;
 import com.campmongoose.serversaturday.Reference.Messages;
 import com.mojang.brigadier.context.CommandContext;
 import io.musician101.bukkitier.command.LiteralCommand;
-import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class SSClaim extends ServerSaturdayCommand implements LiteralCommand{
+public class SSClaim extends ServerSaturdayCommand implements LiteralCommand {
 
     @Override
     public int execute(@NotNull CommandContext<CommandSender> context) {

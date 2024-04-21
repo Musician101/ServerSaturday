@@ -1,8 +1,9 @@
 package com.campmongoose.serversaturday;
 
 import com.campmongoose.serversaturday.Reference.Config;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 

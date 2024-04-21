@@ -4,9 +4,9 @@ import com.campmongoose.serversaturday.Reference.Permissions;
 import com.campmongoose.serversaturday.RewardHandler;
 import com.campmongoose.serversaturday.submission.Submissions;
 import com.campmongoose.serversaturday.submission.Submitter;
-import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 

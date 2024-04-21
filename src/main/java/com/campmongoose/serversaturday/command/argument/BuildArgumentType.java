@@ -7,11 +7,12 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import org.bukkit.entity.Player;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 

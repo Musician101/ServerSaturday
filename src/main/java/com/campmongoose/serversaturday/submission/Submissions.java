@@ -1,6 +1,10 @@
 package com.campmongoose.serversaturday.submission;
 
 import com.campmongoose.serversaturday.Reference.Messages;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,9 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
-import org.jetbrains.annotations.NotNull;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 
@@ -53,7 +54,7 @@ public final class Submissions {
             }
         }
 
-        try(Stream<Path> stream = Files.list(storageDir)) {
+        try (Stream<Path> stream = Files.list(storageDir)) {
             stream.map(Path::toFile).forEach(f -> {
                 try {
                     submitters.add(new Submitter(YamlConfiguration.loadConfiguration(f)));

@@ -5,8 +5,6 @@ import io.musician101.bukkitier.Bukkitier;
 import io.musician101.bukkitier.command.Command;
 import io.musician101.bukkitier.command.help.HelpMainCommand;
 import io.papermc.paper.plugin.configuration.PluginMeta;
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -14,6 +12,9 @@ import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 import static net.md_5.bungee.api.ChatColor.DARK_GREEN;
@@ -27,6 +28,10 @@ public class SSCommand extends HelpMainCommand {
 
     private SSCommand() {
         super(getPlugin());
+    }
+
+    public static void registerCommand() {
+        Bukkitier.registerCommand(getPlugin(), new SSCommand());
     }
 
     @SuppressWarnings("UnstableApiUsage")
@@ -46,7 +51,7 @@ public class SSCommand extends HelpMainCommand {
         developed.setColor(GOLD);
         List<String> authors = pdf.getAuthors();
         int last = authors.size() - 1;
-        TextComponent authorsComponent = new TextComponent(switch (last){
+        TextComponent authorsComponent = new TextComponent(switch (last) {
             case 0 -> authors.get(0);
             case 1 -> String.join(" and ", authors);
             default -> String.join(", and ", String.join(", ", authors.subList(0, last)), authors.get(last));
@@ -67,10 +72,6 @@ public class SSCommand extends HelpMainCommand {
         cmd.addExtra(dash);
         cmd.addExtra(description);
         return cmd;
-    }
-
-    public static void registerCommand() {
-        Bukkitier.registerCommand(getPlugin(), new SSCommand());
     }
 
     @NotNull

@@ -5,9 +5,10 @@ import com.campmongoose.serversaturday.command.argument.BuildArgumentType;
 import com.campmongoose.serversaturday.submission.Build;
 import com.mojang.brigadier.arguments.ArgumentType;
 import io.musician101.bukkitier.command.ArgumentCommand;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Map;
 import java.util.UUID;
-import org.jetbrains.annotations.NotNull;
 
 abstract class SSBuild extends ServerSaturdayCommand implements ArgumentCommand<Map<UUID, Build>> {
 

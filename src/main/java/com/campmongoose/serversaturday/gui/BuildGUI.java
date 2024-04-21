@@ -7,11 +7,6 @@ import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
 import io.musician101.musigui.paper.chest.PaperChestGUI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,6 +15,12 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 import static io.musician101.musigui.paper.chest.PaperIconUtil.customName;
@@ -53,10 +54,6 @@ public abstract class BuildGUI extends PaperChestGUI<ServerSaturday> {
         setLeftClickButton(8, customName(new ItemStack(Material.BARRIER), MenuText.BACK), Player::closeInventory);
     }
 
-    protected void setLeftClickButton(int slot, @NotNull ItemStack itemStack, @NotNull Consumer<Player> action) {
-        setButton(slot, itemStack, Map.of(ClickType.LEFT, action));
-    }
-
     public static void open(@NotNull Build build, @NotNull Submitter submitter, @NotNull Player player) {
         if (player.getUniqueId().equals(submitter.getUUID())) {
             new EditBuildGUI(build, submitter, player);
@@ -64,6 +61,10 @@ public abstract class BuildGUI extends PaperChestGUI<ServerSaturday> {
         }
 
         new ViewBuildGUI(build, submitter, player);
+    }
+
+    protected void setLeftClickButton(int slot, @NotNull ItemStack itemStack, @NotNull Consumer<Player> action) {
+        setButton(slot, itemStack, Map.of(ClickType.LEFT, action));
     }
 
     private void updateFeatured(@NotNull Build build, @NotNull Submitter submitter, int featureSlot) {

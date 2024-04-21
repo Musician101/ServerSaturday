@@ -4,9 +4,9 @@ import com.campmongoose.serversaturday.Reference.Permissions;
 import com.campmongoose.serversaturday.gui.TextGUI;
 import com.mojang.brigadier.context.CommandContext;
 import io.musician101.bukkitier.command.LiteralCommand;
-import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class SSViewAll extends ServerSaturdayCommand implements LiteralCommand {
 

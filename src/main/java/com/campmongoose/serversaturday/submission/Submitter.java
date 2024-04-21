@@ -1,16 +1,17 @@
 package com.campmongoose.serversaturday.submission;
 
 import com.campmongoose.serversaturday.Reference.Config;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

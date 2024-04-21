@@ -1,13 +1,6 @@
 package com.campmongoose.serversaturday;
 
 import com.campmongoose.serversaturday.Reference.Messages;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.IntStream;
-import org.jetbrains.annotations.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -16,6 +9,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.jetbrains.annotations.NotNull;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.IntStream;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 

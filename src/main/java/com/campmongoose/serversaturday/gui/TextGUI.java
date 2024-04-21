@@ -2,13 +2,14 @@ package com.campmongoose.serversaturday.gui;
 
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 import static net.kyori.adventure.text.Component.text;

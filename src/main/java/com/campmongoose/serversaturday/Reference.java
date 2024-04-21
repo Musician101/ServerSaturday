@@ -1,13 +1,14 @@
 package com.campmongoose.serversaturday;
 
 import com.campmongoose.serversaturday.submission.Build;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
-import org.jetbrains.annotations.NotNull;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.ComponentLike.asComponents;

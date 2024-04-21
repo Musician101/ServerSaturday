@@ -6,16 +6,17 @@ import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
 import io.musician101.musigui.paper.PaperTextInput;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.stream.Stream;
-import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 import static io.musician101.musigui.paper.chest.PaperIconUtil.customName;
 import static io.musician101.musigui.paper.chest.PaperIconUtil.setLore;

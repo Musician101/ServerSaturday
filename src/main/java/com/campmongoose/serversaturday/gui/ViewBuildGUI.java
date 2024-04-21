@@ -4,11 +4,11 @@ import com.campmongoose.serversaturday.Reference.MenuText;
 import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
-import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import static io.musician101.musigui.paper.chest.PaperIconUtil.customName;
 import static io.musician101.musigui.paper.chest.PaperIconUtil.setLore;

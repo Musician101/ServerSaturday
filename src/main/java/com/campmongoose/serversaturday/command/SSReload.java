@@ -4,8 +4,8 @@ import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.Reference.Permissions;
 import com.mojang.brigadier.context.CommandContext;
 import io.musician101.bukkitier.command.LiteralCommand;
-import org.jetbrains.annotations.NotNull;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 
