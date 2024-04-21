@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 
-@SuppressWarnings("BlockingMethodInNonBlockingContext")
 public final class Submissions {
 
     @NotNull

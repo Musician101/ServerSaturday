@@ -20,7 +20,6 @@ import java.util.stream.IntStream;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 
-@SuppressWarnings("BlockingMethodInNonBlockingContext")
 public final class RewardHandler implements Listener {
 
     @NotNull
