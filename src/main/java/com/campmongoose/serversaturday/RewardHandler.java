@@ -41,7 +41,10 @@ public final class RewardHandler implements Listener {
         ServerSaturday plugin = getPlugin();
         Path path = plugin.getDataFolder().toPath().resolve("rewards.yml");
         try {
-            Files.createFile(path);
+            if (Files.notExists(path)) {
+                Files.createFile(path);
+            }
+
             YamlConfiguration rewards = YamlConfiguration.loadConfiguration(path.toFile());
             rewards.getKeys(false).forEach(key -> this.rewards.put(UUID.fromString(key), rewards.getInt(key)));
         }
@@ -63,7 +66,10 @@ public final class RewardHandler implements Listener {
         ServerSaturday plugin = getPlugin();
         Path path = plugin.getDataFolder().toPath().resolve("rewards.yml");
         try {
-            Files.createFile(path);
+            if (Files.notExists(path)) {
+                Files.createFile(path);
+            }
+
             YamlConfiguration rewards = new YamlConfiguration();
             this.rewards.forEach((uuid, i) -> rewards.set(uuid.toString(), i));
             rewards.save(path.toFile());

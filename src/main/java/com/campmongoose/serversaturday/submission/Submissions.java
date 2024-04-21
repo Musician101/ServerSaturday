@@ -43,6 +43,16 @@ public final class Submissions {
 
     public void load() {
         Path storageDir = getPlugin().getDataFolder().toPath().resolve("submissions");
+        if (Files.notExists(storageDir)) {
+            try {
+                Files.createDirectories(storageDir);
+            }
+            catch (IOException e) {
+                getPlugin().getSLF4JLogger().error(Messages.failedToReadFile(storageDir.toFile()));
+                return;
+            }
+        }
+
         try(Stream<Path> stream = Files.list(storageDir)) {
             stream.map(Path::toFile).forEach(f -> {
                 try {
@@ -60,10 +70,23 @@ public final class Submissions {
 
     public void save() {
         Path storageDir = getPlugin().getDataFolder().toPath().resolve("submissions");
+        if (Files.notExists(storageDir)) {
+            try {
+                Files.createDirectories(storageDir);
+            }
+            catch (IOException e) {
+                getPlugin().getSLF4JLogger().error(Messages.failedToWriteFile(storageDir));
+                return;
+            }
+        }
+
         submitters.forEach(submitter -> {
             Path path = storageDir.resolve(submitter.getUUID() + ".yml");
             try {
-                Files.createFile(path);
+                if (Files.notExists(path)) {
+                    Files.createFile(path);
+                }
+
                 submitter.save().save(path.toFile());
             }
             catch (Exception e) {
