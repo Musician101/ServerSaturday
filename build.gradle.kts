@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    compileOnlyApi("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
+    compileOnlyApi("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     api("com.github.Musician101:Bukkitier:1.3.3") {
         exclude("org.spigotmc")
     }
