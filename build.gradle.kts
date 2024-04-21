@@ -22,12 +22,6 @@ dependencies {
     api("com.github.musician101.musigui:paper:1.2.2") {
         exclude("io.papermc.paper")
     }
-    //TODO temp to fix package names
-    //api("com.github.Musician101:MusiBoard:1.0.1") {
-    api("com.github.Musician101:MusiBoard:master-SNAPSHOT") {
-        exclude("io.papermc.paper")
-        exclude("com.github.Musician101")
-    }
 }
 
 java {
