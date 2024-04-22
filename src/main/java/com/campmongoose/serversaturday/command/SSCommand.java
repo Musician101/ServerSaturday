@@ -7,8 +7,8 @@ import io.musician101.bukkitier.command.help.HelpMainCommand;
 import io.papermc.paper.plugin.configuration.PluginMeta;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.CommandSender;
@@ -21,7 +21,6 @@ import static net.md_5.bungee.api.ChatColor.DARK_GREEN;
 import static net.md_5.bungee.api.ChatColor.GOLD;
 import static net.md_5.bungee.api.ChatColor.GREEN;
 import static net.md_5.bungee.api.ChatColor.of;
-
 
 @SuppressWarnings("deprecation")
 public class SSCommand extends HelpMainCommand {
@@ -43,10 +42,6 @@ public class SSCommand extends HelpMainCommand {
         begin.setColor(DARK_GREEN);
         TextComponent middle = new TextComponent(pdf.getDisplayName());
         middle.setColor(GREEN);
-        TextComponent end = new TextComponent(" ===== <");
-        end.setColor(DARK_GREEN);
-        begin.addExtra(middle);
-        begin.addExtra(end);
         TextComponent developed = new TextComponent("Developed by ");
         developed.setColor(GOLD);
         List<String> authors = pdf.getAuthors();
@@ -57,7 +52,15 @@ public class SSCommand extends HelpMainCommand {
             default -> String.join(", and ", String.join(", ", authors.subList(0, last)), authors.get(last));
         });
         authorsComponent.setColor(of("#BDB76B"));
-        begin.setHoverEvent(new HoverEvent(Action.SHOW_TEXT, new Text(new BaseComponent[]{developed, authorsComponent})));
+        middle.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(new BaseComponent[]{developed, authorsComponent})));
+        begin.addExtra(middle);
+        TextComponent end = new TextComponent(" ===== <");
+        end.setColor(DARK_GREEN);
+        begin.addExtra(end);
+        TextComponent wiki = new TextComponent("\nClick here to visit our wiki.");
+        wiki.setColor(GREEN);
+        wiki.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Musician101/ServerSaturday/wiki"));
+        begin.addExtra(wiki);
         return begin;
     }
 
