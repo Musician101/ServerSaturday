@@ -38,7 +38,7 @@ public class SSEdit extends ServerSaturdayCommand implements LiteralCommand {
     @NotNull
     @Override
     public String description(@NotNull CommandSender sender) {
-        return "Edit a submitted build.";
+        return "Edit a build.";
     }
 
     @NotNull
