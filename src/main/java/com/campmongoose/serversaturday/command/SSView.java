@@ -44,7 +44,7 @@ public class SSView extends ServerSaturdayCommand implements LiteralCommand {
     @NotNull
     @Override
     public String usage(@NotNull CommandSender sender) {
-        return "/ss view [player] [build]";
+        return "/ss view [<player> [<build>]]";
     }
 
     @NotNull

@@ -45,7 +45,7 @@ public class SSDelete extends ServerSaturdayCommand implements LiteralCommand {
     @NotNull
     @Override
     public String usage(@NotNull CommandSender sender) {
-        return "/ss delete <player>";
+        return "/ss delete <build>";
     }
 
     static class SSBuild extends com.campmongoose.serversaturday.command.SSBuild {
