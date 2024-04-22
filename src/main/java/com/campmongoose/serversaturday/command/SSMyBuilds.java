@@ -12,7 +12,6 @@ public class SSMyBuilds extends ServerSaturdayCommand implements LiteralCommand 
     @Override
     public int execute(@NotNull CommandContext<CommandSender> context) {
         Player player = (Player) context.getSource();
-        //new SubmitterGUI(getSubmitter(player), player);
         TextGUI.displaySubmitter(player, getSubmitter(player), 1);
         return 1;
     }
