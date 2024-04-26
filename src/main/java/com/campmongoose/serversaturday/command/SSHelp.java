@@ -1,9 +1,9 @@
 package com.campmongoose.serversaturday.command;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import io.musician101.bukkitier.Bukkitier;
 import io.musician101.bukkitier.command.Command;
-import io.musician101.bukkitier.command.help.HelpMainCommand;
+import io.musician101.bukkitier.command.LiteralCommand;
+import io.musician101.bukkitier.command.help.HelpSubCommand;
 import io.papermc.paper.plugin.configuration.PluginMeta;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -12,22 +12,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
+import static com.campmongoose.serversaturday.command.SSCommand.cmdInfo;
 import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
 
-public class SSCommand extends HelpMainCommand {
+public class SSHelp extends HelpSubCommand {
 
-    private SSCommand() {
-        super(getPlugin());
-    }
-
-    public static void registerCommand() {
-        Bukkitier.registerCommand(getPlugin(), new SSCommand());
-    }
-
-    @NotNull
-    static Component cmdInfo(@NotNull Command<? extends ArgumentBuilder<CommandSender, ?>> command, @NotNull CommandSender sender) {
-        String string = "<click:run_command:/ss help " + command.name() + ">/ss " + command.name() + " <dark_gray>- <gray>" + command.description(sender);
-        return miniMessage().deserialize(string);
+    public SSHelp(@NotNull LiteralCommand root) {
+        super(root, getPlugin());
     }
 
     @SuppressWarnings("UnstableApiUsage")
@@ -49,17 +40,5 @@ public class SSCommand extends HelpMainCommand {
     @Override
     protected @NotNull Component commandInfo(@NotNull Command<? extends ArgumentBuilder<CommandSender, ?>> command, @NotNull CommandSender sender) {
         return cmdInfo(command, sender);
-    }
-
-    @NotNull
-    @Override
-    public List<Command<? extends ArgumentBuilder<CommandSender, ?>>> arguments() {
-        return List.of(new SSClaim(), new SSDelete(), new SSEdit(), new SSHelp(this), new SSMyBuilds(), new SSNew(), new SSReload(), new SSReward(), new SSSubmit(), new SSView(), new SSViewAll());
-    }
-
-    @NotNull
-    @Override
-    public String name() {
-        return "serversaturday";
     }
 }
