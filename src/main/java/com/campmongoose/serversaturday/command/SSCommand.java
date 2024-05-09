@@ -38,7 +38,7 @@ public class SSCommand extends HelpMainCommand {
         List<String> authors = pdf.getAuthors();
         int last = authors.size() - 1;
         String authorsString = switch (last) {
-            case 0 -> authors.get(0);
+            case 0 -> authors.getFirst();
             case 1 -> String.join(" and ", authors);
             default -> String.join(", and ", String.join(", ", authors.subList(0, last)), authors.get(last));
         };
