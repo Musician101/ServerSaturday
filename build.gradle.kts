@@ -1,3 +1,14 @@
+buildscript {
+    configurations {
+        classpath {
+            resolutionStrategy {
+                force("org.ow2.asm:asm:9.6")
+                force("org.ow2.asm:asm-commons:9.6")
+            }
+        }
+    }
+}
+
 plugins {
     java
     `java-library`
@@ -23,7 +34,7 @@ dependencies {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
 tasks {
