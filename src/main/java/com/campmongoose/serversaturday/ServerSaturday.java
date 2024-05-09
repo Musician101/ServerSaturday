@@ -8,8 +8,6 @@ import org.jetbrains.annotations.NotNull;
 public final class ServerSaturday extends JavaPlugin {
 
     @NotNull
-    private final PluginConfig config = new PluginConfig();
-    @NotNull
     private final RewardHandler rewardHandler = new RewardHandler();
     @NotNull
     private final Submissions submissions = new Submissions();
@@ -17,11 +15,6 @@ public final class ServerSaturday extends JavaPlugin {
     @NotNull
     public static ServerSaturday getPlugin() {
         return getPlugin(ServerSaturday.class);
-    }
-
-    @NotNull
-    public PluginConfig getPluginConfig() {
-        return config;
     }
 
     @NotNull
@@ -34,6 +27,11 @@ public final class ServerSaturday extends JavaPlugin {
         return submissions;
     }
 
+    public void reload() {
+        saveDefaultConfig();
+        reloadConfig();
+    }
+
     @Override
     public void onDisable() {
         rewardHandler.save();
@@ -42,7 +40,7 @@ public final class ServerSaturday extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        config.reload();
+        reload();
         rewardHandler.load();
         submissions.load();
         getServer().getPluginManager().registerEvents(rewardHandler, this);

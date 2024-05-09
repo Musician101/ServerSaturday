@@ -1,5 +1,6 @@
 package com.campmongoose.serversaturday;
 
+import com.campmongoose.serversaturday.Reference.Config;
 import com.campmongoose.serversaturday.Reference.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -30,7 +31,7 @@ public final class RewardHandler implements Listener {
         int amount = rewards.getOrDefault(uuid, 0);
         rewards.put(uuid, 0);
         Server server = Bukkit.getServer();
-        IntStream.range(0, amount).forEach(i -> getPlugin().getPluginConfig().getRewards().forEach(command -> server.dispatchCommand(server.getConsoleSender(), command.replace("@p", player.getName()))));
+        IntStream.range(0, amount).forEach(i -> getPlugin().getConfig().getStringList(Config.REWARDS).forEach(command -> server.dispatchCommand(server.getConsoleSender(), command.replace("@p", player.getName()))));
     }
 
     public void giveReward(@NotNull OfflinePlayer player) {

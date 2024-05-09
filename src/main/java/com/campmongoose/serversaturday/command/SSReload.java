@@ -14,7 +14,7 @@ public class SSReload extends ServerSaturdayCommand implements LiteralCommand {
     @Override
     public int execute(@NotNull CommandContext<CommandSender> context) {
         getSubmissions().load();
-        getPlugin().getPluginConfig().reload();
+        getPlugin().reload();
         context.getSource().sendMessage(Messages.PLUGIN_RELOADED);
         return 1;
     }
