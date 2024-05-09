@@ -75,7 +75,7 @@ public interface Reference {
         String PREFIX = "[SS] ";
         Component BUILD_ALREADY_EXISTS = text(PREFIX + "A build with that name already exists.", RED);
         Component NO_PERMISSION = text(PREFIX + "You don't have permission to run this command.", RED);
-        Component PLUGIN_RELOADED = text(PREFIX + "Submissions reloaded. Check console for errors.", GOLD);
+        Component PLUGIN_RELOADED = text(PREFIX + "Plugin reloaded. Check console for errors.", GOLD);
         String PLAYER_NOT_FOUND = PREFIX + "Could not find a player with that name.";
         Component BUILD_DOES_NOT_EXIST = text(PREFIX + "A build with that name does not exist.", RED);
         Component REWARDS_RECEIVED = text(PREFIX + "All rewards have been given to you.", GOLD);

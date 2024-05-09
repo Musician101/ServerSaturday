@@ -54,6 +54,7 @@ public final class Submissions {
         }
 
         try (Stream<Path> stream = Files.list(storageDir)) {
+            submitters.clear();
             stream.map(Path::toFile).forEach(f -> {
                 try {
                     submitters.add(new Submitter(YamlConfiguration.loadConfiguration(f)));
