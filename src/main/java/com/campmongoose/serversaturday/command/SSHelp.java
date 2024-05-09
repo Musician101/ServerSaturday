@@ -33,7 +33,7 @@ public class SSHelp extends HelpSubCommand {
             case 1 -> String.join(" and ", authors);
             default -> String.join(", and ", String.join(", ", authors.subList(0, last)), authors.get(last));
         };
-        String string = "<dark_green>> ===== <green><hover:show_text:'<color:#BDB76B>Developed by " + authorsString + "'>" + pdf.getDisplayName() + "</hover><dark_green> ===== <<newline><gold>Click a command for more info.<newLine><click:open_url:https://github.com/Musician101/ServerSaturday/wiki>Click here to visit our wiki.";
+        String string = "<dark_green>> ===== <green><hover:show_text:'<color:#BDB76B>Developed by " + authorsString + "'>" + pdf.getDisplayName() + "</hover><dark_green> ===== <<newline><gold>Click a command to paste it below.<newLine><click:open_url:https://github.com/Musician101/ServerSaturday/wiki>Click here to visit our wiki.";
         return miniMessage().deserialize(string);
     }
 
