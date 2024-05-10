@@ -1,6 +1,5 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.Reference.Permissions;
 import com.campmongoose.serversaturday.RewardHandler;
 import com.campmongoose.serversaturday.submission.Submissions;
 import com.campmongoose.serversaturday.submission.Submitter;
@@ -11,6 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 
 public abstract class ServerSaturdayCommand {
+
+    protected static final String BUILD = "build";
+    protected static final String PLAYER = "player";
 
     protected final RewardHandler getRewardHandler() {
         return getPlugin().getRewardHandler();
@@ -25,6 +27,6 @@ public abstract class ServerSaturdayCommand {
     }
 
     protected final boolean canUseSubmit(@NotNull CommandSender sender) {
-        return sender instanceof Player && sender.hasPermission(Permissions.SUBMIT);
+        return sender instanceof Player && sender.hasPermission("ss.submit");
     }
 }

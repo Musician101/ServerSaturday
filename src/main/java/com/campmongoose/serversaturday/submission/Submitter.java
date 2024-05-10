@@ -1,6 +1,5 @@
 package com.campmongoose.serversaturday.submission;
 
-import com.campmongoose.serversaturday.Reference.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,14 +16,18 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class Submitter {
 
+    private static final String BUILDS = "builds";
+    private static final String NAME = "name";
+    private static final String UUID_KEY = "uuid";
+
     @NotNull
     private final List<Build> builds = new ArrayList<>();
     @NotNull
     private final UUID uuid;
 
     public Submitter(@NotNull ConfigurationSection submitter) {
-        this.uuid = UUID.fromString(checkNotNull(submitter.getString(Config.UUID)));
-        submitter.getMapList(Config.BUILDS).stream().map(map -> {
+        this.uuid = UUID.fromString(checkNotNull(submitter.getString(UUID_KEY)));
+        submitter.getMapList(BUILDS).stream().map(map -> {
             ConfigurationSection build = new YamlConfiguration();
             map.forEach((k, v) -> build.set(k.toString(), v));
             return build;
@@ -63,9 +66,9 @@ public final class Submitter {
     @NotNull
     public YamlConfiguration save() {
         YamlConfiguration submitter = new YamlConfiguration();
-        submitter.set(Config.UUID, uuid.toString());
-        submitter.set(Config.NAME, getName());
-        submitter.set(Config.BUILDS, builds.stream().map(Build::save).collect(Collectors.toList()));
+        submitter.set(UUID_KEY, uuid.toString());
+        submitter.set(NAME, getName());
+        submitter.set(BUILDS, builds.stream().map(Build::save).collect(Collectors.toList()));
         return submitter;
     }
 }

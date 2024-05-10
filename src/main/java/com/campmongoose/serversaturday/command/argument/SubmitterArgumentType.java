@@ -1,6 +1,5 @@
 package com.campmongoose.serversaturday.command.argument;
 
-import com.campmongoose.serversaturday.Reference.Messages;
 import com.campmongoose.serversaturday.submission.Submissions;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.mojang.brigadier.StringReader;
@@ -13,6 +12,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import java.util.concurrent.CompletableFuture;
 
+import static com.campmongoose.serversaturday.Messages.PREFIX;
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 
 public class SubmitterArgumentType implements ArgumentType<Submitter> {
@@ -29,6 +29,6 @@ public class SubmitterArgumentType implements ArgumentType<Submitter> {
 
     @Override
     public Submitter parse(StringReader stringReader) throws CommandSyntaxException {
-        return getSubmissions().getSubmitter(stringReader.readString()).orElseThrow(() -> new SimpleCommandExceptionType(() -> Messages.PLAYER_NOT_FOUND).create());
+        return getSubmissions().getSubmitter(stringReader.readString()).orElseThrow(() -> new SimpleCommandExceptionType(() -> PREFIX + "Could not find a player with that name.").create());
     }
 }

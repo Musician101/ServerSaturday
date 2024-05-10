@@ -1,6 +1,5 @@
 package com.campmongoose.serversaturday.submission;
 
-import com.campmongoose.serversaturday.Reference.Messages;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -48,19 +47,19 @@ public final class Submissions {
                 Files.createDirectories(storageDir);
             }
             catch (IOException e) {
-                getPlugin().getSLF4JLogger().error(Messages.failedToReadFile(storageDir.toFile()));
+                getPlugin().getSLF4JLogger().error("Failed to read " + storageDir.getFileName(), e);
                 return;
             }
         }
 
         try (Stream<Path> stream = Files.list(storageDir)) {
             submitters.clear();
-            stream.map(Path::toFile).forEach(f -> {
+            stream.forEach(path -> {
                 try {
-                    submitters.add(new Submitter(YamlConfiguration.loadConfiguration(f)));
+                    submitters.add(new Submitter(YamlConfiguration.loadConfiguration(path.toFile())));
                 }
                 catch (Exception e) {
-                    getPlugin().getSLF4JLogger().error(Messages.failedToReadFile(f), e);
+                    getPlugin().getSLF4JLogger().error("Failed to read " + path.getFileName(), e);
                 }
             });
         }
@@ -76,7 +75,7 @@ public final class Submissions {
                 Files.createDirectories(storageDir);
             }
             catch (IOException e) {
-                getPlugin().getSLF4JLogger().error(Messages.failedToWriteFile(storageDir));
+                getPlugin().getSLF4JLogger().error("Failed to create submissions folder.");
                 return;
             }
         }
@@ -91,7 +90,7 @@ public final class Submissions {
                 submitter.save().save(path.toFile());
             }
             catch (Exception e) {
-                getPlugin().getSLF4JLogger().error(Messages.failedToWriteFile(path), e);
+                getPlugin().getSLF4JLogger().error("Failed to write " + path.getFileName(), e);
             }
         });
     }

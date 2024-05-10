@@ -1,7 +1,6 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.Reference.Commands;
-import com.campmongoose.serversaturday.Reference.Messages;
+import com.campmongoose.serversaturday.Messages;
 import com.campmongoose.serversaturday.gui.EditBuildGUI;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
@@ -53,7 +52,7 @@ public class SSEdit extends ServerSaturdayCommand implements LiteralCommand {
         public int execute(@NotNull CommandContext<CommandSender> context) {
             Player player = (Player) context.getSource();
             Submitter submitter = getSubmitter(player);
-            Build build = (Build) context.getArgument(Commands.BUILD, Map.class).get(submitter.getUUID());
+            Build build = (Build) context.getArgument(BUILD, Map.class).get(submitter.getUUID());
             if (build == null) {
                 player.sendMessage(Messages.BUILD_DOES_NOT_EXIST);
                 return 0;

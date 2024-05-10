@@ -1,6 +1,6 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.Reference.Messages;
+import com.campmongoose.serversaturday.Messages;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.mojang.brigadier.builder.ArgumentBuilder;

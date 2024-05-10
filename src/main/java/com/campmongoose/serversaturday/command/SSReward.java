@@ -1,8 +1,6 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.Reference.Commands;
-import com.campmongoose.serversaturday.Reference.Messages;
-import com.campmongoose.serversaturday.Reference.Permissions;
+import com.campmongoose.serversaturday.Messages;
 import com.campmongoose.serversaturday.command.argument.OfflinePlayerArgumentType;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -16,6 +14,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
+import static com.campmongoose.serversaturday.Messages.PREFIX;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 
 public class SSReward extends ServerSaturdayCommand implements LiteralCommand {
 
@@ -45,7 +47,7 @@ public class SSReward extends ServerSaturdayCommand implements LiteralCommand {
 
     @Override
     public boolean canUse(@NotNull CommandSender sender) {
-        return sender.hasPermission(Permissions.FEATURE);
+        return sender.hasPermission("ss.feature");
     }
 
     static class SSPlayer extends ServerSaturdayCommand implements ArgumentCommand<OfflinePlayer> {
@@ -53,14 +55,14 @@ public class SSReward extends ServerSaturdayCommand implements LiteralCommand {
         @NotNull
         @Override
         public String name() {
-            return Commands.PLAYER;
+            return PLAYER;
         }
 
         @Override
         public int execute(@NotNull CommandContext<CommandSender> context) {
-            OfflinePlayer offlinePlayer = context.getArgument(Commands.PLAYER, OfflinePlayer.class);
+            OfflinePlayer offlinePlayer = context.getArgument(PLAYER, OfflinePlayer.class);
             getRewardHandler().giveReward(offlinePlayer);
-            context.getSource().sendMessage(Messages.rewardsGiven(offlinePlayer.getName()));
+            context.getSource().sendMessage(text(PREFIX + "Rewards given to " + offlinePlayer.getName(), GOLD));
             Player player = offlinePlayer.getPlayer();
             if (player != null) {
                 player.sendMessage(Messages.REWARDS_WAITING);

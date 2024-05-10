@@ -1,8 +1,6 @@
 package com.campmongoose.serversaturday.gui;
 
-import com.campmongoose.serversaturday.Reference.MenuText;
-import com.campmongoose.serversaturday.Reference.Messages;
-import com.campmongoose.serversaturday.Reference.Permissions;
+import com.campmongoose.serversaturday.Messages;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
@@ -21,7 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static com.campmongoose.serversaturday.Messages.PREFIX;
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 import static io.musician101.musigui.paper.chest.PaperIconUtil.customName;
 import static io.musician101.musigui.paper.chest.PaperIconUtil.setLore;
@@ -38,20 +39,25 @@ public abstract class BuildGUI extends PaperChestGUI<ServerSaturday> {
     protected BuildGUI(@NotNull Build build, @NotNull Submitter submitter, int featureSlot, int teleportSlot, @NotNull Player player) {
         super(player, text(build.getName()), 9, getPlugin(), false);
         Location location = build.getLocation();
-        List<Component> lore = MenuText.teleportDesc(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        ItemStack itemStack = setLore(customName(new ItemStack(Material.COMPASS), MenuText.TELEPORT_NAME), lore);
+        List<Component> lore = teleportDesc(location);
+        ItemStack itemStack = setLore(customName(new ItemStack(Material.COMPASS), text("Teleport")), lore);
         setLeftClickButton(teleportSlot, itemStack, p -> {
-            if (p.hasPermission(Permissions.VIEW_GOTO)) {
+            if (p.hasPermission("ss.view.goto")) {
                 p.teleport(location);
-                p.sendMessage(text(Messages.teleportedToBuild(build), GREEN));
+                p.sendMessage(text(PREFIX + "You have teleported to " + build.getName(), GREEN));
                 return;
             }
 
-            p.sendMessage(Messages.NO_PERMISSION);
+            p.sendMessage(text(PREFIX + "You don't have permission to run this command.", RED));
         });
 
         updateFeatured(build, submitter, featureSlot);
-        setLeftClickButton(8, customName(new ItemStack(Material.BARRIER), MenuText.BACK), Player::closeInventory);
+        setLeftClickButton(8, customName(new ItemStack(Material.BARRIER), text("Back", WHITE)), Player::closeInventory);
+    }
+
+    @NotNull
+    static List<Component> teleportDesc(@NotNull Location location) {
+        return Stream.of("Click to teleport.", "- World: " + location.getWorld().getName(), "- X: " + location.getBlockX(), "- Y: " + location.getBlockY(), "- Z: " + location.getBlockZ()).map(Component::text).collect(Collectors.toList());
     }
 
     public static void open(@NotNull Build build, @NotNull Submitter submitter, @NotNull Player player) {
@@ -68,11 +74,11 @@ public abstract class BuildGUI extends PaperChestGUI<ServerSaturday> {
     }
 
     private void updateFeatured(@NotNull Build build, @NotNull Submitter submitter, int featureSlot) {
-        if (player.hasPermission(Permissions.FEATURE)) {
+        if (player.hasPermission("ss.feature")) {
             List<Component> lore = new ArrayList<>();
             lore.add(join(noSeparators(), text("Has been featured? ", GOLD), build.featured() ? text("Yes", GREEN) : text("No", RED)));
-            lore.addAll(MenuText.FEATURE_DESC);
-            setLeftClickButton(featureSlot, setLore(customName(new ItemStack(Material.GOLDEN_APPLE), MenuText.FEATURE_NAME.color(WHITE)), lore), p -> {
+            lore.addAll(List.of(text("Set whether this build has been covered in"), text("an episode of Server Saturday.")));
+            setLeftClickButton(featureSlot, setLore(customName(new ItemStack(Material.GOLDEN_APPLE), text("Feature")), lore), p -> {
                 build.setFeatured(!build.featured());
                 if (build.featured()) {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(submitter.getUUID());

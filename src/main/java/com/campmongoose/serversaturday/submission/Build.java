@@ -1,6 +1,5 @@
 package com.campmongoose.serversaturday.submission;
 
-import com.campmongoose.serversaturday.Reference.Config;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -9,6 +8,13 @@ import org.jetbrains.annotations.NotNull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class Build {
+
+    private static final String DESCRIPTION = "description";
+    private static final String FEATURED = "featured";
+    private static final String LOCATION = "location";
+    private static final String NAME = "name";
+    private static final String RESOURCE_PACK = "resource_pack";
+    private static final String SUBMITTED = "submitted";
 
     @NotNull
     private String description = "";
@@ -22,12 +28,12 @@ public final class Build {
     private boolean submitted = false;
 
     public Build(@NotNull ConfigurationSection build) {
-        this.description = build.getString(Config.DESCRIPTION, "");
-        this.featured = build.getBoolean(Config.FEATURED, false);
-        this.location = checkNotNull(build.getLocation(Config.LOCATION));
-        this.name = checkNotNull(build.getString(Config.NAME));
-        this.resourcePack = build.getString(Config.RESOURCE_PACK, "");
-        this.submitted = build.getBoolean(Config.SUBMITTED, false);
+        this.description = build.getString(DESCRIPTION, "");
+        this.featured = build.getBoolean(FEATURED, false);
+        this.location = checkNotNull(build.getLocation(LOCATION));
+        this.name = checkNotNull(build.getString(NAME));
+        this.resourcePack = build.getString(RESOURCE_PACK, "");
+        this.submitted = build.getBoolean(SUBMITTED, false);
     }
 
     public Build(@NotNull String name, @NotNull Location location) {
@@ -78,12 +84,12 @@ public final class Build {
     @NotNull
     public ConfigurationSection save() {
         ConfigurationSection build = new YamlConfiguration();
-        build.set(Config.NAME, name);
-        build.set(Config.DESCRIPTION, description);
-        build.set(Config.FEATURED, featured);
-        build.set(Config.LOCATION, location);
-        build.set(Config.RESOURCE_PACK, resourcePack);
-        build.set(Config.SUBMITTED, submitted);
+        build.set(NAME, name);
+        build.set(DESCRIPTION, description);
+        build.set(FEATURED, featured);
+        build.set(LOCATION, location);
+        build.set(RESOURCE_PACK, resourcePack);
+        build.set(SUBMITTED, submitted);
         return build;
     }
 

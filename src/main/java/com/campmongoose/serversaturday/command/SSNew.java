@@ -1,6 +1,6 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.Reference.Messages;
+import com.campmongoose.serversaturday.Messages;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;

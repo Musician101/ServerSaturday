@@ -1,7 +1,5 @@
 package com.campmongoose.serversaturday;
 
-import com.campmongoose.serversaturday.Reference.Config;
-import com.campmongoose.serversaturday.Reference.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -31,7 +29,7 @@ public final class RewardHandler implements Listener {
         int amount = rewards.getOrDefault(uuid, 0);
         rewards.put(uuid, 0);
         Server server = Bukkit.getServer();
-        IntStream.range(0, amount).forEach(i -> getPlugin().getConfig().getStringList(Config.REWARDS).forEach(command -> server.dispatchCommand(server.getConsoleSender(), command.replace("@p", player.getName()))));
+        IntStream.range(0, amount).forEach(i -> getPlugin().getConfig().getStringList("rewards").forEach(command -> server.dispatchCommand(server.getConsoleSender(), command.replace("@p", player.getName()))));
     }
 
     public void giveReward(@NotNull OfflinePlayer player) {
@@ -39,8 +37,7 @@ public final class RewardHandler implements Listener {
     }
 
     public void load() {
-        ServerSaturday plugin = getPlugin();
-        Path path = plugin.getDataFolder().toPath().resolve("rewards.yml");
+        Path path = getPlugin().getDataFolder().toPath().resolve("rewards.yml");
         try {
             if (Files.notExists(path)) {
                 Files.createFile(path);
@@ -50,7 +47,7 @@ public final class RewardHandler implements Listener {
             rewards.getKeys(false).forEach(key -> this.rewards.put(UUID.fromString(key), rewards.getInt(key)));
         }
         catch (Exception e) {
-            plugin.getSLF4JLogger().error(Messages.failedToReadFile(path.toFile()), e);
+            getPlugin().getSLF4JLogger().error("Failed to read " + path.getFileName(), e);
         }
     }
 
@@ -64,8 +61,7 @@ public final class RewardHandler implements Listener {
     }
 
     public void save() {
-        ServerSaturday plugin = getPlugin();
-        Path path = plugin.getDataFolder().toPath().resolve("rewards.yml");
+        Path path = getPlugin().getDataFolder().toPath().resolve("rewards.yml");
         try {
             if (Files.notExists(path)) {
                 Files.createFile(path);
@@ -76,7 +72,7 @@ public final class RewardHandler implements Listener {
             rewards.save(path.toFile());
         }
         catch (Exception e) {
-            plugin.getSLF4JLogger().error(Messages.failedToWriteFile(path), e);
+            getPlugin().getSLF4JLogger().error("Failed to write " + path.getFileName(), e);
         }
     }
 }

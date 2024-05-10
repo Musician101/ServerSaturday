@@ -1,11 +1,14 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.Reference.Messages;
 import com.mojang.brigadier.context.CommandContext;
 import io.musician101.bukkitier.command.LiteralCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import static com.campmongoose.serversaturday.Messages.PREFIX;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 
 public class SSClaim extends ServerSaturdayCommand implements LiteralCommand {
 
@@ -13,7 +16,7 @@ public class SSClaim extends ServerSaturdayCommand implements LiteralCommand {
     public int execute(@NotNull CommandContext<CommandSender> context) {
         Player player = (Player) context.getSource();
         getRewardHandler().claimReward(player);
-        player.sendMessage(Messages.REWARDS_RECEIVED);
+        player.sendMessage(text(PREFIX + "All rewards have been given to you.", GOLD));
         return 1;
     }
 

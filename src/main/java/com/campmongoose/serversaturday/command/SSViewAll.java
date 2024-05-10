@@ -1,6 +1,5 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.Reference.Permissions;
 import com.campmongoose.serversaturday.gui.TextGUI;
 import com.mojang.brigadier.context.CommandContext;
 import io.musician101.bukkitier.command.LiteralCommand;
@@ -36,6 +35,6 @@ public class SSViewAll extends ServerSaturdayCommand implements LiteralCommand {
 
     @Override
     public boolean canUse(@NotNull CommandSender sender) {
-        return sender.hasPermission(Permissions.FEATURE) && sender instanceof Player;
+        return sender.hasPermission("ss.feature") && sender instanceof Player;
     }
 }

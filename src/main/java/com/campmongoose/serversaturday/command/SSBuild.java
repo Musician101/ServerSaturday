@@ -1,6 +1,5 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.Reference.Commands;
 import com.campmongoose.serversaturday.command.argument.BuildArgumentType;
 import com.campmongoose.serversaturday.submission.Build;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -15,7 +14,7 @@ abstract class SSBuild extends ServerSaturdayCommand implements ArgumentCommand<
     @NotNull
     @Override
     public String name() {
-        return Commands.BUILD;
+        return BUILD;
     }
 
     @NotNull

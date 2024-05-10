@@ -1,7 +1,6 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.Reference.Commands;
-import com.campmongoose.serversaturday.Reference.Messages;
+import com.campmongoose.serversaturday.Messages;
 import com.campmongoose.serversaturday.submission.Build;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -53,7 +52,7 @@ public class SSSubmit extends ServerSaturdayCommand implements LiteralCommand {
         @Override
         public int execute(@NotNull CommandContext<CommandSender> context) {
             Player player = (Player) context.getSource();
-            Build build = (Build) context.getArgument(Commands.BUILD, Map.class).get(player.getUniqueId());
+            Build build = (Build) context.getArgument(BUILD, Map.class).get(player.getUniqueId());
             if (build == null) {
                 player.sendMessage(Messages.BUILD_DOES_NOT_EXIST);
                 return 0;

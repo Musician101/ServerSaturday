@@ -1,8 +1,6 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.Reference.Commands;
-import com.campmongoose.serversaturday.Reference.Messages;
-import com.campmongoose.serversaturday.Reference.Permissions;
+import com.campmongoose.serversaturday.Messages;
 import com.campmongoose.serversaturday.command.argument.SubmitterArgumentType;
 import com.campmongoose.serversaturday.gui.BuildGUI;
 import com.campmongoose.serversaturday.gui.TextGUI;
@@ -55,7 +53,7 @@ public class SSView extends ServerSaturdayCommand implements LiteralCommand {
 
     @Override
     public boolean canUse(@NotNull CommandSender sender) {
-        return sender instanceof Player && sender.hasPermission(Permissions.VIEW);
+        return sender instanceof Player && sender.hasPermission("ss.view");
     }
 
     static class SSSubmitter extends ServerSaturdayCommand implements ArgumentCommand<Submitter> {
@@ -63,7 +61,7 @@ public class SSView extends ServerSaturdayCommand implements LiteralCommand {
         @NotNull
         @Override
         public String name() {
-            return Commands.PLAYER;
+            return PLAYER;
         }
 
         @NotNull
@@ -74,7 +72,7 @@ public class SSView extends ServerSaturdayCommand implements LiteralCommand {
 
         @Override
         public int execute(@NotNull CommandContext<CommandSender> context) {
-            Submitter submitter = context.getArgument(Commands.PLAYER, Submitter.class);
+            Submitter submitter = context.getArgument(PLAYER, Submitter.class);
             //new SubmitterGUI(submitter, (Player) context.getSource());
             TextGUI.displaySubmitter((Player) context.getSource(), submitter, 1);
             return 1;
@@ -92,8 +90,8 @@ public class SSView extends ServerSaturdayCommand implements LiteralCommand {
         @Override
         public int execute(@NotNull CommandContext<CommandSender> context) {
             Player player = (Player) context.getSource();
-            Submitter submitter = context.getArgument(Commands.PLAYER, Submitter.class);
-            Build build = (Build) context.getArgument(Commands.BUILD, Map.class).get(submitter.getUUID());
+            Submitter submitter = context.getArgument(PLAYER, Submitter.class);
+            Build build = (Build) context.getArgument(BUILD, Map.class).get(submitter.getUUID());
             if (build == null) {
                 player.sendMessage(Messages.BUILD_DOES_NOT_EXIST);
                 return 0;
