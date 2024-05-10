@@ -75,7 +75,6 @@ public class SSView extends ServerSaturdayCommand implements LiteralCommand {
         @Override
         public int execute(@NotNull CommandContext<CommandSender> context) {
             Submitter submitter = context.getArgument(PLAYER, Submitter.class);
-            //new SubmitterGUI(submitter, (Player) context.getSource());
             TextGUI.displaySubmitter((Player) context.getSource(), submitter, 1);
             return 1;
         }
