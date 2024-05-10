@@ -32,9 +32,7 @@ repositories {
 dependencies {
     paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
     api("com.github.Musician101:Bukkitier:2.0.0")
-    api("com.github.musician101.musigui:paper:1.2.2") {
-        exclude("io.papermc.paper")
-    }
+    api("com.github.Musician101.MusiGui:paper:1.2.2")
 }
 
 java {
@@ -44,27 +42,22 @@ java {
 tasks {
     processResources {
         filteringCharset = "UTF-8"
-        filesMatching("plugin.yml") {
-            expand("version" to version)
-        }
     }
 
     shadowJar {
         dependencies {
             include(dependency("com.github.Musician101:"))
-            include(dependency("com.github.musician101.musigui:"))
+            include(dependency("com.github.Musician101.MusiGui:"))
         }
 
-        archiveClassifier.set("")
+        archiveClassifier = ""
         relocate("io.musician101.bukkitier", "com.campmongoose.serversaturday.lib.io.musician101.bukkitier")
         relocate("io.musician101.musigui", "com.campmongoose.serversaturday.lib.io.musician101.musigui")
         dependsOn("build")
     }
 
-    register<Copy>("prepTestJar") {
-        dependsOn("shadowJar")
-        from("build/libs/${project.name}-${project.version}.jar")
-        into("server/plugins")
+    runServer {
+        minecraftVersion("1.20.4")
     }
 }
 
