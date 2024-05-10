@@ -1,6 +1,7 @@
 package com.campmongoose.serversaturday.command;
 
 import com.campmongoose.serversaturday.Messages;
+import com.campmongoose.serversaturday.command.argument.BuildArgumentType.Holder;
 import com.campmongoose.serversaturday.gui.EditBuildGUI;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
@@ -13,7 +14,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 public class SSEdit extends ServerSaturdayCommand implements LiteralCommand {
 
@@ -52,13 +53,13 @@ public class SSEdit extends ServerSaturdayCommand implements LiteralCommand {
         public int execute(@NotNull CommandContext<CommandSender> context) {
             Player player = (Player) context.getSource();
             Submitter submitter = getSubmitter(player);
-            Build build = (Build) context.getArgument(BUILD, Map.class).get(submitter.getUUID());
-            if (build == null) {
+            Optional<Build> build = context.getArgument(name(), Holder.class).get(submitter);
+            if (build.isEmpty()) {
                 player.sendMessage(Messages.BUILD_DOES_NOT_EXIST);
                 return 0;
             }
 
-            new EditBuildGUI(build, submitter, player);
+            new EditBuildGUI(build.get(), submitter, player);
             return 1;
         }
     }

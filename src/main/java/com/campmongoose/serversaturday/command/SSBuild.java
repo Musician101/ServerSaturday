@@ -1,15 +1,12 @@
 package com.campmongoose.serversaturday.command;
 
 import com.campmongoose.serversaturday.command.argument.BuildArgumentType;
-import com.campmongoose.serversaturday.submission.Build;
+import com.campmongoose.serversaturday.command.argument.BuildArgumentType.Holder;
 import com.mojang.brigadier.arguments.ArgumentType;
 import io.musician101.bukkitier.command.ArgumentCommand;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-import java.util.UUID;
-
-abstract class SSBuild extends ServerSaturdayCommand implements ArgumentCommand<Map<UUID, Build>> {
+abstract class SSBuild extends ServerSaturdayCommand implements ArgumentCommand<Holder> {
 
     @NotNull
     @Override
@@ -19,7 +16,7 @@ abstract class SSBuild extends ServerSaturdayCommand implements ArgumentCommand<
 
     @NotNull
     @Override
-    public ArgumentType<Map<UUID, Build>> type() {
-        return new BuildArgumentType();
+    public ArgumentType<Holder> type() {
+        return BuildArgumentType.SUBMITTER;
     }
 }

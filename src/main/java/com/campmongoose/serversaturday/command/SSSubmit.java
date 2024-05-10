@@ -1,6 +1,7 @@
 package com.campmongoose.serversaturday.command;
 
 import com.campmongoose.serversaturday.Messages;
+import com.campmongoose.serversaturday.command.argument.BuildArgumentType.Holder;
 import com.campmongoose.serversaturday.submission.Build;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -11,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
@@ -52,12 +53,13 @@ public class SSSubmit extends ServerSaturdayCommand implements LiteralCommand {
         @Override
         public int execute(@NotNull CommandContext<CommandSender> context) {
             Player player = (Player) context.getSource();
-            Build build = (Build) context.getArgument(BUILD, Map.class).get(player.getUniqueId());
-            if (build == null) {
+            Optional<Build> optional = context.getArgument(name(), Holder.class).get(getSubmitter(player));
+            if (optional.isEmpty()) {
                 player.sendMessage(Messages.BUILD_DOES_NOT_EXIST);
                 return 0;
             }
 
+            Build build = optional.get();
             build.setSubmitted(!build.submitted());
             player.sendMessage(text(Messages.PREFIX + "Build " + (build.submitted() ? "has been submitted." : " is no longer submitted."), GREEN));
             return 1;

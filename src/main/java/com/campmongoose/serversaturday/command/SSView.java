@@ -1,6 +1,8 @@
 package com.campmongoose.serversaturday.command;
 
 import com.campmongoose.serversaturday.Messages;
+import com.campmongoose.serversaturday.command.argument.BuildArgumentType;
+import com.campmongoose.serversaturday.command.argument.BuildArgumentType.Holder;
 import com.campmongoose.serversaturday.command.argument.SubmitterArgumentType;
 import com.campmongoose.serversaturday.gui.BuildGUI;
 import com.campmongoose.serversaturday.gui.TextGUI;
@@ -17,7 +19,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 public class SSView extends ServerSaturdayCommand implements LiteralCommand {
 
@@ -91,14 +93,20 @@ public class SSView extends ServerSaturdayCommand implements LiteralCommand {
         public int execute(@NotNull CommandContext<CommandSender> context) {
             Player player = (Player) context.getSource();
             Submitter submitter = context.getArgument(PLAYER, Submitter.class);
-            Build build = (Build) context.getArgument(BUILD, Map.class).get(submitter.getUUID());
-            if (build == null) {
+            Optional<Build> build = context.getArgument(name(), Holder.class).get(submitter);
+            if (build.isEmpty()) {
                 player.sendMessage(Messages.BUILD_DOES_NOT_EXIST);
                 return 0;
             }
 
-            BuildGUI.open(build, submitter, player);
+            BuildGUI.open(build.get(), submitter, player);
             return 1;
+        }
+
+        @NotNull
+        @Override
+        public ArgumentType<Holder> type() {
+            return BuildArgumentType.VIEWER;
         }
     }
 }
