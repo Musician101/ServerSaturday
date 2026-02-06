@@ -21,8 +21,6 @@ import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 import static net.kyori.adventure.text.format.TextColor.fromHexString;
 
-//TODO Going to be replaced with Dialogs
-@Deprecated
 @NullMarked
 public class TextGUI {
 
