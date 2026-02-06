@@ -1,26 +1,17 @@
 import xyz.jpenilla.resourcefactory.bukkit.Permission
 
-buildscript {
-    configurations {
-        classpath {
-            resolutionStrategy {
-                force("org.ow2.asm:asm:9.6")
-                force("org.ow2.asm:asm-commons:9.6")
-            }
-        }
-    }
-}
-
 plugins {
     `java-library`
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("io.papermc.paperweight.userdev") version "1.7.0"
-    id("xyz.jpenilla.run-paper") version "2.2.4"
-    id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.1.1"
+    id("com.gradleup.shadow") version "9.3.0"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("xyz.jpenilla.resource-factory-paper-convention") version "1.3.1"
 }
 
 group = "com.campmongoose"
-version = "4.3.0"
+version = "4.3.0-SNAPSHOT"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 repositories {
     mavenCentral()
@@ -30,46 +21,40 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
-    api("com.github.Musician101:Bukkitier:2.0.0")
-    api("com.github.Musician101.MusiGui:paper:1.2.2")
-}
-
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
+    api("com.github.Musician101.MusiGUI:paper:3fb38265d4")
+    api("com.github.Musician101.MusiCommand:paper:be49f96ace")
 }
 
 tasks {
     processResources {
-        filteringCharset = "UTF-8"
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
+
+    build {
+        dependsOn(shadowJar)
     }
 
     shadowJar {
         dependencies {
-            include(dependency("com.github.Musician101:"))
-            include(dependency("com.github.Musician101.MusiGui:"))
+            include(dependency("com.github.Musician101.MusiCommand:.*"))
+            include(dependency("com.github.Musician101.MusiGui:.*"))
         }
 
         archiveClassifier = ""
-        relocate("io.musician101.bukkitier", "com.campmongoose.serversaturday.lib.io.musician101.bukkitier")
+        relocate("io.musician101.musicommand", "com.campmongoose.serversaturday.lib.io.musician101.musicommand")
         relocate("io.musician101.musigui", "com.campmongoose.serversaturday.lib.io.musician101.musigui")
-        dependsOn("build")
     }
 
     runServer {
-        minecraftVersion("1.20.4")
+        minecraftVersion("1.21.11")
     }
 }
 
-bukkitPluginYaml {
+paperPluginYaml {
     main = "com.campmongoose.serversaturday.ServerSaturday"
     author = "Musician101"
-    apiVersion = "1.20"
-    commands.create("serversaturday") {
-        aliases.addAll("ss")
-        description = "Displays help and plugin info."
-        usage = "/serversaturday"
-    }
+    apiVersion = "1.21.11"
     permissions {
         create("ss.*") {
             default = Permission.Default.OP
@@ -99,5 +84,5 @@ bukkitPluginYaml {
         }
     }
 
-    //foliaSupported = true;
+    foliaSupported = true;
 }

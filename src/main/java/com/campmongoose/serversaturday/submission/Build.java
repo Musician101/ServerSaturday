@@ -1,107 +1,121 @@
 package com.campmongoose.serversaturday.submission;
 
+import com.campmongoose.serversaturday.submission.ConfigKey.NonRequiredKey;
+import com.campmongoose.serversaturday.submission.ConfigKey.RequiredKey;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.serialize.TypeSerializer;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.lang.reflect.Type;
 
+@NullMarked
 public final class Build {
 
-    private static final String DESCRIPTION = "description";
-    private static final String FEATURED = "featured";
-    private static final String LOCATION = "location";
-    private static final String NAME = "name";
-    private static final String RESOURCE_PACK = "resource_pack";
-    private static final String SUBMITTED = "submitted";
-
-    @NotNull
+    private final String id;
     private String description = "";
     private boolean featured = false;
-    @NotNull
     private Location location;
-    @NotNull
     private String name;
-    @NotNull
     private String resourcePack = "";
     private boolean submitted = false;
 
-    public Build(@NotNull ConfigurationSection build) {
-        this.description = build.getString(DESCRIPTION, "");
-        this.featured = build.getBoolean(FEATURED, false);
-        this.location = checkNotNull(build.getLocation(LOCATION));
-        this.name = checkNotNull(build.getString(NAME));
-        this.resourcePack = build.getString(RESOURCE_PACK, "");
-        this.submitted = build.getBoolean(SUBMITTED, false);
-    }
-
-    public Build(@NotNull String name, @NotNull Location location) {
+    Build(String id, String name, Location location) {
         this.name = name;
         this.location = location;
+        this.id = id;
     }
 
     public boolean featured() {
         return featured;
     }
 
-    @NotNull
-    public String getDescription() {
+    public String description() {
         return description;
     }
 
-    public void setDescription(@NotNull String description) {
+    public void description(String description) {
         this.description = description;
     }
 
-    @NotNull
-    public Location getLocation() {
+    public Location location() {
         return location;
     }
 
-    public void setLocation(@NotNull Location location) {
+    public void location(Location location) {
         this.location = location;
     }
 
-    @NotNull
-    public String getName() {
+    public String name() {
         return name;
     }
 
-    public void setName(@NotNull String name) {
+    public void name(String name) {
         this.name = name;
     }
 
-    @NotNull
-    public String getResourcePack() {
+    public String resourcePack() {
         return resourcePack;
     }
 
-    public void setResourcePack(@NotNull String resourcePack) {
+    public void resourcePack(String resourcePack) {
         this.resourcePack = resourcePack;
     }
 
-    @NotNull
-    public ConfigurationSection save() {
-        ConfigurationSection build = new YamlConfiguration();
-        build.set(NAME, name);
-        build.set(DESCRIPTION, description);
-        build.set(FEATURED, featured);
-        build.set(LOCATION, location);
-        build.set(RESOURCE_PACK, resourcePack);
-        build.set(SUBMITTED, submitted);
-        return build;
-    }
-
-    public void setFeatured(boolean featured) {
+    public void featured(boolean featured) {
         this.featured = featured;
     }
 
-    public void setSubmitted(boolean submitted) {
+    public void submitted(boolean submitted) {
         this.submitted = submitted;
     }
 
     public boolean submitted() {
         return submitted;
+    }
+
+    public String id() {
+        return id;
+    }
+
+    public static class Serializer implements TypeSerializer<Build> {
+
+        private static final NonRequiredKey<String> DESCRIPTION = ConfigKey.nonRequiredKey("description", String.class, "");
+        private static final NonRequiredKey<Boolean> FEATURED = ConfigKey.nonRequiredKey("featured", Boolean.class, false);
+        private static final RequiredKey<String> ID = ConfigKey.requiredKey("id", String.class);
+        private static final RequiredKey<Location> LOCATION = ConfigKey.requiredKey("location", Location.class);
+        private static final RequiredKey<String> NAME = ConfigKey.requiredKey("name", String.class);
+        private static final NonRequiredKey<String> RESOURCE_PACK = ConfigKey.nonRequiredKey("resource-pack", String.class, "");
+        private static final NonRequiredKey<Boolean> SUBMITTED = ConfigKey.nonRequiredKey("submitted", Boolean.class, false);
+
+        @Override
+        public Build deserialize(Type type, ConfigurationNode node) throws SerializationException {
+            String id = ID.get(node);
+            String name = NAME.get(node);
+            Location location = LOCATION.get(node);
+            Build build = new Build(id, name, location);
+            build.description = DESCRIPTION.get(node);
+            build.resourcePack = RESOURCE_PACK.get(node);
+            build.featured = FEATURED.get(node);
+            build.submitted = SUBMITTED.get(node);
+            return build;
+        }
+
+        @Override
+        public void serialize(Type type, @Nullable Build obj, ConfigurationNode node) throws SerializationException {
+            if (obj == null) {
+                return;
+            }
+
+            ID.set(node, obj.id());
+            NAME.set(node, obj.name());
+            LOCATION.set(node, obj.location());
+            DESCRIPTION.set(node, obj.description());
+            RESOURCE_PACK.set(node, obj.resourcePack());
+            FEATURED.set(node, obj.featured());
+            SUBMITTED.set(node, obj.submitted());
+        }
     }
 }

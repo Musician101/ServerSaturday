@@ -1,28 +1,27 @@
 package com.campmongoose.serversaturday;
 
-import com.campmongoose.serversaturday.command.SSCommand;
+import com.campmongoose.serversaturday.command.SSMain;
 import com.campmongoose.serversaturday.submission.Submissions;
+import io.musician101.musicommand.paper.PaperMusiCommand;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
+import java.io.IOException;
+
+@NullMarked
 public final class ServerSaturday extends JavaPlugin {
 
-    @NotNull
     private final RewardHandler rewardHandler = new RewardHandler();
-    @NotNull
     private final Submissions submissions = new Submissions();
 
-    @NotNull
     public static ServerSaturday getPlugin() {
         return getPlugin(ServerSaturday.class);
     }
 
-    @NotNull
     public RewardHandler getRewardHandler() {
         return rewardHandler;
     }
 
-    @NotNull
     public Submissions getSubmissions() {
         return submissions;
     }
@@ -35,15 +34,25 @@ public final class ServerSaturday extends JavaPlugin {
     @Override
     public void onDisable() {
         rewardHandler.save();
-        submissions.save();
+        try {
+            submissions.save();
+        }
+        catch (IOException e) {
+            getSLF4JLogger().error("An error occurred while loading submissions.", e);
+        }
     }
 
     @Override
     public void onEnable() {
         reload();
         rewardHandler.load();
-        submissions.load();
+        try {
+            submissions.load();
+        }
+        catch (IOException e) {
+            getSLF4JLogger().error("An error occurred while saving submissions.", e);
+        }
         getServer().getPluginManager().registerEvents(rewardHandler, this);
-        SSCommand.registerCommand();
+        PaperMusiCommand.newAdventureInstance(this).registerCommand(new SSMain(), "ss");
     }
 }

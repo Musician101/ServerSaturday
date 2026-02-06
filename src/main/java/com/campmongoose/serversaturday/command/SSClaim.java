@@ -1,45 +1,45 @@
 package com.campmongoose.serversaturday.command;
 
 import com.mojang.brigadier.context.CommandContext;
-import io.musician101.bukkitier.command.LiteralCommand;
-import org.bukkit.command.CommandSender;
+import io.musician101.musicommand.paper.command.PaperLiteralCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import static com.campmongoose.serversaturday.Messages.PREFIX;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 
-public class SSClaim extends ServerSaturdayCommand implements LiteralCommand {
+@NullMarked
+public class SSClaim implements PaperLiteralCommand.AdventureFormat, SSCommand {
 
     @Override
-    public int execute(@NotNull CommandContext<CommandSender> context) {
+    public Integer execute(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource();
         getRewardHandler().claimReward(player);
         player.sendMessage(text(PREFIX + "All rewards have been given to you.", GOLD));
         return 1;
     }
 
-    @NotNull
     @Override
-    public String description(@NotNull CommandSender sender) {
-        return "Claim any pending rewards.";
+    public ComponentLike description(CommandSourceStack sender) {
+        return Component.text("Claim any pending rewards.");
     }
 
-    @NotNull
     @Override
     public String name() {
         return "claim";
     }
 
-    @NotNull
     @Override
-    public String usage(@NotNull CommandSender sender) {
-        return "/ss claim";
+    public ComponentLike usage(CommandSourceStack source) {
+        return Component.text("/ss claim");
     }
 
     @Override
-    public boolean canUse(@NotNull CommandSender sender) {
-        return canUseSubmit(sender);
+    public boolean canUse(CommandSourceStack sender) {
+        return canUseSubmit(sender.getSender());
     }
 }

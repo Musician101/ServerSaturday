@@ -3,29 +3,51 @@ package com.campmongoose.serversaturday.gui;
 import com.campmongoose.serversaturday.Messages;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
-import static io.musician101.musigui.paper.chest.PaperIconUtil.customName;
-import static io.musician101.musigui.paper.chest.PaperIconUtil.setLore;
+import java.util.List;
+
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 
+@NullMarked
+@SuppressWarnings("UnstableApiUsage")
 public class ViewBuildGUI extends BuildGUI {
 
-    public ViewBuildGUI(@NotNull Build build, @NotNull Submitter submitter, @NotNull Player player) {
+    ViewBuildGUI(Build build, Submitter submitter, Player player) {
         super(build, submitter, 3, 0, player);
-        setLeftClickButton(1, setLore(customName(new ItemStack(Material.BOOK), text("Description")), text("View this build's description.")), p -> handleText(p, build.getDescription(), submitter, build));
-        setLeftClickButton(2, setLore(customName(new ItemStack(Material.PAINTING), text("Resource Pack")), text("View this build's recommended resource packs.")), p -> handleText(p, build.getResourcePack(), submitter, build));
+    }
+
+    @Override
+    public void update() {
+        descriptionButton();
+        resourcePackButton();
+    }
+
+    private void resourcePackButton() {
+        ItemStack itemStack = new ItemStack(Material.PAINTING);
+        itemStack.setData(DataComponentTypes.CUSTOM_NAME, text("Resource Packs"));
+        itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(text("View this build's recommended resource packs."))));
+        setLeftClickButton(2, itemStack, p -> handleText(p, build.resourcePack(), submitter, build));
+    }
+
+    private void descriptionButton() {
+        ItemStack itemStack = new ItemStack(Material.BOOK);
+        itemStack.setData(DataComponentTypes.CUSTOM_NAME, text("Description"));
+        itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(text("View this build's description."))));
+        setLeftClickButton(1, itemStack, p -> handleText(p, build.description(), submitter, build));
     }
 
     private void handleText(Player player, String string, Submitter submitter, Build build) {
         player.closeInventory();
         player.sendMessage(text(Messages.PREFIX + string, GOLD));
-        player.sendMessage(text(Messages.PREFIX + "Click here to find reopen the GUI.", GREEN).clickEvent(ClickEvent.runCommand("/ss view " + submitter.getName() + " " + build.getName())));
+        player.sendMessage(text(Messages.PREFIX + "Click here to find reopen the GUI.", GREEN).clickEvent(ClickEvent.runCommand("/ss view " + submitter.name() + " " + build.name())));
     }
 }

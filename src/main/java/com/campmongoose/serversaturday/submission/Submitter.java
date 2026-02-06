@@ -2,73 +2,85 @@ package com.campmongoose.serversaturday.submission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.entity.Player;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.serialize.TypeSerializer;
+import org.spongepowered.configurate.util.Types;
 
-import java.util.ArrayList;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
+@NullMarked
 public final class Submitter {
 
-    private static final String BUILDS = "builds";
-    private static final String NAME = "name";
-    private static final String UUID_KEY = "uuid";
-
-    @NotNull
-    private final List<Build> builds = new ArrayList<>();
-    @NotNull
+    private final List<Build> builds;
     private final UUID uuid;
+    private String name;
 
-    public Submitter(@NotNull ConfigurationSection submitter) {
-        this.uuid = UUID.fromString(checkNotNull(submitter.getString(UUID_KEY)));
-        submitter.getMapList(BUILDS).stream().map(map -> {
-            ConfigurationSection build = new YamlConfiguration();
-            map.forEach((k, v) -> build.set(k.toString(), v));
-            return build;
-        }).map(Build::new).forEach(builds::add);
+    Submitter(Player player) {
+        this(player.getUniqueId(), player.getName(), List.of());
     }
 
-    public Submitter(@NotNull UUID uuid) {
+    private Submitter(UUID uuid, String name, List<Build> builds) {
         this.uuid = uuid;
+        this.name = name;
+        this.builds = builds;
     }
 
-    @NotNull
-    public Optional<Build> getBuild(@NotNull String name) {
-        return builds.stream().filter(s -> name.equalsIgnoreCase(s.getName())).findFirst();
+    public Optional<Build> getBuild(String name) {
+        return builds.stream().filter(s -> name.equalsIgnoreCase(s.name())).findFirst();
     }
 
-    @NotNull
-    public List<Build> getBuilds() {
+    public List<Build> builds() {
         return builds;
     }
 
-    @NotNull
-    public String getName() {
+    public String name() {
         String name = Bukkit.getOfflinePlayer(uuid).getName();
-        return name == null ? "null" : name;
+        if (name == null) {
+            return this.name;
+        }
+
+        this.name = name;
+        return name;
     }
 
-    @NotNull
-    public UUID getUUID() {
+    public UUID uniqueId() {
         return uuid;
     }
 
-    public void newBuild(@NotNull String name, @NotNull Location location) {
-        builds.add(new Build(name, location));
+    public void newBuild(String id, String name, Location location) {
+        builds.add(new Build(id, name, location));
     }
 
-    @NotNull
-    public YamlConfiguration save() {
-        YamlConfiguration submitter = new YamlConfiguration();
-        submitter.set(UUID_KEY, uuid.toString());
-        submitter.set(NAME, getName());
-        submitter.set(BUILDS, builds.stream().map(Build::save).collect(Collectors.toList()));
-        return submitter;
+    public static class Serializer implements TypeSerializer<Submitter> {
+
+        private static final ConfigKey<List<Build>> BUILDS = ConfigKey.nonRequiredKey("builds", Types.makeList(Build.class).getType(), List.of());
+        private static final ConfigKey<String> NAME = ConfigKey.requiredKey("name", String.class);
+        private static final ConfigKey<UUID> UUID = ConfigKey.requiredKey("uuid", UUID.class);
+
+        @Override
+        public Submitter deserialize(Type type, ConfigurationNode node) throws SerializationException {
+            UUID uuid = UUID.get(node);
+            String name = NAME.get(node);
+            List<Build> builds = BUILDS.get(node);
+            return new Submitter(uuid, name, builds);
+        }
+
+        @Override
+        public void serialize(Type type, @Nullable Submitter obj, ConfigurationNode node) throws SerializationException {
+            if (obj == null) {
+                return;
+            }
+
+            UUID.set(node, obj.uniqueId());
+            NAME.set(node, obj.name());
+            BUILDS.set(node, obj.builds());
+        }
     }
 }

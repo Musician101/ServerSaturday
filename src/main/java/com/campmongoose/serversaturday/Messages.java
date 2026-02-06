@@ -2,10 +2,14 @@ package com.campmongoose.serversaturday;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.jspecify.annotations.NullMarked;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
+//TODO Going to redo this so we can have a system similar to MoreFish
+@Deprecated
+@NullMarked
 public interface Messages {
 
     String PREFIX = "[SS] ";

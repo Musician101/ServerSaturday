@@ -9,12 +9,14 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.concurrent.CompletableFuture;
 
 import static com.campmongoose.serversaturday.Messages.PREFIX;
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 
+@NullMarked
 public class SubmitterArgumentType implements ArgumentType<Submitter> {
 
     private Submissions getSubmissions() {
@@ -23,7 +25,7 @@ public class SubmitterArgumentType implements ArgumentType<Submitter> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        getSubmissions().getSubmitters().stream().map(Submitter::getName).filter(s -> s.startsWith(builder.getRemaining())).forEach(builder::suggest);
+        getSubmissions().getSubmitters().stream().map(Submitter::name).filter(s -> s.startsWith(builder.getRemaining())).forEach(builder::suggest);
         return builder.buildFuture();
     }
 

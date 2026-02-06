@@ -2,40 +2,40 @@ package com.campmongoose.serversaturday.command;
 
 import com.campmongoose.serversaturday.gui.TextGUI;
 import com.mojang.brigadier.context.CommandContext;
-import io.musician101.bukkitier.command.LiteralCommand;
-import org.bukkit.command.CommandSender;
+import io.musician101.musicommand.paper.command.PaperLiteralCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
-public class SSMyBuilds extends ServerSaturdayCommand implements LiteralCommand {
+@NullMarked
+public class SSMyBuilds implements PaperLiteralCommand.AdventureFormat, SSCommand {
 
     @Override
-    public int execute(@NotNull CommandContext<CommandSender> context) {
+    public Integer execute(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource();
         TextGUI.displaySubmitter(player, getSubmitter(player), 1);
         return 1;
     }
 
-    @NotNull
     @Override
-    public String usage(@NotNull CommandSender sender) {
-        return "/ss myBuilds";
+    public ComponentLike usage(CommandSourceStack source) {
+        return Component.text("/ss myBuilds");
     }
 
-    @NotNull
     @Override
-    public String description(@NotNull CommandSender sender) {
-        return "View your builds.";
+    public ComponentLike description(CommandSourceStack sender) {
+        return Component.text("View your builds.");
     }
 
-    @NotNull
     @Override
     public String name() {
         return "myBuilds";
     }
 
     @Override
-    public boolean canUse(@NotNull CommandSender sender) {
-        return canUseSubmit(sender);
+    public boolean canUse(CommandSourceStack sender) {
+        return canUseSubmit(sender.getSender());
     }
 }

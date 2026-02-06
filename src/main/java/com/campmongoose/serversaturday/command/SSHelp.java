@@ -1,44 +1,29 @@
 package com.campmongoose.serversaturday.command;
 
-import com.mojang.brigadier.builder.ArgumentBuilder;
-import io.musician101.bukkitier.command.Command;
-import io.musician101.bukkitier.command.LiteralCommand;
-import io.musician101.bukkitier.command.help.HelpSubCommand;
-import io.papermc.paper.plugin.configuration.PluginMeta;
-import net.kyori.adventure.text.Component;
-import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
+import com.mojang.brigadier.context.CommandContext;
+import io.musician101.musicommand.paper.command.PaperLiteralCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import org.jspecify.annotations.NullMarked;
 
-import java.util.List;
+import static com.campmongoose.serversaturday.command.SSMain.help;
 
-import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
-import static com.campmongoose.serversaturday.command.SSCommand.cmdInfo;
-import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
+@NullMarked
+public class SSHelp implements PaperLiteralCommand.AdventureFormat, SSCommand {
 
-public class SSHelp extends HelpSubCommand {
+    private final SSMain root;
 
-    public SSHelp(@NotNull LiteralCommand root) {
-        super(root, getPlugin());
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    @NotNull
-    @Override
-    protected Component header() {
-        PluginMeta pdf = plugin.getPluginMeta();
-        List<String> authors = pdf.getAuthors();
-        int last = authors.size() - 1;
-        String authorsString = switch (last) {
-            case 0 -> authors.getFirst();
-            case 1 -> String.join(" and ", authors);
-            default -> String.join(", and ", String.join(", ", authors.subList(0, last)), authors.get(last));
-        };
-        String string = "<dark_green>> ===== <green><hover:show_text:'<color:#BDB76B>Developed by " + authorsString + "'>" + pdf.getDisplayName() + "</hover><dark_green> ===== <<newline><gold>Click a command to paste it below.<newLine><click:open_url:https://github.com/Musician101/ServerSaturday/wiki>Click here to visit our wiki.";
-        return miniMessage().deserialize(string);
+    public SSHelp(SSMain root) {
+        this.root = root;
     }
 
     @Override
-    protected @NotNull Component commandInfo(@NotNull Command<? extends ArgumentBuilder<CommandSender, ?>> command, @NotNull CommandSender sender) {
-        return cmdInfo(command, sender);
+    public String name() {
+        return "help";
+    }
+
+    @Override
+    public Integer execute(CommandContext<CommandSourceStack> context) {
+        help(context, root);
+        return 1;
     }
 }

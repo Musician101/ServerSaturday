@@ -5,11 +5,13 @@ import com.campmongoose.serversaturday.command.argument.BuildArgumentType.Holder
 import com.campmongoose.serversaturday.submission.Build;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import io.musician101.bukkitier.command.Command;
-import io.musician101.bukkitier.command.LiteralCommand;
-import org.bukkit.command.CommandSender;
+import io.musician101.musicommand.paper.command.PaperCommand;
+import io.musician101.musicommand.paper.command.PaperLiteralCommand;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,41 +19,38 @@ import java.util.Optional;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 
-public class SSSubmit extends ServerSaturdayCommand implements LiteralCommand {
+@NullMarked
+public class SSSubmit implements PaperLiteralCommand.AdventureFormat, SSCommand {
 
-    @NotNull
     @Override
     public String name() {
         return "submit";
     }
 
-    @NotNull
     @Override
-    public List<Command<? extends ArgumentBuilder<CommandSender, ?>>> arguments() {
-        return List.of(new SSBuild());
+    public List<PaperCommand<? extends ArgumentBuilder<CommandSourceStack, ?>, ComponentLike>> children() {
+        return List.of(new BuildArgument());
     }
 
     @Override
-    public boolean canUse(@NotNull CommandSender sender) {
-        return canUseSubmit(sender);
+    public boolean canUse(CommandSourceStack sender) {
+        return canUseSubmit(sender.getSender());
     }
 
-    @NotNull
     @Override
-    public String description(@NotNull CommandSender sender) {
-        return "Submit your build to be featured.";
+    public ComponentLike description(CommandSourceStack sender) {
+        return Component.text("Submit your build to be featured.");
     }
 
-    @NotNull
     @Override
-    public String usage(@NotNull CommandSender sender) {
-        return "/ss submit <build>";
+    public ComponentLike usage(CommandSourceStack source) {
+        return Component.text("/ss submit <build>");
     }
 
-    static class SSBuild extends com.campmongoose.serversaturday.command.SSBuild {
+    static class BuildArgument extends SSBuild {
 
         @Override
-        public int execute(@NotNull CommandContext<CommandSender> context) {
+        public Integer execute(CommandContext<CommandSourceStack> context) {
             Player player = (Player) context.getSource();
             Optional<Build> optional = context.getArgument(name(), Holder.class).get(getSubmitter(player));
             if (optional.isEmpty()) {
@@ -60,7 +59,7 @@ public class SSSubmit extends ServerSaturdayCommand implements LiteralCommand {
             }
 
             Build build = optional.get();
-            build.setSubmitted(!build.submitted());
+            build.submitted(!build.submitted());
             player.sendMessage(text(Messages.PREFIX + "Build " + (build.submitted() ? "has been submitted." : " is no longer submitted."), GREEN));
             return 1;
         }

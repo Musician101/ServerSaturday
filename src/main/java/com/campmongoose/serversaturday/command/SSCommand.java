@@ -1,65 +1,40 @@
 package com.campmongoose.serversaturday.command;
 
-import com.mojang.brigadier.builder.ArgumentBuilder;
-import io.musician101.bukkitier.Bukkitier;
-import io.musician101.bukkitier.command.Command;
-import io.musician101.bukkitier.command.help.HelpMainCommand;
-import io.papermc.paper.plugin.configuration.PluginMeta;
+import com.campmongoose.serversaturday.RewardHandler;
+import com.campmongoose.serversaturday.submission.Submissions;
+import com.campmongoose.serversaturday.submission.Submitter;
+import com.mojang.brigadier.context.CommandContext;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
+import org.bukkit.entity.Player;
+import org.jspecify.annotations.NullMarked;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
-import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
 
-public class SSCommand extends HelpMainCommand {
+@NullMarked
+public interface SSCommand {
 
-    private SSCommand() {
-        super(getPlugin());
+    String BUILD = "build";
+    String PLAYER = "player";
+
+    default RewardHandler getRewardHandler() {
+        return getPlugin().getRewardHandler();
     }
 
-    public static void registerCommand() {
-        Bukkitier.registerCommand(getPlugin(), new SSCommand());
+    default Submissions getSubmissions() {
+        return getPlugin().getSubmissions();
     }
 
-    @NotNull
-    static Component cmdInfo(@NotNull Command<? extends ArgumentBuilder<CommandSender, ?>> command, @NotNull CommandSender sender) {
-        String string = "<click:run_command:/ss help " + command.name() + ">/ss " + command.name() + " <dark_gray>- <gray>" + command.description(sender);
-        return miniMessage().deserialize(string);
+    default Submitter getSubmitter(Player player) {
+        return getSubmissions().getSubmitter(player);
     }
 
-    @SuppressWarnings("UnstableApiUsage")
-    @NotNull
-    @Override
-    protected Component header() {
-        PluginMeta pdf = plugin.getPluginMeta();
-        List<String> authors = pdf.getAuthors();
-        int last = authors.size() - 1;
-        String authorsString = switch (last) {
-            case 0 -> authors.getFirst();
-            case 1 -> String.join(" and ", authors);
-            default -> String.join(", and ", String.join(", ", authors.subList(0, last)), authors.get(last));
-        };
-        String string = "<dark_green>> ===== <green><hover:show_text:'<color:#BDB76B>Developed by " + authorsString + "'>" + pdf.getDisplayName() + "</hover><dark_green> ===== <<newline><gold>Click a command for more info.<newLine><click:open_url:https://github.com/Musician101/ServerSaturday/wiki>Click here to visit our wiki.";
-        return miniMessage().deserialize(string);
+    default boolean canUseSubmit(CommandSender sender) {
+        return sender instanceof Player && sender.hasPermission("ss.submit");
     }
 
-    @Override
-    protected @NotNull Component commandInfo(@NotNull Command<? extends ArgumentBuilder<CommandSender, ?>> command, @NotNull CommandSender sender) {
-        return cmdInfo(command, sender);
-    }
-
-    @NotNull
-    @Override
-    public List<Command<? extends ArgumentBuilder<CommandSender, ?>>> arguments() {
-        return List.of(new SSClaim(), new SSDelete(), new SSEdit(), new SSHelp(this), new SSMyBuilds(), new SSNew(), new SSReload(), new SSReward(), new SSSubmit(), new SSView(), new SSViewAll());
-    }
-
-    @NotNull
-    @Override
-    public String name() {
-        return "serversaturday";
+    default void sendMessage(CommandContext<CommandSourceStack> context, Component message) {
+        context.getSource().getSender().sendMessage(message);
     }
 }

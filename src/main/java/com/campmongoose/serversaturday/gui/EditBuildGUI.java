@@ -4,13 +4,15 @@ import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
 import io.musician101.musigui.paper.PaperTextInput;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -18,46 +20,72 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.campmongoose.serversaturday.Messages.PREFIX;
-import static io.musician101.musigui.paper.chest.PaperIconUtil.customName;
-import static io.musician101.musigui.paper.chest.PaperIconUtil.setLore;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.textOfChildren;
 import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
+@NullMarked
+@SuppressWarnings("UnstableApiUsage")
 public class EditBuildGUI extends BuildGUI {
 
-    public EditBuildGUI(@NotNull Build build, @NotNull Submitter submitter, @NotNull Player player) {
+    EditBuildGUI(Build build, Submitter submitter, Player player) {
         super(build, submitter, 7, 5, player);
-        setLeftClickButton(0, setLore(customName(new ItemStack(Material.PAPER), text("Rename")), text("Rename this build.")), p -> {
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        renameButton();
+        updateLocation();
+        descriptionButton();
+        resourcePackButton();
+        updateSubmitted();
+    }
+
+    private void renameButton() {
+        ItemStack itemStack = new ItemStack(Material.PAPER);
+        itemStack.setData(DataComponentTypes.CUSTOM_NAME, text("Rename"));
+        itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(text("Rename this build."))));
+        setLeftClickButton(0, itemStack, p -> {
             p.sendMessage(text(PREFIX + "Set the name of your build.", GREEN));
-            handleTextInput(p, build.getName(), (ply, message) -> {
+            handleTextInput(p, build.name(), (ply, message) -> {
                 if (submitter.getBuild(message).isPresent()) {
                     player.sendMessage(text(PREFIX + "A build with that name already exists.", RED));
                     return;
                 }
 
-                build.setName(message);
+                build.name(message);
                 new EditBuildGUI(build, submitter, player);
             });
         });
-        updateLocation(build);
-        setLeftClickButton(2, setLore(customName(new ItemStack(Material.BOOK), text("Change Description")), text("Add or change the description to this build.")), p -> {
+    }
+
+    private void descriptionButton() {
+        ItemStack itemStack = new ItemStack(Material.BOOK);
+        itemStack.setData(DataComponentTypes.CUSTOM_NAME, text("Change Description"));
+        itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(text("Add or change the description to this build."))));
+        setLeftClickButton(2, itemStack, p -> {
             p.sendMessage(text(PREFIX + "Enter your new description."));
-            handleTextInput(player, build.getDescription(), (ply, s) -> {
-                build.setDescription(s);
+            handleTextInput(player, build.description(), (ply, s) -> {
+                build.description(s);
                 new EditBuildGUI(build, submitter, ply);
             });
         });
-        setLeftClickButton(3, setLore(customName(new ItemStack(Material.PAINTING), text("Change Resource Packs")), List.of(text("Change the recommended resource"), text("packs for this build."))), p -> {
-            p.sendMessage(text(PREFIX + "Enter your new resourcepack."));
-            handleTextInput(p, build.getResourcePack(), (ply, s) -> {
-                build.setResourcePack(s);
+    }
+
+    private void resourcePackButton() {
+        ItemStack itemStack = new ItemStack(Material.PAINTING);
+        itemStack.setData(DataComponentTypes.CUSTOM_NAME, text("Change Resource Packs"));
+        itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(text("Change the recommended resource"), text("packs for this build."))));
+        setLeftClickButton(3, itemStack, p -> {
+            p.sendMessage(text(PREFIX + "Enter your new resource pack."));
+            handleTextInput(p, build.resourcePack(), (ply, s) -> {
+                build.resourcePack(s);
                 new EditBuildGUI(build, submitter, ply);
             });
         });
-        updateSubmitted(build);
     }
 
     private void handleTextInput(Player player, String original, BiConsumer<Player, String> action) {
@@ -72,21 +100,27 @@ public class EditBuildGUI extends BuildGUI {
         };
     }
 
-    private void updateLocation(@NotNull Build build) {
+    private void updateLocation() {
+        ItemStack itemStack = new ItemStack(Material.COMPASS);
+        itemStack.setData(DataComponentTypes.CUSTOM_NAME, text("Change Location"));
         List<Component> lore = Stream.of("Change the warp location for this build", "to where you are currently standing.", "WARNING: This will affect which direction", "people face when they teleport to your build.").map(Component::text).collect(Collectors.toList());
-        setLeftClickButton(1, setLore(customName(new ItemStack(Material.COMPASS), text("Change Location")), lore), p -> {
-            build.setLocation(p.getLocation());
-            updateLocation(build);
-            p.sendMessage(text(PREFIX + "Warp location for " + build.getName() + " updated.", GREEN));
+        itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(lore));
+        setLeftClickButton(1, itemStack, p -> {
+            build.location(p.getLocation());
+            updateLocation();
+            p.sendMessage(text(PREFIX + "Warp location for " + build.name() + " updated.", GREEN));
         });
     }
 
-    private void updateSubmitted(@NotNull Build build) {
-        Stream<Component> submitted = Stream.of(textOfChildren(text("Has been submitted? ", GOLD), (build.submitted() ? text("Yes", GREEN) : text("No", RED))));
+    private void updateSubmitted() {
+        ItemStack itemStack = new ItemStack(Material.FLINT_AND_STEEL);
+        itemStack.setData(DataComponentTypes.CUSTOM_NAME, text("Submit/Unready"));
+        Stream<Component> submitted = Stream.of(textOfChildren(text("Has been submitted? ", GOLD), build.submitted() ? text("Yes", GREEN) : text("No", RED)));
         List<Component> submittedDescription = Stream.concat(submitted, Stream.of("Add or remove your build from", "the list of ready builds.").map(Component::text)).toList();
-        setLeftClickButton(4, setLore(customName(new ItemStack(Material.FLINT_AND_STEEL), text("Submit/Unready")), submittedDescription), p -> {
-            build.setSubmitted(!build.submitted());
-            updateSubmitted(build);
+        itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(submittedDescription));
+        setLeftClickButton(4, itemStack, p -> {
+            build.submitted(!build.submitted());
+            updateSubmitted();
         });
     }
 }

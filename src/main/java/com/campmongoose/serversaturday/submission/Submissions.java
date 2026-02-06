@@ -1,97 +1,102 @@
 package com.campmongoose.serversaturday.submission;
 
-import org.bukkit.configuration.file.YamlConfiguration;
+import com.campmongoose.serversaturday.ExceptionUtils;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.ConfigurationOptions;
+import org.spongepowered.configurate.yaml.NodeStyle;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
 
+@NullMarked
 public final class Submissions {
 
-    @NotNull
     private final List<Submitter> submitters = new ArrayList<>();
 
-    @NotNull
-    public Optional<Submitter> getSubmitter(@NotNull String name) {
-        return submitters.stream().filter(s -> name.equalsIgnoreCase(s.getName())).findFirst();
+    public Optional<Submitter> getSubmitter(String name) {
+        return submitters.stream().filter(s -> name.equalsIgnoreCase(s.name())).findFirst();
     }
 
-    @NotNull
     public Submitter getSubmitter(Player player) {
         UUID uuid = player.getUniqueId();
-        return submitters.stream().filter(s -> uuid.equals(s.getUUID())).findFirst().orElseGet(() -> {
-            Submitter submitter = new Submitter(uuid);
+        return submitters.stream().filter(s -> uuid.equals(s.uniqueId())).findFirst().orElseGet(() -> {
+            Submitter submitter = new Submitter(player);
             submitters.add(submitter);
             return submitter;
         });
     }
 
-    @NotNull
+    public Optional<Build> build(NamespacedKey key) {
+        String submitterName = key.namespace();
+        String buildName = key.getKey();
+        return getSubmitter(submitterName).flatMap(submitter -> submitter.getBuild(buildName));
+    }
+
     public List<Submitter> getSubmitters() {
         return submitters;
     }
 
-    public void load() {
-        Path storageDir = getPlugin().getDataFolder().toPath().resolve("submissions");
+    public void load() throws IOException {
+        Path storageDir = getPlugin().getDataPath().resolve("submissions");
         if (Files.notExists(storageDir)) {
-            try {
-                Files.createDirectories(storageDir);
-            }
-            catch (IOException e) {
-                getPlugin().getSLF4JLogger().error("Failed to read " + storageDir.getFileName(), e);
-                return;
-            }
+            Files.createDirectories(storageDir);
         }
 
         try (Stream<Path> stream = Files.list(storageDir)) {
             submitters.clear();
-            stream.forEach(path -> {
+            ExceptionUtils.throwIOException("One or more errors occurred while loading submitters.", stream.map(this::loader).map(loader -> {
                 try {
-                    submitters.add(new Submitter(YamlConfiguration.loadConfiguration(path.toFile())));
+                    submitters.add(loader.load().require(Submitter.class));
+                    return null;
                 }
-                catch (Exception e) {
-                    getPlugin().getSLF4JLogger().error("Failed to read " + path.getFileName(), e);
+                catch (IOException e) {
+                    return e;
                 }
-            });
-        }
-        catch (IOException e) {
-            getPlugin().getSLF4JLogger().error("Failed to read submitters directory!", e);
+            }).filter(Objects::nonNull));
         }
     }
 
-    public void save() {
+    private YamlConfigurationLoader loader(Path path) {
+        ConfigurationOptions options = ConfigurationOptions.defaults().serializers(b -> {
+            b.register(Submitter.class, new Submitter.Serializer());
+            b.register(Build.class, new Build.Serializer());
+            b.register(Location.class, new LocationSerializer());
+        });
+        return YamlConfigurationLoader.builder().nodeStyle(NodeStyle.BLOCK).path(path).defaultOptions(options).build();
+    }
+
+    public void save() throws IOException {
         Path storageDir = getPlugin().getDataFolder().toPath().resolve("submissions");
         if (Files.notExists(storageDir)) {
-            try {
-                Files.createDirectories(storageDir);
-            }
-            catch (IOException e) {
-                getPlugin().getSLF4JLogger().error("Failed to create submissions folder.");
-                return;
-            }
+            Files.createDirectories(storageDir);
         }
 
-        submitters.forEach(submitter -> {
-            Path path = storageDir.resolve(submitter.getUUID() + ".yml");
+        ExceptionUtils.throwIOException("One or more errors occurred while saving submitters.", submitters.stream().map(submitter -> {
             try {
-                if (Files.notExists(path)) {
-                    Files.createFile(path);
-                }
-
-                submitter.save().save(path.toFile());
+                Path path = storageDir.resolve(submitter.uniqueId() + ".yml");
+                YamlConfigurationLoader loader = loader(path);
+                ConfigurationNode node = loader.createNode();
+                node.set(submitter);
+                loader.save(node);
+                return null;
             }
-            catch (Exception e) {
-                getPlugin().getSLF4JLogger().error("Failed to write " + path.getFileName(), e);
+            catch (IOException e) {
+                return e;
             }
-        });
+        }).filter(Objects::nonNull));
     }
 }
