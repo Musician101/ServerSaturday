@@ -1,21 +1,17 @@
 package com.campmongoose.serversaturday.gui;
 
-import com.campmongoose.serversaturday.ServerSaturday;
+import com.campmongoose.serversaturday.dialog.EditBuildTextDialog;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
-import io.musician101.musigui.paper.PaperTextInput;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -48,56 +44,21 @@ public class EditBuildGUI extends BuildGUI {
         ItemStack itemStack = new ItemStack(Material.PAPER);
         itemStack.setData(DataComponentTypes.CUSTOM_NAME, text("Rename"));
         itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(text("Rename this build."))));
-        setLeftClickButton(0, itemStack, p -> {
-            p.sendMessage(text(PREFIX + "Set the name of your build.", GREEN));
-            handleTextInput(p, build.name(), (ply, message) -> {
-                if (submitter.getBuild(message).isPresent()) {
-                    player.sendMessage(text(PREFIX + "A build with that name already exists.", RED));
-                    return;
-                }
-
-                build.name(message);
-                new EditBuildGUI(build, submitter, player);
-            });
-        });
+        setLeftClickButton(0, itemStack, p -> p.showDialog(EditBuildTextDialog.rename(build)));
     }
 
     private void descriptionButton() {
         ItemStack itemStack = new ItemStack(Material.BOOK);
         itemStack.setData(DataComponentTypes.CUSTOM_NAME, text("Change Description"));
         itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(text("Add or change the description to this build."))));
-        setLeftClickButton(2, itemStack, p -> {
-            p.sendMessage(text(PREFIX + "Enter your new description."));
-            handleTextInput(player, build.description(), (ply, s) -> {
-                build.description(s);
-                new EditBuildGUI(build, submitter, ply);
-            });
-        });
+        setLeftClickButton(2, itemStack, p -> p.showDialog(EditBuildTextDialog.changeDescription(build)));
     }
 
     private void resourcePackButton() {
         ItemStack itemStack = new ItemStack(Material.PAINTING);
         itemStack.setData(DataComponentTypes.CUSTOM_NAME, text("Change Resource Packs"));
         itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(text("Change the recommended resource"), text("packs for this build."))));
-        setLeftClickButton(3, itemStack, p -> {
-            p.sendMessage(text(PREFIX + "Enter your new resource pack."));
-            handleTextInput(p, build.resourcePack(), (ply, s) -> {
-                build.resourcePack(s);
-                new EditBuildGUI(build, submitter, ply);
-            });
-        });
-    }
-
-    private void handleTextInput(Player player, String original, BiConsumer<Player, String> action) {
-        player.closeInventory();
-        player.sendMessage(text(PREFIX + "Click here to edit the original.").color(GREEN).clickEvent(ClickEvent.suggestCommand(original)));
-        new PaperTextInput(ServerSaturday.getPlugin(), player) {
-
-            @Override
-            protected <T> void process(Player player, T message) {
-                action.accept(player, PlainTextComponentSerializer.plainText().serializeOr((Component) message, ""));
-            }
-        };
+        setLeftClickButton(3, itemStack, p -> p.showDialog(EditBuildTextDialog.changeResourcePack(build)));
     }
 
     private void updateLocation() {
