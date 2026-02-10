@@ -13,7 +13,7 @@ ss:
     help:
       command-info: "<usage> <dark_gray>- <gray><description>"
       description: "Display command usage and descriptions."
-      header: "<dark_green>> ===== <green><hover:show_text:'<color:#BDB76B>Developed by <authors>'><display-name></hover><dark_green> ===== <<newline><gold>Click a command for more info.<newLine><click:open_url:https://github.com/Musician101/ServerSaturday/wiki>Click here to visit our wiki."
+      header: "<dark_green>> ===== <green><hover:show_text:'<color:#BDB76B>Developed by <authors>'><display-name></hover><dark_green> ===== <<newline><click:open_url:https://github.com/Musician101/ServerSaturday/wiki>Click here to visit our wiki."
     my-builds:
       description: "View your builds."
     new:
@@ -59,12 +59,12 @@ ss:
         submit:
           label: "Submit/Unready"
           description:
-            submitted: "Has been submitted? <submitted:\"<red>No\":\"<green>Yes\">"
+            submitted: "Has been submitted? <submitted:\"<green>Yes\":\"<red>No\">"
             main: "Add or remove your build from the list of ready builds."
       feature:
         label: "Feature"
         description:
-          featured: "Has been featured? <featured:\"<red>No\":\"<green>Yes\">"
+          featured: "Has been featured? <featured:\"<green>Yes\":\"<red>No\">"
           main: "Set whether this build has been covered in an episode of Server Saturday."
       teleport:
         label: "Teleport"
