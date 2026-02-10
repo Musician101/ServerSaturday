@@ -38,6 +38,13 @@ public class LocationSerializer implements TypeSerializer<Location> {
             return;
         }
 
-        node.set(obj.serialize());
+        // For some reason, it can't write the float values when calling Location#serialize()
+        // So we have to manually set everything instead.
+        node.node("world").set(obj.getWorld().getName());
+        node.node("x").set(obj.x());
+        node.node("y").set(obj.y());
+        node.node("z").set(obj.z());
+        node.node("yaw").set(Float.class, obj.getYaw());
+        node.node("pitch").set(Float.class, obj.getPitch());
     }
 }

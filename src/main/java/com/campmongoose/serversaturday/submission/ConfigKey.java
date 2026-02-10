@@ -72,7 +72,7 @@ public sealed abstract class ConfigKey<V> permits NonRequiredKey, RequiredKey {
 
         @Override
         public void set(ConfigurationNode parent, @Nullable V value) throws SerializationException {
-            parent.node(key).set(value);
+            parent.node(key).set(type, value);
         }
     }
 
@@ -100,7 +100,7 @@ public sealed abstract class ConfigKey<V> permits NonRequiredKey, RequiredKey {
                 return;
             }
 
-            parent.node(key).set(value);
+            parent.node(key).set(type, value);
         }
     }
 }

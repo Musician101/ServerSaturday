@@ -6,7 +6,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.ConfigurationOptions;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
@@ -71,12 +71,11 @@ public final class Submissions {
     }
 
     private YamlConfigurationLoader loader(Path path) {
-        ConfigurationOptions options = ConfigurationOptions.defaults().serializers(b -> {
-            b.register(Submitter.class, new Submitter.Serializer());
-            b.register(Build.class, new Build.Serializer());
-            b.register(Location.class, new LocationSerializer());
-        });
-        return YamlConfigurationLoader.builder().nodeStyle(NodeStyle.BLOCK).path(path).defaultOptions(options).build();
+        TypeSerializerCollection tsc = TypeSerializerCollection.defaults().childBuilder()
+                .register(Submitter.class, new Submitter.Serializer())
+                .register(Build.class, new Build.Serializer())
+                .register(Location.class, new LocationSerializer()).build();
+        return YamlConfigurationLoader.builder().nodeStyle(NodeStyle.BLOCK).path(path).defaultOptions(options -> options.serializers(tsc)).build();
     }
 
     public void save() throws IOException {

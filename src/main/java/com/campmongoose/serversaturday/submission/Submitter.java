@@ -11,6 +11,7 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.spongepowered.configurate.util.Types;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,7 +24,7 @@ public final class Submitter {
     private String name;
 
     Submitter(Player player) {
-        this(player.getUniqueId(), player.getName(), List.of());
+        this(player.getUniqueId(), player.getName(), new ArrayList<>());
     }
 
     private Submitter(UUID uuid, String name, List<Build> builds) {
@@ -60,7 +61,7 @@ public final class Submitter {
 
     public static class Serializer implements TypeSerializer<Submitter> {
 
-        private static final ConfigKey<List<Build>> BUILDS = ConfigKey.nonRequiredKey("builds", Types.makeList(Build.class).getType(), List.of());
+        private static final ConfigKey<List<Build>> BUILDS = ConfigKey.nonRequiredKey("builds", Types.makeList(Build.class).getType(), new ArrayList<>());
         private static final ConfigKey<String> NAME = ConfigKey.requiredKey("name", String.class);
         private static final ConfigKey<UUID> UUID = ConfigKey.requiredKey("uuid", UUID.class);
 
