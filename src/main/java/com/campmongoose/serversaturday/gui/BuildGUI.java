@@ -8,9 +8,11 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.minimessage.tag.resolver.Formatter;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.translation.Argument;
+import net.kyori.adventure.translation.GlobalTranslator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -56,8 +58,8 @@ public abstract class BuildGUI extends PaperChestGUI<ServerSaturday> {
     public void update() {
         Location location = build.location();
         ItemStack itemStack = new ItemStack(Material.COMPASS);
-        itemStack.setData(DataComponentTypes.CUSTOM_NAME, Component.translatable("ss.gui.build.teleport.label"));
-        itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(teleportDesc(location)));
+        setCustomName(itemStack, Component.translatable("ss.gui.build.teleport.label"));
+        setLore(itemStack, teleportDesc(location));
         setLeftClickButton(teleportSlot, itemStack, p -> {
             if (p.hasPermission("ss.view.goto")) {
                 p.teleport(location);
@@ -71,12 +73,12 @@ public abstract class BuildGUI extends PaperChestGUI<ServerSaturday> {
 
         updateFeatured(featureSlot);
         ItemStack backItem = new ItemStack(Material.BARRIER);
-        backItem.setData(DataComponentTypes.CUSTOM_NAME, Component.translatable("ss.gui.back"));
+        setCustomName(backItem, Component.translatable("ss.gui.back"));
         setLeftClickButton(8, backItem, Player::closeInventory);
     }
 
-    private List<Component> teleportDesc(Location location) {
-        List<Component> list = new ArrayList<>();
+    private List<TranslatableComponent> teleportDesc(Location location) {
+        List<TranslatableComponent> list = new ArrayList<>();
         list.add(Component.translatable("ss.gui.build.teleport.description.instruction"));
         list.add(Component.translatable("ss.gui.build.teleport.description.world", Argument.tagResolver(Placeholder.unparsed("world", location.getWorld().getName()))));
         list.add(Component.translatable("ss.gui.build.teleport.description.x", Argument.tagResolver(Formatter.number("x", location.getBlockX()))));
@@ -91,12 +93,12 @@ public abstract class BuildGUI extends PaperChestGUI<ServerSaturday> {
 
     private void updateFeatured(int featureSlot) {
         if (player.hasPermission("ss.feature")) {
-            List<Component> lore = new ArrayList<>();
+            List<TranslatableComponent> lore = new ArrayList<>();
             lore.add(Component.translatable("ss.gui.build.feature.description.featured", Argument.tagResolver(Formatter.booleanChoice("featured", build.featured()))));
             lore.add(Component.translatable("ss.gui.build.feature.description.main"));
             ItemStack itemStack = new ItemStack(Material.GOLDEN_APPLE);
-            itemStack.setData(DataComponentTypes.CUSTOM_NAME, Component.translatable("ss.gui.build.feature.label"));
-            itemStack.setData(DataComponentTypes.LORE, ItemLore.lore().addLines(lore).build());
+            setCustomName(itemStack, Component.translatable("ss.gui.build.feature.label"));
+            setLore(itemStack, lore);
             setLeftClickButton(featureSlot, itemStack, p -> {
                 build.featured(!build.featured());
                 if (build.featured()) {
@@ -107,5 +109,15 @@ public abstract class BuildGUI extends PaperChestGUI<ServerSaturday> {
                 updateFeatured(featureSlot);
             });
         }
+    }
+
+    protected void setCustomName(ItemStack itemStack, TranslatableComponent translatableComponent) {
+        Component component = GlobalTranslator.render(translatableComponent, player.locale());
+        itemStack.setData(DataComponentTypes.CUSTOM_NAME, component);
+    }
+
+    protected void setLore(ItemStack itemStack, List<TranslatableComponent> translatableComponents) {
+        List<Component> components = translatableComponents.stream().map(translatableComponent -> GlobalTranslator.render(translatableComponent, player.locale())).toList();
+        itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(components));
     }
 }
