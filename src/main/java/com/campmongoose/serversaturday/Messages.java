@@ -39,7 +39,7 @@ public class Messages extends MiniMessageTranslator {
 
     @Override
     public Key name() {
-        return Key.key("morefish:lang");
+        return Key.key("serversaturday:lang");
     }
 
     public void load() throws IOException {
