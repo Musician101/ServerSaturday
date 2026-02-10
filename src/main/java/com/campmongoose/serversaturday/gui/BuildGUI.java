@@ -1,6 +1,5 @@
 package com.campmongoose.serversaturday.gui;
 
-import com.campmongoose.serversaturday.Messages;
 import com.campmongoose.serversaturday.ServerSaturday;
 import com.campmongoose.serversaturday.submission.Build;
 import com.campmongoose.serversaturday.submission.Submitter;
@@ -8,6 +7,10 @@ import io.musician101.musigui.paper.chest.PaperChestGUI;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.minimessage.tag.resolver.Formatter;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,17 +23,8 @@ import org.jspecify.annotations.NullMarked;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static com.campmongoose.serversaturday.Messages.PREFIX;
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
-import static net.kyori.adventure.text.Component.join;
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.JoinConfiguration.noSeparators;
-import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
-import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 @NullMarked
 @SuppressWarnings("UnstableApiUsage")
@@ -42,7 +36,7 @@ public abstract class BuildGUI extends PaperChestGUI<ServerSaturday> {
     private final int teleportSlot;
 
     protected BuildGUI(Build build, Submitter submitter, int featureSlot, int teleportSlot, Player player) {
-        super(player, text(build.name()), 9, getPlugin(), false);
+        super(player, Component.text(build.name()), 9, getPlugin(), false);
         this.build = build;
         this.submitter = submitter;
         this.featureSlot = featureSlot;
@@ -62,26 +56,33 @@ public abstract class BuildGUI extends PaperChestGUI<ServerSaturday> {
     public void update() {
         Location location = build.location();
         ItemStack itemStack = new ItemStack(Material.COMPASS);
-        itemStack.setData(DataComponentTypes.CUSTOM_NAME, text("Teleport"));
+        itemStack.setData(DataComponentTypes.CUSTOM_NAME, Component.translatable("ss.gui.build.teleport.label"));
         itemStack.setData(DataComponentTypes.LORE, ItemLore.lore(teleportDesc(location)));
         setLeftClickButton(teleportSlot, itemStack, p -> {
             if (p.hasPermission("ss.view.goto")) {
                 p.teleport(location);
-                p.sendMessage(text(PREFIX + "You have teleported to " + build.name(), GREEN));
+                ComponentLike argument = Argument.tagResolver(Placeholder.unparsed("build", build.name()));
+                p.sendMessage(Component.translatable("ss.gui.build.teleport.success", argument));
                 return;
             }
 
-            p.sendMessage(text(PREFIX + "You don't have permission to run this command.", RED));
+            p.sendMessage(Component.translatable("ss.gui.build.teleport.no-permission"));
         });
 
         updateFeatured(featureSlot);
         ItemStack backItem = new ItemStack(Material.BARRIER);
-        backItem.setData(DataComponentTypes.CUSTOM_NAME, text("Back"));
+        backItem.setData(DataComponentTypes.CUSTOM_NAME, Component.translatable("ss.gui.back"));
         setLeftClickButton(8, backItem, Player::closeInventory);
     }
 
     private List<Component> teleportDesc(Location location) {
-        return Stream.of("Click to teleport.", "- World: " + location.getWorld().getName(), "- X: " + location.getBlockX(), "- Y: " + location.getBlockY(), "- Z: " + location.getBlockZ()).map(Component::text).collect(Collectors.toList());
+        List<Component> list = new ArrayList<>();
+        list.add(Component.translatable("ss.gui.build.teleport.description.instruction"));
+        list.add(Component.translatable("ss.gui.build.teleport.description.world", Argument.tagResolver(Placeholder.unparsed("world", location.getWorld().getName()))));
+        list.add(Component.translatable("ss.gui.build.teleport.description.x", Argument.tagResolver(Formatter.number("x", location.getBlockX()))));
+        list.add(Component.translatable("ss.gui.build.teleport.description.y", Argument.tagResolver(Formatter.number("y", location.getBlockY()))));
+        list.add(Component.translatable("ss.gui.build.teleport.description.z", Argument.tagResolver(Formatter.number("z", location.getBlockZ()))));
+        return list;
     }
 
     protected void setLeftClickButton(int slot, ItemStack itemStack, Consumer<Player> action) {
@@ -91,20 +92,16 @@ public abstract class BuildGUI extends PaperChestGUI<ServerSaturday> {
     private void updateFeatured(int featureSlot) {
         if (player.hasPermission("ss.feature")) {
             List<Component> lore = new ArrayList<>();
-            lore.add(join(noSeparators(), text("Has been featured? ", GOLD), build.featured() ? text("Yes", GREEN) : text("No", RED)));
-            lore.addAll(List.of(text("Set whether this build has been covered in"), text("an episode of Server Saturday.")));
+            lore.add(Component.translatable("ss.gui.build.feature.description.featured", Argument.tagResolver(Formatter.booleanChoice("featured", build.featured()))));
+            lore.add(Component.translatable("ss.gui.build.feature.description.main"));
             ItemStack itemStack = new ItemStack(Material.GOLDEN_APPLE);
-            itemStack.setData(DataComponentTypes.CUSTOM_NAME, text("Feature"));
+            itemStack.setData(DataComponentTypes.CUSTOM_NAME, Component.translatable("ss.gui.build.feature.label"));
             itemStack.setData(DataComponentTypes.LORE, ItemLore.lore().addLines(lore).build());
             setLeftClickButton(featureSlot, itemStack, p -> {
                 build.featured(!build.featured());
                 if (build.featured()) {
                     OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(submitter.uniqueId());
                     getPlugin().getRewardHandler().giveReward(offlinePlayer);
-                    Player player = offlinePlayer.getPlayer();
-                    if (player != null) {
-                        player.sendMessage(Messages.REWARDS_WAITING);
-                    }
                 }
 
                 updateFeatured(featureSlot);

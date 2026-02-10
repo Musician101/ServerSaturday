@@ -1,5 +1,6 @@
 package com.campmongoose.serversaturday;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -13,6 +14,7 @@ import org.spongepowered.configurate.util.Types;
 import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -37,8 +39,12 @@ public final class RewardHandler implements Listener {
         IntStream.range(0, amount).forEach(i -> getPlugin().getConfig().getStringList("rewards").forEach(command -> server.dispatchCommand(server.getConsoleSender(), command.replace("@p", player.getName()))));
     }
 
-    public void giveReward(OfflinePlayer player) {
-        rewards.compute(player.getUniqueId(), (uuid, i) -> i == null ? 1 : ++i);
+    public void giveReward(OfflinePlayer offlinePlayer) {
+        rewards.compute(offlinePlayer.getUniqueId(), (uuid, i) -> i == null ? 1 : ++i);
+        Player player = offlinePlayer.getPlayer();
+        if (player != null) {
+            player.sendMessage(Component.translatable("ss.rewards-waiting"));
+        }
     }
 
     public void load() {
@@ -52,8 +58,8 @@ public final class RewardHandler implements Listener {
             ConfigurationNode node = loader.load();
             rewards.putAll(node.require(Types.makeMap(UUID.class, Integer.class)));
         }
-        catch (Exception e) {
-            getPlugin().getSLF4JLogger().error("Failed to read " + path.getFileName(), e);
+        catch (IOException e) {
+            getPlugin().getComponentLogger().error(Component.translatable("ss.rewards.load-failed"), e);
         }
     }
 
@@ -67,7 +73,7 @@ public final class RewardHandler implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         if (rewards.getOrDefault(uuid, 0) > 0) {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(getPlugin(), () -> player.sendMessage(Messages.REWARDS_WAITING), 20L);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(getPlugin(), () -> player.sendMessage(Component.translatable("ss.rewards-waiting")), 20L);
         }
     }
 
@@ -83,8 +89,8 @@ public final class RewardHandler implements Listener {
             node.set(rewards.entrySet().stream().filter(e -> e.getValue() > 0).collect(Collectors.toMap(Entry::getKey, Entry::getValue)));
             loader.save(node);
         }
-        catch (Exception e) {
-            getPlugin().getSLF4JLogger().error("Failed to write " + path.getFileName(), e);
+        catch (IOException e) {
+            getPlugin().getComponentLogger().error(Component.translatable("ss.rewards.save-failed"), e);
         }
     }
 }

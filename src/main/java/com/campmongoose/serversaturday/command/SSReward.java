@@ -1,6 +1,5 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.Messages;
 import com.campmongoose.serversaturday.command.argument.OfflinePlayerArgumentType;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -11,15 +10,12 @@ import io.musician101.musicommand.paper.command.PaperLiteralCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
-
-import static com.campmongoose.serversaturday.Messages.PREFIX;
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 
 @NullMarked
 public class SSReward implements PaperLiteralCommand.AdventureFormat, SSCommand {
@@ -36,7 +32,7 @@ public class SSReward implements PaperLiteralCommand.AdventureFormat, SSCommand 
 
     @Override
     public ComponentLike description(CommandSourceStack sender) {
-        return Component.text("Give a player a reward.");
+        return Component.translatable("ss.command.reward.description");
     }
 
     @Override
@@ -60,12 +56,13 @@ public class SSReward implements PaperLiteralCommand.AdventureFormat, SSCommand 
         public Integer execute(CommandContext<CommandSourceStack> context) {
             OfflinePlayer offlinePlayer = context.getArgument(PLAYER, OfflinePlayer.class);
             getRewardHandler().giveReward(offlinePlayer);
-            sendMessage(context, text(PREFIX + "Rewards given to " + offlinePlayer.getName(), GOLD));
-            Player player = offlinePlayer.getPlayer();
-            if (player != null) {
-                player.sendMessage(Messages.REWARDS_WAITING);
+            String playerName = offlinePlayer.getName();
+            if (playerName == null) {
+                playerName = offlinePlayer.getUniqueId().toString();
             }
 
+            ComponentLike argument = Argument.tagResolver(Placeholder.unparsed("player", playerName));
+            sendMessage(context, Component.translatable("ss.command.reward.success", argument));
             return 1;
         }
 

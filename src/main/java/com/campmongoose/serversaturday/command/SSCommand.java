@@ -4,6 +4,7 @@ import com.campmongoose.serversaturday.RewardHandler;
 import com.campmongoose.serversaturday.submission.Submissions;
 import com.campmongoose.serversaturday.submission.Submitter;
 import com.mojang.brigadier.context.CommandContext;
+import io.musician101.musicommand.core.command.CommandException;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
@@ -17,6 +18,15 @@ public interface SSCommand {
 
     String BUILD = "build";
     String PLAYER = "player";
+
+    default Player getPlayer(CommandContext<CommandSourceStack> context) throws CommandException {
+        CommandSender sender = context.getSource().getSender();
+        if (sender instanceof Player player) {
+            return player;
+        }
+
+        throw new CommandException("Tried to get player when sender is " + sender.getName());
+    }
 
     default RewardHandler getRewardHandler() {
         return getPlugin().getRewardHandler();

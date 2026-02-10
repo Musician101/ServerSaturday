@@ -5,14 +5,13 @@ import io.musician101.musicommand.paper.command.PaperLiteralCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
 
-import static com.campmongoose.serversaturday.Messages.PREFIX;
 import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 
 @NullMarked
 public class SSReload implements PaperLiteralCommand.AdventureFormat, SSCommand {
@@ -20,13 +19,16 @@ public class SSReload implements PaperLiteralCommand.AdventureFormat, SSCommand 
     @Override
     public Integer execute(CommandContext<CommandSourceStack> context) {
         try {
+            getPlugin().messages().load();
             getSubmissions().load();
             getPlugin().reload();
-            sendMessage(context, text(PREFIX + "Plugin reloaded. Check console for errors.", GOLD));
+            sendMessage(context, Component.translatable("ss.command.reload.success"));
         }
         catch (IOException e) {
-            //TODO need proper error message
-            sendMessage(context, Component.text("Reload failed."));
+            ComponentLike argument = Argument.tagResolver(Placeholder.unparsed("error", e.getMessage()));
+            Component message = Component.translatable("ss.command.reload.fail", argument);
+            sendMessage(context, message);
+            getPlugin().getComponentLogger().error(message);
         }
 
         return 1;
@@ -39,7 +41,7 @@ public class SSReload implements PaperLiteralCommand.AdventureFormat, SSCommand 
 
     @Override
     public ComponentLike description(CommandSourceStack sender) {
-        return Component.text("Reload the plugin.");
+        return Component.translatable("ss.command.reload.description");
     }
 
     @Override

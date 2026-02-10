@@ -1,18 +1,83 @@
 package com.campmongoose.serversaturday;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.minimessage.translation.MiniMessageTranslator;
+import net.kyori.adventure.util.TriState;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.NodePath;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
-//TODO Going to redo this so we can have a system similar to MoreFish
-@Deprecated
+import static com.campmongoose.serversaturday.ServerSaturday.getPlugin;
+
 @NullMarked
-public interface Messages {
+public class Messages extends MiniMessageTranslator {
 
-    String PREFIX = "[SS] ";
-    Component BUILD_DOES_NOT_EXIST = text(PREFIX + "A build with that name does not exist.", RED);
-    Component REWARDS_WAITING = MiniMessage.miniMessage().deserialize("<gold><click:run_command:/ss claim>" + PREFIX + "Hey, you! You have rewards waiting for you. Click this message to claim them!");
+    private final Map<Locale, ConfigurationNode> locales = new HashMap<>();
+
+    @Override
+    public TriState hasAnyTranslations() {
+        return TriState.TRUE;
+    }
+
+    @Override
+    protected @Nullable String getMiniMessageString(String key, Locale locale) {
+        return locales.get(locale).node(NodePath.of(key.split("\\."))).getString(key);
+    }
+
+    @Override
+    public Key name() {
+        return Key.key("morefish:lang");
+    }
+
+    public void load() throws IOException {
+        getPlugin().saveResource("lang/en_us/main.yml", false);
+        try (Stream<Path> langStream = Files.list(getPlugin().getDataPath().resolve("lang"))) {
+            ExceptionUtils.throwIOException("One or more errors occurred while attempting to load lang files.", langStream.map(this::loadLocales).mapMulti(Optional::ifPresent));
+        }
+    }
+
+    private Optional<IOException> loadLocales(Path path) {
+        return Locale.availableLocales().map(locale -> loadLocale(path, locale)).<IOException>mapMulti(Optional::ifPresent).collect(ExceptionUtils.toIOException("One or more errors occurred while trying to load locales."));
+    }
+
+    private Optional<IOException> loadLocale(Path path, Locale locale) {
+        try (Stream<Path> localeStream = Files.walk(path)) {
+            return localeStream.filter(this::isYAML).map(this::loader).map(loader -> loadFile(locale, loader)).filter(Objects::nonNull).collect(ExceptionUtils.toIOException("One or more errors occurred while loading " + locale));
+        }
+        catch (IOException e) {
+            return Optional.of(e);
+        }
+    }
+
+    private boolean isYAML(Path path) {
+        return !Files.isDirectory(path) && path.getFileName().toString().endsWith(".yml");
+    }
+
+    private YamlConfigurationLoader loader(Path path) {
+        return YamlConfigurationLoader.builder().path(path).build();
+    }
+
+    @Nullable
+    private IOException loadFile(Locale locale, YamlConfigurationLoader loader) {
+        try {
+            locales.put(locale, loader.load());
+            return null;
+        }
+        catch (ConfigurateException e) {
+            return e;
+        }
+    }
 }

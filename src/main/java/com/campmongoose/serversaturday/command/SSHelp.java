@@ -8,9 +8,8 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.plugin.configuration.PluginMeta;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.translation.Argument;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NullMarked;
 
@@ -33,20 +32,28 @@ public class SSHelp implements PaperLiteralCommand.AdventureFormat, SSCommand {
     }
 
     @Override
+    public ComponentLike description(CommandSourceStack sender) {
+        return Component.translatable("ss.command.help.description");
+    }
+
+    @Override
+    public ComponentLike usage(CommandSourceStack source) {
+        return Component.text("/ss help");
+    }
+
+    @Override
     public Integer execute(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         CommandSender sender = source.getSender();
         sender.sendMessage(header());
-        root.children().stream().filter(cmd -> cmd.canUse(source)).forEach(cmd -> cmdInfo(context, cmd));
+        root.children().stream().filter(cmd -> cmd.canUse(source)).map(cmd -> cmdInfo(context, cmd)).forEach(sender::sendMessage);
         return 1;
     }
 
-    private void cmdInfo(CommandContext<CommandSourceStack> context, PaperCommand<? extends ArgumentBuilder<CommandSourceStack, ?>, ComponentLike> cmd) {
+    private Component cmdInfo(CommandContext<CommandSourceStack> context, PaperCommand<? extends ArgumentBuilder<CommandSourceStack, ?>, ComponentLike> cmd) {
         CommandSourceStack source = context.getSource();
-        CommandSender sender = source.getSender();
-        TagResolver commandResolver = TagResolver.resolver(Placeholder.component("usage", cmd.usage(source)), Placeholder.component("description", cmd.description(source)));
-        String message = "<usage> <dark_gray>- <gray><description>";
-        sender.sendMessage(MiniMessage.miniMessage().deserialize(message, commandResolver));
+        ComponentLike commandResolver = Argument.tagResolver(Placeholder.component("usage", cmd.usage(source)), Placeholder.component("description", cmd.description(source)));
+        return Component.translatable("ss.command.help.command-info", commandResolver);
     }
 
     private Component header() {
@@ -58,8 +65,8 @@ public class SSHelp implements PaperLiteralCommand.AdventureFormat, SSCommand {
             case 1 -> String.join(" and ", authors);
             default -> String.join(", and ", String.join(", ", authors.subList(0, last)), authors.get(last));
         };
-        TagResolver headerResolver = TagResolver.resolver(Placeholder.parsed("authors", authorsString), Placeholder.parsed("display-name", pdf.getDisplayName()));
-        String string = "<dark_green>> ===== <green><hover:show_text:'<color:#BDB76B>Developed by <authors>'><display-name></hover><dark_green> ===== <<newline><gold>Click a command for more info.<newLine><click:open_url:https://github.com/Musician101/ServerSaturday/wiki>Click here to visit our wiki.";
-        return MiniMessage.miniMessage().deserialize(string, headerResolver);
+
+        ComponentLike headerResolver = Argument.tagResolver(Placeholder.unparsed("authors", authorsString), Placeholder.unparsed("display-name", pdf.getDisplayName()));
+        return Component.translatable("ss.command.help.header", headerResolver);
     }
 }

@@ -1,10 +1,10 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.Messages;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import io.musician101.musicommand.core.command.CommandException;
 import io.musician101.musicommand.paper.command.PaperArgumentCommand;
 import io.musician101.musicommand.paper.command.PaperCommand;
 import io.musician101.musicommand.paper.command.PaperLiteralCommand;
@@ -15,9 +15,6 @@ import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
-
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 
 @NullMarked
 public class SSNew implements PaperLiteralCommand.AdventureFormat, SSCommand {
@@ -34,7 +31,7 @@ public class SSNew implements PaperLiteralCommand.AdventureFormat, SSCommand {
 
     @Override
     public ComponentLike description(CommandSourceStack sender) {
-        return Component.text("Create a new build to be submitted.");
+        return Component.translatable("ss.command.new.description");
     }
 
     @Override
@@ -50,11 +47,11 @@ public class SSNew implements PaperLiteralCommand.AdventureFormat, SSCommand {
     static class SSId implements PaperArgumentCommand.AdventureFormat<String>, SSCommand {
 
         @Override
-        public Integer execute(CommandContext<CommandSourceStack> context) {
-            Player player = (Player) context.getSource();
+        public Integer execute(CommandContext<CommandSourceStack> context) throws CommandException {
+            Player player = getPlayer(context);
             String id = StringArgumentType.getString(context, "id");
             getSubmitter(player).newBuild(id, id, player.getLocation());
-            player.sendMessage(text(Messages.PREFIX + "New build created successfully.", GREEN));
+            player.sendMessage(Component.translatable("ss.command.new.success"));
             return 1;
         }
 

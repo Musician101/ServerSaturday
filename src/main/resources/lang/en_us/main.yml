@@ -1,0 +1,101 @@
+# You can edit this file, but don't delete it. The plugin is set up to save this file if it's missing.
+ss:
+  command:
+    build-does-not-exist: "<lang:ss.prefix> <white>A build with that name does not exist."
+    claim:
+      description: "Claim any pending rewards."
+      success: "<lang:ss.prefix> <white>All rewards have been given to you."
+    delete:
+      description: "Delete a submission."
+      success: "<lang:ss.prefix> <white>Build deleted."
+    edit:
+      description: "Edit a build."
+    help:
+      command-info: "<usage> <dark_gray>- <gray><description>"
+      description: "Display command usage and descriptions."
+      header: "<dark_green>> ===== <green><hover:show_text:'<color:#BDB76B>Developed by <authors>'><display-name></hover><dark_green> ===== <<newline><gold>Click a command for more info.<newLine><click:open_url:https://github.com/Musician101/ServerSaturday/wiki>Click here to visit our wiki."
+    my-builds:
+      description: "View your builds."
+    new:
+      description: "Create a new build to be submitted."
+      success: "<lang:ss.prefix> <white>New build created successfully."
+    reload:
+      description: "Reload the plugin."
+      fail: "<lang:ss.prefix> <white>Reload failed: <error>."
+      success: "<lang:ss.prefix> <white>Plugin reloaded."
+    reward:
+      description: "Give a player a reward."
+      fail: "<lang:ss.prefix> <white>Reload failed: <error>."
+      success: "<lang:ss.prefix> <white>Rewards given to <player>."
+    submit:
+      description: "Submit your build to be featured."
+      fail: "<lang:ss.prefix> <white>Reload failed: <error>."
+      submitted: "<lang:ss.prefix> <white>Your build has been submitted."
+      not-submitted: "<lang:ss.prefix> <white>Your build has been removed from submissions."
+    view:
+      description: "View a player's submission(s)."
+    view-all:
+      description: "View all builds that have been submitted."
+  gui:
+    back: "Back"
+    build:
+      edit:
+        change-description:
+          label: "Change Description"
+          description: "Change the description of this build."
+        change-location:
+          label: "Change Location"
+          description:
+            main: "Change the warp location for this build to where you are currently standing."
+            warning: "<red>WARNING<white>: This will affect which direction people face when they teleport to your build."
+          success: "<lang:ss.prefix> <white>Warp location for <build> updated."
+        change-resource-pack:
+          label: "Change Resource Pack"
+          description: "Change the recommended resource pack for this build."
+        rename:
+          label: "Rename"
+          description: "Rename this build."
+        submit:
+          label: "Submit/Unready"
+          description:
+            submitted: "Has been submitted? <submitted:\"<red>No\":\"<green>Yes\">"
+            main: "Add or remove your build from the list of ready builds."
+      feature:
+        label: "Feature"
+        description:
+          featured: "Has been featured? <featured:\"<red>No\":\"<green>Yes\">"
+          main: "Set whether this build has been covered in an episode of Server Saturday."
+      teleport:
+        label: "Teleport"
+        description:
+          instruction: "Click to teleport."
+          world: "- World: <world>"
+          x: "- X: <x>"
+          y: "- Y: <y>"
+          z: "- Z: <z>"
+        no-permission: "<lang:ss.prefix> <white>You don't have permission to teleport to builds."
+        success: "<lang:ss.prefix> <white>You have teleported to <build>."
+      view:
+        description:
+          label: "Description"
+          description: "View this build's description."
+        resource-pack:
+          label: "Resource Pack"
+          description: "View this build's recommended resource pack."
+    all-submissions:
+      label: "<green>All S. S. Submissions"
+      build: "<gold><build> <white>by <#BDB76B><submitter>"
+    submitter:
+      label: "<green><submitter>'s Builds"
+      build: "<submitted-and-not-featured:\"<green>\":\"<red>\"><build>"
+    submitters:
+      label: "<green>S. S. Submissions"
+      submitter: "<gold><submitter>"
+  prefix: "<gold>[SS]"
+  rewards:
+    load-failed: "Failed to load rewards."
+    save-failed: "Failed to save rewards."
+  rewards-waiting: "<gold><click:run_command:/ss claim><lang:ss.prefix> <white>Hey, you! You have rewards waiting for you. Click this message to claim them!"
+  submissions:
+    load-failed: "An error occurred while loading submissions."
+    save-failed: "An error occurred while saving submissions."

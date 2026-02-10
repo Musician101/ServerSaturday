@@ -1,6 +1,6 @@
 package com.campmongoose.serversaturday.command;
 
-import com.campmongoose.serversaturday.gui.TextGUI;
+import com.campmongoose.serversaturday.dialog.AllSubmissionsDialog;
 import com.mojang.brigadier.context.CommandContext;
 import io.musician101.musicommand.paper.command.PaperLiteralCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -14,7 +14,7 @@ public class SSViewAll implements PaperLiteralCommand.AdventureFormat, SSCommand
 
     @Override
     public Integer execute(CommandContext<CommandSourceStack> context) {
-        TextGUI.displayAllSubmissions((Player) context.getSource().getSender(), 1);
+        context.getSource().getSender().showDialog(new AllSubmissionsDialog().build());
         return 1;
     }
 
@@ -25,7 +25,7 @@ public class SSViewAll implements PaperLiteralCommand.AdventureFormat, SSCommand
 
     @Override
     public ComponentLike description(CommandSourceStack sender) {
-        return Component.text("View all builds that have been submitted.");
+        return Component.translatable("ss.command.view-all.description");
     }
 
     @Override

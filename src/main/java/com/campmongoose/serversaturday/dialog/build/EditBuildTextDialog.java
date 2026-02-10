@@ -1,5 +1,6 @@
-package com.campmongoose.serversaturday.dialog;
+package com.campmongoose.serversaturday.dialog.build;
 
+import com.campmongoose.serversaturday.dialog.SSDialog;
 import com.campmongoose.serversaturday.submission.Build;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
