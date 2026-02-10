@@ -38,7 +38,7 @@ tasks {
     shadowJar {
         dependencies {
             include(dependency("com.github.Musician101.MusiCommand:.*"))
-            include(dependency("com.github.Musician101.MusiGui:.*"))
+            include(dependency("com.github.Musician101.MusiGUI:.*"))
         }
 
         archiveClassifier = ""
