@@ -1,5 +1,6 @@
 package com.campmongoose.serversaturday.command;
 
+import com.campmongoose.serversaturday.submission.Submitter;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -50,6 +51,12 @@ public class SSNew implements PaperLiteralCommand.AdventureFormat, SSCommand {
         public Integer execute(CommandContext<CommandSourceStack> context) throws CommandException {
             Player player = getPlayer(context);
             String id = StringArgumentType.getString(context, "id");
+            Submitter submitter = getSubmitter(player);
+            if (submitter.getBuild(id).isPresent()) {
+                player.sendMessage(Component.translatable("ss.command.new.fail"));
+                return 0;
+            }
+
             getSubmitter(player).newBuild(id, id, player.getLocation());
             player.sendMessage(Component.translatable("ss.command.new.success"));
             return 1;

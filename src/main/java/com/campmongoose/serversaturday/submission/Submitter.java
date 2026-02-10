@@ -32,8 +32,8 @@ public final class Submitter {
         this.builds = builds;
     }
 
-    public Optional<Build> getBuild(String name) {
-        return builds.stream().filter(s -> name.equalsIgnoreCase(s.name())).findFirst();
+    public Optional<Build> getBuild(String id) {
+        return builds.stream().filter(s -> id.equalsIgnoreCase(s.id())).findFirst();
     }
 
     public List<Build> builds() {

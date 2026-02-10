@@ -18,6 +18,7 @@ ss:
       description: "View your builds."
     new:
       description: "Create a new build to be submitted."
+      fail: "<lang:ss.prefix> <white>A build with that ID already exists."
       success: "<lang:ss.prefix> <white>New build created successfully."
     reload:
       description: "Reload the plugin."
