@@ -34,7 +34,7 @@ public class Messages extends MiniMessageTranslator {
 
     @Override
     protected @Nullable String getMiniMessageString(String key, Locale locale) {
-        return locales.get(locale).node(NodePath.of(key.split("\\."))).getString();
+        return locales.getOrDefault(locale, locales.get(Locale.US)).node(NodePath.of(key.split("\\."))).getString();
     }
 
     @Override
